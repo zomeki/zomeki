@@ -1,0 +1,124 @@
+@charset "UTF-8";
+/* @import "style.css"; */
+
+/* =========================================================
+   Login.
+========================================================= */
+
+html {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+body {
+  height: 100%;
+  font-size: 90%;
+  margin: 0px auto;
+  padding: 0px;
+  background-image: url(./images/login_re.gif);
+  font-size: 80%;
+  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+  line-height: 1;
+}
+input {
+  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+}
+.form input {
+  width: 150px;
+}
+
+#header {
+  width: 100%;
+  height: 60px;
+}
+#header h1 {
+  margin: 0px;
+  padding: 0px;
+  background-image: url(images/header_re.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+} 
+#main {
+  width: 375px;
+  height: auto;
+  margin: 150px auto;
+  text-align: center;
+}
+
+
+.box {
+  background-color: #ffffff;
+  text-align: center;
+  margin: 0px auto;
+  -webkit-box-shadow: #999 0px 0px 5px;
+  -moz-box-shadow: #999 0px 0px 5px;
+  box-shadow: #999 0px 0px 5px;
+  behavior: url(/_common/js/PIE.htc);
+  position: relative;
+  color: #888;
+}
+
+.box h2 {
+  height: 119px;
+  text-align: center;
+  margin: 0px auto 5px auto;
+}
+.box .version {
+  padding: 0px 0px 0px 0px;
+  font-size: 100%;
+  font-weight: lighter;
+  text-align: center;
+}
+
+.notice {
+  height: 0px;
+  color: #f00;
+  font-weight: bold;
+}
+.fields {
+  width: 275px;
+  text-align: center;
+  margin: 30px auto 0px auto;
+  padding: 0px 0px 20px 0px;
+
+}
+#account,
+#password {
+  width: 253px;
+  padding: 8px 10px;
+  border: 1px solid #bbb;
+  background-color: #f6f6f6;
+  font-size: 120%;
+  vertical-align: middle;
+}
+#account {
+  margin-bottom: 10px;
+  ime-mode: disabled;
+}
+#password {
+
+}
+::-webkit-input-placeholder {
+    color: #999;
+}
+:-moz-placeholder {
+    color: #999;
+}
+.submitters {
+  padding: 0px 0px 50px 0px;
+  text-align: center;
+}
+.submitters .login {
+  width: 276px;
+  height: 47px;
+}
+
+.copyright {
+  padding: 20px 0px;
+  text-align: center;
+  color: #888;
+}
+.copyright img {
+  padding-left: 10px;
+  vertical-align: middle;
+}

@@ -1,0 +1,14 @@
+<%= form_for :item, :url => "?do=rename", :html => {:method => :put} do |f| %>
+  
+<%= error_messages_for :item %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= f.text_field :name, :class => "nameEn" %></td>
+  </tr>
+</table>
+
+<%= submit :edit %>
+
+<% end %>

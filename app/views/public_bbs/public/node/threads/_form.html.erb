@@ -1,0 +1,77 @@
+<% inline_id = @item.id || Util::Sequencer.next_id(:tmp, :md5 => true) %>
+<%= init_ckeditor :baseHref => "#{request.base_url}#{@content.thread_node.public_uri}#{inline_id}/" %>
+
+<div class="loginUser">ログイン中のユーザ：<%= image_tag current_o_auth_user.image, :alt => '', :class => 'profileimage' %><span class="name"><%= current_o_auth_user.name %></span></div>
+<p class="required">※は必須項目です。</p>
+
+<section class="threadBody">
+<table>
+  <tr>
+    <th><label for="item_title"><%= @item.locale(:title) %> <span class="required" title="必須">※</span></label></th>
+    <td><%= f.text_field :title, :class => 'title' %></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th><label for="item_body"><%= @item.locale(:body) %> <span class="required" title="必須">※</span></label></th>
+  </tr>
+  <tr>
+    <td><%= f.text_area :body, :class => 'body ckeditor' %></td>
+  </tr>
+</table>
+</section>
+
+<section class="files">
+  <h2>ファイル管理</h2>
+  <%= public_bbs_thread_files_form f, inline_id %>
+</section>
+
+<section class="optionThread">
+  <h2>スレッド設定</h2>
+  <table>
+    <tr>
+      <th>カテゴリ</th>
+      <td><%= public_bbs_categories_form f %></td>
+    </tr>
+    <tr>
+      <th>関連ワード</th>
+      <td><%= public_bbs_tags_form f %></td>
+    </tr>
+    <tr>
+      <th>レス許可</th>
+      <td><%= f.radio_buttons :res_creation, {'許可する' => 'allow', '許可しない' => 'deny'} %></td>
+    </tr>
+<% if false %>
+    <tr>
+      <th>レスのレス許可</th>
+      <td>
+        <input id="item_res_to_res_allow" name="item[res_to_res]" type="radio" value="allow" checked="checked" /><label for="item_res_to_res_allow">許可する</label>
+        <input id="item_res_to_res_disallow" name="item[res_to_res]" type="radio" value="disallow" /><label for="item_res_to_res_disallow">許可しない</label>
+      </td>
+    </tr>
+<% end %>
+  </table>
+</section>
+
+<section class="optionPortal">
+  <h2>ポータル設定</h2>
+  <table>
+    <tr>
+      <th>ジャンルページ表示</th>
+      <td><%= portal_group_category_form f %></td>
+    </tr>
+    <tr>
+      <th>業種ページ表示</th>
+      <td><%= portal_group_business_form f %></td>
+    </tr>
+    <tr>
+      <th>属性ページ表示</th>
+      <td><%= portal_group_attribute_form f %></td>
+    </tr>
+    <tr>
+      <th>地域ページ表示</th>
+      <td><%= portal_group_area_form f %></td>
+    </tr>
+  </table>
+</section>

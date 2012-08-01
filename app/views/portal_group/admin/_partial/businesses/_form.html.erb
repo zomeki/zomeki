@@ -1,0 +1,30 @@
+<%
+
+e_prefix = "#{f.object_name}_in_portal_business_ids_"
+businesses = PortalGroup::Business.root_items(:content_id => @portal_group.id)
+
+%><script type="text/javascript">
+//<![CDATA[
+function changePortalBusiness(id) {
+  var selected = new Array();
+  for(var i = 0 ; i < 3 ; i++) {
+    name = '<%= "#{e_prefix}" %>' + i;
+    elem = document.getElementById(name);
+    if (elem.selectedIndex == '') {
+      continue;
+    } else if (selected[elem.selectedIndex] != true) {
+      selected[elem.selectedIndex] = true;
+    } else {
+      alert("同じ業種は選択できません");
+      document.getElementById('<%= "#{e_prefix}" %>' + id).selectedIndex = '';
+    }
+  }
+}
+//]]>
+</script>
+
+<div>
+<%= f.select_with_tree 'in_portal_business_ids[0]', businesses, :label => :title, :include_blank => true, :onChange => "changePortalBusiness(0)" %>
+<%= f.select_with_tree 'in_portal_business_ids[1]', businesses, :label => :title, :include_blank => true, :onChange => "changePortalBusiness(1)" %>
+<%= f.select_with_tree 'in_portal_business_ids[2]', businesses, :label => :title, :include_blank => true, :onChange => "changePortalBusiness(2)" %>
+</div>

@@ -1,0 +1,13 @@
+<%= hidden_field_tag 'delivLogId', @info[:delivLogId] %>
+<%= hidden_field_tag 'delivLogIds', @info[:delivLogIds] %>
+<%= hidden_field_tag 'letterType', @info[:letterType] %>
+<%= hidden_field_tag 'deliveryStatus', @info[:deliveryStatus] %>
+
+<table class="index">
+<% for log in @info[:logs] %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <th style="width: 180px; text-align: center;"><%= log.letter_type_name %></th>
+    <td><%= log.delivered_count %>件／<%= log.deliverable_count %>件中　<%= log.delivery_status_name %></td>
+  </tr>
+<% end %>
+</table>

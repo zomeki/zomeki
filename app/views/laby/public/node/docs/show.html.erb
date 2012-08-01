@@ -1,0 +1,12 @@
+<div class="contentLabyDoc">
+
+<h1><%= @item.title %></h1>
+
+<div class="body">
+  <%=raw br(@item.body) %>
+</div>
+
+<div class="date"><%= (@item.published_at || Time.now).strftime('%Y年%-m月%-d日') %></div>
+<div class="back"><a href="javascript:history.back()">戻る</a></div>
+
+<!-- end .contentLabyDoc --></div>

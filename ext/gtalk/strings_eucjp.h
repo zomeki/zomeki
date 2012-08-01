@@ -1,0 +1,103 @@
+/* $Id: strings_eucjp.h,v 1.4 2006/10/27 00:49:44 sako Exp $                                        */
+#define TOKEN_MEISHI "Ì¾»ì"
+#define TOKEN_DOUSHI "Æ°»ì"
+#define TOKEN_KEIYOUSHI "·ÁÍÆ»ì"
+
+#define KUTEN "¡¢"
+#define TOUTEN "¡£"
+#define GIMONFU "¡©"
+
+#define KATAKANA_SMALL_A "¥¡"
+#define KATAKANA_SMALL_I "¥£"
+#define KATAKANA_SMALL_U "¥¥"
+#define KATAKANA_SMALL_E "¥§"
+#define KATAKANA_SMALL_O "¥©"
+#define KATAKANA_SMALL_YA "¥ã"
+#define KATAKANA_SMALL_YU "¥å"
+#define KATAKANA_SMALL_YO "¥ç"
+
+/*---- for text.c ----*/
+#define KANSUUJI_ZERO "¡»"
+#define KANSUUJI_ICHI "°ì"
+#define KANSUUJI_NI "Æó"
+#define KANSUUJI_SAN "»°"
+#define KANSUUJI_SHI "»Í"
+#define KANSUUJI_GO "¸Þ"
+#define KANSUUJI_ROKU "Ï»"
+#define KANSUUJI_SHICHI "¼·"
+#define KANSUUJI_HACHI "È¬"
+#define KANSUUJI_KYUU "¶å"
+
+#define KANSUUJI_KETA_ZERO "¡»"
+#define KANSUUJI_KETA_ICHI "°ì"
+#define KANSUUJI_KETA_JUU "½½"
+#define KANSUUJI_KETA_HYAKU "É´"
+#define KANSUUJI_KETA_SEN "Àé"
+#define KANSUUJI_KETA_MAN "Ëü"
+#define KANSUUJI_KETA_OKU "²¯"
+#define KANSUUJI_KETA_CHOU "Ãû"
+
+#define KANJI_TIME_NEN "Ç¯"
+#define KANJI_TIME_TSUKI "·î"
+#define KANJI_TIME_NICHI "Æü"
+#define KANJI_TIME_JI "»þ"
+#define KANJI_TIME_FUN "Ê¬"
+#define KANJI_TIME_BYOU "ÉÃ"
+
+#define ZENKAKU_EXCLAMATION "¡ª"
+#define ZENKAKU_DOUBLE_QUOTATION "¡É"
+#define ZENKAKU_SHARP "¡ô"
+#define ZENKAKU_DOLLAR "¡ð"
+#define ZENKAKU_PERCENT "¡ó"
+#define ZENKAKU_AMPERSAND "¡õ"
+#define ZENKAKU_QUOTATION "¡Ç"
+#define ZENKAKU_LEFT_PARENTHESIS "¡Ê"
+#define ZENKAKU_RIGHT_PARENTHESIS "¡Ë"
+#define ZENKAKU_ASTERISK "¡ö"
+#define ZENKAKU_PLUS "¡Ü"
+#define ZENKAKU_COMMA "¡¤"
+#define ZENKAKU_CHOUON "¡¼"
+#define ZENKAKU_PERIOD "¡¥"
+#define ZENKAKU_TOUTEN "¡¢"
+#define ZENKAKU_MINUS "¡Ý"
+#define ZENKAKU_KUTEN "¡£"
+#define ZENKAKU_SLASH "¡¿"
+#define ZENKAKU_EQUAL "¡á"
+#define ZENKAKU_QUESTION "¡©"
+#define ZENKAKU_COLON "¡§"
+#define ZENKAKU_SEMICOLON "¡¨"
+#define ZENKAKU_EN "¡ï"
+#define ZENKAKU_ATMARK "¡÷"
+#define ZENKAKU_HAT "¡°"
+#define ZENKAKU_LT "¡ã"
+#define ZENKAKU_GT "¡ä"
+#define ZENKAKU_UNDERSCORE "¡²"
+#define ZENKAKU_LEFT_BRACKET "¡Î"
+#define ZENKAKU_RIGHT_BRACKET "¡Ï"
+#define ZENKAKU_BACK_QUOTATION "¡Æ"
+#define ZENKAKU_LEFT_BRACE "¡Ð"
+#define ZENKAKU_RIGHT_BRACE "¡Ñ"
+#define ZENKAKU_VERTICAL_BAR "¡Ã"
+
+#define PRON_SYM_TSUITACHI "<PRON SYM='¥Ä¥¤¥¿¥Á'>"
+#define PRON_SYM_FUTSUKA "<PRON SYM='¥Õ¥Ä¥«'>"
+#define PRON_SYM_MIKKA "<PRON SYM='¥ß¥Ã¥«'>"
+#define PRON_SYM_YOKKA "<PRON SYM='¥è¥Ã¥«'>"
+#define PRON_SYM_ITSUKA "<PRON SYM='¥¤¥Ä¥«'>"
+#define PRON_SYM_MUIKA "<PRON SYM='¥à¥¤¥«'>"
+#define PRON_SYM_NANOKA "<PRON SYM='¥Ê¥Î¥«'>"
+#define PRON_SYM_YOUKA "<PRON SYM='¥è¡¼¥«'>"
+#define PRON_SYM_KOKONOKA "<PRON SYM='¥³¥³¥Î¥«'>"
+#define PRON_SYM_TOUKA "<PRON SYM='¥È¡¼¥«'>"
+#define PRON_SYM_HATSUKA "<PRON SYM='¥Ï¥Ä¥«'>"
+
+#define ZENKAKU_ALPHABET_FIRST_BYTE 0xA3
+#define ZENKAKU_NUMBER_SECOND_BYTE_MIN 0xB0
+#define ZENKAKU_NUMBER_SECOND_BYTE_MAX 0xB9
+#define ZENKAKU_CAPITAL_ALPHABET_SECOND_BYTE_MIN 0xC1
+#define ZENKAKU_CAPITAL_ALPHABET_SECOND_BYTE_MAX 0xDA
+#define ZENKAKU_ALPHABET_SECOND_BYTE_MIN 0xE1
+#define ZENKAKU_ALPHABET_SECOND_BYTE_MAX 0xFA
+
+#define ACCENT_MARK "¡Ç"
+#define is_ZENKAKU_ALPNUM(x,y) ((x) == ZENKAKU_ALPHABET_FIRST_BYTE)

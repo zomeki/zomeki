@@ -1,0 +1,49 @@
+ja: 
+  activerecord: 
+    attributes: 
+      portal_group/category: 
+        state: "状態"
+        sort_no: "並び順"
+        name: "分野ID"
+        title: "分野名"
+      
+      portal_group/business: 
+        state: "状態"
+        sort_no: "並び順"
+        name: "業種ID"
+        title: "業種名"
+      
+      portal_group/attribute: 
+        state: "状態"
+        sort_no: "並び順"
+        name: "属性ID"
+        title: "属性名"
+      
+      portal_group/area: 
+        state: "状態"
+        sort_no: "並び順"
+        name: "地域ID"
+        title: "地域名"
+        zip_code: "郵便番号"
+        address: "住所"
+        tel: "電話番号"
+        site_uri: "公式サイトURL"
+      
+      ## content
+      
+      ## piece
+      portal_group/piece/recent_doc:
+        list_count: "表示件数"
+        list_type: "表示形式"
+      portal_group/piece/recent_tab:
+        list_count: "表示件数"
+        list_type: "表示形式"
+        more_label: "一覧リンク文字"
+        name: "タブID"
+        title: "タブ名"
+        more: "一覧リンク"
+        condition: "結合条件"
+        sort_no: "並び順"
+      portal_group/piece/recent_site:
+        list_count: "表示件数"
+        list_type: "表示形式"

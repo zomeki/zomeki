@@ -1,0 +1,14 @@
+development:
+  title: ZOMEKI
+  uri: http://zomeki.example.com/
+  proxy:
+
+test:
+  title: ZOMEKI
+  uri: http://zomeki.example.com/
+  proxy:
+
+production:
+  title: ZOMEKI
+  uri: http://zomeki.example.com/
+  proxy:

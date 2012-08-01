@@ -1,0 +1,29 @@
+<div class="contentArticleArea">
+
+<% @items.each do |item| %>
+<table class="ward">
+  <tr>
+    <td class="name"><h2 id="<%= item.name %>">■<%= item.title %></h2></td>
+    <td class="page"><%=link_to '地域ページへ', "#{item.name}/" %></td>
+    <td class="zipCode">郵便番号</td>
+    <td class="address">所在地</td>
+    <td class="tel">電話番号</td>
+    <td class="formal">市町村公式ページ</td>
+  </tr>
+</table>
+
+<% if (children = item.public_children).size > 0 %><table class="city">
+  <% children.each do |c| %><tr class="<%= cycle '', 'cycle', :name => :cycle %>">
+    <td class="name"><%= c.title  %></td>
+    <td class="page"><%=link_to h('地域ページへ'), "#{c.name}/"  %></td>
+    <td class="zipCode"><%= c.zip_code %></td>
+    <td class="address"><%= c.address %></td>
+    <td class="tel"><%= c.tel %></td>
+    <td class="formal"><%= link_to('公式ページへ', c.site_uri) if !c.site_uri.blank? %></td>
+  </tr><% end %>
+</table><% reset_cycle(:cycle) %><% end %>
+
+<div class="pageTop"><a href="#container">ページの先頭へ戻る</a></div>
+<% end %>
+
+</div>

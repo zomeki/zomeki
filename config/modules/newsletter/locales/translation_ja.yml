@@ -1,0 +1,28 @@
+ja:
+  activerecord:
+    attributes:
+      newsletter/doc:
+        state: "状態"
+        delivery_state: "配信状態"
+        delivered_at: "配信日時"
+        name: "記事識別ID"
+        title: "タイトル"
+        body: "本文"
+        mobile_title: "携帯用タイトル"
+        mobile_body: "携帯用本文"
+      newsletter/member:
+        state: "状態"
+        letter_type: "メール分類"
+        email : "メールアドレス"
+      newsletter/test:
+        state: "状態"
+        agent_state: "アドレス種別"
+        name: "コメント"
+        email: "メールアドレス"
+      newsletter/request:
+        request_state: "要求状態"
+        request_type: "要求"
+        letter_type: "メールタイプ"
+        subscribe_email: "メールアドレス"
+        unsubscribe_email: "メールアドレス"
+

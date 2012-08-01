@@ -1,0 +1,9 @@
+<div class="contentPortalGroupThreadAttribute">
+
+<div class="attributes">
+  <% @items.each do |item| %><section class="attribute attribute<%= item.name.camelize %>">
+    <h2><%=link_to h(item.title), "#{item.name}/" %></h2>
+  </section><% end %>
+</div>
+
+</div>

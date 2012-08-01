@@ -1,0 +1,9 @@
+<div class="contentPortalGroupThreadArea">
+
+<div class="areas">
+  <% @items.each do |item| %><section class="area area<%= item.name.camelize %>">
+    <h2><%=link_to h(item.title), "#{item.name}/" %></h2>
+  </section><% end %>
+</div>
+
+</div>

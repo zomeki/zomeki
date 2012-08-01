@@ -1,0 +1,15 @@
+<%= form_tag  '', :method => :get, :class => 'search' do %>
+
+<table>
+  <tr>
+    <th>フォルダ</th>
+    <td><%= select_tag 's_node_id', options_for_select(@nodes.collect{|i| [i.name, i.id]}, @parent.id), :include_blank => 'すべて' %></td>
+    <td class="submitters">
+      <%= submit_tag '検索',     :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+  </tr>
+
+</table>
+
+<!-- end .search --><% end %>

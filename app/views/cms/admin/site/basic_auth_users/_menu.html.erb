@@ -1,0 +1,18 @@
+<h2><%= @site.name %> ： Basic認証</h2>
+
+<div class="actionMenu">
+<%= link_to "ドメイン詳細", cms_site_path(@site.id) %>
+<span class="separator"></span>
+<%= action_menu :new     if Core.user.has_priv?(:create, :item => Core.concept) %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit    if safe{@item.editable?} %>
+<%= action_menu :destroy if safe{@item.deletable?} %>
+<span class="separator"></span>
+<% if @site.basic_auth_enabled? %>
+<%= link_to "認証ON（更新）", enable_auth_cms_site_basic_auth_users_path(@site.id), :confirm => "Basic認証を有効にしますか？" %>
+<%= link_to "認証OFF", disable_auth_cms_site_basic_auth_users_path(@site.id), :confirm => "Basic認証を無効にしますか？" %>
+<% else %>
+<%= link_to "認証ON", enable_auth_cms_site_basic_auth_users_path(@site.id), :confirm => "Basic認証を有効にしますか？" %>
+<% end %>
+</div>

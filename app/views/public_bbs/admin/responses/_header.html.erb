@@ -1,0 +1,8 @@
+<div class="mainMenu">
+<%= render :partial => 'layouts/admin/cms/menu', :locals => {:current => :content} %>
+</div>
+
+<div class="contentMenu">
+<%= link_to 'レスポンス一覧', public_bbs_thread_responses_path(@content, @thread) %>
+<%= link_to "スレッド：#{@thread.title}", public_bbs_thread_path(@content, @thread) %>
+</div>

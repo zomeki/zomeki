@@ -1,0 +1,18 @@
+<div class="contentArticleRecentDocs">
+
+<ul class="feed">
+  <li><%=link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+  <li><%=link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+</ul>
+
+<div class="docs">
+  <% @items.each_with_index do |item, idx| %>
+  <% if item[:date] %><% if idx != 0  %></ul><% end %>
+  <% if item[:date] %><h2 class="date"><%= item[:date] %></h2><ul><% end %>
+  <% end %><li><%=link_to h(item[:doc].title), item[:doc].public_uri %><%= item[:doc].categories_and_unit %></li><% end %>
+  <% if @docs.size > 0 %></ul><% end %>
+</div>
+
+<%= paginate @docs %>
+
+</div>

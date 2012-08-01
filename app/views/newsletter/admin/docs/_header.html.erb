@@ -1,0 +1,10 @@
+<div class="mainMenu">
+<%= render :partial => 'layouts/admin/cms/menu', :locals => {:current => :content} %>
+</div>
+
+<div class="contentMenu">
+<%= link_to '記事一覧', newsletter_docs_path %>
+<%= link_to '読者一覧', newsletter_members_path %>
+<%= link_to 'テスト配信設定', newsletter_tests_path %>
+<%= link_to '基本設定', newsletter_content_settings_path %>
+</div>

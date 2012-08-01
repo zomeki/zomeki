@@ -1,0 +1,51 @@
+<p class="form">配信情報</p>
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:delivery_state) %></th>
+    <td><%= @item.delivery_status_name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:delivered_at) %></th>
+    <td><%= safe{@item.delivered_at.strftime("%Y-%m-%d %H:%M:%S")} %></td>
+  </tr>
+</table>
+<br />
+
+<p class="form">記事情報</p>
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr>
+  <tr>
+    <th>記事番号</th>
+    <td><%= @item.id %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><div id="textTitle" class="autoWrap mailBodyText"><%= @item.title %></div></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:body) %></th>
+    <td><div id="textBody" class="autoWrap mailBodyText"><%= mail_text_wrap(@item.body, 10) %></div></td>
+  </tr>
+</table>
+
+<% if !@item.mobile_title.blank? || !@item.mobile_body.blank? %>
+<br />
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:mobile_title) %></th>
+    <td><div id="textMobileTitle" class="autoWrap mailBodyText"><%= @item.mobile_title %></div></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:mobile_body) %></th>
+    <td><div id="textMobileBody" class="autoWrap mailBodyText"><%= mail_text_wrap(@item.mobile_body, 10) %></div></td>
+  </tr>
+</table>
+<% end %>
+
+<%= creator_view @item %>

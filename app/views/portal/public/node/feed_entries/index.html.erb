@@ -1,0 +1,13 @@
+<div class="contentPortalEntries">
+
+<div class="entries">
+  <% @items.each_with_index do |item, idx| %>
+  <% if item[:date] %><% if idx != 0  %></ul><% end %>
+  <% if item[:date] %><h2 class="date"><%= item[:date] %></h2><ul><% end %>
+  <% end %><li><%=link_to h(item[:entry].title), item[:entry].public_uri, :target => item[:entry].link_target %><%= raw item[:entry].date_and_site(:date => false) %></li><% end %>
+  <% if @entries.size > 0 %></ul><% end %>
+</div>
+
+<%= paginate @entries %>
+
+</div>

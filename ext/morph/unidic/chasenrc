@@ -1,0 +1,23 @@
+;;
+;;  chasenrc for unidic-1.3.12
+;;
+
+(GRAMMAR ./dic)
+(DADIC chadic)
+
+(UNKNOWN_POS (名詞 普通名詞 一般))
+
+(OUTPUT_FORMAT "%m\t%a\t%U(%P-)\t%T \t%F \t%i\n")
+(OUTPUT_COMPOUND "SEG")
+
+(DEF_CONN_COST 10000)
+(POS_COST
+	((*)       1)
+	((UNKNOWN) 30000)
+)
+
+(CONN_WEIGHT 1)
+(MORPH_WEIGHT 1)
+(COST_WIDTH 0)
+
+(ANNOTATION (("<" ">") "%m\n"))

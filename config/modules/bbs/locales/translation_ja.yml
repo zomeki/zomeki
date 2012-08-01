@@ -1,0 +1,19 @@
+ja: 
+  activerecord: 
+    attributes: 
+      bbs/item: 
+        parent_id: "親ID（返信時）"
+        thread_id: "スレッドID"
+        content_id:  "コンテンツID"
+        state: "状態"
+        name: "お名前"
+        email: "Email"
+        uri: "URL"
+        title: "タイトル"
+        body: "本文"
+        password: "削除パス"
+      
+      ## piece
+      bbs/piece/recent_item:
+        list_type: "表示種別"
+        list_count: "表示件数"

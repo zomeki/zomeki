@@ -1,0 +1,56 @@
+<!-- English Alphabet Symbol Table   -->
+<!--                for UniDic 1.3.* -->
+<ea_symbol_table xmlns="http://www.unidic.org/chasen/ns/structure/1.0">
+<W1 orth="Ａ" pron="{エー/エリア}" pos="記号-文字" lForm="{エー/エリア}" lemma="Ａ" aType="{1/0}"/>
+<W1 orth="Ｂ" pron="ビー" pos="記号-文字" lForm="ビー" lemma="Ｂ"  aType="1"/>
+<W1 orth="Ｃ" pron="{シー/カントリー/クラブ}" pos="記号-文字" lForm="{シー/カントリー/クラブ}" lemma="Ｃ" aType="{1/0/0}"/>
+<W1 orth="Ｄ" pron="ディー" pos="記号-文字" lForm="ディー" lemma="Ｄ"  aType="1"/>
+<W1 orth="Ｅ" pron="イー" pos="記号-文字" lForm="イー" lemma="Ｅ"  aType="1"/>
+<W1 orth="Ｆ" pron="エフ" pos="記号-文字" lForm="エフ" lemma="Ｆ"  aType="1"/>
+<W1 orth="Ｇ" pron="ジー" pos="記号-文字" lForm="ジー" lemma="Ｇ"  aType="1"/>
+<W1 orth="Ｈ" pron="{エイ/エッ}チ" pos="記号-文字" lForm="エイチ" lemma="Ｈ" aType="1"/>
+<W1 orth="Ｉ" pron="アイ" pos="記号-文字" lForm="アイ" lemma="Ｉ"  aType="1"/>
+<W1 orth="Ｊ" pron="ジェー" pos="記号-文字" lForm="ジェー" lemma="Ｊ"  aType="1"/>
+<W1 orth="Ｋ" pron="ケー" pos="記号-文字" lForm="ケー" lemma="Ｋ"  aType="1"/>
+<W1 orth="Ｌ" pron="エル" pos="記号-文字" lForm="エル" lemma="Ｌ"  aType="1"/>
+<W1 orth="Ｍ" pron="エム" pos="記号-文字" lForm="エム" lemma="Ｍ"  aType="1"/>
+<W1 orth="Ｎ" pron="エヌ" pos="記号-文字" lForm="エヌ" lemma="Ｎ"  aType="1"/>
+<W1 orth="Ｏ" pron="オー" pos="記号-文字" lForm="オー" lemma="Ｏ"  aType="1"/>
+<W1 orth="Ｐ" pron="ピー" pos="記号-文字" lForm="ピー" lemma="Ｐ"  aType="1"/>
+<W1 orth="Ｑ" pron="キュー" pos="記号-文字" lForm="キュー" lemma="Ｑ"  aType="1"/>
+<W1 orth="Ｒ" pron="アール" pos="記号-文字" lForm="アール" lemma="Ｒ"  aType="1"/>
+<W1 orth="Ｓ" pron="{エ/サービ}ス" pos="記号-文字" lForm="{エ/サービ}ス" lemma="Ｓ" aType="{1/0}"/>
+<W1 orth="Ｔ" pron="ティー" pos="記号-文字" lForm="ティー" lemma="Ｔ"  aType="1"/>
+<W1 orth="Ｕ" pron="ユー" pos="記号-文字" lForm="ユー" lemma="Ｕ"  aType="1"/>
+<W1 orth="Ｖ" pron="ブイ" pos="記号-文字" lForm="ブイ" lemma="Ｖ"  aType="1"/>
+<W1 orth="Ｗ" pron="{ダブリュー/ダブリュ}" pos="記号-文字" lForm="ダブリュー" lemma="Ｗ" aType="1"/>
+<W1 orth="Ｘ" pron="エックス" pos="記号-文字" lForm="エックス" lemma="Ｘ"  aType="1"/>
+<W1 orth="Ｙ" pron="ワイ" pos="記号-文字" lForm="ワイ" lemma="Ｙ"  aType="1"/>
+<W1 orth="Ｚ" pron="{ズィー/ゼッド/ゼット}" pos="記号-文字" lForm="ゼット" lemma="Ｚ" aType="{1/0/1}"/>
+<W1 orth="ａ" pron="エー" pos="記号-文字" lForm="エー" lemma="Ａ"  aType="1"/>
+<W1 orth="ｂ" pron="ビー" pos="記号-文字" lForm="ビー" lemma="Ｂ"  aType="1"/>
+<W1 orth="ｃ" pron="シー" pos="記号-文字" lForm="シー" lemma="Ｃ"  aType="1"/>
+<W1 orth="ｄ" pron="ディー" pos="記号-文字" lForm="ディー" lemma="Ｄ"  aType="1"/>
+<W1 orth="ｅ" pron="イー" pos="記号-文字" lForm="イー" lemma="Ｅ"  aType="1"/>
+<W1 orth="ｆ" pron="エフ" pos="記号-文字" lForm="エフ" lemma="Ｆ"  aType="1"/>
+<W1 orth="ｇ" pron="ジー" pos="記号-文字" lForm="ジー" lemma="Ｇ"  aType="1"/>
+<W1 orth="ｈ" pron="{エイ/エッ}チ" pos="記号-文字" lForm="エイチ" lemma="Ｈ" aType="1"/>
+<W1 orth="ｊ" pron="ジェー" pos="記号-文字" lForm="ジェー" lemma="Ｊ"  aType="1"/>
+<W1 orth="ｉ" pron="アイ" pos="記号-文字" lForm="アイ" lemma="Ｉ"  aType="1"/>
+<W1 orth="ｋ" pron="ケー" pos="記号-文字" lForm="ケー" lemma="Ｋ"  aType="1"/>
+<W1 orth="ｌ" pron="エル" pos="記号-文字" lForm="エル" lemma="Ｌ"  aType="1"/>
+<W1 orth="ｍ" pron="エム" pos="記号-文字" lForm="エム" lemma="Ｍ"  aType="1"/>
+<W1 orth="ｎ" pron="エヌ" pos="記号-文字" lForm="エヌ" lemma="Ｎ"  aType="1"/>
+<W1 orth="ｏ" pron="オー" pos="記号-文字" lForm="オー" lemma="Ｏ"  aType="1"/>
+<W1 orth="ｐ" pron="ピー" pos="記号-文字" lForm="ピー" lemma="Ｐ"  aType="1"/>
+<W1 orth="ｑ" pron="キュー" pos="記号-文字" lForm="キュー" lemma="Ｑ"  aType="1"/>
+<W1 orth="ｒ" pron="アール" pos="記号-文字" lForm="アール" lemma="Ｒ"  aType="1"/>
+<W1 orth="ｓ" pron="エス" pos="記号-文字" lForm="エス" lemma="Ｓ"  aType="1"/>
+<W1 orth="ｔ" pron="ティー" pos="記号-文字" lForm="ティー" lemma="Ｔ"  aType="1"/>
+<W1 orth="ｕ" pron="ユー" pos="記号-文字" lForm="ユー" lemma="Ｕ"  aType="1"/>
+<W1 orth="ｖ" pron="ブイ" pos="記号-文字" lForm="ブイ" lemma="Ｖ"  aType="1"/>
+<W1 orth="ｗ" pron="{ダブリュー/ダブリュ}" pos="記号-文字" lForm="ダブリュー" lemma="Ｗ" aType="1"/>
+<W1 orth="ｘ" pron="エックス" pos="記号-文字" lForm="エックス" lemma="Ｘ"  aType="1"/>
+<W1 orth="ｙ" pron="ワイ" pos="記号-文字" lForm="ワイ" lemma="Ｙ"  aType="1"/>
+<W1 orth="ｚ" pron="ゼット" pos="記号-文字" lForm="ゼット" lemma="Ｚ"  aType="1"/>
+</ea_symbol_table>

@@ -1,0 +1,10 @@
+<h2><%= @content.name %></h2>
+
+<% if @node %>
+<div class="navi"><%= link_to @node_uri, @node_uri, :target => "_blank" %></div>
+<% end %>
+
+<div class="actionMenu">
+  <%= action_menu :index %>
+  <%= action_menu :destroy if !@admin_password.blank? %>
+</div>

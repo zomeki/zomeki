@@ -1,0 +1,92 @@
+<%
+
+item = Cms::Content.new
+item.and :state, "public"
+item.and :model, "PortalGroup::Group"
+items = item.find(:all, :order => "site_id, name")
+portal_groups = items.collect{|c| ["#{c.site.name} : #{c.name}", c.id] }
+
+cond = {:content_id => @item.portal_group_id}
+categories = PortalGroup::Category.root_items(cond)
+businesses = PortalGroup::Business.root_items(cond)
+attributes = PortalGroup::Attribute.find(:all, :conditions => cond, :order => "content_id, sort_no").collect{|c| [c.title, c.id]}
+areas      = PortalGroup::Area.root_items(cond)
+
+%><p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= f.text_field :name, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:full_uri) %></th>
+    <td><%= f.text_field :full_uri, :class => 'url' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:mobile_full_uri) %></th>
+    <td><%= f.text_field :mobile_full_uri, :class => 'url' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:related_site) %>（改行区切り）</th>
+    <td><%= f.text_area :related_site, :class => 'head', :style => 'ime-mode: disabled;' %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">サイト紹介</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:site_image) %></th>
+    <td>
+      <%= f.file_field :site_image, :size => 64, :style => 'width: 450px;' %><br />
+      <% if uri = @item.site_image_uri %>
+      <div style="margin: 10px 0px;">
+        <%= f.check_box :del_site_image, {}, 'on', '' %> <label for="item_del_site_image">削除する</label><br />
+        <img src="<%=h uri %>" alt="" title="" />
+      </div>
+      <% end %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:body) %></th>
+    <td><%= f.text_area :body, :class => 'head' %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">ポータル設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:portal_group_id) %></th>
+    <td><%= f.select :portal_group_id, portal_groups, :include_blank => "" %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_category_ids) %></th>
+    <td>
+      <%= f.select_with_tree 'in_portal_category_ids[0]', categories, :label => :title, :include_blank => true %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_business_ids) %></th>
+    <td>
+      <%= f.select_with_tree 'in_portal_business_ids[0]', businesses, :label => :title, :include_blank => true %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_attribute_ids) %></th>
+    <td>
+      <%= f.array_select 'in_portal_attribute_ids[0]', attributes, :label => :title, :include_blank => true %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_area_ids) %></th>
+    <td>
+      <%= f.select_with_tree 'in_portal_area_ids[0]', areas, :label => :title, :include_blank => true %>
+    </td>
+  </tr>
+</table>
+<%= observe_field(:item_portal_group_id, :update => :item_in_portal_category_ids_0,
+      :with => :item_portal_group_id, :on => 'change', :url => categories_portal_group_groups_path(0)) %>
+<%= observe_field(:item_portal_group_id, :update => :item_in_portal_business_ids_0,
+      :with => :item_portal_group_id, :on => 'change', :url => businesses_portal_group_groups_path(0)) %>
+<%= observe_field(:item_portal_group_id, :update => :item_in_portal_attribute_ids_0,
+      :with => :item_portal_group_id, :on => 'change', :url => attributes_portal_group_groups_path(0)) %>
+<%= observe_field(:item_portal_group_id, :update => :item_in_portal_area_ids_0,
+      :with => :item_portal_group_id, :on => 'change', :url => areas_portal_group_groups_path(0)) %>
+
+<%= creator_form f %>

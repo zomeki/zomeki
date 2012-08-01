@@ -1,0 +1,37 @@
+<script type="text/javascript" src="/_common/modules/portal_article/js/doc_tabs.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+var docTabs<%= Page.current_piece.id %> = new PortalArticleDocTabs('<%= Page.current_piece.css_id %>');
+//]]>
+</script>
+
+<div class="tabs">
+  <% @tabs.each do |tab| %>
+  <a href="javascript: tab/<%= tab[:name] %>" onkeypress="" class="<%= tab[:class] %>"
+    onclick="return docTabs<%= Page.current_piece.id %>.show('<%= tab[:name] %>')"><%= tab[:title] %></a><% end %>
+</div>
+
+<div class="wrapper">
+
+  <div class="content">
+    <% @tabs.each do |tab| %>
+    <div class="tabDocs <%= tab[:name] %>" <%= 'style="display: none;"'.html_safe unless tab[:current] %>>
+      <%= portal_group_docs_view tab[:docs], @piece.setting_value(:list_type) %>
+    </div><% end %>
+  </div>
+
+  <div class="links">
+    <% @tabs.each do |tab| %>
+    <div class="<%= tab[:name] %>" <%= 'style="display: none;"'.html_safe unless tab[:current] %>>
+      <% if tab[:more] %>
+      <ul class="feed">
+        <li><a href="<%= ::File.join(tab[:more], 'index.rss') %>" class="feedRss" title="RSSフィードを取得">RSS</a></li>
+        <li><a href="<%= ::File.join(tab[:more], 'index.atom') %>" class="feedAtom" title="Atomフィードを取得">Atom</a></li>
+      </ul>
+      <div class="more">
+        <a href="<%= tab[:more] %>"><%= @more_label %></a></div>
+      <% end %>
+    </div><% end %>
+  </div>
+
+<!-- end .wrapper --></div>

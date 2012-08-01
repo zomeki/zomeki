@@ -1,0 +1,37 @@
+<%
+
+return unless Core.user.has_auth?(:manager)
+
+groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no)
+
+unless Core.user.root?
+  users  = Sys::User.find(:all, :conditions => {:state => 'enabled'}, :order => :id).select {|u| u.sites.include?(Core.site) }
+else
+  users  = Sys::User.find(:all, :conditions => {:state => 'enabled'}, :order => :id)
+end
+
+if !item.unid && !params[f.object_name]
+  item.in_creator = {
+    'group_id' => Core.user_group.id,
+    'user_id'  => Core.user.id
+  }
+end
+
+%><br />
+
+<p class="managerForm">作成者</p>
+
+<table class="show">
+  <tr class="onlyManager">
+    <th>グループ</th>
+<%- unless Core.user.root? -%>
+    <td><%= f.select_group_with_tree "in_creator[group_id]", groups, :include_blank => true %></td>
+<%- else -%>
+    <td><%= f.select_with_tree "in_creator[group_id]", groups, :include_blank => true %></td>
+<%- end -%>
+  </tr>
+  <tr class="onlyManager">
+    <th>ユーザ</th>
+    <td><%= f.array_select "in_creator[user_id]", users.map {|i| [i.name_with_account, i.id] }, :include_blank => true %></td>
+  </tr>
+</table>

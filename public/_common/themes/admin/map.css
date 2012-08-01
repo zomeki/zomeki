@@ -1,0 +1,105 @@
+@charset "UTF-8";
+
+.articleMapForm {
+  /* display: none; */
+}
+
+/* map form */
+.articleMapForm .mapCanvas {
+  float: left;
+  width: 600px;
+  height: 400px;
+  margin: 0px 10px 10px 0px;
+  border: 1px solid #666;
+}
+.articleMapForm table.mapInfo caption,
+.articleMapForm table.mapForm caption,
+.articleMapForm table.markerForm caption {
+  margin: 0px 0px 8px 0px;
+  padding: 5px 6px;
+  border-left: 6px solid #ccc;
+}
+
+/* info */
+.articleMapForm table.mapInfo {
+  float: left;
+  width: 400px;
+  margin: 0px 10px 10px 0px;
+}
+.articleMapForm table.mapInfo td.point input {
+  width: 130px;
+  height: 1.4em;
+  border: 1px solid #bbb;
+  background-color: #f9f9f9;
+  color: #090;
+  line-height: 1.5;
+}
+.articleMapForm table.mapInfo td.zoom input {
+  width: 30px;
+  height: 1.4em;
+  border: 1px solid #bbb;
+  background-color: #f9f9f9;
+  color: #090;
+  line-height: 1.5;
+}
+
+/* form */
+.articleMapForm table.mapForm {
+  float: left;
+  width: 400px;
+  margin: 0px 0px 10px 0px;
+}
+.articleMapForm table.mapForm td.name input {
+  width: 270px;
+}
+.articleMapForm table.mapForm td.point input {
+  width: 130px;
+}
+.articleMapForm table.mapForm td.zoom input {
+  width: 30px;
+}
+
+/* marker */
+.articleMapForm table.markerForm {
+  clear: both;
+}
+.articleMapForm table.markerForm td {
+  padding: 3px 5px;
+}
+.articleMapForm table.markerForm th.name {
+  width: 60px;
+  text-align: center;
+}
+.articleMapForm table.markerForm td.name {
+  width: 330px;
+}
+.articleMapForm table.markerForm td.name input {
+  width: 310px;
+}
+.articleMapForm table.markerForm th.point {
+  width: 60px;
+  text-align: center;
+}
+.articleMapForm table.markerForm td.point {
+  width: 290px;
+}
+.articleMapForm table.markerForm td.point input {
+  width: 130px;
+}
+.articleMapForm table.markerForm td.action {
+  background-color: #fff;
+}
+.articleMapForm table.markerForm td.action a {
+  display: inline-block;
+  margin: 0px 0px 0px 4px;
+}
+.articleMapForm div.addMarkerForm a {
+  display: block;
+  width: 180px;
+  margin: 5px 0px 0px 600px;
+  padding: 3px 0px;
+  border: 1px solid #bbb;
+  background-color: #eee;
+  text-align: center;
+  text-decoration: none;
+}

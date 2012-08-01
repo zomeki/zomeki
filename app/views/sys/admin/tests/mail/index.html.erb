@@ -1,0 +1,37 @@
+<h2>メール送信動作確認</h2>
+
+<% if @errors.size > 0 %>
+<div id="errorExplanation" class="errorExplanation">
+  <p>次の項目を確認してください。</p>
+  <ul><% @errors.each do |err| %><li><%= err %></li><% end %></ul>
+</div>
+<% end %>
+
+<%= form_tag do %>
+
+<table class="show">
+  <tr>
+    <th>差出人</th>
+    <td><%= text_field_tag "item[from]", @item[:from], :class => "email" %></td>
+  </tr><tr>
+    <th>宛先</th>
+    <td><%= text_field_tag "item[to]", @item[:to], :class => "email" %></td>
+  </tr><tr>
+    <th>件名</th>
+    <td><%= text_field_tag "item[subject]", @item[:subject], :class => "title" %></td>
+  </tr><tr>
+    <th>本文</th>
+    <td><%= text_area_tag "item[body]", @item[:body], :class => "body", :style => "height: 60px;" %></td>
+  </tr><tr>
+    <th>設定</th>
+    <td>
+      Address: <%= @config[:address] %><br />
+      Port: <%= @config[:port] %><br />
+      Authentication: <%= @config[:authentication] %><br />
+    </td>
+  </tr>
+</table>
+
+<%= submit [["送信する", :send]] %>
+
+<% end %>

@@ -1,0 +1,19 @@
+ja:
+  activerecord:
+    attributes:
+      public_bbs/category:
+        name: カテゴリID
+        title: カテゴリ名
+        sort_no: 並び順
+        state: 状態
+      public_bbs/response:
+        state: 状態
+        user_id: ユーザ
+        title: タイトル
+        body: 本文
+      public_bbs/thread:
+        id: スレッド番号
+        state: 状態
+        user_id: ユーザ
+        title: タイトル
+        body: 本文

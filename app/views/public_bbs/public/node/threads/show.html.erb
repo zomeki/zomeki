@@ -1,0 +1,92 @@
+<%= init_ckeditor :baseHref => "#{@content.site.full_uri}#{@content.thread_node.public_uri}#{@item.id}/", :readOnly => true %>
+
+<article class="contentPublicBbsThread">
+  <header class="header">
+    <div class="headerInner">
+      <h1><%= @item.title %></h1>
+    </div>
+    <%- if o_auth_user_logged_in? -%>
+      <div class="login"><span class="loginUser">ログイン中のユーザ：<%= image_tag current_o_auth_user.image, :alt => '', :class => 'profileimage' %><span class="name"><%= current_o_auth_user.name %></span></span><span class="logout"><%= link_to 'ログアウト', '?o_auth_logout=true' %></span></div>
+    <%- else -%>
+      <div class="login"><%= link_to 'ログイン', '?o_auth_login=true' %></div>
+    <%- end -%>
+  </header>
+  <section class="topic clearfix">
+    <header>
+      <p class="author"><%= link_to image_tag(@item.user.image, :alt => '', :class => 'profileimage') + %Q(<span class="name">#{@item.user.name}</span>).html_safe, @item.user.url %></p>
+    </header>
+    <div class="threadBody">
+      <p><%= text_area :item, :body, :class => 'ckeditor' %></p>
+    </div>
+    <footer>
+      <% if @item.portal_category_items.size > 0 && (node = @item.content.portal_group.thread_category_node) %>
+      <p class="genre">ジャンル［<%= @item.portal_category_items.map{|ci|
+        link_to(ci.title, "#{node.public_uri}#{ci.name}/") }.join(', ').html_safe %>］</p>
+      <% end %>
+      <% if @item.tags.size > 0 && (node = @item.content.tag_node) %>
+      <p class="tag">タグ［<%= @item.tags.map{|t| link_to(t.word, node.public_uri + CGI::escape(t.word)) }.join(', ').html_safe %>］</p>
+      <% end %>
+      <% date, time = @item.updated_at.strftime('%Y年%m月%d日|%H時%M分').split('|') %>
+      <p class="date"><%= date %><span class="time"><%= time %></span></p>
+    </footer>
+    <div class="actionBtn">
+      <%- if @item.res_creation == 'allow' -%>
+      <%= link_to '投稿', "#{@item.public_responses_uri}/new" %>
+      <%- end -%>
+      <% if @item.user == current_o_auth_user %>
+      <%= link_to '編集', "#{@item.public_uri}/edit" %>
+      <%= link_to '削除', "#{@item.public_uri}", :confirm => 'よろしいですか？', :method => 'delete' %>
+      <% end %>
+    </div>
+    <div class="fbLike">
+      <div class="fb-like" data-href="<%= "#{@content.site.full_uri}#{@item.public_uri}" %>" data-send="false" data-layout="button_count" data-width="200" data-show-faces="false"></div>
+    </div>
+  </section>
+
+  <section class="participant clearfix">
+    <h2>参加者一覧</h2>
+    <ul>
+      <% @item.participants.each do |user| %>
+      <li><%= link_to image_tag(user.image, :alt => '', :class => 'profileimage') + %Q(<span class="name">#{user.name}</span>).html_safe, user.url %></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section class="reses">
+    <% @item.responses.each_with_index do |res, idx| %>
+    <article class="res clearfix">
+      <header>
+        <h2 id="res_<%= idx+1 %>"><%= res.title %></h2>
+        <p class="author"><%= link_to image_tag(res.user.image, :alt => '', :class => 'profileimage') + %Q(<span class="name">#{res.user.name}</span>).html_safe, res.user.url %></p>
+      </header>
+      <div class="threadBody">
+        <p><%= text_area_tag "res_#{res.id}_body", res.body.gsub(%r!( href="| src=")(file_contents/)!) {|m| "#{$1}#{@item.public_responses_uri}/#{res.id}/#{$2}" },
+                 :class => 'ckeditor' %></p>
+      </div>
+      <footer>
+        <% date, time = res.updated_at.strftime('%Y年%m月%d日|%H時%M分').split('|') %>
+        <p class="date"><%= date %><span class="time"><%= time %></span></p>
+      </footer>
+      <div class="actionBtn">
+        <% if res.user == current_o_auth_user %>
+        <%= link_to '編集', "#{res.thread.public_responses_uri}/#{res.id}/edit" %>
+        <%= link_to '削除', "#{res.thread.public_responses_uri}/#{res.id}", :confirm => 'よろしいですか？', :method => 'delete' %>
+        <% end %>
+      </div>
+      <div class="fbLike">
+        <div class="fb-like" data-href="<%= "#{@content.site.full_uri}#{@item.public_uri}#res_#{idx+1}" %>" data-send="false" data-layout="button_count" data-width="200" data-show-faces="false"></div>
+      </div>
+    </article>
+    <% end %>
+  </section>
+</article>
+<%# Facebook JavaScript SDK START -%>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<%# Facebook JavaScript SDK END -%>

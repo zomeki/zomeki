@@ -1,0 +1,30 @@
+<table class="show">
+  <tr>
+    <th>記事番号</th>
+    <td><%= @item.id %></td>
+  </tr>
+  <% if uri = @item.link_alternate %>
+  <tr>
+    <th>記事URL</th>
+    <td><div><%= link_to(uri, uri, :target => '_blank') %></div></td>
+  </tr>
+  <% end %>
+</table>
+
+<table class="show">
+  <tr>
+    <th>タイトル</th>
+    <td><%= @item.title %></td>
+  </tr><tr>
+    <th colspan="2">概要</th></tr><tr>
+    <td colspan="2"><%=hbr @item.summary %>
+    </td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>フィード分類</th>
+    <td><%=hbr @item.categories %></td>
+  </tr>
+</table>

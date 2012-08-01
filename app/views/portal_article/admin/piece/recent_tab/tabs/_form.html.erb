@@ -1,0 +1,36 @@
+<%
+
+blank      = '　' * 16
+categories = PortalArticle::Category.root_items(:content_id => @content.id)
+
+%><table class="show">
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= f.text_field :name, :class => 'id' %></td>
+  </tr><tr>
+    <th><%= @item.locale :title %></th>
+    <td><%= f.text_field :title %></td>
+  </tr><tr>
+    <th><%= @item.locale :more %></th>
+    <td><%= f.text_field :more %></td>
+  </tr><tr>
+    <th>条件</th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td>結合</td>
+          <td><%= f.select :condition, @item.condition_states, :include_blank => true %></td>
+        </tr><tr>
+          <td>カテゴリ</td>
+          <td>
+            <%= f.select_with_tree "category[0]", categories, :label => :title, :include_blank => blank %> &nbsp;
+            <%= f.select_with_tree "category[1]", categories, :label => :title, :include_blank => blank %> &nbsp;
+            <%= f.select_with_tree "category[2]", categories, :label => :title, :include_blank => blank %></td>
+        </tr>
+      </table>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>

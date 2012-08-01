@@ -1,0 +1,40 @@
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="width: 60px; text-align: center;">種別</th>
+    <th style="width: 60px; text-align: right;">投稿No.</th>
+    <th style="width: ;">タイトル</th>
+    <th style="width: 25%;">投稿者名</th>
+    <th style="width: 120px; text-align: center;">IPアドレス</th>
+    <th style="width: 120px; text-align: center;">投稿日時</th>
+  </tr>
+  
+  <% @items.elements.each_with_index("item") do |thread, idx| %>
+  <% thread_id = thread.elements["id"].text %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => thread_id) %></td>
+    <td style="text-align: center;">スレッド</td>
+    <td style="text-align: right;"><%= thread_id %></td>
+    <td><%= truncate(thread.elements["title"].text, :length => 30) %></td>
+    <td><%= truncate(thread.elements["name"].text, :length => 20) %></td>
+    <td><%= thread.elements["ipaddr"].text %></td>
+    <td style="text-align: center;"><%= thread.elements["created_at"].text.to_s.gsub(/(.*):.*/, '\1') %></td>
+  </tr>
+  <% thread.elements.each("item") do |res| %>
+  <% res_id = res.elements["id"].text %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => "#{thread_id}-#{res_id}") %></td>
+    <td style="text-align: center;">レス</td>
+    <td style="text-align: right;"><%= res_id %></td>
+    <td><%= truncate(res.elements["title"].text, :length => 30) %></td>
+    <td><%= truncate(res.elements["name"].text, :length => 20) %></td>
+    <td><%= res.elements["ipaddr"].text %></td>
+    <td style="text-align: center;"><%= res.elements["created_at"].text.to_s.gsub(/(.*):.*/, '\1') %></td>
+  </tr>
+  <% end %>
+  <% end %>
+
+</table>
+
+<%= @pagination.to_links %>
+

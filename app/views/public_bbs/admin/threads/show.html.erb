@@ -1,0 +1,29 @@
+<%- if Core.user
+  path = "#{public_bbs_thread_path(@content, @item)}/"
+else
+  path = "#{@content.thread_node.public_uri}#{@item.id}/"
+end -%>
+<%= init_ckeditor :baseHref => path, :readOnly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:id) %></th>
+    <td><%= @item.id %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:user_id) %></th>
+    <td><%= image_tag @item.user.image %> <%= @item.user.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:body) %></th>
+    <td><%= text_area :item, :body, :class => 'ckeditor' %></td>
+  </tr>
+</table>

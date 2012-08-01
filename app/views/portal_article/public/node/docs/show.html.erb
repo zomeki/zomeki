@@ -1,0 +1,53 @@
+<article class="contentPortalArticleDoc">
+
+<header class="header">
+<div class="headerInner">
+  <h1><%= @item.title %></h1>
+</div><% if false %>
+   <span class="unit"><%= @item.creator.group.name if @item.creator.group %></span>
+   <span class="separetor">/</span>
+  <% end %><p class="publishedAt"><%= (@item.published_at || Time.now).strftime('%Y年%-m月%-d日') %></p>
+</header>
+
+<div class="body">
+  <%= raw @body %>
+</div>
+
+<%= render :partial => 'cms/public/_partial/maps/view', :locals => {:item => @item} %>
+
+<% if @item.tags.size > 0 && (node = @item.content.tag_node) %>
+<div class="tags">
+  <h2>関連ワード</h2>
+  <div>
+    <% for tag in @item.tags
+    %><%=link_to h(tag.word), node.public_uri + CGI::escape(tag.word) %> 
+    <% end %>
+  </div>
+</div>
+<% end %>
+
+<%#= render :partial => 'cms/public/_partial/inquiries/view', :locals => {:item => @item} %>
+
+<%- if @content.setting_value(:open_fb_comments) == 'open' -%>
+<div class="fb">
+<%# Facebook Like Button START -%>
+<div class="fb-like-wrapper"><div class="fb-like" data-send="true" data-width="450" data-show-faces="true"></div></div>
+<%# Facebook Like Button END -%>
+<%# Facebook Comments START -%>
+<div class="fb-comments-wrapper"><div id="fb-comments" class="fb-comments" data-href="" data-num-posts="5" data-width="470"></div></div>
+<script>(function () { document.getElementById('fb-comments').setAttribute('data-href', document.URL); })();</script>
+<%# Facebook Comments END -%>
+<%# Facebook JavaScript SDK START -%>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<%# Facebook JavaScript SDK END -%>
+</div>
+<%- end -%>
+
+<!-- end .contentPortalArticleDoc --></article>

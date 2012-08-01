@@ -1,0 +1,14 @@
+<div class="contentPortalGroupSiteBusiness contentPortalGroupSiteBusinessDetail">
+
+<div class="latest">
+  <div class="h2">新着サイト</div>
+  <% if @sites.size > 0 %><div class="sites">
+    <% @sites.each do |site| %>
+    <div class="doc">・<%=link_to h(site.title), site.public_full_uri%><%= site.date_and_site %></div>
+    <% end %>
+  </div><% end %>
+</div>
+
+<%= paginate @sites %>
+
+</div>

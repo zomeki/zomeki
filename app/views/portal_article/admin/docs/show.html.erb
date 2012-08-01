@@ -1,0 +1,100 @@
+<% inline_id = @item.unid %>
+<%= init_ckeditor :baseHref => "#{request.base_url}/#{ZomekiCMS::ADMIN_URL_PREFIX}/sys/#{inline_id}/inline_files/", :readOnly => true %>
+
+<% if rep = @item.replace_page %>
+<div class="noticeBox">更新用の記事が作成されています ： <%= link_to h(rep.title), portal_article_doc_path(@content.id, rep.id) %></div>
+<% elsif org = @item.replaced_page %>
+<div class="noticeBox">更新される記事 ： <%= link_to h(org.title), portal_article_doc_path(@content.id, org.id) %></div>
+<% end %>
+
+<table class="show">
+  <tr>
+    <th>記事番号</th>
+    <td><%= @item.id %></td>
+  </tr><tr>
+    <th>記事URL番号</th>
+    <td colspan="3"><%= @item.name %></td>
+  </tr>
+  <% if uri = @item.public_full_uri %>
+  <tr>
+    <th>記事URL</th>
+    <td><div><%= link_to(uri, uri, :target => '_blank') %></div></td>
+  </tr>
+  <% end %>
+</table>
+
+<table class="show">
+  <tr>
+    <th>タイトル</th>
+    <td><%= @item.title %></td>
+    <th style="width: 60px;">言語</th>
+    <td style="width: 150px;"><%= @item.language.title if @item.language %></td>
+  </tr>
+  <tr style="display:none;">
+    <th>ヘッダー</th>
+    <td colspan="3"><%= hbr(@item.head) %></td>
+  </tr>
+  <tr>
+    <th colspan="4">内容</th></tr><tr>
+    <td colspan="4" class="cke_editor_wrapper">
+      <%= text_area_tag 'viewBody', @item.body, :class => 'ckeditor', :style => 'width:100%' %>
+    </td>
+  </tr>
+</table>
+
+<br /><p class="form">記事設定</p>
+
+<table class="show">
+  <tr>
+    <th>カテゴリ</th>
+    <td><%= @item.category_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th>関連ワード</th>
+    <td><%= @item.tags.collect {|c| h(c.word) }.join('， ') %></td>
+  </tr><tr>
+    <th>イベントカレンダー表示</th>
+    <td>
+      <%= safe{@item.event_status.name} %>
+      <% if @item.event_date %>&nbsp; イベント日付 ： <%= @item.event_date.strftime("%Y-%m-%d") %><% end %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:agent_state) %></th>
+    <td><%= @item.agent_status.name %></td>
+  </tr>
+</table>
+
+<br /><p class="form">ポータル設定</p>
+
+<table class="show">
+  <tr>
+    <th>分野</th>
+    <td><%= @item.portal_category_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th>業種</th>
+    <td><%= @item.portal_business_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th>属性</th>
+    <td><%= @item.portal_attribute_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th>地域</th>
+    <td><%= @item.portal_area_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr>
+</table>
+
+<% if !@item.mobile_title.blank? || !@item.mobile_body.blank? %>
+<br /><p class="form">携帯向け</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:mobile_body) %></th>
+    <td><%= hbr @item.mobile_body %></td>
+  </tr>
+</table>
+<% end %>
+
+<%= google_map_view @item %>
+<%#= inquiry_view @item %>
+<%= task_view @item %>
+<%= recognizer_view @item %>
+<%= editable_group_view @item %>
+<%= creator_view @item %>

@@ -1,0 +1,7 @@
+<div class="contentPublicBbsThreadEdit">
+<%= form_for(:item, :url => @item.public_uri, :method => 'put') do |f| %>
+  <%= error_messages_for :item %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <div class="submitters"><%= submit :update %></div>
+<% end %>
+</div>

@@ -1,0 +1,54 @@
+ja: 
+  activerecord: 
+    attributes: 
+      portal_article/category: 
+        state: "状態"
+        sort_no: "並び順"
+        name: "カテゴリID"
+        title: "カテゴリ名"
+      
+      portal_article/doc: 
+        state: "状態"
+        agent_state: "表示端末"
+        published: "公開"
+        closed: "非公開"
+        publish_date: "公開日"
+        close_date: "非公開日"
+        name: "記事URL番号"
+        title: "タイトル"
+        head: "ヘッダー"
+        body: "内容"
+        mobile_title: "携帯タイトル"
+        mobile_body: "携帯本文"
+        attribute_id: "属性"
+        inquiry_charge: "お問い合わせ担当"
+        inquiry_tel: "お問い合わせ電話"
+        inquiry_fax: "お問い合わせファックス"
+        inquiry_email: "お問い合わせメール"
+      
+      portal_article/doc_rel_doc: 
+        created_at: "作成日時"
+        updated_at: "更新日時"
+        sort_no: "並び順"
+      
+      ## content
+      portal_article/content/doc:
+        unit_uri: "組織URL"
+        category_uri: "カテゴリURL"
+        attribute_uri: "属性URL"
+        area_uri: "地域URL"
+        tag_uri: "タグ検索URL"
+      
+      ## piece
+      portal_article/piece/recent_doc:
+        list_count: "表示件数"
+        list_type: "表示形式"
+      portal_article/piece/recent_tab:
+        list_count: "表示件数"
+        list_type: "表示形式"
+        more_label: "一覧リンク文字"
+        name: "タブID"
+        title: "タブ名"
+        more: "一覧リンク"
+        condition: "結合条件"
+        sort_no: "並び順"

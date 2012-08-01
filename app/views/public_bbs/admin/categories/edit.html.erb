@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => public_bbs_category_path, :html => {:method => :put}) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <%= submit :edit %>
+<% end %>

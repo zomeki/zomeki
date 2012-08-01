@@ -1,0 +1,13 @@
+<p class="form">Basic認証</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= @item.name %></td>
+  </tr><tr>
+    <th><%= @item.locale(:password) %></th>
+    <td><%= @item.password %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

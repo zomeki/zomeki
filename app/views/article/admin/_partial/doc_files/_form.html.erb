@@ -1,0 +1,19 @@
+<%
+
+inline_id = item.unid || params[:_tmp]
+return if inline_id.blank?
+
+%><%= hidden_field_tag :_tmp, inline_id %>
+
+<table class="show">
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <a href="#" onclick="$(this).toggleOpen('#inlineFiles'); return false;">開く▼</a>
+    </td>
+  </tr>
+</table>
+
+<div id="inlineFiles" class="inlineForm" style="display: none;">
+<iframe src="<%= article_inline_files_path(@content.id, inline_id) %>" style="width: 100%; height: 340px;" frameborder="0"></iframe>
+</div>

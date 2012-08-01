@@ -1,0 +1,82 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= @item.name %></td>
+  </tr><tr>
+    <th><%= @item.locale(:full_uri) %></th>
+    <td><%= @item.full_uri %></td>
+  </tr><tr>
+    <th><%= @item.locale(:mobile_full_uri) %></th>
+    <td><%= @item.mobile_full_uri %></td>
+  </tr><tr>
+    <th><%= @item.locale(:related_site) %></th>
+    <td><%=hbr @item.related_site %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">サイト紹介</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:site_image) %></th>
+    <td><% if uri = @item.site_image_uri %><img src="<%=h uri %>" alt="" title="" /><% end %></td>
+  </tr><tr>
+    <th><%= @item.locale(:body) %></th>
+    <td><%=hbr @item.body %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">ポータル設定</p>
+
+<div class="actionMenu">
+  <% if @item.portal_group_state == "hidden" %>
+  <%= link_to "ポータル公開", show_portal_cms_site_path(@item.id), :confirm => "ポータルに公開してよろしいですか？" %>
+  <% else %>
+  <%= link_to "ポータル非公開", hide_portal_cms_site_path(@item.id), :confirm => "ポータル公開を終了してよろしいですか？" %>
+  <% end %>
+</div>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:portal_group_state) %></th>
+    <td><%= @item.portal_group_status.name %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_id) %></th>
+    <td><% if group = @item.portal_group %><%= safe{"#{group.site.name} : #{group.name}"} %><% end %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_category_ids) %></th>
+    <td><%= @item.portal_category_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_business_ids) %></th>
+    <td><%= @item.portal_business_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_attribute_ids) %></th>
+    <td><%= @item.portal_attribute_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr><tr>
+    <th><%= @item.locale(:portal_group_area_ids) %></th>
+    <td><%= @item.portal_area_items.collect {|c| h(c.title) }.join('， ') %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">Basic認証</p>
+<div class="actionMenu">
+  <%= link_to "編集", cms_site_basic_auth_users_path(@item.id) %>
+</div>
+
+<% if @item.basic_auth_users %>
+<table class="show">
+  <% @item.basic_auth_users.each do |user| %>
+  <tr>
+    <th><%= user.name %></th>
+    <td><%= user.status.name %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
+<%= creator_view @item %>

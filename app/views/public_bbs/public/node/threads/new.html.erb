@@ -1,0 +1,7 @@
+<div class="contentPublicBbsThreadNew">
+<%= form_for(:item, :url => public_threads_uri) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <div class="submitters"><%= submit :create %></div>
+<% end %>
+</div>

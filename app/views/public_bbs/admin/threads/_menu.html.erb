@@ -1,0 +1,14 @@
+<h2><%= @content.name %></h2>
+
+<div class="actionMenu">
+<%= action_menu :new %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit if safe{@item.editable?} %>
+<%= action_menu :destroy if safe{@item.deletable?} %>
+
+<span class="separator"></span>
+
+<%= link_to 'スレッド一覧', public_bbs_threads_path %>
+<%= link_to 'レスポンス一覧', public_bbs_thread_responses_path(@content, @item) if @item.kind_of?(PublicBbs::Thread) && @item.persisted? %>
+</div>

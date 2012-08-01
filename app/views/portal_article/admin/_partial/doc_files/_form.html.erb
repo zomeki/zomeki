@@ -1,0 +1,14 @@
+<%
+
+inline_id = item.unid || params[:_tmp]
+return if inline_id.blank?
+
+%><%= hidden_field_tag :_tmp, inline_id %>
+
+<div style="margin: 10px;">
+  <a href="#" onclick="$(this).toggleOpen('#inlineFiles'); return false;">開く▼</a>
+</div>
+
+<div id="inlineFiles" class="inlineForm" style="display: none;">
+<iframe src="<%= portal_article_inline_files_path(@content.id, inline_id) %>" style="width: 100%; height: 340px;" frameborder="0"></iframe>
+</div>

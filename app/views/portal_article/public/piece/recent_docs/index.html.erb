@@ -1,0 +1,10 @@
+<% if @node %><ul class="feed">
+  <li><%= link_to 'RSS' , "#{@node.public_uri}index.rss" , :class => 'feedRss' , :title => 'RSSフィードを取得' %></li>
+  <li><%= link_to 'Atom', "#{@node.public_uri}index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+</ul><% end %>
+
+<%= portal_article_docs_view @docs, @piece.setting_value(:list_type) %>
+
+<% if @node %><div class="links">
+  <%= link_to '>>一覧へ' , @node.public_uri , :class => 'more' %>
+</div><% end %>

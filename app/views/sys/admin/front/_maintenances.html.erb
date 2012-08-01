@@ -1,0 +1,38 @@
+<script type="text/javascript">
+function openMaintenances(id){
+  var elm = document.getElementById(id);
+  if (elm.style.display == 'block') {
+    elm.style.display = 'none';
+  } else {
+    elm.style.display = 'block';
+  }
+  return false;
+}
+</script>
+
+<div id="maintenances" class="piace">
+<div class="piaceHeader">
+  <div class="title">メンテナンス情報
+    <%= link_to '［管理］', sys_maintenances_path if Core.user.has_auth?(:manager)%></div>
+</div>
+
+<div class="piaceBody">
+<ul>
+  <% if @maintenances.size == 0 %>
+  <li>お知らせはありません</li>
+  <% end %>
+  
+  <% @maintenances.each do |item| %>
+  <% eid = "maintenance#{item.id}" %>
+  <li>
+    <p><a href="#" onclick="return openMaintenances('<%= eid %>');">
+      <%= item.title %></a> （<%= item.published_at.strftime('%Y-%m-%d %H:%M') %>）</p>
+    <div id="<%= eid %>" class="body"><%= item.body %></div>
+  </li>
+  <% end %>
+</ul>
+</div>
+
+<div class="piaceFooter"></div>
+
+</div>

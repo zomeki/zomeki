@@ -1,0 +1,12 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title><%= Page.window_title %></title>
+<%= Page.layout.head_tag(request) %></head>
+<body <%= Page.body_id %> <%= Page.body_class %>>
+
+<%= yield %>
+
+</body>
+</html>

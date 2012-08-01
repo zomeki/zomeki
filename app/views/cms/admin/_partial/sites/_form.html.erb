@@ -1,0 +1,16 @@
+<%- candidates = Cms::Site.all - (item_sites = @item.sites) -%>
+<div style="float: left;"><%= select_tag 'site_candidates', options_from_collection_for_select(candidates, :id, :name),
+  multiple: true, style: 'height: 140px; width: 240px;' %></div>
+<div style="float: left; margin: 35px 20px; height: 70px;">
+  <div style="margin-bottom: 20px;"><%= button_to_function '追加 →', "$('#site_candidates option:selected').appendTo($('#item_site_ids'));" %></div>
+  <div><%= button_to_function '← 除外', "$('#item_site_ids option:selected').appendTo($('#site_candidates'));" %></div>
+</div>
+<%= hidden_field_tag 'item[site_ids][]', nil -%>
+<div style="float: left;"><%= f.select :site_ids, options_from_collection_for_select(item_sites, :id, :name), {},
+  multiple: true, style: 'height: 140px; width: 240px;' %></div>
+<%= javascript_tag do %>
+$('#item_site_ids').closest('form').submit(function (e) {
+  $('#site_candidates option').attr('selected', false);
+  $('#item_site_ids option').attr('selected', true);
+});
+<% end %>

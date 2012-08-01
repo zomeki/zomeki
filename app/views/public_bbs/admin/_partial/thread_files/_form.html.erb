@@ -1,0 +1,28 @@
+<% return if inline_id.blank? %><%= hidden_field_tag :_tmp, inline_id %>
+
+<div class="toggle">
+  <%= javascript_tag do %>
+    function toggleForm(link, target, openLabel, closeLabel) {
+      if (openLabel === undefined) openLabel = '開く▼';
+      if (closeLabel === undefined) closeLabel = '閉じる▲';
+      var l = jQuery(link);
+      var t = jQuery(target);
+      if (t.is(':hidden')) {
+        l.html(closeLabel);
+      } else {
+        l.html(openLabel);
+      }
+      t.slideToggle();
+    }
+  <% end %>
+  <%= link_to_function '開く▼', "toggleForm(this, '#inlineFiles')" %>
+</div>
+
+<div id="inlineFiles" class="inlineForm" style="display: none;">
+<%- if Core.user
+  path = "#{public_bbs_thread_path(@content, inline_id)}/"
+else
+  path = "#{@content.thread_node.public_uri}#{inline_id}/"
+end -%>
+<iframe src="<%= "#{path}files" %>" style="width: 100%; height: 340px;"></iframe>
+</div>

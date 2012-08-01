@@ -1,0 +1,9 @@
+<div class="contentPortalGroupSites">
+
+<% @items.each do |item| %>
+<div clasS="site">・<%= link_to item.name, item.full_uri %></div>
+<% end %>
+
+<%= paginate @items %>
+
+</div>

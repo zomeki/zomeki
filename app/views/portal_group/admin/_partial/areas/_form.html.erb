@@ -1,0 +1,6 @@
+<%
+
+e_prefix = "#{f.object_name}_in_portal_area_ids_"
+areas = PortalGroup::Area.root_items(:content_id => @portal_group.id)
+
+%><%= f.select_with_tree 'in_portal_area_ids[0]', areas, :label => :title, :include_blank => true %>
