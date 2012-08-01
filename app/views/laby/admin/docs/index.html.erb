@@ -1,0 +1,28 @@
+<%= render :partial => 'search' %>
+
+<table class="index">
+
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="width: 80px;">記事番号</th>
+    <th style="width: ;">タイトル</th>
+    <th style="width: 120px; text-align: center;">更新日時</th>
+    <th style="width: 70px; text-align: center;">状態</th>
+    <th style="width: 70px; text-align: center;">プレビュー</th>
+  </tr>
+
+  <% for item in @items %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => item) %></td>
+    <td><%= item.name %></td>
+    <td><%= item.title %></td>
+    <td style="text-align: center;"><%= safe{item.updated_at.strftime("%Y-%m-%d %H:%M")} %></td>
+    <td style="text-align: center;"><%= safe{item.status.name} %></td>
+    <td style="text-align: center;">
+      <%= link_to 'プレビュー', "#{@preview_uri}#{item.name}/", :target => '_blank' if @preview_uri %>
+    </td>
+  <% end %>
+
+</table>
+
+<%= paginate @items %>

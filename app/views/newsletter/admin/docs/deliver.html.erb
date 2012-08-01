@@ -1,0 +1,80 @@
+<script type="text/javascript">
+//<![CDATA[
+
+function deliverNewsletters(letterType){
+  if (confirm('メールマガジンを配信してよろしいですか？')) {
+    $('letterType').value = letterType;
+    requestDelivery();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function requestDelivery(){
+  if ($('deliveryStatus').value == 'delivered') {
+    $('delivLogId').value = '';
+    $('delivLogIds').value = '';
+    $('deliveryStatus').value = '';
+    alert('配信が完了しました。');
+    return true;
+  } else if ($('deliveryStatus').value == 'error') {
+    $('delivLogId').value = '';
+    $('delivLogIds').value = '';
+    $('deliveryStatus').value = '';
+    alert('配信途中でエラーが発生しました。');
+    return true;
+  }
+
+  var params = 'info[delivLogId]=' + $('delivLogId').value +
+               '&info[delivLogIds]=' + $('delivLogIds').value +
+               '&info[letterType]=' + $('letterType').value +
+               '&info[deliveryStatus]=' + $('deliveryStatus').value;
+
+  new Ajax.Updater('progressStatusView', '<%= url_for(:action => :deliver, :do => :deliver_newsletter) %>', {
+    asynchronous: true,
+    evalScripts: true,
+    method: 'get',
+    onFailure: function(request){failureHandler(request)},
+    onSuccess: function(request){successHandler(request)},
+    parameters: params
+  });
+}
+
+function successHandler(request) {
+  setTimeout("requestDelivery()", 3000);
+  return true;
+}
+
+function failureHandler(request) {
+  alert('サーバーの接続時にエラーが発生しました。');
+  return false;
+}
+
+//]]>
+</script>
+
+<p class="form">配信状況</p>
+<div id="progressStatusView">
+  <%= hidden_field_tag 'delivLogId', '' %>
+  <%= hidden_field_tag 'delivLogIds', '' %>
+  <%= hidden_field_tag 'letterType', '' %>
+  <%= hidden_field_tag 'deliveryStatus', '' %>
+  <table class="index">
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= @item.delivery_status_name %></td></tr>
+  </table>
+</div>
+<br />
+
+<p class="form">記事情報</p>
+<table class="show">
+  <tr>
+    <th>記事番号</th>
+    <td><%= @item.id %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.title %></td>
+  </tr>
+</table>

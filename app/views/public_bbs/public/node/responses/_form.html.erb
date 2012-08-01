@@ -1,0 +1,36 @@
+<% inline_id = @item.id || Util::Sequencer.next_id(:tmp, :md5 => true) %>
+<%= init_ckeditor :baseHref => "#{request.base_url}#{@thread.public_responses_uri}/#{inline_id}/" %>
+
+<div class="subject">
+  <h2>返信対象スレッド</h2>
+  <h3><%= link_to @thread.title, @thread.public_uri %></h3>
+  <p>
+    <%= image_tag @thread.user.image, :alt => 'user_image' %><span class="name"><%= @thread.user.name %></span>
+  </p>
+</div>
+
+<div class="loginUser">ログイン中のユーザ：<%= image_tag current_o_auth_user.image, :alt => '', :class => 'profileimage' %><span class="name"><%= current_o_auth_user.name %></span></div>
+<p class="required">※は必須項目です。</p>
+
+<section class="responseBody">
+<table>
+  <tr>
+    <th><label for="item_title"><%= @item.locale(:title) %> <span class="required" title="必須">※</span></label></th>
+    <td><%= f.text_field :title, :class => 'title' %></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th><label for="item_body"><%= @item.locale(:body) %> <span class="required" title="必須">※</span></label></th>
+  </tr>
+  <tr>
+    <td><%= f.text_area :body, :class => 'body ckeditor' %></td>
+  </tr>
+</table>
+</section>
+
+<section class="files">
+  <h2>ファイル管理</h2>
+  <%= public_bbs_response_files_form f, inline_id %>
+</section>

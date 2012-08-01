@@ -1,0 +1,214 @@
+@charset "UTF-8";
+
+/* =========================================================
+    CRUD.
+========================================================= */
+
+/* etc.
+--------------------------------------------------------- */
+p.form, p.managerForm {
+  margin: 0px 0px 10px 0px;
+  padding: 0px 5px 0px 0px;
+  font-size: 110%;
+  font-weight: bold;
+  line-height: 1.6;
+}
+p.form {
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+p.managerForm {
+  border-bottom: 1px solid #bf1400;
+  color: #bf1400;
+}
+
+.inlineForm {
+  margin: 0px 0px 2px 0px;
+  padding: 2px;
+  border: 1px solid #ccc;
+}
+form .note {
+  color: #e00;
+}
+
+/* Index
+--------------------------------------------------------- */
+table.index {
+  width: 100%;
+  border: 1px solid #ccc;
+}
+table.index th {
+  padding: 6px;
+  border: 1px solid #fff;
+  background-color: #000;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+  color: #fff;
+}
+table.index td {
+  padding: 5px 6px;
+  border-left: 1px solid #ccc;
+}
+table.index tr.cycle td {
+  background-color: #f4f4f4;
+}
+
+/* Show
+--------------------------------------------------------- */
+table.show {
+  width: 100%;
+  border: 0px solid #fff;
+  border-collapse: separate;
+  empty-cells: show;
+}
+table.show th {
+  width: 180px;
+  padding: 13px 5px 13px 15px;
+  border-top:5px solid #fff;
+  border-bottom:1px solid #ccc;
+  background-color: #ededed;
+}
+table.show td {
+  padding: 13px 5px 13px 15px;
+  border-top: 5px solid #fff;
+  border-bottom:1px solid #ccc; 
+}
+table.noDesign, table.noDesign th, table.noDesign td {
+  border-width: 0px;
+}
+table.show td.tableContainer {
+  padding: 0px;
+}
+table.show td.tableContainer th {
+  background-color: #ddd;
+} 
+
+/* Form
+------------------------------------- */
+div.submitters {
+  margin: 20px 0px 0px 0px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #ededed;
+  text-align: center;
+}
+div.submitters input {
+  margin: 0px 10px;
+  width: 120px;
+}
+table.show input.id {
+  width: 240px;
+  ime-mode: disabled;
+}
+table.show input.name {
+  width: 240px;
+}
+table.show input.nameEn {
+  width: 240px;
+  ime-mode: disabled;
+}
+table.show input.title {
+  width: 600px;
+}
+table.show input.number {
+  width: 100px;
+  ime-mode: disabled;
+}
+table.show input.email {
+  width: 400px;
+  ime-mode: disabled;
+}
+table.show input.url {
+  width: 400px;
+  ime-mode: disabled;
+}
+table.show input.date {
+  width: 80px;
+  font-family: "MS PGothic", sans-serif;
+  text-align: center;
+}
+table.show input.dateTime {
+  width: 120px;
+  font-family: "MS PGothic", sans-serif;
+}
+table.show td.cke_editor_wrapper {
+  padding: 0px;
+}
+table.show td table.cke_editor {
+  background-color: #f0f2f4;
+}
+table.show td.cke_editor_wrapper td,
+table.show td table.cke_editor td {
+  border-top: none;
+  border-color: #fff;
+}
+table.show td.cke_editor_wrapper .lowerMenu {
+  padding: 5px 10px;
+}
+table.show td.cke_editor_wrapper .lowerMenu a {
+  display: inline-block;
+  width: 120px;
+  padding: 0px;
+  border: 1px solid #bbb;
+  background-image: url(images/bg-link_check.jpg);
+  line-height: 23px;
+  text-align: center;
+  text-decoration: none;
+}
+table.show td.cke_editor_wrapper .lowerMenu object {
+  vertical-align: bottom;
+}
+table.show td textarea.body {
+  width: 99%;
+  height: 300px;
+}
+table.show td textarea.head {
+  width: 99%;
+  height: 120px;
+}
+
+/* Tree
+--------------------------------------------------------- */
+.crudTree .navi {
+}
+.crudTree {
+  margin: 10px 0px 0px 0px;
+  padding: 0px;
+}
+.crudTree .tree {
+  float: left;
+  width: 28%;
+  margin: 0px 0px 0px 0px;
+  border: 1px solid #ccc;
+}
+.crudTree .tree p {
+  padding: 6px;
+  background-color: #ededed;
+  border-bottom: 1px solid #ccc;
+}
+.crudTree .tree .links {
+  padding: 5px;
+  line-height: 1.5;
+}
+.crudTree .tree .links .remark {
+  color: #777;
+}
+.crudTree .tree .action {
+  padding: 6px 0px;
+  text-align: center;
+}
+.crudTree .tree .action a {
+  margin: 0px 5px;
+}
+.crudTree .content {
+  x_margin-left: 360px;
+  float: right;
+  width: 71%;
+}
+.crudTree .content p {
+}
+.crudTree .footer {
+  position: relative;
+  clear: both;
+}

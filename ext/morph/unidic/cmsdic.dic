@@ -1,0 +1,9 @@
+(POS (名詞 普通名詞 一般)) ((LEX (文字 500)) (READING モジ) (PRON モジ) (INFO "lForm=\"モジ\" lemma=\"文字\" orthBase=\"文字\" pronBase=\"モジ\" kanaBase=\"モジ\" formBase=\"モジ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (単語 500)) (READING タンゴ) (PRON タンゴ) (INFO "lForm=\"タンゴ\" lemma=\"単語\" orthBase=\"単語\" pronBase=\"タンゴ\" kanaBase=\"タンゴ\" formBase=\"タンゴ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (空条 500)) (READING クウジョウ) (PRON クウジョウ) (INFO "lForm=\"クウジョウ\" lemma=\"空条\" orthBase=\"空条\" pronBase=\"クウジョウ\" kanaBase=\"クウジョウ\" formBase=\"クウジョウ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (承太郎 500)) (READING ジョウタロウ) (PRON ジョウタロウ) (INFO "lForm=\"ジョウタロウ\" lemma=\"承太郎\" orthBase=\"承太郎\" pronBase=\"ジョウタロウ\" kanaBase=\"ジョウタロウ\" formBase=\"ジョウタロウ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (東方 500)) (READING ヒガシカタ) (PRON ヒガシカタ) (INFO "lForm=\"ヒガシカタ\" lemma=\"東方\" orthBase=\"東方\" pronBase=\"ヒガシカタ\" kanaBase=\"ヒガシカタ\" formBase=\"ヒガシカタ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞)) ((LEX (仗助 500)) (READING ジョウスケ) (PRON ジョウスケ) (INFO "lForm=\"ジョウスケ\" lemma=\"仗助\" orthBase=\"仗助\" pronBase=\"ジョウスケ\" kanaBase=\"ジョウスケ\" formBase=\"ジョウスケ\" goshu=\"漢\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (Ｊａｐａｎｅｓｅ 500)) (READING ジャパニイズ) (PRON ジャパニイズ) (INFO "lForm=\"ジャパニイズ\" lemma=\"Ｊａｐａｎｅｓｅ\" orthBase=\"Ｊａｐａｎｅｓｅ\" pronBase=\"ジャパニイズ\" kanaBase=\"ジャパニイズ\" formBase=\"ジャパニイズ\" goshu=\"和\" aType=\"0\" aConType=\"C2\""))
+(POS (名詞 普通名詞 一般)) ((LEX (Ｐｅｏｐｌｅ 500)) (READING ピイプル) (PRON ピイプル) (INFO "lForm=\"ピイプル\" lemma=\"Ｐｅｏｐｌｅ\" orthBase=\"Ｐｅｏｐｌｅ\" pronBase=\"ピイプル\" kanaBase=\"ピイプル\" formBase=\"ピイプル\" goshu=\"和\" aType=\"0\" aConType=\"C2\""))
+

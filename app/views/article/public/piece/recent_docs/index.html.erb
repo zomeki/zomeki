@@ -1,0 +1,12 @@
+<% if @node %><ul class="feed">
+  <li><%= link_to 'RSS' , "#{@node.public_uri}index.rss" , :class => 'feedRss' , :title => 'RSSフィードを取得' %></li>
+  <li><%= link_to 'Atom', "#{@node.public_uri}index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+</ul><% end %>
+
+<ul><% @docs.each do |doc| %>
+  <li><%=link_to h(doc.title), doc.public_uri %><%= doc.date_and_unit %></li><% end %>
+</ul>
+
+<% if @node %><div class="links">
+  <%= link_to '>>一覧へ' , @node.public_uri , :class => 'more' %>
+</div><% end %>

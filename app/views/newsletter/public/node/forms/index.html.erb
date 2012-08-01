@@ -1,0 +1,35 @@
+<div class="contentNewsletterForms">
+
+<% if !@content.summary.blank? %><div class="summary"><%= raw @content.summary %></div><% end %>
+
+<h2>メールマガジンの登録はこちら</h2>
+
+<%= form_for :item, :url => "#{Page.current_node.public_uri}" do |f| %>
+
+<%= error_messages_for "item" %>
+
+<div class="form">
+  <% if !@content.addition_body.blank? %><div class="body"><%= raw @content.addition_body %></div><% end %>
+</div>
+
+<div class="column">
+  <div class="name">メールアドレス <span class="required">※</span></div>
+  <div class="field"><%= f.text_field :subscribe_email, :class => 'textField' %></div>
+</div>
+
+<div class="column">
+  <div class="name"><%= @item.locale(:letter_type) %> <span class="required">※</span></div>
+  <div class="field"><div class="radioButton"><%= f.radio_buttons :letter_type, [["PC版(テキスト形式)","pc_text"],["携帯版(テキスト形式)","mobile_text"]], :class => 'element' %></div></div>
+</div>
+
+<div class="submitters">
+  <input type="submit" name="subscribe" value="登録する" />
+</div>
+
+<% end %>
+
+<div class="change">
+  <%= link_to 'メールマガジンの解除はこちら', "#{Page.current_node.public_uri}change/" %>
+</div>
+
+</div>

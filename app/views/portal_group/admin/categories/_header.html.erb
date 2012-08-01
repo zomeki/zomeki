@@ -1,0 +1,15 @@
+<%#= render :partial => "#{::File.dirname(params[:controller])}/docs/header" %>
+
+<div class="mainMenu">
+<%= render :partial => 'layouts/admin/cms/menu', :locals => {:current => :content} %>
+</div>
+
+<div class="contentMenu">
+<% if Core.user.has_auth?(:designer) %>
+<%= link_to '分野設定', portal_group_categories_path(:parent => 0) %>
+<%= link_to '業種設定', portal_group_businesses_path(:parent => 0) %>
+<%= link_to '属性設定', portal_group_attributes_path(:parent => 0) %>
+<%= link_to '地域設定', portal_group_areas_path(:parent => 0) %>
+<%= link_to '設定', portal_group_content_settings_path %>
+<% end %>
+</div>

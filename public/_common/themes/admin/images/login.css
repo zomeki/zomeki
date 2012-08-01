@@ -1,0 +1,102 @@
+@charset "UTF-8";
+/* @import "style.css"; */
+
+/* =========================================================
+   Login.
+========================================================= */
+
+html {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+body {
+  height: 100%;
+  font-size: 90%;
+  margin: 0px auto;
+  padding: 0px;
+  background-image: url(./images/login_re.gif);
+  font-size: 80%;
+  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+  line-height: 1;
+}
+input {
+  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+}
+.form input {
+  width: 150px;
+}
+
+.header {
+  background: transparent;
+  width: 100%;
+  height: 25%;
+}
+
+#header {
+  height: 60px;
+  padding: 0px;
+  background-image: url(images/header_re.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+}
+ #header h1 {
+  margin: 0px 0px 0px 10px;
+} 
+
+
+
+.box {
+  width: 460px;
+  background-color: #ffffff;
+  text-align: center;
+  margin: 0px auto;
+}
+.box p {
+  padding: 12px 0px 0px 15px;
+  color: #666;
+  font-size: 100%;
+  font-weight: lighter;
+  text-align: left;
+}
+
+.notice {
+  height: 0px;
+  margin: 0px;
+  color: #f00;
+  font-weight: bold;
+}
+.fields {
+  width: 350px;
+  text-align: left;
+  margin: 0px 0px 0px 100px;
+  padding: 20px 0px;
+  color: #000;
+}
+#account {
+  width: 170px;
+  margin-left:1px;
+  ime-mode:disabled;
+}
+#password {
+  width: 170px;
+}
+.submitters {
+  height: 70px;
+  padding: 10px 25px 0px 25px;
+}
+.submitters .login {
+  width: 106px;
+  height: 37px;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  background-image: url(./images/bt-login.gif);
+  background-repeat: no-repeat;
+}
+
+.copyright {
+  padding: 20px 0px;
+  color: #ffffff;
+  text-align: center;
+}

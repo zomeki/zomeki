@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/* form
+--------------------------- */
+input.js-date {
+  width: 100px;
+  font-family: "MS PGothic", sans-serif;
+  text-align: center;
+}
+input.js-datetime {
+  width: 120px;
+  font-family: "MS PGothic", sans-serif;
+}
+
+/* date picker
+--------------------------- */
+.ui-datepicker {
+}
+.ui-datepicker table td {
+}
+
+/* datetime picker
+--------------------------- */
+.ui-datetime {
+  font-size: 95%;
+}
+.ui-datetime table td {
+  padding: 0px;
+  line-height: 1.3;
+}

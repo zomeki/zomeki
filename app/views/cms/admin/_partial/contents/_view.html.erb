@@ -1,0 +1,16 @@
+<% if defined?(container) && container != :tr %>
+<table class="show">
+<% end %>
+  <tr>
+    <th><%= @item.locale(:concept_id) %></th>
+    <td><%= safe{@item.concept.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:model) %></th>
+    <td><%= @item.model_name(:short) %></td>
+  </tr><tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%=hbr @item.name %></td>
+  </tr>
+<% if defined?(container) && container != :tr %>
+</table>
+<% end %>

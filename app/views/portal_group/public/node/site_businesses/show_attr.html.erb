@@ -1,0 +1,9 @@
+<div class="contentPortalGroupSiteBusiness contentPortalGroupSiteBusinessAttribute">
+
+<section class="latest">
+  <h2><%= @attr.title %></h2>
+  <%= portal_group_sites_view(@sites, @content.setting_value(:sites_list_type)) %>
+  <%= paginate @sites %>
+</section>
+
+</div>

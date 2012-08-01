@@ -1,0 +1,35 @@
+<%
+
+@exists = {}
+
+def find_concepts(parent)
+  return h if @exists[parent.id]
+  @exists[parent.id] = true
+  
+  id       = parent.id
+  children = parent.readable_children
+  
+  icon_cls  = "icon"
+  icon_cls += (children.size > 0) ? " openedChildren" : " noChildren"
+  icon_mark = (children.size > 0) ? "-" : " "
+  item_cls  = "item"
+  item_cls += " current" if Core.concept && Core.concept.id == parent.id
+  
+  @h += "<li>"
+  @h += link_to(icon_mark, "#", :id => "naviConceptIcon#{id}", :class => icon_cls)
+  @h += " "
+  @h += link_to(parent.name, cms_navi_concept_path(id), :id => "naviConceptItem#{id}", :class => item_cls)
+  
+  if children.size > 0
+    @h += %Q(<ul id="naviConceptList#{id}">)
+    children.each {|c| find_concepts(c)}
+    @h += "</ul>"
+  end
+  
+  @h += "</li>"
+end
+
+@h = ""
+Cms::Concept.new.readable_children.each {|c| find_concepts(c) }
+
+%><ul id="naviConcepts"><%= @h.html_safe %></ul>

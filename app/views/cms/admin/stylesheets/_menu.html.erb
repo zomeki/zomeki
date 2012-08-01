@@ -1,0 +1,43 @@
+<%= javascript_tag do %>
+function showNewForm(type) {
+  var formId = "#new_" + type;
+  if ($('#errorExplanation')) $('#errorExplanation').hide();
+  if ($(formId).css('display') != "none") {
+    $(formId).hide();
+  } else {
+    $('#new_directory').hide();
+    $('#new_file').hide();
+    $('#new_upload').hide();
+    $(formId).show();
+    $('#item_new_' + type).focus();
+  }
+  return false;
+}
+<% end %>
+
+<div class="navi">
+  <%= @full_path.gsub(@base_uri[0], @base_uri[1]) %>
+</div>
+
+<div class="actionMenu">
+<%
+path    = (::File.dirname(@path) == '.') ? nil : ::File.dirname(@path)
+parent  = path ? "#{cms_stylesheets_path}/#{path}" : cms_stylesheets_path
+current = @path ? "#{cms_stylesheets_path}/#{@path}" : cms_stylesheets_path
+%>
+<%= link_to "上へ", parent if @path != "" && !params[:do] && @item.directory? %>
+<%= link_to :index, parent if params[:do] %>
+<% if !params[:do] && @item.directory? %>
+  <%= link_to "新規ディレクトリ", "#", :onclick => "return showNewForm('directory');" %>
+  <%= link_to "新規ファイル", "#", :onclick => "return showNewForm('file');" %>
+  <%= link_to "アップロード", "#", :onclick => "return showNewForm('upload');" %>
+<% end %>
+<% if params[:do] == "show" %>
+  <%= link_to :edit, current + "?do=edit" if @item.textfile? %>
+  <%= link_to "名称変更", current +"?do=rename" %>
+  <%= link_to "移動", current + "?do=move" %>
+  <%= link_to "削除", current + "?do=destroy", :confirm => "削除してよろしいですか？" %>
+<% elsif params[:do] %>
+  <%= link_to :show, current + "?do=show" %>
+<% end %>
+</div>

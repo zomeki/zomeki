@@ -1,0 +1,16 @@
+<p class="form">Basic認証</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= f.text_field :name, :class => 'nameEn' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:password) %></th>
+    <td><%= f.text_field :password, :class => 'nameEn' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

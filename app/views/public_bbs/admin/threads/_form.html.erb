@@ -1,0 +1,73 @@
+<% inline_id = @item.id || Util::Sequencer.next_id(:tmp, :md5 => true) %>
+<%- if Core.user
+  path = "#{public_bbs_thread_path(@content, inline_id)}/"
+else
+  path = "#{@content.thread_node.public_uri}#{inline_id}/"
+end -%>
+<%= init_ckeditor :baseHref => path %>
+
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <% if @item.id %>
+  <tr>
+    <th><%= @item.locale(:id) %></th>
+    <td><%= @item.id %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th><%= @item.locale(:state) %> <span class="note">※</span></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'states' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:user_id) %> <span class="note">※</span></th>
+    <td><%= f.select :user_id, Cms::OAuthUser.all.map {|user| [user.name, user.id] } %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:body) %> <span class="note">※</span></th>
+    <td><%= f.text_area :body, :class => 'body ckeditor' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">ファイル管理</p>
+<%= public_bbs_thread_files_form f, inline_id %>
+
+<br /><p class="form">スレッド設定</p>
+<table class="show">
+  <tr>
+    <th>カテゴリ</th>
+    <td><%= public_bbs_categories_form f %></td>
+  </tr>
+  <tr>
+    <th>関連ワード</th>
+    <td><%= public_bbs_tags_form f %></td>
+  </tr>
+  <tr>
+    <th>レス許可</th>
+    <td><%= f.radio_buttons :res_creation, {'許可する' => 'allow', '許可しない' => 'deny'} %></td>
+  </tr>
+</table>
+
+<br /><p class="form">ポータル設定</p>
+<table class="show">
+  <tr>
+    <th>ジャンルページ表示</th>
+    <td><%= portal_group_category_form f %></td>
+  </tr>
+  <tr>
+    <th>業種ページ表示</th>
+    <td><%= portal_group_business_form f %></td>
+  </tr>
+  <tr>
+    <th>属性ページ表示</th>
+    <td><%= portal_group_attribute_form f %></td>
+  </tr>
+  <tr>
+    <th>地域ページ表示</th>
+    <td><%= portal_group_area_form f %></td>
+  </tr>
+</table>

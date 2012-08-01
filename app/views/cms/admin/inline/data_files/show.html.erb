@@ -1,0 +1,18 @@
+<%= render :partial => 'menu' %>
+
+<%#= render :file => "cms/admin/data/files/show.html.erb" %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:node_id) %></th>
+    <td><%= safe{@item.node.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= @item.name %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.title %></td>
+  </tr><tr>
+    <th><%= @item.locale(:size) %></th>
+    <td><%= @item.eng_unit %><br /><%= @item.image_size %></td>
+</table>

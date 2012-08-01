@@ -1,0 +1,29 @@
+<div class="contentPortalGroupSiteBusiness contentPortalGroupSiteBusinessGroup">
+
+<section class="latest"><% if !@feed %>
+  <h2>新着サイト</h2>
+  <ul class="feed">
+    <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+    <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  </ul>
+  <%= portal_group_sites_view(@sites, @content.setting_value(:sites_list_type)) %>
+  <% if !@more && @sites.size > 0 %>
+  <div class="more"><%= link_to '>>新着サイト一覧', "more.html" %></div>
+  <% end %>
+<% end %></section>
+
+<% if @more %>
+  <%= paginate @sites %>
+<% elsif @items.size > 0 %><div class="cities classification">
+  <% @items.each do |c| %>
+  <% if (sites = @item_sites.call(c)).size > 0 %><section class="city">
+    <h2><%= c.title %></h2>
+    <%= portal_group_sites_view(sites, @content) %>
+  	<% if sites.size > 0 %><div class="more">
+      <%= link_to '>>サイト一覧', "../#{c.name}/" %>
+    </div><% end %>
+  </section><% end %>
+  <% end %>
+</div><% end %>
+
+</div>

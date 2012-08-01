@@ -1,0 +1,13 @@
+<div class="actionMenu">
+<% if !@mode %>
+<%= action_menu :new %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit      if safe{@item.editable?} %>
+<%= action_menu :destroy   if safe{@item.deletable?} %>
+<span class="separator"></span>
+<% end %>
+<%= link_to 'データ一覧', cms_kana_dictionaries_path %>
+<%= link_to '辞書更新', make_cms_kana_dictionaries_path, :confirm => "辞書を更新してよろしいですか？" %>
+<%= link_to '動作確認', test_cms_kana_dictionaries_path %>
+</div>

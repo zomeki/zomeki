@@ -1,0 +1,13 @@
+<div class="actionMenu">
+<%- if Core.user.root? || Core.user.site_creatable? -%>
+<%= action_menu :new     if Core.user.has_priv?(:create, :item => Core.concept) %>
+<%- end -%>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit    if safe{@item.editable?} %>
+<%- if @item.main? -%>
+メインサイトは削除できません。
+<%- else -%>
+<%= action_menu :destroy if safe{@item.deletable?} %>
+<%- end -%>
+</div>

@@ -1,0 +1,37 @@
+<% inline_id = @item.id || Util::Sequencer.next_id(:tmp, :md5 => true) %>
+<%- if Core.user
+  path = "#{public_bbs_thread_response_path(@content, @thread, inline_id)}/"
+else
+  path = "#{@content.thread_node.public_responses_uri}#{inline_id}/"
+end -%>
+<%= init_ckeditor :baseHref => path %>
+
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <% if @item.id %>
+  <tr>
+    <th><%= @item.locale(:id) %></th>
+    <td><%= @item.id %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th><%= @item.locale(:state) %> <span class="note">※</span></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'states' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:user_id) %> <span class="note">※</span></th>
+    <td><%= f.select :user_id, Cms::OAuthUser.all.map {|user| [user.name, user.id] } %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:body) %> <span class="note">※</span></th>
+    <td><%= f.text_area :body, :class => 'body ckeditor' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">ファイル管理</p>
+<%= public_bbs_response_files_form f, inline_id %>

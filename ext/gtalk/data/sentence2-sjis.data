@@ -1,0 +1,42 @@
+<S>
+  <AP orth="従業員" pron="ジューギョーイン" aType="3" silence="NON">
+    <W2 orth="従業員" pos="名詞-普通名詞-一般" pron="ジューギョーイン" aType="3" aConType="C2">
+      <W1 orth="従業" pron="ジューギョー" pos="名詞-普通名詞-サ変可能" lex="ジュウギョウ!従業" indexForm="ジュウギョウ" indexOrth="従業" aType="0" aConType="C2"/>
+      <W1 orth="員" pron="イン" pos="接尾辞-名詞的-一般" lex="イン!員" indexForm="イン" indexOrth="員" aConType="C3"/>
+    </W2>
+  </AP>
+  <AP orth="二千人の" pron="ニセンニンノ" aType="2" silence="NON">
+    <W2 orth="二千人" pos="名詞-普通名詞-副詞可能" pron="ニセンニン" aType="2" aConType="">
+      <W1 orth="二千" pron="ニセン" pos="名詞-数詞-一般" lex="ニセン!二千" indexForm="ニセン" indexOrth="二千" ipaConType="Ns" aType="2"/>
+      <W1 orth="人" pron="ニン" pos="接尾辞-名詞的-助数詞" lex="ニン!人" indexForm="ニン" indexOrth="人" fpaConType="B1W2W4W7G9G,B4W" aConType="C3"/>
+    </W2>
+    <W2 orth="の" pron="ノ" pos="助詞-格助詞-連体可能" aType="0" aConType="名詞%F1">
+      <W1 orth="の" pron="ノ" pos="助詞-格助詞-連体可能" lex="ノ!の" indexForm="ノ" indexOrth="の" aConType="名詞%F1"/>
+    </W2>
+  </AP>
+  <AP orth="株式会社に" pron="カブシキカイシャニ" aType="5" silence="NON">
+    <W2 orth="株式会社" pos="名詞-普通名詞-一般" pron="カブシキカイシャ" aType="5" aConType="C1">
+      <W1 orth="株式" pron="カブシキ" pos="名詞-普通名詞-一般" lex="カブシキ!株式" indexForm="カブシキ" indexOrth="株式" aType="2" aConType="C1"/>
+      <W1 orth="会社" pron="カイシャ" pos="名詞-普通名詞-一般" lex="カイシャ!会社" indexForm="カイシャ" indexOrth="会社" aType="0" aConType="C2"/>
+    </W2>
+    <W2 orth="に" pron="ニ" pos="助詞-格助詞-連用可能" aType="0" aConType="動詞%F5,形容詞%F1,名詞%F1">
+      <W1 orth="に" pron="ニ" pos="助詞-格助詞-連用可能" lex="ニ!に" indexForm="ニ" indexOrth="に" aConType="動詞%F5,形容詞%F1,名詞%F1"/>
+    </W2>
+  </AP>
+  <AP orth="勤めている" pron="ツトメテイル" aType="4" silence="NON">
+    <W2 orth="勤め" pron="ツトメ" pos="動詞-一般" aType="3" aConType="">
+      <W1 orth="勤め" pron="ツトメ" pos="動詞-一般" cType="下一段-マ行" cForm="連用形-一般" lex="ツト*メル!勤める" indexForm="ツトメル" indexOrth="勤める" aType="3"/>
+    </W2>
+    <W2 orth="て" pron="テ" pos="助詞-接続助詞" aType="0" aConType="動詞%F1,形容詞%F2@-1">
+      <W1 orth="て" pron="テ" pos="助詞-接続助詞" lex="テ!て" indexForm="テ" indexOrth="て" aConType="動詞%F1,形容詞%F2@-1"/>
+    </W2>
+    <W2 orth="いる" pron="イル" pos="動詞-非自立可能" aType="0" aConType="">
+      <W1 orth="いる" pron="イル" pos="動詞-非自立可能" cType="上一段-ア行-一般" cForm="基本形-一般" lex="イル!居る" indexForm="イル" indexOrth="居る" aType="0"/>
+    </W2>
+  </AP>
+  <AP orth="。" pron="。" aType="0" silence="SILE">
+    <W2 orth="。" pron="。" pos="その他-句点" aType="0" aConType="">
+      <W1 orth="。" pron="。" pos="その他-句点" lex="!。" indexForm="" indexOrth="。"/>
+    </W2>
+  </AP>
+</S>

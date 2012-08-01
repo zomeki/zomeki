@@ -1,0 +1,12 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => "title" %></td>
+  <tr>
+  <tr>
+    <th>内容</th>
+    <td><%= f.text_area :body, :class => 'body' %></td>
+  </tr>
+</table>

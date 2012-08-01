@@ -1,0 +1,9 @@
+<div class="mainMenu">
+<%= render :partial => 'layouts/admin/cms/menu', :locals => {:current => :content} %>
+</div>
+
+<div class="contentMenu">
+<%= link_to 'フィード一覧', portal_feeds_path %>
+<%= link_to 'グループ設定', portal_categories_path(:parent => 0) %>
+<%= link_to ' 記事設定', portal_content_settings_path %>
+</div>

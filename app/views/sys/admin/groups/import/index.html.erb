@@ -1,0 +1,16 @@
+<p class="form">グループをインポート</p>
+
+<%= form_for(:item, :url => {:action => :import}, :html => {:method => :post, :multipart => true}) do |f| %>
+<%= hidden_field_tag :do, 'groups' %>
+CSVファイル ： <%= f.file_field :file %><br /><br />
+<%= f.submit 'インポート', :style => 'width: 120px;' %><br />
+<% end %>
+<br />
+
+<p class="form">ユーザをインポート</p>
+
+<%= form_for(:item, :url => {:action => :import}, :html => {:method => :post, :multipart => true}) do |f| %>
+<%= hidden_field_tag :do, 'users' %>
+CSVファイル ： <%= f.file_field :file %><br /><br />
+<%= f.submit 'インポート', :style => 'width: 120px;' %><br />
+<% end %>

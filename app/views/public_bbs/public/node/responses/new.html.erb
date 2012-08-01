@@ -1,0 +1,7 @@
+<div class="contentPublicBbsResponseNew">
+<%= form_for(:item, :url => @thread.public_responses_uri) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <div class="submitters"><%= submit :create %></div>
+<% end %>
+</div>

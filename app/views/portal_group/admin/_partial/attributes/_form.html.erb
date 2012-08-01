@@ -1,0 +1,6 @@
+<%
+
+attributes = PortalGroup::Attribute.find(:all, :conditions => {:content_id => @portal_group.id}, :order => :sort_no)
+attributes = attributes.collect{|c| [c.title, c.id]}
+
+%><%= f.array_select 'in_portal_attribute_ids[0]', attributes, :include_blank => true %>

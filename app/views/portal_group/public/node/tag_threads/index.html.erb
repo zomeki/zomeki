@@ -1,0 +1,40 @@
+<div class="contentPortalGroupTags">
+
+  <%= form_tag @base_uri, :method => :post, :class => 'search' do %>
+  <table>
+    <tr>
+      <th>タグ</th>
+      <td><%= text_field_tag 's_tag', @tag, :style => 'width: 200px;' %></td>
+      <td class="submitters">
+        <%= submit_tag '検索',     :name => :search, :class => 'send' %>
+        <%= submit_tag 'リセット', :name => :reset,  :class => 'reset' %>
+      </td>
+    </tr>
+  </table>
+  <!-- end .search --><% end %>
+
+  <% unless @tag.to_s.blank? %>
+  <div class="hit">
+    <span class="label">検索結果</span><span class="count"><%= "#{@threads.total_entries}" %></span><span class="unit">件</span></div>
+  <% end %>
+
+  <% case @content.setting_value(:threads_list_type)
+     when 'list' %>
+  <ul class="threads">
+    <% @threads.each do |thread| %>
+    <li><%- opts = (Core.site == thread.content.site) ? {} : {target: '_blank'} -%>
+        <%= link_to thread.title, "#{thread.content.site.full_uri}#{thread.public_uri.sub(/^\//, '')}", opts %>
+      （<%= thread.created_at.strftime('%Y年%m月%d日 %H時%M分') %>）
+      <%= thread.user.name %></li>
+    <% end %>
+  </ul>
+  <% else %>
+  <div class="threads">
+    <% @threads.each do |thread| %>
+      <%= render :partial => 'public_bbs/public/shared/thread', :locals => {:thread => thread} %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <%= paginate @threads %>
+</div>

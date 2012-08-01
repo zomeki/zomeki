@@ -1,0 +1,14 @@
+<div class="contentPortalGroupThreadBusiness">
+
+<% @items.each do |item| %><section class="business business<%= item.name.camelize %>">
+  <h2><%=link_to h(item.title), "#{item.name}/" %></h2>
+  <% if (children = item.public_children).size > 0 %>
+  <ul class="children">
+    <% children.each do |c| %>
+    <li class="business<%= c.name.camelize %>"><%= link_to h(c.title), "#{c.name}/" %></li>
+    <% end %>
+  </ul>
+  <% end %>
+</section><% end %>
+
+</div>

@@ -1,0 +1,28 @@
+<div class="contentArticleUnit">
+
+<% @items.each do |item| %>
+<table class="department">
+  <tr>
+    <td class="name"><h2 id="<%= item.name %>"><%=item.title %></h2></td>
+    <td class="outline"><%= link_to('業務概要', item.outline_uri) if !item.outline_uri.blank? %></td>
+    <td class="page"><%= link_to '部局のページへ', "#{item.name}/" %></td>
+    <td class="email">電子メールでのお問い合わせ</td>
+    <td class="tel">電話番号</td>
+  </tr>
+</table>
+
+<% if (children = item.public_children).size > 0 %><table class="unit">
+  <% children.each do |c| %><tr class="<%= cycle '', 'cycle', :name => :cycle %>">
+    <td class="name"><%= c.title %></td>
+    <td class="outline"><%= link_to('業務概要', c.outline_uri) if !c.outline_uri.blank? %></td>
+    <td class="page"><%= link_to '課のページへ', "#{c.name}/" %></td>
+    <td class="email"><%= email_to c.email %></td>
+    <td class="tel"><%= c.tel %></td>
+  </tr>
+  <% end %>
+</table><% reset_cycle(:cycle) %><% end %>
+
+<div class="pageTop"><a href="#container">ページの先頭へ戻る</a></div>
+<% end %>
+
+</div>

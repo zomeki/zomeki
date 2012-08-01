@@ -1,0 +1,258 @@
+/* =========================================================
+   Common Classes.
+========================================================= */
+
+/* Text.
+----------------------------------------------- */
+.pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.monospace {
+  font-family: "MS Gothic", "ＭＳ　ゴシック", "Courier New", sans-serif;
+}
+
+/* Notice.
+----------------------------------------------- */
+.notice {
+ margin: 10px 10px;
+ color: #009632;
+}
+#noticeExplanation {
+ width: 600px;
+ border: 2px solid #4bf;
+ margin: 15px 0px;
+}
+#noticeExplanation h2 {
+ margin: 0px !important;
+ padding: 5px 10px !important;
+ background-color: #06b !important;
+ color: #fff !important;
+}
+#noticeExplanation p {
+ padding: 5px 10px;
+ color: #333;
+ font-weight: bold;
+}
+#noticeExplanation ul {
+ padding: 0px 0px 10px 0px;
+ list-style-type: square;
+}
+#noticeExplanation ul li {
+ margin-left: 30px;
+ padding-left: 0px;
+ font-size: 12px;
+}
+#noticeExplanation ul li .success {
+  color: #06f;
+}
+#noticeExplanation ul li .failed {
+  color: #e00;
+}
+#noticeExplanation .checkbox {
+  margin: 0px 10px 5px 10px;
+  text-align: right;
+}
+
+/* Error.
+----------------------------------------------- */
+.fieldWithErrors {
+  margin: 1px;
+  padding: 1px;
+  border: 1px solid #f00;
+  display: inline-block;
+  /display: inline;
+}
+#errorExplanation {
+  width: 600px;
+  border: 2px solid #e61400;
+  margin: 15px 0px;
+}
+#errorExplanation h2 {
+ margin: 0px !important;
+ padding: 5px 10px !important;
+ background-color: #e61400 !important;
+ color: #fff !important;
+}
+#errorExplanation p {
+ padding: 5px 10px;
+ color: #333;
+ font-weight: bold;
+}
+#errorExplanation ul {
+ padding: 0px 0px 10px 0px;
+ list-style-type: square;
+}
+#errorExplanation ul li {
+ margin-left: 30px;
+ padding-left: 0px;
+ font-size: 12px;
+}
+
+/* Pagination.
+----------------------------------------------- */
+.pagination {
+  margin: 20px 0px 0px 0px;
+  text-align: center;
+}
+.pagination a,
+.pagination span.current,
+.pagination span.disabled {
+  display: inline-block;
+  padding: 0px 6px;
+  border: 1px solid #bbb;
+  font-size: 110%;
+  font-family: "MS PGothic", sans-serif;
+  text-decoration: none;
+  line-height: 1.8;
+  vertical-align: top;
+}
+.pagination span.current {
+  background-color: #ddd;
+  font-weight: bold;
+}
+.pagination span.disabled {
+  color: #666;
+}
+.pagination a:hover {
+  border-color: #666;
+  background-color: #ddd;
+  color: #000;
+}
+.pagination span.prev,
+.pagination span.next {
+}
+.pagination span.separator {
+  visibility: hidden;
+  font-size: 1px;
+}
+
+/* Search.
+----------------------------------------------- */
+form.search {
+ margin: 10px 0px;
+ padding: 10px 10px;
+ background-color: #ededed;
+ border: 1px solid #ccc;
+}
+form.search th {
+ padding: 0px 5px 0px 0px;
+}
+form.search td {
+ padding: 0px 15px 0px 0px;
+}
+form.search td.submitters input {
+ width: 70px;
+ font-size: 85%;
+}
+
+/* Detail.
+----------------------------------------------- */
+.detailMenu {
+ margin: 0px 0px 0px 0px;
+}
+.detailMenu .separator {
+ width: 10px;
+ text-indent: -9999px;
+}
+.detailMenu a {
+ margin: 0px 5px;
+ padding: 5px 10px;
+ border: 1px solid #ccc;
+ border-right: 2px solid #ccc;
+ border-bottom: 2px solid #ccc;
+ background-color: #eee;
+ color: #800;
+ text-decoration: none;
+ text-align: center;
+ line-height: 25px;
+}
+
+/* avoid output navigation on printing
+----------------------------------------------- */
+@media print {
+  #header, #headerBody, #banner, #bannerBody, #navigationContainer, #navi,
+  #naviBody, #menu, #menuContainer, #links, #linksContainer,
+  #footer, #footerContainer, #footerBody,
+  .menu, .actionMenu, .noprint {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  #content, #contentContainer {
+    margin: 0;
+  }
+  table.show th {
+    white-space: nowrap;
+  }
+  table.show.print.governorOpinion td.title,
+  table.show.print.governorOpinion td.body {
+    font-size: 120%;
+  }
+  table.show.print.governorOpinion caption {
+    font-size: 200%;
+  }
+}
+@media screen {
+  table.show.print.governorOpinion caption {
+    display: none;
+  }
+}
+
+/* Icon.
+----------------------------------------------- */
+.iconFile, .iconDefault {
+  padding: 12px 5px 12px 42px;
+  background-repeat: no-repeat;
+  background-image: url(/_common/images/icons/default.png);
+  line-height: 3.3;
+  height: 40px;
+}
+.iconBmp {
+  background-image: url(/_common/images/icons/bmp.png);
+}
+.iconCsv {
+  background-image: url(/_common/images/icons/csv.png); 
+}
+.iconDoc,
+.iconDocx {
+  background-image: url(/_common/images/icons/doc.png); 
+}
+.iconGif {
+  background-image: url(/_common/images/icons/gif.png); 
+}
+.iconJpg {
+  background-image: url(/_common/images/icons/jpg.png); 
+}
+.iconJpe {
+  background-image: url(/_common/images/icons/jpg.png); 
+}
+.iconJpeg {
+  background-image: url(/_common/images/icons/jpg.png); 
+}
+.iconJtd {
+  background-image: url(/_common/images/icons/jtd.png); 
+}
+.iconLzh {
+  background-image: url(/_common/images/icons/lzh.png); 
+}
+.iconPdf {
+  background-image: url(/_common/images/icons/pdf.png); 
+}
+.iconPng {
+  background-image: url(/_common/images/icons/png.png); 
+}
+.iconPpt {
+  background-image: url(/_common/images/icons/ppt.png); 
+}
+.iconTxt {
+  background-image: url(/_common/images/icons/txt.png); 
+}
+.iconXls,
+.iconXlsx {
+  background-image: url(/_common/images/icons/xls.png);
+}
+.iconZip {
+  background-image: url(/_common/images/icons/zip.png); 
+}

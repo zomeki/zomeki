@@ -1,0 +1,12 @@
+<div class="contentArticleAttribute">
+
+<div class="attributes">
+  <% for item in @items %>
+  <section class="attribute attribute<%= item.name.camelize %>">
+    <h2><%= link_to h(item.title), "#{item.name}/" %></h2>
+    <p class="explain"><%= item.title %>に関する情報を掲載しています。</p>
+  </section>
+  <% end %>
+</div>
+
+</div>

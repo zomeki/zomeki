@@ -1,0 +1,85 @@
+<style type="text/css">
+#convInput p {
+  margin: 0px 0px 5px 0px;
+}
+#convInput textarea {
+  float: left;
+  width: 700px;
+  height: 120px;
+}
+#convInput input, #convInput button {
+  margin: 0px 0px 4px 4px;
+  width: 130px;
+  text-align: left;
+}
+#convResult {
+  clear: both;
+  padding: 10px 0px 0px 0px;
+}
+#convResult p {
+  margin: 0px 0px 5px 0px;
+}
+#convResult iframe {
+  width: 90%;
+  height: 400px;
+  border: 1px solid #888;
+}
+</style>
+
+<%= javascript_tag do %>
+function writePreview(data) {
+  var css = '';
+  css += '<style>';
+  css += 'rp, rt { color: #0b0; font-size: 70%; }';
+  css += 'ruby { color: #b00; }';
+  css += '</style>';
+  
+  var iwin = $('#resultFrame')[0].contentWindow;
+  iwin.document.open();
+  data = data.replace(/<script[\s\S]*?<\/script>/ig, '');
+  iwin.document.write(data);
+  iwin.document.close();
+  
+  var idoc = $('#resultFrame').contents();
+  idoc.find('body').prepend(css);
+}
+function previewKana() {
+  $.ajax({
+    url: '<%= cms_kana_dictionaries_path %>/test',
+    type: 'POST',
+    data: {
+      yomi_kana: true,
+      body: $('#fromText').val()
+    },
+    success: writePreview,
+    error: function() { alert('error'); }
+  });
+}
+function previewTalk() {
+  $.ajax({
+    url: '<%= cms_kana_dictionaries_path %>/test',
+    type: 'POST',
+    data: {
+      talk_kana: true,
+      body: $('#fromText').val()
+    },
+    success: writePreview,
+    error: function() { alert('error'); }
+  });
+}
+<% end %>
+
+<%= form_for :item, :url => {:do => :test} do |f| %>
+<div id="convInput">
+  <p>入力</p>
+  <textarea name="body" id="fromText"><%= params[:body] %></textarea>
+  <button type="button" onclick="previewKana();">→ ふりがな</button><br />
+  <button type="button" onclick="previewTalk();">→ 音声テキスト</button><br />
+  <button type="submit" name="talk_file" class="kanaSubmitter">→ 音声ファイル</button><br />
+</div>
+<% end %>
+
+<div id="convResult">
+  <p>プレビュー</p>
+  <iframe id="resultFrame" frameborder="0"></iframe>
+</div>

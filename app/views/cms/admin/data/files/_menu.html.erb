@@ -1,0 +1,14 @@
+<div class="actionMenu">
+<%= link_to 'ファイル', cms_data_files_path %>
+<%= link_to 'フォルダ', cms_data_file_nodes_path %>
+<span class="separator"></span>
+<%= action_menu :new if Core.user.has_priv?(:create, :item => Core.concept) %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit      if safe{@item.editable?} %>
+<% if params[:action] == 'show' %>
+<%= link_to(:publish, {:do => :publish}, :confirm => '公開してよろしいですか？') if safe{@item.publishable?} %>
+<%= link_to(:close, {:do => :close}, :confirm => '公開を終了してよろしいですか？') if safe{@item.closable?} %>
+<% end %>
+<%= action_menu :destroy   if safe{@item.deletable?} %>
+</div>

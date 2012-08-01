@@ -1,0 +1,19 @@
+<%= init_ckeditor :readOnly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_date) %></th>
+    <td><%= @item.event_date %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%=hbr @item.title %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_uri) %></th>
+    <td><%= link_to h(@item.event_uri), @item.event_uri, :target => "_blank" %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

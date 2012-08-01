@@ -1,0 +1,23 @@
+<%
+
+@current = current
+def menu_link(auth, key, label, uri)
+  return '' unless Core.user.has_auth?(auth)
+  cls = [key.to_s]
+  cls << 'current' if @current == key
+  link_to(label, uri, :class => cls.join(' '))
+end
+
+%><div class="mainMenu">
+<% if Core.concept
+ %><%= menu_link :creator , :content  , 'コンテンツ'  , cms_contents_path
+ %><%= menu_link :editor  , :data     , 'データ'      , cms_data_texts_path
+ %><%= menu_link :designer, :design   , 'デザイン'    , cms_pieces_path
+ %><%= menu_link :designer, :directory, 'ディレクトリ', cms_nodes_path(0)
+ %><%= menu_link :designer, :tool     , 'ツール'      , "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/tool_rebuild"
+ %><% end
+ %><%= menu_link :manager , :site     , 'サイト'      , cms_concepts_path(0)
+ %><%= menu_link :manager , :user     , 'ユーザ'      , sys_groups_path(0)
+ %><%= menu_link :manager , :setting  , '設定'        , cms_kana_dictionaries_path
+ %>
+</div>

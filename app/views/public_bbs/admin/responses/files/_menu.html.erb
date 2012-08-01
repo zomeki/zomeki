@@ -1,0 +1,8 @@
+<div id="content">
+<div class="actionMenu" style="margin: 2px 0px 4px 0px;">
+<%= action_menu :index,   public_files_uri %>
+<%= action_menu :show,    "#{public_files_uri}/#{@item.id}" %>
+<%= action_menu :edit,    "#{public_files_uri}/#{@item.id}/edit" if safe{@item.editable?} %>
+<%= action_menu :destroy, "#{public_files_uri}/#{@item.id}"      if safe{@item.deletable?} %>
+</div>
+</div>

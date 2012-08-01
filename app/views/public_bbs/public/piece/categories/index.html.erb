@@ -1,0 +1,6 @@
+<ul>
+  <% @items.each do |item| %>
+    <li><%= link_to item.title, "#{@public_uri}#{item.name}/" %>
+      <%= category_tree(item, @public_uri) %></li>
+  <% end %>
+</ul>

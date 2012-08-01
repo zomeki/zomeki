@@ -1,0 +1,30 @@
+<div class="contentNewsletterComplete">
+
+<% if @item.subscribe? %>
+  <% if @content.sent_addition_body.blank? %>
+    <p>登録完了</p>
+    <div class="body">
+    ご登録いただいたメールアドレス宛に、登録完了メールを送信させていただきました。<br />
+    ご登録ありがとうございました。
+    </div>
+  <% else %>
+    <%= raw @content.sent_addition_body %>
+  <% end %>
+
+<% else %>
+  <% if @content.sent_addition_body.blank? %>
+    <p>解除受付</p>
+    <div class="body">
+    ご利用ありがとうございました。<br />
+    ご登録いただいていたメールアドレス宛に、メールマガジン解除のご案内メールを送信させていただきました。<br />
+    メールの内容に従って、解除手続きを完了させてください。<br />
+    <br />
+    ※この時点ではまだメールマガジンの解除手続きは完了していません。
+    </div>
+  <% else %>
+      <%= raw @content.sent_deletion_body %>
+  <% end %>
+
+<% end %>
+
+</div>

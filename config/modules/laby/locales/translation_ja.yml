@@ -1,0 +1,13 @@
+ja: 
+  activerecord: 
+    attributes: 
+      laby/doc: 
+        id: "記事ID"
+        name: "記事番号"
+        state: "状態"
+        title: "タイトル"
+        head: "ヘッダー"
+        body: "内容"
+      
+      ## content
+      laby/content/doc:

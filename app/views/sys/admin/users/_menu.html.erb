@@ -1,0 +1,11 @@
+<div class="actionMenu">
+<%= action_menu :new %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit    if safe{@item.editable?} %>
+<%- if @item.root? -%>
+システム管理者は削除できません。
+<%- else -%>
+<%= action_menu :destroy if safe{@item.deletable?} %>
+<%- end -%>
+</div>

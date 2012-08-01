@@ -1,0 +1,13 @@
+sys:
+  #暗号化パスワード
+  crypt_pass: pass
+  
+  #承認者候補に他所属の管理者を表示
+  recognizers_include_admin: false
+
+  #自動リンクチェック
+  auto_link_check: true
+
+cms:
+  #ページ数付きページ書き出し数
+  publish_more_pages: 0

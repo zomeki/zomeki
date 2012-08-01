@@ -1,0 +1,29 @@
+<%= javascript_tag do %>
+$(function() {
+  $('#item_file').change(function(e){
+    var name = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+    $('#item_name').val(name.replace(/[^0-9a-z\.\-_\\+@#]/ig, ''));
+    $('#item_title').val(name.replace(/(.*)\.[a-z]+$/i, '$1'));
+  });
+});
+<% end %>
+
+<table class="show" style="margin-top: 0;">
+  <% unless @item.id %>
+  <tr>
+    <th><label for="item_file"><%= @item.locale(:file) %></label></th>
+    <td><%= f.file_field :file %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th><label for="item_name"><%= @item.locale(:name) %><br /><span class="required">※半角英数字のみ</span></label></th>
+    <td><%= f.text_field :name, :class => 'string' %></td>
+  </tr>
+  <tr>
+    <th><label for="item_title"><%= @item.locale(:title) %><br /><span class="required">※日本語でわかりやすく</span></label></th>
+    <td>
+      <%= f.text_field :title, :class => 'string' %>
+      <%= f.submit(submit_label) %>
+    </td>
+  </tr>
+</table>

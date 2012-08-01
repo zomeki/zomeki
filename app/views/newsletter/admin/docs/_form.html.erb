@@ -1,0 +1,30 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'states' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'name autoWrap mailBodyText', :style => 'width: 600px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:body) %> <span class="note">※</span></th>
+    <td><%= f.text_area :body, :style => "width: 600px; height: 300px;", :class => 'autoWrap mailBodyText' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">携帯向け</p>
+<table class="show" id="mobileForm">
+  <tr>
+    <th><%= @item.locale(:mobile_title) %></th>
+    <td><%= f.text_field :mobile_title, :style => 'width: 300px;', :class => 'autoWrap mailBodyText' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:mobile_body) %></th>
+    <td><%= f.text_area :mobile_body, :style => 'width: 300px; height: 300px;', :class => 'autoWrap mailBodyText' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

@@ -1,0 +1,37 @@
+<table class="show">
+  <tr>
+    <th>投稿No.</th>
+    <td><%= @item.elements["id"].text %></td>
+  </tr>
+    <th>投稿日時</th>
+    <td><%= @item.elements["created_at"].text %></td>
+  </tr><tr>
+    <th>投稿者名</th>
+    <td><%= @item.elements["name"].text %></td>
+  </tr><tr>
+    <th>タイトル</th>
+    <td><%= @item.elements["title"].text %></td>
+  </tr><tr>
+    <th>本文</th>
+    <td><%=hbr @item.elements["body"].text.gsub(/([^ ]{120})/, "\\1 ") %></td>
+  </tr>
+  <% if !@item.elements["email"].text.blank? %>
+  <tr>
+    <th>Email</th>
+    <td><%= @item.elements["email"].text %></td>
+  </tr>
+  <% end %>
+  <% if !@item.elements["uri"].text.blank? %>
+  <tr>
+    <th>URL</th>
+    <td><%= @item.elements["uri"].text %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>IPアドレス</th>
+    <td><%= @item.elements["ipaddr"].text %></td>
+  </tr><tr>
+    <th>ユーザエージェント</th>
+    <td><%= @item.elements["user_agent"].text %></td>
+  </tr>
+</table>

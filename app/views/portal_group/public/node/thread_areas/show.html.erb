@@ -1,0 +1,21 @@
+<div class="contentPortalGroupThreadArea">
+  <% case @content.setting_value(:threads_list_type)
+     when 'list' %>
+  <ul class="threads">
+    <% @threads.each do |thread| %>
+    <li><%- opts = (Core.site == thread.content.site) ? {} : {target: '_blank'} -%>
+        <%= link_to thread.title, "#{thread.content.site.full_uri}#{thread.public_uri.sub(/^\//, '')}", opts %>
+      （<%= thread.updated_at.strftime('%Y年%m月%d日 %H時%M分') %>）
+      <%= thread.user.name %></li>
+    <% end %>
+  </ul>
+  <% else %>
+  <div class="threads">
+    <% @threads.each do |thread| %>
+      <%= render :partial => 'public_bbs/public/shared/thread_summary', :locals => {:thread => thread} %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <%= paginate @threads %>
+</div>

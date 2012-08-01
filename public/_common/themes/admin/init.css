@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/* =============================================================================
+   Initializer
+============================================================================= */
+
+/* Elements
+--------------------------------------------------------- */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, checkbox {
+  margin: 0;
+  padding: 0;
+  border-style: none;
+  font-size: 100%;
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+}
+html {
+  height: 100%;
+  margin-bottom: 1px;
+}
+body {
+  background-color: #fff;
+  font-size: 80%;
+  font-family: "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+  line-height: 1.4;
+}
+article, aside, dialog, figure, footer, header, hgroup, nav, section, summary {
+  display: block;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+input, textarea, select, option {
+  font-size: 100%;
+  font-family: "MS Gothic", "ＭＳ　ゴシック", sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  empty-cells: show;
+}
+caption, th, td {
+  font-family: "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+  font-weight: 400;
+  text-align: left;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+}
+blockquote, q {
+  quotes: "" "";
+}
+ul, ol, dl {
+  margin: 0px 0px 0px 0px;
+}
+ul {
+  list-style-type: none;
+  list-style-position: outside;
+}
+li{
+  margin-left: 20px;
+  line-height: 1.4;
+}
+hr {
+  height: 1px;
+  margin: 7px 0px;
+  _margin: 0px 0px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}

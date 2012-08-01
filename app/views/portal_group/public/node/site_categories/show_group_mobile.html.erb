@@ -1,0 +1,22 @@
+<div class="contentPortalGroupSiteCategory contentPortalGroupSiteCategoryGroup">
+
+<div class="latest">
+  <div class="h2">新着サイト</div>
+  <% if @sites.size > 0 %><div class="sites">
+    <% @sites.each do |site| %>
+    <div class="doc">・<%=link_to h(site.title), site.public_full_uri%><%= site.date_and_site %></div>
+    <% end %>
+  </div><% end %>
+</div>
+
+<%= paginate @sites %>
+
+<% if @items.size > 0 %>
+<br />
+<div class="categories">
+  <div class="h3">■小分野別</div>
+  <div><% @items.each do |c| %><%= link_to "#{c.title}", "../#{c.name}/" %><span>/</span><% end %></div>
+</div>
+<% end %>
+
+</div>

@@ -1,0 +1,36 @@
+;;
+;;  chasenrc for unidic-1.3.9
+;;
+
+;(GRAMMAR /usr/local/lib/chasen/dic/unidic)
+(GRAMMAR ../morph/unidic)
+(DADIC chadic cmsdic)
+
+;(UNKNOWN_POS (名詞 普通名詞 一般))
+(UNKNOWN_POS (名詞))
+
+;(OUTPUT_FORMAT "<cha:W1 orth=\"%m\" kana=\"%?U/%m/%y/\" pron=\"%?U/%m/%a/\" pos=\"%U(%P-)\"%?T/ cType=\"%T \"//%?F/ cForm=\"%F \"//%?I/ %i//>%m</cha:W1>\n")
+(OUTPUT_FORMAT "<W1 orth=\"%m\" kana=\"%?U/%m/%y0/\" pron=\"%?U/%m/%a0/\" pos=\"%U(%P-)\"%?T/ cType=\"%T \"//%?F/ cForm=\"%F \"//%?I/ %i0//>%m</W1>\n")
+
+(OUTPUT_COMPOUND "SEG")
+
+;(BOS_STRING "")
+(BOS_STRING "<S>\n")
+
+;(EOS_STRING "")
+(EOS_STRING "</S>\n")
+
+(DEF_CONN_COST 10000)
+(POS_COST
+  ((*)       1)
+  ((UNKNOWN) 30000)
+)
+
+(CONN_WEIGHT 1)
+(MORPH_WEIGHT 1)
+(COST_WIDTH 0)
+
+(ANNOTATION
+  (("<" ">") "%m\n")
+  (("\"") "<cha:W1 orth=\"&#x22;\" kana=\"&#x22;\" pron=\"&#x22;\" pos=\"%U(%P-)\"%?T/ cType=\"%T \"//%?F/ cForm=\"%F \"//%?I/ %i//>%m</cha:W1>\n")
+)

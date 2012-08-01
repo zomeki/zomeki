@@ -1,0 +1,15 @@
+<div class="contentLabyDocs">
+
+<div class="docs">
+  <% if @items.size > 0 %>
+  <ul>
+    <% @items.each do |item| %>
+    <li>[<%= item.name %>] <%= link_to item.title, "#{@node_uri}#{item.name}/" %>
+    <% end %>
+  </ul>
+  <% end %>
+</div>
+
+<%= paginate @items %>
+
+</div>

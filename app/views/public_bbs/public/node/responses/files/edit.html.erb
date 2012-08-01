@@ -1,0 +1,6 @@
+<%= render :partial => 'menu' %>
+
+<%= form_for :item, :url => "#{public_files_uri}/#{@item.id}", :html => {:method => :put, :multipart => true} do |f| %>
+<%= error_messages_for :item %>
+<%= render :partial => 'form', :locals => {:f => f, :submit_label => '編集'} %>
+<% end %>

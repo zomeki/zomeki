@@ -1,0 +1,24 @@
+<div class="contentNewsletterForms">
+
+<div class="h2">メールマガジンの解除はこちら</div>
+
+<%= form_for :item, :url => "#{Page.current_node.public_uri}change/" do |f| %>
+
+<%= error_messages_for "item" %>
+
+<div class="form">
+  <% if !@content.deletion_body_mobile.blank? %><div class="body"><%= raw @content.deletion_body_mobile %></div><% end %>
+</div>
+
+  <div class="column">
+    <div class="name">メールアドレス <span class="required">※</span></div>
+    <div class="field"><%= f.text_field :unsubscribe_email, :class => 'textField' %></div>
+  </div>
+
+<div class="submitters">
+  <input type="submit" name="unsubscribe" value="解除する" />
+</div>
+
+<% end %>
+
+</div>

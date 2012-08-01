@@ -1,0 +1,22 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, [["有効","enabled"],["無効","disabled"]], :class => 'states' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:agent_state) %></th>
+    <td><%= f.radio_buttons :agent_state, @item.agent_states, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:email) %> <span class="note">※</span></th>
+    <td><%= f.text_field :email, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= f.text_field :name, :class => 'name' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>
