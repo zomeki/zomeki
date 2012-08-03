@@ -45,18 +45,22 @@ SELinuxを無効にします。
  3 事前準備
 **********************************************************************
 
+yumリポジトリにEPELを追加します。
+
+  # rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm
+
 必要なパッケージをインストールします。
 
   # yum -y install \
-  #   wget make gcc-c++ \
-  #   libxslt libxslt-devel libxml2-devel libyaml-devel readline-devel \
-  #   libjpeg-devel libpng-devel \
-  #   librsvg2-devel ghostscript-devel \
-  #   ImageMagick ImageMagick-devel \
-  #   curl-devel nkf openldap-devel \
-  #   shared-mime-info \
-  #   httpd httpd-devel \
-  #   mysql-server mysql-devel
+  > wget make gcc-c++ \
+  > libxslt libxslt-devel libxml2-devel libyaml-devel readline-devel \
+  > libjpeg-devel libpng-devel \
+  > librsvg2-devel ghostscript-devel \
+  > ImageMagick ImageMagick-devel \
+  > curl-devel nkf openldap-devel \
+  > shared-mime-info \
+  > httpd httpd-devel \
+  > mysql-server mysql-devel
 
 必要なパッケージをダウンロードします。
 
