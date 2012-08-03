@@ -19,11 +19,7 @@ ext/morph/chaone/chaone
 ext/morph/chaone/chaone.o
 ext/morph/chaone/config.log
 ext/morph/chaone/config.status
-sites/00/00/00/*
+sites/
 upload/
 
 vendor/bundle/
-
-# 運用時は管理対象外
-config/virtual-hosts/sites.conf
-sites/00/00/00/01/
