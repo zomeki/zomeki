@@ -179,7 +179,7 @@ Phusion Passengerをインストールします。
 Apacheに設定を追加します。
 
   # cp /var/share/zomeki/config/samples/passenger.conf \
-  > /etc/httpd/conf.d/passenger.conf
+  > /etc/httpd/conf.d/
 
 **********************************************************************
   7 ZOMEKI のインストール
