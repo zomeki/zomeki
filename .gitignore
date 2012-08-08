@@ -1,8 +1,8 @@
-.bundle
+/.bundle
 db/*.sqlite3
 log/*.log
-tmp/
-.sass-cache/
+/tmp/
+/.sass-cache/
 
 log/*.gz
 
@@ -19,7 +19,7 @@ ext/morph/chaone/chaone
 ext/morph/chaone/chaone.o
 ext/morph/chaone/config.log
 ext/morph/chaone/config.status
-sites/
-upload/
+/sites/
+/upload/
 
 vendor/bundle/
