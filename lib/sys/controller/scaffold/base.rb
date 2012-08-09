@@ -22,6 +22,7 @@ protected
   
   def _create(item, options = {}, &block)
     if item.creatable? && item.save
+      item.reload
       status         = params[:_created_status] || :created
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || '登録処理が完了しました。'
@@ -41,6 +42,7 @@ protected
   
   def _update(item, options = {}, &block)
     if item.editable? && item.save
+      item.reload
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = '更新処理が完了しました。'
       yield if block_given?
