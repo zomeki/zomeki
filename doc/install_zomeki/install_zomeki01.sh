@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "
-# ## ZOMEKI v1.0.1    インストールマニュアル                  2012-08-06
+# ## ZOMEKI v1.0.1    インストールマニュアル
 # 
 # **********************************************************************
 #  1 想定環境
@@ -59,25 +59,30 @@ echo "
 # **********************************************************************
 #  3 事前準備
 # **********************************************************************
-# 
-# 必要なパッケージをインストールします。
+#
+# yumリポジトリにEPELを追加します。
+#
+#   # rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm
 "
+rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm
 
 echo "press Enter"
 read Enter
 
 # 
 echo "
+# 必要なパッケージをインストールします。
+#
 #   # yum -y install \
-#   #   wget make gcc-c++ \
-#   #   libxslt libxslt-devel libxml2-devel libyaml-devel readline-devel \
-#   #   libjpeg-devel libpng-devel \
-#   #   librsvg2-devel ghostscript-devel \
-#   #   ImageMagick ImageMagick-devel \
-#   #   curl-devel nkf openldap-devel \
-#   #   shared-mime-info \
-#   #   httpd httpd-devel \
-#   #   mysql-server mysql-devel
+#   > wget make gcc-c++ \
+#   > libxslt libxslt-devel libxml2-devel libyaml-devel readline-devel \
+#   > libjpeg-devel libpng-devel \
+#   > librsvg2-devel ghostscript-devel \
+#   > ImageMagick ImageMagick-devel \
+#   > curl-devel nkf openldap-devel \
+#   > shared-mime-info \
+#   > httpd httpd-devel \
+#   > mysql-server mysql-devel
 "
 yum -y install \
   wget make gcc-c++ \
@@ -287,12 +292,12 @@ echo "
 # Apacheに設定を追加します。
 # 
 #   # cp /var/share/zomeki/config/samples/passenger.conf \
-#   > /etc/httpd/conf.d/passenger.conf
+#   > /etc/httpd/conf.d/
 "
 gem install passenger -v 3.0.14
 passenger-install-apache2-module
 cp /var/share/zomeki/config/samples/passenger.conf \
-/etc/httpd/conf.d/passenger.conf
+/etc/httpd/conf.d/
 
 echo "press Enter"
 read Enter
