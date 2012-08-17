@@ -5,7 +5,7 @@ development:
   database: zomeki_development
   pool: 5
   username: zomeki
-  password: pass
+  password: zomekipass
   host: 127.0.0.1
 
 test:
@@ -15,7 +15,7 @@ test:
   database: zomeki_test
   pool: 5
   username: zomeki
-  password: pass
+  password: zomekipass
   host: 127.0.0.1
 
 production:
@@ -25,5 +25,5 @@ production:
   database: zomeki_production
   pool: 5
   username: zomeki
-  password: pass
+  password: zomekipass
   host: 127.0.0.1
