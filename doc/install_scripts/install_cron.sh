@@ -1,5 +1,5 @@
 #!/bin/sh
-DONE_FLAG="/tmp/zomeki_$0_done"
+DONE_FLAG="/tmp/$0_done"
 
 echo '#### Install cron ####'
 if [ -f $DONE_FLAG ]; then exit; fi
