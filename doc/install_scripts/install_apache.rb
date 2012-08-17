@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-DONE_FLAG = "/tmp/zomeki_#{$0}_done"
+DONE_FLAG = "/tmp/#{$0}_done"
 
 PASSENGER_VERSION = '3.0.14'
 
