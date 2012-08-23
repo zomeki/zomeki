@@ -3,7 +3,7 @@ DONE_FLAG="/tmp/$0_done"
 
 echo '#### Install cron ####'
 if [ -f $DONE_FLAG ]; then exit; fi
-echo '-- PRESS ANY KEY --'
+echo '-- PRESS ENTER KEY --'
 read KEY
 
 ubuntu() {
