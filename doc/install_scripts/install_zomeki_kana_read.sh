@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
 echo '#### Install ZOMEKI (kana, read) ####'
@@ -34,7 +34,7 @@ centos() {
   wget http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
   tar zxf ipadic-2.7.0.tar.gz && cd ipadic-2.7.0 && ./configure
 cat <<'EOF' > to_utf8.sh
-#!/bin/sh
+#!/bin/bash
 for file in *.dic *.cha chasenrc
 do
 if [ -f $file ]; then

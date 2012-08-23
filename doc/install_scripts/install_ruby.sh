@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
 RUBY_19='ruby-1.9.3-p194'

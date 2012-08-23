@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
 if [ -z "$ZOMEKI_VERSION" ]; then ZOMEKI_VERSION='v1.0.2'; fi
