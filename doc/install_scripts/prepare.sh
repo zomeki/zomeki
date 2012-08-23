@@ -1,8 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ -z "$ZOMEKI_VERSION" ]; then ZOMEKI_VERSION='v1.0.2'; fi
-
-INSTALL_SCRIPTS_URL="https://raw.github.com/zomeki/zomeki/${ZOMEKI_VERSION}/doc/install_scripts"
+INSTALL_SCRIPTS_URL='https://raw.github.com/zomeki/zomeki/master/doc/install_scripts'
 
 echo '#### Prepare to install ####'
 

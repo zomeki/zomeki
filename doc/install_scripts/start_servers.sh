@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
 echo '#### Start servers ####'
