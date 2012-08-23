@@ -5,7 +5,7 @@ RUBY_19='ruby-1.9.3-p194'
 
 echo "#### Install $RUBY_19 ####"
 if [ -f $DONE_FLAG ]; then exit; fi
-echo '-- PRESS ANY KEY --'
+echo '-- PRESS ENTER KEY --'
 read KEY
 
 ubuntu() {

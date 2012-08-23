@@ -6,7 +6,7 @@ PASSENGER_VERSION = '3.0.14'
 
 puts '#### Install Apache ####'
 exit if File.exist?(DONE_FLAG)
-puts '-- PRESS ANY KEY --'
+puts '-- PRESS ENTER KEY --'
 gets
 
 require 'fileutils'

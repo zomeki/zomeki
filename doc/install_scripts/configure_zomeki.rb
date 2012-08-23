@@ -4,7 +4,7 @@ DONE_FLAG = "/tmp/#{$0}_done"
 
 puts '#### Configure ZOMEKI ####'
 exit if File.exist?(DONE_FLAG)
-puts '-- PRESS ANY KEY --'
+puts '-- PRESS ENTER KEY --'
 gets
 
 require 'fileutils'

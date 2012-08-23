@@ -5,7 +5,7 @@ if [ -z "$ZOMEKI_VERSION" ]; then ZOMEKI_VERSION='v1.0.2'; fi
 
 echo '#### Install ZOMEKI ####'
 if [ -f $DONE_FLAG ]; then exit; fi
-echo '-- PRESS ANY KEY --'
+echo '-- PRESS ENTER KEY --'
 read KEY
 
 ubuntu() {
