@@ -6,7 +6,7 @@ See COPYING
 
 == 想定環境
 
-OS:: CentOS 6.3
+OS:: CentOS 6.3 / Ubuntu 12.04
 Webサーバ:: Apache 2.2
 DBシステム:: MySQL 5.1
 Ruby:: 1.9.3
