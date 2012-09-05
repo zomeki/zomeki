@@ -12,11 +12,11 @@ DBシステム:: MySQL 5.1
 Ruby:: 1.9.3
 Rails:: 3.1.7
 
-== マニュアル
+== 自動スクリプト
 
-doc/INSTALL.txt
+  # export LANG=ja_JP.UTF-8; curl -L http://install.zomeki.jp | bash
 
-== スクリプト
+== 手動マニュアル
 
-  # export LANG=ja_JP.UTF-8
-  # curl -L https://raw.github.com/zomeki/zomeki/master/doc/install_scripts/prepare.sh | bash
+- doc/INSTALL_centos.txt
+- doc/INSTALL_ubuntu.txt
