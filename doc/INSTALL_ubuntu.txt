@@ -1,0 +1,350 @@
+## ZOMEKI v1.0.1    インストールマニュアル for Ubuntu
+
+**********************************************************************
+ 1 想定環境
+**********************************************************************
+
+[システム]
+OS         : Ubuntu Server 12.04 LTS
+Webサーバ  : Apache 2.2
+DBシステム : MySQL 5.5
+Ruby       : 1.9.3
+Rails      : 3.1.6
+
+[設定]
+ドメイン   : zomeki.example.com
+
+**********************************************************************
+ 2 Ubuntu のインストール
+**********************************************************************
+
+Ubuntuをインストールします。
+
+初期ユーザ/パスワードはzomeki/zomekiで作成します。
+
+インストールするソフトウェアの選択では以下のパッケージを選択します。
+  [*] OpenSSH server
+  [*] LAMP server
+
+  ※ここではMySQLのrootユーザのパスワードに「pass」を設定するものとします。
+  ※パスワードは環境に応じて適切に設定してください。
+
+zomekiユーザでログインします。
+
+rootユーザーに変更します。
+
+  $ sudo su -
+
+**********************************************************************
+ 3 事前準備
+**********************************************************************
+
+必要なパッケージをインストールします。
+
+  # apt-get install  \
+  > build-essential libyaml-dev  \
+  > libmysql++-dev libmagick++-dev libldap2-dev libsasl2-dev  \
+  > libcurl4-openssl-dev apache2-prefork-dev nkf libxslt-dev
+
+必要なパッケージをダウンロードします。
+
+  # cd /usr/local/src
+  # wget https://github.com/zomeki/zomeki/tarball/v1.0.1 -O zomeki-1.0.1.tar.gz
+  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
+  # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
+  # wget "http://sourceforge.jp/frs/redir.php?m=jaist&f=%2Fchasen-legacy%2F32224%2Fchasen-2.4.4.tar.gz" -O chasen-2.4.4.tar.gz
+  # wget "http://sourceforge.jp/frs/redir.php?m=iij&f=%2Fipadic%2F24435%2Fipadic-2.7.0.tar.gz" -O ipadic-2.7.0.tar.gz
+  # wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.1.tar.gz
+
+ZOMEKIソースコードを設置します。
+
+  # mkdir /var/share
+  # tar xvzf zomeki-1.0.1.tar.gz -C /var/share
+  # mv /var/share/zomeki-zomeki-* /var/share/zomeki
+  # chown -R zomeki:zomeki /var/share/zomeki
+
+**********************************************************************
+ 4 Apache の設定
+**********************************************************************
+
+設定ファイルを編集します。
+
+  # vi /etc/apache2/sites-available/default
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ServerName zomeki.example.com    #追加
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+設定ファイルにエラーがないことを確認し、Apacheを起動します。
+
+  # apache2ctl configtest
+  # service apache2 start
+
+**********************************************************************
+ 5 MySQL の設定
+**********************************************************************
+
+文字エンコーディングの標準を UTF-8 に設定します。
+
+  # vi /etc/mysql/my.cnf
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  [mysqld]
+  character-set-server=utf8     #追加
+
+  [client]
+  default-character-set=utf8    #追加
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+MySQLを起動します。
+
+  # service mysql restart
+
+zomekiユーザを作成します。
+
+  # mysql -u root -ppass \
+  > -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'pass'"
+
+  ※パスワードは環境に応じて適切に設定してください。
+
+**********************************************************************
+ 6 Ruby on Rails のインストール
+**********************************************************************
+
+======================================================================
+ 6.1 Ruby のインストール
+======================================================================
+
+Rubyをインストールします。
+
+  # cd /usr/local/src
+  # tar xvzf ruby-1.9.3-p194.tar.gz
+  # cd ruby-1.9.3-p194
+  # ./configure
+  # make && make install
+
+必要なパッケージをインストールします。
+
+  # cd /usr/local/src/ruby-1.9.3-p194
+  # apt-get install libopenssl-ruby
+  # cd ./ext/openssl
+  # ruby extconf.rb
+  # make && make install
+
+  # cd /usr/local/src/ruby-1.9.3-p194
+  # apt-get install zlib1g-dev
+  # cd ./ext/zlib
+  # ruby extconf.rb
+  # make && make install
+
+======================================================================
+ 6.2 gemライブラリ のインストール
+======================================================================
+
+必要ライブラリをインストールします。
+
+  # cd /var/share/zomeki
+  # gem install bundler
+  # bundle install --without test development
+
+======================================================================
+ 6.3 Phusion Passenger のインストール
+======================================================================
+
+Phusion Passengerをインストールします。
+
+  # gem install passenger -v 3.0.14
+  # passenger-install-apache2-module
+
+  ( 画面の内容を確認して Enterキーを押してください。 )
+
+Apacheに設定を追加します。
+
+  # cp /var/share/zomeki/config/samples/passenger.conf \
+  > /etc/apache2/conf.d/passenger.conf
+
+**********************************************************************
+ 7 ZOMEKI のインストール
+**********************************************************************
+
+zomekiユーザに変更します。
+
+  # su - zomeki
+  $ cd /var/share/zomeki
+
+======================================================================
+ 7.1 設定ファイル
+======================================================================
+
+環境に応じて設定ファイルを編集します。
+
+ZOMEKI基本設定
+
+  $ vi config/core.yml
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  production:
+    title: ZOMEKI
+    uri: http://zomeki.example.com/
+    proxy: ※プロキシ
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  ※production部を編集してください。
+
+  ※プロキシ
+  プロキシサーバが導入されている場合は
+  http://example:8080/ の様に記述してください。
+
+DB接続情報
+
+  $ vi config/database.yml
+
+  ※production部を編集してください。
+
+VirtualHost設定
+
+  $ vi config/virtual-hosts/zomeki.conf
+
+======================================================================
+ 7.2 データベースの作成
+======================================================================
+
+データベースとテーブルを作成し、初期データを登録します。
+
+  $ bundle exec rake db:setup RAILS_ENV=production
+
+======================================================================
+ 7.3 VirtualHost の反映
+======================================================================
+
+Apacheに設定を追加します。
+
+  $ sudo su -
+  # ln -s /var/share/zomeki/config/virtual-hosts/zomeki.conf \
+  > /etc/apache2/conf.d/
+
+Apacheの rewrite モジュールを有効にします。
+
+  # a2enmod rewrite
+
+設定ファイルを編集します。
+
+  # vi /etc/apache2/ports.conf
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #NameVirtualHost *:80            #コメントにします
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Apache を再起動します。
+
+  # apache2ctl configtest
+  # service apache2 restart
+
+ここまでの手順で ZOMEKI にアクセスすることができます。
+
+  公開画面 : http://zomeki.example.com/
+
+  管理画面 : http://zomeki.example.com/_system
+
+次のユーザが登録されています。
+
+    管理者（システム管理者）
+      ユーザID   : zomeki
+      パスワード : zomeki
+
+**********************************************************************
+ 8 ZOMEKI のインストール (ふりがな・読み上げ機能)
+**********************************************************************
+
+LAMEをインストールします。
+
+  # cd /usr/local/src
+  # tar xvzf lame-3.99.1.tar.gz
+  # cd lame-3.99.1
+  # ./configure --prefix=/usr
+  # make && make install
+
+Dartsをインストールします。
+
+  # cd /usr/local/src
+  # tar xvzf darts-0.32.tar.gz
+  # cd darts-0.32
+  # ./configure --prefix=/usr
+  # make && make install
+
+ChaSenをインストールします。
+
+  # cd /usr/local/src
+  # tar xvzf chasen-2.4.4.tar.gz
+  # cd chasen-2.4.4
+  # ./configure --prefix=/usr
+  # make && make install
+
+  設定ファイルを認識させます。
+
+  # mkdir /usr/etc
+  # ln /usr/local/etc/chasenrc /usr/etc/chasenrc
+
+IPAdicをインストールします。
+
+  # cd /usr/local/src
+  # tar xvzf ipadic-2.7.0.tar.gz
+  # cd ipadic-2.7.0
+  # ./configure --prefix=/usr
+
+  辞書をUTF8に変換します。
+
+  # vi to_utf8.sh    #新規作成
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #!/bin/sh
+  for file in *.dic *.cha chasenrc
+  do
+  if [ -f $file ]; then
+      nkf --utf8 $file > tmpfile
+      mv tmpfile $file
+  fi
+  done
+  exit
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  # chmod 744 to_utf8.sh
+  # ./to_utf8.sh
+  # ldconfig
+  # `chasen-config --mkchadic`/makemat -i w
+  # `chasen-config --mkchadic`/makeda -i w chadic *.dic
+  # make install
+
+ChaOneをインストールします。
+
+  # cd /var/share/zomeki/ext/morph/chaone
+  # chmod 775 configure
+  # ./configure
+  # make && make install
+
+GalateaTalkをインストールします。
+
+  # ln -s /usr/include/linux/ /usr/include/sys
+
+  # cd /var/share/zomeki/ext/gtalk
+  # chmod 775 configure
+  # ./configure   ######## configure: error: sys/soundcard.h is not found
+  # make
+  # chmod 747 /var/share/zomeki/ext/gtalk_filter.rb
+
+**********************************************************************
+ 9 定期実行設定
+**********************************************************************
+
+  # su - zomeki
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # 記事の公開/非公開処理を行います。
+  10,25,40,55 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
+
+  # トップページや中間ページを静的ファイルとして書き出します。
+  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/nodes/publish')"
+
+  # 音声ファイルを静的ファイルとして書き出します。
+  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/talk_tasks/exec')"
+
+  # 新着記事ポータルで設定したAtomフィードを取り込みます。
+  0 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/feeds/read')"
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+**********************************************************************
