@@ -66,6 +66,8 @@ site = Cms::Site.create!(
   :map_key  => map_key,
   :portal_group_state => 'visible'
 )
+site.groups << first_group
+site.groups << zomeki_group
 
 concept = Cms::Concept.create!(
   :parent_id => 0,
