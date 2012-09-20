@@ -7,7 +7,6 @@ class PortalArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::UnidRelation
   include Sys::Model::Rel::Creator
-#  include Cms::Model::Rel::Inquiry
   include Sys::Model::Rel::Recognition
   include Sys::Model::Rel::Task
   include Cms::Model::Rel::Map
@@ -381,12 +380,6 @@ class PortalArticle::Doc < ActiveRecord::Base
     item.in_recognizer_ids  = recognition.recognizer_ids if recognition
     item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
     item.in_tags            = tags.collect{|c| c.word} if tags.size > 0
-    
-    if inquiry != nil && inquiry.group_id == Core.user.group_id
-      item.in_inquiry = inquiry.attributes
-    else
-      item.in_inquiry = {:group_id => Core.user.group_id}
-    end
     
     if maps.size > 0
       _maps = {}
