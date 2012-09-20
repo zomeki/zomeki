@@ -156,6 +156,12 @@ Phusion Passengerをインストールします。
 
   ( 画面の内容を確認して Enterキーを押してください。 )
 
+Phusion Passengerの設定ファイルを変更します。
+
+  ※PASSENGER_VERSION を 3.0.14 に変更
+
+  # vi /var/share/zomeki/config/samples/passenger.conf
+
 Apacheに設定を追加します。
 
   # cp /var/share/zomeki/config/samples/passenger.conf \
