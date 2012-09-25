@@ -18,7 +18,7 @@ centos() {
   yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
   cd /usr/local/src
   rm -rf $RUBY_19.tar.gz $RUBY_19
-  wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/$RUBY_19.tar.gz
+  wget http://core.ring.gr.jp/archives/lang/ruby/1.9/$RUBY_19.tar.gz
   tar zxf $RUBY_19.tar.gz && cd $RUBY_19 && ./configure && make && make install
 }
 
