@@ -102,9 +102,9 @@ class ActionView::Helpers::FormBuilder
     order   = options[:order] || :sort_no
     cond    = options[:conditions] || {}
     
-    choices = []
     roots = root.to_a
     if roots.size > 0
+      choices = []
       iclass  = roots[0].class
       indstr  = '　　'
       down = lambda do |_parent, _indent|
@@ -116,6 +116,8 @@ class ActionView::Helpers::FormBuilder
       roots.to_a.each {|item| down.call(item, 0)}
       choices = @template.options_for_select(choices, options[:selected].to_s)
       options.delete(:selected)
+    else
+      choices = ''
     end
     options.delete(:conditions)
     
