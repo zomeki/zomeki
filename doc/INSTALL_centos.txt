@@ -1,4 +1,4 @@
-## ZOMEKI v1.0.3    インストールマニュアル
+## ZOMEKI v1.0.4    インストールマニュアル
 
 **********************************************************************
  1 想定環境
@@ -65,7 +65,7 @@ yumリポジトリにEPELを追加します。
 必要なパッケージをダウンロードします。
 
   # cd /usr/local/src
-  # wget https://github.com/zomeki/zomeki/tarball/v1.0.3 -O zomeki-1.0.3.tar.gz
+  # wget https://github.com/zomeki/zomeki/tarball/v1.0.4 -O zomeki-1.0.4.tar.gz
   # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
   # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
   # wget "http://sourceforge.jp/frs/redir.php?m=jaist&f=%2Fchasen-legacy%2F32224%2Fchasen-2.4.4.tar.gz"
@@ -80,7 +80,7 @@ zomekiユーザを作成します。
 ZOMEKIソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf zomeki-1.0.3.tar.gz -C /var/share
+  # tar xvzf zomeki-1.0.4.tar.gz -C /var/share
   # mv /var/share/zomeki-zomeki-* /var/share/zomeki
   # chown -R zomeki:zomeki /var/share/zomeki
 
