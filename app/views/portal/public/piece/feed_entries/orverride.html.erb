@@ -9,7 +9,7 @@
   <%= paginate(@entries).to_s.gsub!(/href="(.*?)page=([0-9]+).*?"/, 'href="feed.p\\2.html"') %>
 <% else %>
 <% if @node %><div class="more">
-  <%= link_to '<<新着記事一覧' , @node_uri %>
+  <%= link_to '>>新着記事一覧' , @node_uri %>
 </div><% end %>
 <% end %>
 
