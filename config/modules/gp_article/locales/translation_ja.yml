@@ -1,0 +1,7 @@
+ja:
+  activerecord:
+    models:
+      gp_article/doc: 記事
+    attributes:
+      gp_article/doc:
+        title: タイトル
