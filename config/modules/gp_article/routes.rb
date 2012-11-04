@@ -6,5 +6,9 @@ ZomekiCMS::Application.routes.draw do
     ## contents
     resources :content_base,
       :controller => 'admin/content/base'
+
+    resources :docs,
+      :controller => 'admin/docs',
+      :path       => ':content/docs'
   end
 end
