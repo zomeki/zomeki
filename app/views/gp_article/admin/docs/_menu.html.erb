@@ -1,0 +1,6 @@
+<%= render 'gp_article/admin/shared/menu', sub: (case action_name.to_sym
+                                                 when :index; '記事一覧'
+                                                 when :show;  '記事'
+                                                 when :new;   '記事登録'
+                                                 when :edit;  '記事編集'
+                                                 end) %>

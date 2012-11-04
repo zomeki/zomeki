@@ -1,0 +1,17 @@
+<%= render 'gp_article/admin/shared/search' -%>
+
+<table class="index">
+  <tr>
+    <th style="text-align: center;">詳細</th>
+    <th style="text-align: center;"><%=t 'activerecord.attributes.gp_article/doc.title' %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_article_doc_path(content: @content, id: item.id) %></td>
+    <td style="text-align: center;"><%= item.title %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>
