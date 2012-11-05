@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121105005847) do
+ActiveRecord::Schema.define(:version => 20121105070855) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -527,6 +527,22 @@ ActiveRecord::Schema.define(:version => 20121105005847) do
   end
 
   add_index "enquete_forms", ["content_id", "sort_no"], :name => "content_id"
+
+  create_table "gp_article_categories", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "content_id"
+    t.integer  "category_type_id"
+    t.integer  "parent_id"
+    t.integer  "layout_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "level_no"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "gp_article_category_types", :force => true do |t|
     t.integer "unid"
