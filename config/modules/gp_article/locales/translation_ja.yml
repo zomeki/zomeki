@@ -2,6 +2,10 @@ ja:
   activerecord:
     models:
       gp_article/doc: 記事
+      gp_article/category_type: カテゴリタイプ
     attributes:
       gp_article/doc:
         title: タイトル
+      gp_article/category_type:
+        name: 名前
+        display_order: 表示順
