@@ -1,0 +1,17 @@
+<table class="index">
+  <tr>
+    <th style="text-align: left; width: 60px;">詳細</th>
+    <th style="text-align: left;">名前</th>
+    <th style="text-align: left; width: 100px;">表示順</th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_article_category_type_path(content: @content, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.name %></td>
+    <td style="text-align: right;"><%= item.display_order %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
