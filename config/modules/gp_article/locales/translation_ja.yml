@@ -3,9 +3,17 @@ ja:
     models:
       gp_article/doc: 記事
       gp_article/category_type: カテゴリタイプ
+      gp_article/category: カテゴリ
     attributes:
       gp_article/doc:
         title: タイトル
       gp_article/category_type:
         name: 名前
-        display_order: 表示順
+        sort_no: 表示順
+      gp_article/category:
+        concept_id: コンセプト
+        name: カテゴリID
+        title: カテゴリ名
+        sort_no: 表示順
+        updated_at: 更新日時
+        state: 状態
