@@ -10,6 +10,9 @@ class GpArticle::CategoryType < ActiveRecord::Base
   validates :concept_id, :presence => true
   validates :content_id, :presence => true
 
+  has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpArticle::Category',
+                        :order => :sort_no, :dependent => :destroy
+
   validates :name, :presence => true
 
   default_scope order(:display_order)
