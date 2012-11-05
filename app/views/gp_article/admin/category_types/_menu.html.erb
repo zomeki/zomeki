@@ -1,0 +1,7 @@
+<%= render 'gp_article/admin/shared/menu', item_name: 'category_type',
+                                                 sub: "記事設定 ： #{case action_name.to_sym
+                                                      when :index; "#{t 'activerecord.models.gp_article/category_type'}一覧"
+                                                      when :show;  t('activerecord.models.gp_article/category_type')
+                                                      when :new;   "#{t 'activerecord.models.gp_article/category_type'}登録"
+                                                      when :edit;  "#{t 'activerecord.models.gp_article/category_type'}編集"
+                                                      end}" %>

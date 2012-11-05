@@ -1,6 +1,7 @@
-<%= render 'gp_article/admin/shared/menu', sub: (case action_name.to_sym
-                                                 when :index; '記事一覧'
-                                                 when :show;  '記事'
-                                                 when :new;   '記事登録'
-                                                 when :edit;  '記事編集'
-                                                 end) %>
+<%= render 'gp_article/admin/shared/menu', item_name: 'doc',
+                                                 sub: (case action_name.to_sym
+                                                      when :index; "#{t 'activerecord.models.gp_article/doc'}一覧"
+                                                      when :show;  t('activerecord.models.gp_article/doc')
+                                                      when :new;   "#{t 'activerecord.models.gp_article/doc'}登録"
+                                                      when :edit;  "#{t 'activerecord.models.gp_article/doc'}編集"
+                                                      end) %>

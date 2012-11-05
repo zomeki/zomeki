@@ -6,6 +6,13 @@ ZomekiCMS::Application.routes.draw do
     ## contents
     resources :content_base,
       :controller => 'admin/content/base'
+    resources :content_settings,
+      :controller => 'admin/content/settings',
+      :path       => ':content/content_settings'
+
+    resources :category_types,
+      :controller => 'admin/category_types',
+      :path       => ':content/category_types'
 
     resources :docs,
       :controller => 'admin/docs',

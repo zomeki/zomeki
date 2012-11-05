@@ -3,8 +3,11 @@
 </div>
 
 <div class="contentMenu">
-  <%= link_to '記事一覧', gp_article_docs_path %>
-  <% if Core.user.has_auth?(:designer) %>
-  <%#= link_to '記事一覧', gp_article_docs_path %>
-  <% end %>
+  <%= link_to '記事一覧', gp_article_docs_path, class: 'fixed' %>
+  <%- GpArticle::CategoryType.where(content_id: @content.id).each do |ct| -%>
+    <%= link_to "#{ct.name}設定", gp_article_content_settings_path %>
+  <%- end -%>
+  <%- if Core.user.has_auth?(:designer) -%>
+    <%= link_to '記事設定', gp_article_content_settings_path, class: 'fixed' %>
+  <%- end -%>
 </div>
