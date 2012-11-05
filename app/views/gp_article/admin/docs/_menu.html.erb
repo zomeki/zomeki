@@ -1,4 +1,4 @@
-<%= render 'gp_article/admin/shared/menu', item_name: 'doc',
+<%= render 'gp_article/admin/shared/menu', path_name: 'docs',
                                                  sub: (case action_name.to_sym
                                                       when :index; "#{t 'activerecord.models.gp_article/doc'}一覧"
                                                       when :show;  t('activerecord.models.gp_article/doc')
