@@ -1,7 +1,7 @@
-<%= render 'gp_article/admin/shared/menu', path_name: 'docs',
-                                                 sub: (case action_name.to_sym
-                                                      when :index; "#{t 'activerecord.models.gp_article/doc'}一覧"
-                                                      when :show;  t('activerecord.models.gp_article/doc')
-                                                      when :new;   "#{t 'activerecord.models.gp_article/doc'}登録"
-                                                      when :edit;  "#{t 'activerecord.models.gp_article/doc'}編集"
-                                                      end) %>
+<%= render 'gp_article/admin/shared/menu', index_path: gp_article_docs_path(content: @content),
+                                                  sub: (case action_name.to_sym
+                                                       when :index; "#{t 'activerecord.models.gp_article/doc'}一覧"
+                                                       when :show;  t('activerecord.models.gp_article/doc')
+                                                       when :new;   "#{t 'activerecord.models.gp_article/doc'}登録"
+                                                       when :edit;  "#{t 'activerecord.models.gp_article/doc'}編集"
+                                                       end) %>
