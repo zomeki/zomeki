@@ -3,6 +3,7 @@ class GpArticle::CategoryType < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
   include Cms::Model::Auth::Content
+  include Cms::Model::Base::Page
 
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
@@ -13,7 +14,10 @@ class GpArticle::CategoryType < ActiveRecord::Base
   has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpArticle::Category',
                         :order => :sort_no, :dependent => :destroy
 
-  validates :name, :presence => true
+  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
-  default_scope order(:display_order)
+  validates :name, :presence => true, :uniqueness => true
+  validates :title, :presence => true
+
+  default_scope order(:sort_no)
 end

@@ -5,10 +5,12 @@ class CreateGpArticleCategoryTypes < ActiveRecord::Migration
       t.references :concept
       t.references :content
 
-      t.string  :name
-      t.string  :kana
-      t.string  :slug
-      t.integer :display_order
+      t.string     :state
+      t.string     :name
+      t.string     :title
+      t.integer    :sort_no
+
+      t.timestamps
     end
   end
 end
