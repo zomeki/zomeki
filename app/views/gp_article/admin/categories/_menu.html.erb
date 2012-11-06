@@ -2,8 +2,8 @@
                                                                                                          category_type_id: @category_type.id,
                                                                                                          category_id: @parent_category.try(:id).to_i),
                                                   sub: (case action_name.to_sym
-                                                       when :index; "#{@category_type.name}一覧"
-                                                       when :show;  @category_type.name
-                                                       when :new;   "#{@category_type.name}登録"
-                                                       when :edit;  "#{@category_type.name}編集"
+                                                       when :index; "#{@category_type.title}一覧"
+                                                       when :show;  @category_type.title
+                                                       when :new;   "#{@category_type.title}登録"
+                                                       when :edit;  "#{@category_type.title}編集"
                                                        end) %>

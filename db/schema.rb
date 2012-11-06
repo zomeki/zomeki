@@ -545,13 +545,15 @@ ActiveRecord::Schema.define(:version => 20121105070855) do
   end
 
   create_table "gp_article_category_types", :force => true do |t|
-    t.integer "unid"
-    t.integer "concept_id"
-    t.integer "content_id"
-    t.string  "name"
-    t.string  "kana"
-    t.string  "slug"
-    t.integer "display_order"
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "gp_article_docs", :force => true do |t|

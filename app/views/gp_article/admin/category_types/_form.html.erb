@@ -2,11 +2,21 @@
 
 <table class="show">
   <tr>
-    <th><%= f.label :name %> <span class="note">※</span></th>
-    <td><%= f.text_field :name, :style => 'width: 500px;' %></td>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
   </tr>
   <tr>
-    <th><%= f.label :display_order %></th>
-    <td><%= f.text_field :display_order, :style => 'width: 50px;' %></td>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td><%= f.text_field :name, :class => 'id' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
 </table>
+
+<%= creator_form f %>
