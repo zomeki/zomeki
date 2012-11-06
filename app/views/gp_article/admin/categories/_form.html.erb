@@ -7,11 +7,11 @@
   </tr>
   <%= concept_and_layout_form f %>
   <tr>
-    <th><%= f.label :name, "#{@category_type.name}ID" %></th>
+    <th><%= f.label :name, "#{@category_type.title}ID" %></th>
     <td><%= f.text_field :name, :class => 'id' %></td>
   </tr>
   <tr>
-    <th><%= f.label :title, "#{@category_type.name}名" %></th>
+    <th><%= f.label :title, "#{@category_type.title}名" %></th>
     <td><%= f.text_field :title, :class => 'name' %></td>
   </tr>
   <tr>

@@ -5,7 +5,7 @@
 <div class="contentMenu">
   <%= link_to '記事一覧', gp_article_docs_path, class: 'fixed' %>
   <%- GpArticle::CategoryType.where(content_id: @content.id).each do |ct| -%>
-    <%= link_to "#{ct.name}設定", gp_article_category_type_category_categories_path(content: @content, category_type_id: ct.id, category_id: 0) %>
+    <%= link_to "#{ct.title}設定", gp_article_category_type_category_categories_path(content: @content, category_type_id: ct.id, category_id: 0) %>
   <%- end -%>
   <%- if Core.user.has_auth?(:designer) -%>
     <%= link_to '記事設定', gp_article_content_settings_path, class: 'fixed' %>
