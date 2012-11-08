@@ -12,7 +12,8 @@ class GpArticle::CategoryType < ActiveRecord::Base
   validates :content_id, :presence => true
 
   has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpArticle::Category',
-                        :order => :sort_no, :dependent => :destroy
+                        :order => :sort_no, :dependent => :destroy,
+                        :conditions => proc { ['content_id = ?', content_id] }
 
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
@@ -20,4 +21,8 @@ class GpArticle::CategoryType < ActiveRecord::Base
   validates :title, :presence => true
 
   default_scope order(:sort_no)
+
+  def root_categories
+    categories.where(parent_id: nil)
+  end
 end

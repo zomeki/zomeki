@@ -44,4 +44,10 @@ class GpArticle::Admin::CategoryTypesController < Cms::Controller::Admin::Base
     @item = GpArticle::CategoryType.find(params[:id])
     _destroy @item
   end
+
+  def category_tree
+    selected_ids = GpArticle::Doc.find_by_id(params[:doc_id]).try(:category_ids) || []
+    tree = GpArticle::CategoryType.find(params[:category_type_id]).root_categories.map {|c| c.descendants(selected_ids) }
+    render :js => tree.to_json, :layout => false
+  end
 end
