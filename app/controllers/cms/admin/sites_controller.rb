@@ -153,7 +153,10 @@ protected
   def make_files(item)
     dir = item.public_path
     FileUtils.mkdir_p(dir) unless ::File.exist?(dir)
-    
+
+    dir = "#{item.public_path}/_dynamic"
+    FileUtils.mkdir_p(dir) unless ::File.exist?(dir)
+
     dir = item.config_path
     FileUtils.mkdir_p(dir) unless ::File.exist?(dir)
     
