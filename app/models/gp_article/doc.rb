@@ -9,4 +9,6 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validates :concept_id, :presence => true
   validates :content_id, :presence => true
+
+  has_and_belongs_to_many :categories, :class_name => 'GpArticle::Category', :join_table => 'gp_article_categories_gp_article_docs'
 end

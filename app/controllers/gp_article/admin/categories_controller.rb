@@ -15,7 +15,7 @@ class GpArticle::Admin::CategoriesController < Cms::Controller::Admin::Base
     if @parent_category
       @items = @parent_category.children.paginate(page: params[:page], per_page: 20)
     else
-      @items = @category_type.categories.where(content_id: @content.id, parent_id: nil).paginate(page: params[:page], per_page: 20)
+      @items = @category_type.root_categories.paginate(page: params[:page], per_page: 20)
     end
   end
 
