@@ -7,6 +7,7 @@ ja:
     attributes:
       gp_article/doc:
         title: タイトル
+        updated_at: 更新日時
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名前
