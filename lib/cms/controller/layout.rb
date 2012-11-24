@@ -98,7 +98,7 @@ module Cms::Controller::Layout
           body.gsub!("[[piece/#{name}]]", piece_container_html(item, data))
         end
       rescue => e
-        #
+        Rails.logger.warn(e.message)
       end
     end
     
