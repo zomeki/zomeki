@@ -45,6 +45,7 @@ ja:
         concept_id: "コンセプト"
         model: "コンテンツ種別"
         name: "コンテンツ名"
+        note: "備考"
 
       cms/content_setting:
         content_id: "コンテンツ"
