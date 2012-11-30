@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121106061720) do
+ActiveRecord::Schema.define(:version => 20121130005515) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -164,6 +164,7 @@ ActiveRecord::Schema.define(:version => 20121106061720) do
     t.string   "model"
     t.string   "name"
     t.text     "xml_properties", :limit => 2147483647
+    t.string   "note"
   end
 
   create_table "cms_data_file_nodes", :force => true do |t|

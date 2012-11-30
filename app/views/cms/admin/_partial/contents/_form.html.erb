@@ -11,6 +11,9 @@
   </tr><tr>
     <th><%= @item.locale :name %></th>
     <td><%= f.text_field :name, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= f.label :note %></th>
+    <td><%= f.text_field :note %></td>
   </tr>
 <% if defined?(container) && container != :tr %>
 </table>
