@@ -3,6 +3,7 @@
 <table class="index">
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= GpArticle::Doc.human_attribute_name :id %></th>
     <th><%= GpArticle::Doc.human_attribute_name :title %></th>
     <th style="text-align: center; width: 120px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
   </tr>
@@ -10,6 +11,7 @@
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, gp_article_doc_path(content: @content, id: item.id) %></td>
+    <td style="text-align: right;"><%= item.id %></td>
     <td style="text-align: center;"><%= item.title %></td>
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
   </tr>
