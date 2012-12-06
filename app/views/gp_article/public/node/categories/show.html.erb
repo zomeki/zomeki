@@ -1,0 +1,5 @@
+<ul>
+  <%- @category.children.each do |category| -%>
+  <li><%= category.title %></li>
+  <%- end -%>
+</ul>
