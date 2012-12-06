@@ -3,4 +3,8 @@
     <th><%= @item.locale :title %></th>
     <td><%= @item.title %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :body %></th>
+    <td><%=sanitize @item.body, attributes: %w(style) %></td>
+  </tr>
 </table>

@@ -16,5 +16,10 @@ class CreateGpArticleCategories < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :gp_article_categories, :concept_id
+    add_index :gp_article_categories, :content_id
+    add_index :gp_article_categories, :category_type_id
+    add_index :gp_article_categories, :parent_id
+    add_index :gp_article_categories, :layout_id
   end
 end

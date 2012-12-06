@@ -8,6 +8,7 @@ ja:
       gp_article/doc:
         id: 記事番号
         title: タイトル
+        body: 内容
         updated_at: 更新日時
       gp_article/category_type:
         name: カテゴリタイプID

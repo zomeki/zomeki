@@ -27,7 +27,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.concept = @content.concept
     @item.content = @content
     @item.in_creator = {'group_id' => Core.user_group.id, 'user_id' => Core.user.id}
-    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
+#TODO: ツリー表示は不採用
+#    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
+    if params[:categories].is_a?(Hash)
+      @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+    end
     _create @item
   end
 
@@ -38,7 +42,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def update
     @item = GpArticle::Doc.find(params[:id])
     @item.attributes = params[:item]
-    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
+#TODO: ツリー表示は不採用
+#    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
+    if params[:categories].is_a?(Hash)
+      @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+    end
     _update @item
   end
 
