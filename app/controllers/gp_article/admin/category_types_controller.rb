@@ -19,7 +19,7 @@ class GpArticle::Admin::CategoryTypesController < Cms::Controller::Admin::Base
   end
 
   def new
-    @item = GpArticle::CategoryType.new(state: 'public', sort_no: 1)
+    @item = GpArticle::CategoryType.new(state: 'public', sort_no: 10)
   end
 
   def create

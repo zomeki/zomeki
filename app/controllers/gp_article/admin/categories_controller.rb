@@ -25,7 +25,7 @@ class GpArticle::Admin::CategoriesController < Cms::Controller::Admin::Base
   end
 
   def new
-    @item = @category_type.categories.build(state: 'public', sort_no: 1)
+    @item = @category_type.categories.build(state: 'public', sort_no: 10)
   end
 
   def create
