@@ -545,6 +545,12 @@ ActiveRecord::Schema.define(:version => 20121130005515) do
     t.datetime "updated_at"
   end
 
+  add_index "gp_article_categories", ["category_type_id"], :name => "index_gp_article_categories_on_category_type_id"
+  add_index "gp_article_categories", ["concept_id"], :name => "index_gp_article_categories_on_concept_id"
+  add_index "gp_article_categories", ["content_id"], :name => "index_gp_article_categories_on_content_id"
+  add_index "gp_article_categories", ["layout_id"], :name => "index_gp_article_categories_on_layout_id"
+  add_index "gp_article_categories", ["parent_id"], :name => "index_gp_article_categories_on_parent_id"
+
   create_table "gp_article_categories_gp_article_docs", :id => false, :force => true do |t|
     t.integer "category_id"
     t.integer "doc_id"
@@ -562,14 +568,21 @@ ActiveRecord::Schema.define(:version => 20121130005515) do
     t.datetime "updated_at"
   end
 
+  add_index "gp_article_category_types", ["concept_id"], :name => "index_gp_article_category_types_on_concept_id"
+  add_index "gp_article_category_types", ["content_id"], :name => "index_gp_article_category_types_on_content_id"
+
   create_table "gp_article_docs", :force => true do |t|
     t.integer  "unid"
     t.integer  "concept_id"
     t.integer  "content_id"
     t.string   "title"
+    t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
+  add_index "gp_article_docs", ["content_id"], :name => "index_gp_article_docs_on_content_id"
 
   create_table "laby_docs", :force => true do |t|
     t.integer  "unid"

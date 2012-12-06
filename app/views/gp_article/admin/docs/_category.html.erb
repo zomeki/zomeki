@@ -1,0 +1,8 @@
+<%-
+  common_attrs = {id: nil}
+  common_attrs.merge!(disabled: true) unless available
+-%>
+<tr style="<%= 'display: none;' unless available %>">
+  <td><%= select_tag "categories[#{category_type.id}][]", options_from_collection_for_select(category_type.categories, :id, :title, category.id), common_attrs.merge(include_blank: true) %></td>
+  <td>&nbsp;</td>
+</tr>

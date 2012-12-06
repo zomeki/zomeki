@@ -1,22 +1,63 @@
-<%-
-  category_types = GpArticle::CategoryType.order(:id)
-  item = instance_variable_get("@#{f.object_name}")
--%>
+<%- item = instance_variable_get("@#{f.object_name}") -%>
 <table class="show">
   <tr>
     <th><%= f.label :title %></th>
     <td><%= f.text_field :title %></td>
   </tr>
   <tr>
+    <th><%= f.label :body %></th>
+    <td><%= f.text_area :body %></td>
+  </tr>
+  <%- @content.category_types.each do |category_type| -%>
+  <tr>
+    <th><%= category_type.title %></th>
+    <td>
+      <table id="category_type_<%= category_type.id %>_categories" class="noDesign">
+        <tbody>
+          <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
+          <%- item.categories.where(category_type_id: category_type.id).each do |category| -%>
+            <%= render 'category', category_type: category_type, category: category, available: true %>
+          <%- end -%>
+          <tr>
+            <td>&nbsp;</td>
+            <td style="text-align: right;"><div style="margin-top: -55px;"><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_categories_line" %></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= javascript_tag do -%>
+function set_click_event_handler(category_type_id) {
+  $('#add_category_type_' + category_type_id + '_categories_line').on('click', function () {
+    var categories_tbody = $('#category_type_' + category_type_id + '_categories > tbody');
+    categories_tbody.find('tr:first-child').clone(true).insertBefore(categories_tbody.find('tr:last-child')).show();
+    categories_tbody.find('tr:visible').each(function (idx, tr) {
+      $(tr).find(':disabled').removeAttr('disabled');
+    });
+  }).trigger('click');
+}
+
+$(document).ready(function () {
+  <%- @content.category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+});
+<%- end -%>
+
+<%#TODO: ツリー表示は不採用ここから %>
+<%- if false -%>
+  <tr>
     <th><%= GpArticle::Category.model_name.human %></th>
     <td>
-      <%- category_types.each do |ct| -%>
+      <%- @content.category_types.each do |ct| -%>
       <%= ct.title %><%= hidden_field_tag "categories[#{ct.id}][type]", ct.id %>
       <div id="categories_<%= ct.id %>_tree" style="margin: 10px 0 20px 0;"></div>
       <%- end -%>
     </td>
   </tr>
-</table>
 <%= stylesheet_link_tag '/_common/css/dynatree/ui.dynatree.css' %>
 <%= javascript_include_tag '/_common/js/dynatree/jquery.dynatree.js' %>
 <%= javascript_tag do -%>
@@ -46,7 +87,7 @@ $(document).ready(function () {
     update_category_tree(no);
   }
 
-  <%- category_types.each do |ct| -%>
+  <%- @content.category_types.each do |ct| -%>
   init_tree(<%= ct.id %>);
   <%- end -%>
 
@@ -77,9 +118,11 @@ $(document).ready(function () {
 
   <%# 対象のform内にあるものなら何でもいいため、ここのidは1固定とする。 -%>
   $('#categories_1_type').closest('form').submit(function (event) {
-    <%- category_types.each do |ct| -%>
+    <%- @content.category_types.each do |ct| -%>
     update_category_value(event.currentTarget, <%= ct.id %>);
     <%- end -%>
   });
 });
 <%- end -%>
+<%- end -%>
+<%#TODO: ツリー表示は不採用ここまで %>

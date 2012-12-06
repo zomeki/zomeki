@@ -6,8 +6,11 @@ class CreateGpArticleDocs < ActiveRecord::Migration
       t.references :content
 
       t.string     :title
+      t.text       :body
 
       t.timestamps
     end
+    add_index :gp_article_docs, :concept_id
+    add_index :gp_article_docs, :content_id
   end
 end
