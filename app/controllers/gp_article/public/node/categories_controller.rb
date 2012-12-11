@@ -9,6 +9,9 @@ class GpArticle::Public::Node::CategoriesController < Cms::Controller::Public::B
   end
 
   def show
+#TODO: Check ancestors
+p params[:ancestors]
+p params[:name]
     @category = GpArticle::Category.find_by_name(params[:name])
     return http_error(404) unless @category
   end
