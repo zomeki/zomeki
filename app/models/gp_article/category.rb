@@ -29,6 +29,18 @@ class GpArticle::Category < ActiveRecord::Base
 
   default_scope order(:category_type_id, :level_no, :sort_no)
 
+  def descendants(categories=[])
+    categories << ["#{'-' * level_no} #{parent.try(:title)}:#{title}", id]
+
+    unless children.empty?
+      children.map {|c| c.descendants(categories) }
+    end
+
+    return categories
+  end
+
+#TODO: ツリー表示は不採用ここから
+if false
   def descendants(selected_ids=[])
     tree = {key: id, title: title, tooltip: name}
 
@@ -42,4 +54,6 @@ class GpArticle::Category < ActiveRecord::Base
 
     return tree
   end
+end
+#TODO: ツリー表示は不採用ここまで
 end
