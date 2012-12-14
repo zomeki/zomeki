@@ -1,0 +1,5 @@
+<ul>
+  <%- @docs.each do |doc| -%>
+  <li><%= link_to doc.title, doc.public_full_uri %></li>
+  <%- end -%>
+</ul>
