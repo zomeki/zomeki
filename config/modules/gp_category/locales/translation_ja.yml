@@ -1,0 +1,11 @@
+ja:
+  activerecord:
+    models:
+      gp_category/category_type: カテゴリタイプ
+    attributes:
+      gp_category/category_type:
+        name: カテゴリタイプID
+        title: カテゴリタイプ名前
+        sort_no: 並び順
+        updated_at: 更新日時
+        state: 状態
