@@ -586,6 +586,7 @@ ActiveRecord::Schema.define(:version => 20121214080240) do
 
   create_table "gp_category_categories", :force => true do |t|
     t.integer  "unid"
+    t.integer  "concept_id"
     t.integer  "layout_id"
     t.integer  "category_type_id"
     t.integer  "parent_id"
@@ -594,18 +595,20 @@ ActiveRecord::Schema.define(:version => 20121214080240) do
     t.string   "title"
     t.integer  "level_no"
     t.integer  "sort_no"
+    t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "gp_category_categories", ["category_type_id"], :name => "index_gp_category_categories_on_category_type_id"
+  add_index "gp_category_categories", ["concept_id"], :name => "index_gp_category_categories_on_concept_id"
   add_index "gp_category_categories", ["layout_id"], :name => "index_gp_category_categories_on_layout_id"
   add_index "gp_category_categories", ["parent_id"], :name => "index_gp_category_categories_on_parent_id"
 
   create_table "gp_category_category_types", :force => true do |t|
     t.integer  "unid"
-    t.integer  "concept_id"
     t.integer  "content_id"
+    t.integer  "concept_id"
     t.integer  "layout_id"
     t.string   "state"
     t.string   "name"

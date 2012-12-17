@@ -8,7 +8,11 @@ class GpCategory::Category < ActiveRecord::Base
 
   default_scope order(:category_type_id, :level_no, :sort_no)
 
-  belongs_to :layout, :foreign_key => :layout_id, :class_name => 'Cms::Layout'
+  # Page
+  belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
+  belongs_to :layout,  :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+
+  # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   belongs_to :category_type, :foreign_key => :category_type_id, :class_name => 'GpCategory::CategoryType'
@@ -20,10 +24,6 @@ class GpCategory::Category < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :level_no]}
   validates :title, :presence => true
-
-  def concept
-    category_type.concept
-  end
 
   def content
     category_type.content
