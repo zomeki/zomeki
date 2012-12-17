@@ -16,3 +16,4 @@ ja:
         sort_no: 並び順
         updated_at: 更新日時
         state: 状態
+        description: 説明
