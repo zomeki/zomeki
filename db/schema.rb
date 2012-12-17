@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121214032428) do
+ActiveRecord::Schema.define(:version => 20121214080240) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -584,10 +584,29 @@ ActiveRecord::Schema.define(:version => 20121214032428) do
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
   add_index "gp_article_docs", ["content_id"], :name => "index_gp_article_docs_on_content_id"
 
+  create_table "gp_category_categories", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "layout_id"
+    t.integer  "category_type_id"
+    t.integer  "parent_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "level_no"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "gp_category_categories", ["category_type_id"], :name => "index_gp_category_categories_on_category_type_id"
+  add_index "gp_category_categories", ["layout_id"], :name => "index_gp_category_categories_on_layout_id"
+  add_index "gp_category_categories", ["parent_id"], :name => "index_gp_category_categories_on_parent_id"
+
   create_table "gp_category_category_types", :force => true do |t|
     t.integer  "unid"
     t.integer  "concept_id"
     t.integer  "content_id"
+    t.integer  "layout_id"
     t.string   "state"
     t.string   "name"
     t.string   "title"
@@ -598,6 +617,7 @@ ActiveRecord::Schema.define(:version => 20121214032428) do
 
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
   add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
+  add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
 
   create_table "laby_docs", :force => true do |t|
     t.integer  "unid"

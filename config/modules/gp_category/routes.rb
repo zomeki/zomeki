@@ -10,6 +10,11 @@ ZomekiCMS::Application.routes.draw do
     resources(:category_types,
       :controller => 'admin/category_types',
       :path       => ':content/category_types') do
+      resources(:categories,
+        :controller => 'admin/categories') do
+        resources :categories,
+          :controller => 'admin/categories'
+      end
     end
   end
 end

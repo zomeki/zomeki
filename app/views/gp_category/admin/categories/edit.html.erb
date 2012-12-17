@@ -1,0 +1,9 @@
+<%= form_for(:item, :url => gp_category_category_type_category_category_path(content: @content,
+                                                                             category_type_id: @category_type.id,
+                                                                             category_id: @parent_category.try(:id).to_i,
+                                                                             id: @item.id),
+                    :html => { method: 'put' }) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :update %>
+<% end %>

@@ -17,7 +17,6 @@ ja:
         updated_at: 更新日時
         state: 状態
       gp_article/category:
-        concept_id: コンセプト
         name: カテゴリID
         title: カテゴリ名
         sort_no: 並び順

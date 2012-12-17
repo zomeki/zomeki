@@ -1,10 +1,14 @@
 <span class="note">※は必須項目です。</span>
 
+<p class="form">基本情報</p>
+
 <table class="show">
   <tr>
     <th><%= f.label :state %></th>
     <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
   </tr>
+  <%= concept_form f %>
+  <%= layout_form f %>
   <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :class => 'id' %></td>

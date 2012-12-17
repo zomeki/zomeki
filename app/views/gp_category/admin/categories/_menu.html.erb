@@ -1,0 +1,8 @@
+<%= render 'gp_category/admin/shared/menu', index_path: gp_category_category_type_category_categories_path(content: @content,
+                                                                                                           category_type_id: @category_type.id,
+                                                                                                           category_id: @parent_category.try(:id).to_i),
+                                                  sub: "#{@category_type.title}#{case action_name.to_sym
+                                                                                 when :index; '一覧'
+                                                                                 when :new;   '登録'
+                                                                                 when :edit;  '編集'
+                                                                                 end}" %>

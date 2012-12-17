@@ -4,6 +4,7 @@ class CreateGpCategoryCategoryTypes < ActiveRecord::Migration
       t.integer    :unid
       t.references :concept
       t.references :content
+      t.references :layout
 
       t.string     :state
       t.string     :name
@@ -14,5 +15,6 @@ class CreateGpCategoryCategoryTypes < ActiveRecord::Migration
     end
     add_index :gp_category_category_types, :concept_id
     add_index :gp_category_category_types, :content_id
+    add_index :gp_category_category_types, :layout_id
   end
 end
