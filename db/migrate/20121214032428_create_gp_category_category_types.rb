@@ -2,8 +2,9 @@ class CreateGpCategoryCategoryTypes < ActiveRecord::Migration
   def change
     create_table :gp_category_category_types do |t|
       t.integer    :unid
-      t.references :concept
       t.references :content
+
+      t.references :concept
       t.references :layout
 
       t.string     :state
@@ -13,8 +14,8 @@ class CreateGpCategoryCategoryTypes < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :gp_category_category_types, :concept_id
     add_index :gp_category_category_types, :content_id
+    add_index :gp_category_category_types, :concept_id
     add_index :gp_category_category_types, :layout_id
   end
 end
