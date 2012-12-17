@@ -1,8 +1,8 @@
 <table class="index">
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
-    <th><%= GpCategory::Category.human_attribute_name :name %></th>
-    <th><%= GpCategory::Category.human_attribute_name :title %></th>
+    <th><%= @category_type.title %>ID</th>
+    <th><%= @category_type.title %>名</th>
     <th style="text-align: center; width: 80px;"><%= GpCategory::Category.human_attribute_name :sort_no %></th>
     <th style="text-align: center; width: 120px;"><%= GpCategory::Category.human_attribute_name :updated_at %></th>
     <th style="text-align: center; width: 60px;"><%= GpCategory::Category.human_attribute_name :state %></th>
