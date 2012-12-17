@@ -13,9 +13,9 @@ class GpCategory::Admin::CategoriesController < Cms::Controller::Admin::Base
 
   def index
     if @parent_category
-      @items = @parent_category.children.paginate(page: params[:page], per_page: 20)
+      @items = @parent_category.children.paginate(page: params[:page], per_page: 50)
     else
-      @items = @category_type.root_categories.paginate(page: params[:page], per_page: 20)
+      @items = @category_type.root_categories.paginate(page: params[:page], per_page: 50)
     end
     _index @items
   end

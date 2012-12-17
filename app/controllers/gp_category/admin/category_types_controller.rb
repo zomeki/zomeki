@@ -9,7 +9,7 @@ class GpCategory::Admin::CategoryTypesController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = GpCategory::CategoryType.where(content_id: @content.id).paginate(page: params[:page], per_page: 20).order('sort_no ASC')
+    @items = GpCategory::CategoryType.where(content_id: @content.id).paginate(page: params[:page], per_page: 50)
     _index @items
   end
 
