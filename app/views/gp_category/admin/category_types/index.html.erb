@@ -3,9 +3,10 @@
     <th style="text-align: center; width: 60px;">詳細</th>
     <th><%= GpCategory::CategoryType.human_attribute_name :name %></th>
     <th><%= GpCategory::CategoryType.human_attribute_name :title %></th>
-    <th style="text-align: center; width: 80px;"><%= GpCategory::CategoryType.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 60px;"><%= GpCategory::CategoryType.human_attribute_name :sort_no %></th>
     <th style="text-align: center; width: 120px;"><%= GpCategory::CategoryType.human_attribute_name :updated_at %></th>
     <th style="text-align: center; width: 60px;"><%= GpCategory::CategoryType.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 60px;"><%= GpCategory::Category.model_name.human %></th>
   </tr>
 
   <% @items.each do |item| %>
@@ -16,6 +17,9 @@
     <td style="text-align: right;"><%= item.sort_no %></td>
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M') %></td>
     <td style="text-align: center;"><%= item.status.try(:name) %></td>
+    <td style="text-align: center;"><%= link_to '設定', gp_category_category_type_category_categories_path(content: @content,
+                                                                                                           category_type_id: item.id,
+                                                                                                           category_id: 0) %></td>
   </tr>
   <% end %>
 </table>
