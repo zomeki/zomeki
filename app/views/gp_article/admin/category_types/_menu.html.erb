@@ -1,7 +1,0 @@
-<%= render 'gp_article/admin/shared/menu', index_path: gp_article_category_types_path(content: @content),
-                                                  sub: "記事設定 ： #{case action_name.to_sym
-                                                       when :index; "#{GpArticle::CategoryType.model_name.human}一覧"
-                                                       when :show;  GpArticle::CategoryType.model_name.human
-                                                       when :new;   "#{GpArticle::CategoryType.model_name.human}登録"
-                                                       when :edit;  "#{GpArticle::CategoryType.model_name.human}編集"
-                                                       end}" %>

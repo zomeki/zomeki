@@ -6,6 +6,13 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
+
+    if (gp_category = @content.gp_category)
+      @category_types = gp_category.category_types
+    else
+      flash[:notice] = '汎用カテゴリタイプを設定してください。'
+      redirect_to(gp_article_content_settings_path)
+    end
   end
 
   def index
@@ -27,8 +34,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.concept = @content.concept
     @item.content = @content
     @item.in_creator = {'group_id' => Core.user_group.id, 'user_id' => Core.user.id}
-#TODO: ツリー表示は不採用
-#    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
     if params[:categories].is_a?(Hash)
       @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
     end
@@ -42,8 +47,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def update
     @item = GpArticle::Doc.find(params[:id])
     @item.attributes = params[:item]
-#TODO: ツリー表示は不採用
-#    @item.category_ids = params[:categories].inject([]) {|r, c| r | c.last['value'].split }
     if params[:categories].is_a?(Hash)
       @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
     end
