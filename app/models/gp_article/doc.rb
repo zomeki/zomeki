@@ -4,13 +4,13 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Creator
   include Cms::Model::Auth::Concept
 
-  belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
+  # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
+  validates_presence_of :content_id
 
-  validates :concept_id, :presence => true
-  validates :content_id, :presence => true
+  belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
 
-  has_and_belongs_to_many :categories, :class_name => 'GpArticle::Category', :join_table => 'gp_article_categories_gp_article_docs'
+  has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
 
   def public_uri
     return @public_uri if @public_uri

@@ -1,5 +1,0 @@
-<ul>
-  <%- @category_type.root_categories.each do |category| -%>
-  <li><%= link_to category.title, "#{category.content.category_type_node.public_uri}#{category.name}/" %></li>
-  <%- end -%>
-</ul>

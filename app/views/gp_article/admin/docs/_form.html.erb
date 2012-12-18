@@ -8,7 +8,7 @@
     <th><%= f.label :body %></th>
     <td><%= f.text_area :body %></td>
   </tr>
-  <%- @content.category_types.each do |category_type| -%>
+  <%- @category_types.each do |category_type| -%>
   <tr>
     <th><%= category_type.title %></th>
     <td>
@@ -41,88 +41,8 @@ function set_click_event_handler(category_type_id) {
 }
 
 $(document).ready(function () {
-  <%- @content.category_types.each do |category_type| -%>
+  <%- @category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
   <%- end -%>
 });
 <%- end -%>
-
-<%#TODO: ツリー表示は不採用ここから %>
-<%- if false -%>
-  <tr>
-    <th><%= GpArticle::Category.model_name.human %></th>
-    <td>
-      <%- @content.category_types.each do |ct| -%>
-      <%= ct.title %><%= hidden_field_tag "categories[#{ct.id}][type]", ct.id %>
-      <div id="categories_<%= ct.id %>_tree" style="margin: 10px 0 20px 0;"></div>
-      <%- end -%>
-    </td>
-  </tr>
-<%= stylesheet_link_tag '/_common/css/dynatree/ui.dynatree.css' %>
-<%= javascript_include_tag '/_common/js/dynatree/jquery.dynatree.js' %>
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  function update_category_tree(no) {
-    var ct_id = $('#categories_' + no + '_type').val();
-    var tree = $('#categories_' + no + '_tree');
-
-    if (ct_id === '') {
-      tree.dynatree('getRoot').removeChildren();
-    } else {
-      tree.dynatree('option', 'initAjax',
-                              {url: '<%= gp_article_category_type_category_tree_path(content: @content, category_type_id: 'CT_ID', doc_id: item.id) %>'.replace('CT_ID', ct_id)} );
-      tree.dynatree('getTree').reload();
-    }
-  }
-
-  function init_tree(no) {
-    $('#categories_' + no + '_tree').dynatree({
-      checkbox: true,
-      selectMode: 3,
-      cookieId: 'categories_' + no + '_tree',
-      idPrefix: 'categories_' + no + '_tree-',
-      debugLevel: 0
-    });
-
-    update_category_tree(no);
-  }
-
-  <%- @content.category_types.each do |ct| -%>
-  init_tree(<%= ct.id %>);
-  <%- end -%>
-
-  function update_category_value(the_form, no) {
-    var selected_ids = [];
-
-    $($('#categories_' + no + '_tree').dynatree('getSelectedNodes')).each(function (index, node) {
-      node.visitParents(function (parent) {
-        if (parent.parent && $.inArray(parent.data.key, selected_ids) === -1) {
-          selected_ids.push(parent.data.key);
-        }
-      }, true);
-    });
-
-    var input = $('#categories_' + no + '_value');
-
-    if (input.size() === 0) {
-      input = $(document.createElement('input'));
-      input.attr('type',  'hidden');
-      input.attr('id',    'categories_' + no + '_value');
-      input.attr('name',  'categories[' + no + '][value]');
-      input.attr('value', selected_ids.join(' '));
-      input.appendTo(the_form);
-    } else {
-      input.attr('value', selected_ids.join(' '));
-    }
-  }
-
-  <%# 対象のform内にあるものなら何でもいいため、ここのidは1固定とする。 -%>
-  $('#categories_1_type').closest('form').submit(function (event) {
-    <%- @content.category_types.each do |ct| -%>
-    update_category_value(event.currentTarget, <%= ct.id %>);
-    <%- end -%>
-  });
-});
-<%- end -%>
-<%- end -%>
-<%#TODO: ツリー表示は不採用ここまで %>
