@@ -27,4 +27,8 @@ class GpCategory::CategoryType < ActiveRecord::Base
   def root_categories
     categories.where(parent_id: nil)
   end
+
+  def categories_for_option
+    root_categories.map{|c| c.descendants_for_option }.flatten(1)
+  end
 end

@@ -1,3 +1,4 @@
+# encoding: utf-8
 class GpCategory::Category < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Rel::Unid
@@ -31,13 +32,13 @@ class GpCategory::Category < ActiveRecord::Base
     category_type.content
   end
 
-#  def descendants(categories=[])
-#    categories << ["#{'-' * level_no} #{parent.try(:title)}:#{title}", id]
-#
-#    unless children.empty?
-#      children.map {|c| c.descendants(categories) }
-#    end
-#
-#    return categories
-#  end
+  def descendants_for_option(categories=[])
+    categories << ["#{'　　' * (level_no - 1)}#{title}", id]
+
+    unless children.empty?
+      children.map {|c| c.descendants_for_option(categories) }
+    end
+
+    return categories
+  end
 end
