@@ -1,0 +1,7 @@
+<div id="settingContent">
+  <%= form_for(:item, :url => gp_article_content_setting_path, :html => { method: 'put' }) do |f| %>
+    <%= error_messages_for :item %>
+    <%= render 'form', :f => f %>
+    <%= submit :register %>
+  <% end %>
+</div>
