@@ -1,12 +1,58 @@
 <%- item = instance_variable_get("@#{f.object_name}") -%>
+
+<%= init_ckeditor :baseHref => '' %>
+
+<span class="note">※は必須項目です。</span>
+
 <table class="show">
   <tr>
-    <th><%= f.label :title %></th>
-    <td><%= f.text_field :title %></td>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">リンク設定</p>
+<div class="toggle" style="margin: 10px;">
+  <%= javascript_tag do %>
+    function toggleForm(link, target, openLabel, closeLabel) {
+      if (openLabel === undefined) openLabel = '開く▼';
+      if (closeLabel === undefined) closeLabel = '閉じる▲';
+      var l = jQuery(link);
+      var t = jQuery(target);
+      if (t.is(':hidden')) {
+        l.html(closeLabel);
+      } else {
+        l.html(openLabel);
+      }
+      t.slideToggle();
+    }
+  <% end %>
+  <%= link_to_function '開く▼', "toggleForm(this, '#linkSettings')" %>
+</div>
+<div id="linkSettings" style="display: none;">
+  <table class="show">
+    <tr>
+      <th><%= f.label :href %></th>
+      <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
+      <td><%= f.radio_buttons :target, @item.target_options %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :subtitle %></th>
+      <td colspan="2"><%= f.text_field :subtitle, :style => 'width: 750px;' %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :summary %></th>
+      <td colspan="2"><%= f.text_field :summary, :style => 'width: 750px;' %></td>
+    </tr>
+  </table>
+</div><br />
+
+<table class="show">
+  <tr>
+    <th colspan="2"><%= f.label :body %> <span class="note">※</span></th>
   </tr>
   <tr>
-    <th><%= f.label :body %></th>
-    <td><%= f.text_area :body %></td>
+    <td colspan="2" class="cke_editor_wrapper"><%= f.text_area :body, :class => 'body ckeditor' %></td>
   </tr>
   <%- @category_types.each do |category_type| -%>
   <tr>
@@ -41,6 +87,8 @@ function set_click_event_handler(category_type_id) {
 }
 
 $(document).ready(function () {
+  $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+
   <%- @category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
   <%- end -%>

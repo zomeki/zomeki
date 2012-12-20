@@ -1,3 +1,4 @@
+# encoding: utf-8
 class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Rel::Unid
@@ -11,6 +12,10 @@ class GpArticle::Doc < ActiveRecord::Base
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
 
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
+
+  def target_options
+    [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
+  end
 
   def public_uri
     return @public_uri if @public_uri
