@@ -3,8 +3,30 @@
     <th><%= @item.locale :title %></th>
     <td><%= @item.title %></td>
   </tr>
+</table>
+
+<br /><p class="form">リンク設定</p>
+<table class="show">
   <tr>
-    <th><%= @item.locale :body %></th>
-    <td><%=sanitize @item.body, attributes: %w(style) %></td>
+    <th><%= @item.locale :href %></th>
+    <td><%= link_to @item.href, @item.href, target: '_blank' %></td>
+    <td><%= @item.target_options.detect{|to| to.last == @item.target }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :subtitle %></th>
+    <td colspan="2"><%= @item.subtitle %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :summary %></th>
+    <td colspan="2"><%= @item.summary %></td>
+  </tr>
+</table><br />
+
+<table class="show">
+  <tr>
+    <th colspan="2"><%= @item.locale :body %></th>
+  </tr>
+  <tr>
+    <td colspan="2"><%=sanitize @item.body, attributes: %w(style) %></td>
   </tr>
 </table>

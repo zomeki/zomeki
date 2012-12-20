@@ -10,6 +10,9 @@ ja:
         title: タイトル
         body: 内容
         updated_at: 更新日時
+        href: リンクURL
+        subtitle: サブタイトル
+        summary: 概要
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
