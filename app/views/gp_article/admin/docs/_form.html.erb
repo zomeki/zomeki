@@ -1,6 +1,4 @@
-<%- item = instance_variable_get("@#{f.object_name}") -%>
-
-<%= init_ckeditor :baseHref => '' %>
+<%- inline_id = @item.id || Util::Sequencer.next_id(:tmp, md5: true) -%>
 
 <span class="note">※は必須項目です。</span>
 
@@ -13,23 +11,9 @@
 
 <br /><p class="form">リンク設定</p>
 <div class="toggle" style="margin: 10px;">
-  <%= javascript_tag do %>
-    function toggleForm(link, target, openLabel, closeLabel) {
-      if (openLabel === undefined) openLabel = '開く▼';
-      if (closeLabel === undefined) closeLabel = '閉じる▲';
-      var l = jQuery(link);
-      var t = jQuery(target);
-      if (t.is(':hidden')) {
-        l.html(closeLabel);
-      } else {
-        l.html(openLabel);
-      }
-      t.slideToggle();
-    }
-  <% end %>
-  <%= link_to_function '開く▼', "toggleForm(this, '#linkSettings')" %>
+  <%= link_to_function '開く▼', "toggle_form(this, '#link_settings')" %>
 </div>
-<div id="linkSettings" style="display: none;">
+<div id="link_settings" style="display: none;">
   <table class="show">
     <tr>
       <th><%= f.label :href %></th>
@@ -49,11 +33,31 @@
 
 <table class="show">
   <tr>
-    <th colspan="2"><%= f.label :body %> <span class="note">※</span></th>
+    <th><%= f.label :body %> <span class="note">※</span></th>
   </tr>
   <tr>
-    <td colspan="2" class="cke_editor_wrapper"><%= f.text_area :body, :class => 'body ckeditor' %></td>
+    <td class="cke_editor_wrapper">
+      <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+      <%= f.text_area :body, :class => 'body ckeditor' %>
+    </td>
   </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %>
+    </td>
+  </tr>
+</table>
+<div id="inline_files" style="display: none;">
+  <%= hidden_field_tag :_tmp, inline_id %>
+  <iframe src="<%= gp_article_doc_files_path(@content, inline_id) %>" style="width: 100%; height: 340px;"></iframe>
+</div>
+
+<%- unless @category_types.empty? -%>
+<table class="show">
   <%- @category_types.each do |category_type| -%>
   <tr>
     <th><%= category_type.title %></th>
@@ -61,7 +65,7 @@
       <table id="category_type_<%= category_type.id %>_categories" class="noDesign">
         <tbody>
           <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
-          <%- item.categories.where(category_type_id: category_type.id).each do |category| -%>
+          <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
             <%= render 'category', category_type: category_type, category: category, available: true %>
           <%- end -%>
           <tr>
@@ -74,8 +78,22 @@
   </tr>
   <%- end -%>
 </table>
+<%- end -%>
 
 <%= javascript_tag do -%>
+function toggle_form(link, target, open_label, close_label) {
+  if (open_label === undefined) open_label = '開く▼';
+  if (close_label === undefined) close_label = '閉じる▲';
+  var l = jQuery(link);
+  var t = jQuery(target);
+  if (t.is(':hidden')) {
+    l.html(close_label);
+  } else {
+    l.html(open_label);
+  }
+  t.slideToggle();
+}
+
 function set_click_event_handler(category_type_id) {
   $('#add_category_type_' + category_type_id + '_categories_line').on('click', function () {
     var categories_tbody = $('#category_type_' + category_type_id + '_categories > tbody');
