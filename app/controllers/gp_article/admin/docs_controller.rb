@@ -10,8 +10,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     if (gp_category = @content.gp_category)
       @category_types = gp_category.category_types
     else
-      flash[:notice] = '汎用カテゴリタイプを設定してください。'
-      redirect_to(gp_article_content_settings_path)
+      @category_types = []
     end
   end
 
