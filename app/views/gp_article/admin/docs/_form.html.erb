@@ -34,7 +34,7 @@
     <tr>
       <th><%= f.label :href %></th>
       <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
-      <td><%= f.radio_buttons :target, @item.target_options %></td>
+      <td><%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %></td>
     </tr>
     <tr>
       <th><%= f.label :subtitle %></th>
