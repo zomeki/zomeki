@@ -26,7 +26,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def new
-    @item = GpArticle::Doc.new
+    @item = GpArticle::Doc.new(target: GpArticle::Doc::TARGET_OPTIONS.first.last)
   end
 
   def create
