@@ -10,6 +10,19 @@ namespace :article do
 
       File.write(Rails.root.join("tmp/article_#{content_id}_categories.yml"), YAML.dump(categories))
     end
+
+    desc 'Save documents.'
+    task(:documents => :environment) do
+      next if (content_id = ENV['content_id'].to_i).zero?
+
+      documents = Article::Doc.unscoped.where(content_id: content_id).map do |document|
+          {title: document.title,
+           body: document.body,
+           category_names: document.category_items.map{|ci| ci.name }.join(',')}
+        end
+
+      File.write(Rails.root.join("tmp/article_#{content_id}_documents.yml"), YAML.dump(documents))
+    end
   end
 
   namespace :load do
