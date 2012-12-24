@@ -32,11 +32,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item = GpArticle::Doc.new(params[:item])
     @item.concept = @content.concept
     @item.content = @content
-    @item.in_creator = {'group_id' => Core.user_group.id, 'user_id' => Core.user.id}
     if params[:categories].is_a?(Hash)
       @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
     end
-    _create @item
+    _create(@item) do
+      @item.fix_tmp_files(params[:_tmp])
+    end
   end
 
   def edit

@@ -14,6 +14,7 @@ ZomekiCMS::Application.routes.draw do
     resources(:docs,
       :controller => 'admin/docs',
       :path       => ':content/docs') do
+      match 'file_contents/:basename.:extname' => 'admin/docs/files#content'
       resources :files,
         :controller => 'admin/docs/files'
     end
