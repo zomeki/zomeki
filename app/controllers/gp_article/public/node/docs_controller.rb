@@ -13,6 +13,14 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def index
     @docs = @content.docs.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
+
+    @items = @docs.inject([]) do |result, doc|
+        date = doc.published_at.try(:strftime, '%Y年%-m月%-d日')
+        result << {
+            date: (result.last.try('[]', :date) == date ? nil : date ),
+            doc: doc
+          }
+      end
   end
 
   def show

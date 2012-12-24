@@ -1,5 +1,12 @@
-<ul>
-  <%- @docs.each do |doc| -%>
-  <li><%= link_to doc.title, doc.public_full_uri %></li>
-  <%- end -%>
-</ul>
+<div class="contentGpArticleDocs">
+  <div class="docs">
+    <% @items.each_with_index do |item, idx| %>
+    <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
+    <h2 class="date"><%= item[:date] %></h2><ul>
+    <%- end -%>
+    <li><%= link_to item[:doc].title, item[:doc].public_uri %><%#= item[:doc].categories_and_unit %></li>
+    <%- end -%>
+    <%= '</ul>'.html_safe unless @items.empty? -%>
+  </div>
+  <%= paginate @docs %>
+</div>
