@@ -26,6 +26,9 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def show
     @doc = @content.docs.find_by_name(params[:name])
     return http_error(404) unless @doc
+
+    Page.current_item = @doc
+    Page.title = @doc.title
   end
 
   def file_content
