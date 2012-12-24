@@ -3,6 +3,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::File
   include Cms::Model::Auth::Concept
 
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]

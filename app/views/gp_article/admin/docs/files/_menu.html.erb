@@ -1,0 +1,8 @@
+<div id="content">
+  <div class="actionMenu" style="margin: 2px 0px 4px 0px;">
+    <%= action_menu :index, gp_article_doc_files_path(@content, doc_id: @doc_id) %>
+    <%= action_menu :show, gp_article_doc_file_path(@content, doc_id: @doc_id, id: @item.id) unless @item.new_record? %>
+    <%= action_menu :edit, edit_gp_article_doc_file_path(@content, doc_id: @doc_id, id: @item.id) if !@item.new_record? && @item.editable? %>
+    <%= action_menu :destroy, gp_article_doc_file_path(@content, doc_id: @doc_id, id: @item.id) if !@item.new_record? && @item.deletable? %>
+  </div>
+</div>
