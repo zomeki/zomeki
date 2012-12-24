@@ -4,6 +4,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
   include Sys::Model::Rel::File
+  include Sys::Model::Rel::Task
   include Cms::Model::Auth::Concept
 
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
@@ -17,6 +18,9 @@ class GpArticle::Doc < ActiveRecord::Base
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
 
   before_save :set_name
+
+  validates :title, :presence => true, :length => {maximum: 200}
+  validates :body, :length => {maximum: 100000}
 
   def public_uri=(uri)
     @public_uri = uri

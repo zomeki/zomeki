@@ -33,7 +33,7 @@
 
 <table class="show">
   <tr>
-    <th><%= f.label :body %> <span class="note">※</span></th>
+    <th><%= f.label :body %></th>
   </tr>
   <tr>
     <td class="cke_editor_wrapper">
@@ -79,6 +79,8 @@
   <%- end -%>
 </table>
 <%- end -%>
+
+<%= task_form f %>
 
 <%= javascript_tag do -%>
 function toggle_form(link, target, open_label, close_label) {
