@@ -1,2 +1,3 @@
 <div><%= @doc.title %></div>
-<div><%=sanitize @doc.body, attributes: %w(style) %></div>
+<div><%=sanitize @doc.body.gsub('"file_contents/', %Q("#{@doc.public_uri}file_contents/)),
+                 attributes: %w(style class href src alt title) %></div>
