@@ -27,8 +27,8 @@ ZomekiCMS::Application.routes.draw do
 
   ## public
   scope "_public/#{mod}", :module => mod, :as => '' do
-    match 'node_docs/index.:format' => 'public/node/docs#index'
-    resources :node_docs, :only => [:index, :show],
-      :controller => 'public/node/docs'
+    match 'node_docs/index(.:format)' => 'public/node/docs#index'
+    match 'node_docs/:name/index(.:format)' => 'public/node/docs#show'
+    match 'node_docs/:name/file_contents/:basename.:extname' => 'public/node/docs#file_content'
   end
 end

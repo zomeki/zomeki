@@ -16,15 +16,35 @@ class GpArticle::Doc < ActiveRecord::Base
 
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
 
+  before_save :set_name
+
+  def public_uri=(uri)
+    @public_uri = uri
+  end
+
   def public_uri
     return @public_uri if @public_uri
     return nil unless node = content.doc_node
-    @public_uri = "#{node.public_uri}#{id}"
+    @public_uri = "#{node.public_uri}#{name}/"
+  end
+
+  def public_full_uri=(uri)
+    @public_full_uri = uri
   end
 
   def public_full_uri
     return @public_full_uri if @public_full_uri
     return nil unless node = content.doc_node
-    @public_full_uri = "#{node.public_full_uri}#{id}"
+    @public_full_uri = "#{node.public_full_uri}#{name}/"
+  end
+
+  private
+
+  def set_name
+    return unless self.name.blank?
+    date = created_at.try(:strftime, '%Y%m%d')
+    date ||= Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
+    seq = Util::Sequencer.next_id('gp_article_docs', :version => date)
+    self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
   end
 end
