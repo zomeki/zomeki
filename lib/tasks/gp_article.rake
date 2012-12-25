@@ -13,11 +13,14 @@ namespace :gp_article do
 
       documents = YAML.load_file(Rails.root.join("tmp/gp_article_#{content_id}_documents.yml"))
       documents.each do |document|
-        category_type = GpArticle::Content::Doc.find_by_id(content_id).gp_category.category_types.find_by_name('categories')
         doc = GpArticle::Doc.create!(content_id: content_id,
                                      title: document[:title],
                                      body: document[:body])
-        doc.category_ids = document[:category_names].split(',').map {|cn| category_type.categories.find_by_name(cn).try(:id) }
+
+        if (gp_category = GpArticle::Content::Doc.find_by_id(content_id).try(:gp_category))
+          category_type = gp_category.category_types.find_by_name('categories')
+          doc.category_ids = document[:category_names].split(',').map {|cn| category_type.categories.find_by_name(cn).try(:id) }
+        end
 
         if doc.body.index('="./files/') && (source_doc = Article::Doc.find_by_title_and_body(doc.title, doc.body))
           doc.update_attribute(:body, doc.body.gsub('="./files/', '="file_contents/'))
