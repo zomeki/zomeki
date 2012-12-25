@@ -1,6 +1,11 @@
 # encoding: utf-8
 
 namespace :article do
+  task :set_user_and_group do
+    Core.user       = Sys::User.first
+    Core.user_group = Core.user.group
+  end
+
   namespace :save do
     desc 'Save categories.'
     task(:categories => :environment) do
@@ -27,7 +32,7 @@ namespace :article do
 
   namespace :load do
     desc 'Load categories.'
-    task(:categories => :environment) do
+    task(:categories => [:environment, :set_user_and_group]) do
       next if (content_id = ENV['content_id'].to_i).zero?
 
       categories = YAML.load_file(Rails.root.join("tmp/article_#{content_id}_categories.yml"))
@@ -50,10 +55,6 @@ def descendants_to_hash(category)
 end
 
 def descendants_from_hash(category, content_id, parent_id)
-  # Creator
-  Core.user       = Sys::User.first
-  Core.user_group = Core.user.group
-
   parent = Article::Category.new(content_id: content_id,
                                  parent_id: parent_id,
                                  state: category[:state],
