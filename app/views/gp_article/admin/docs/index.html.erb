@@ -6,6 +6,7 @@
     <th><%= GpArticle::Doc.human_attribute_name :id %></th>
     <th><%= GpArticle::Doc.human_attribute_name :title %></th>
     <th style="text-align: center; width: 120px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 60px;">プレビュー</th>
   </tr>
 
   <%- @items.each do |item| -%>
@@ -14,6 +15,9 @@
     <td style="text-align: right;"><%= item.id %></td>
     <td style="text-align: left;"><%= item.title %></td>
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+    <td style="text-align: center;">
+      <%= link_to 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if item.preview_uri.present? %>
+    </td>
   </tr>
   <%- end -%>
 </table>
