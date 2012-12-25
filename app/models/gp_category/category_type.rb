@@ -21,7 +21,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpCategory::Category',
                         :order => :sort_no, :dependent => :destroy
 
-  validates :name, :presence => true, :uniqueness => true
+  validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
 
   def root_categories
