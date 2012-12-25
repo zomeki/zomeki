@@ -18,6 +18,26 @@ namespace :gp_article do
                                      title: document[:title],
                                      body: document[:body])
         doc.category_ids = document[:category_names].split(',').map {|cn| category_type.categories.find_by_name(cn).try(:id) }
+
+        if doc.body.index('="./files/') && (source_doc = Article::Doc.find_by_title_and_body(doc.title, doc.body))
+          doc.update_attribute(:body, doc.body.gsub('="./files/', '="file_contents/'))
+
+          Sys::File.where(parent_unid: source_doc.unid).each do |source_file|
+            target_file = Sys::File.new(parent_unid: doc.unid,
+                                        name: source_file.name,
+                                        title: source_file.title,
+                                        mime_type: source_file.mime_type,
+                                        size: source_file.size,
+                                        image_is: source_file.image_is,
+                                        image_width: source_file.image_width,
+                                        image_height: source_file.image_height)
+            target_file.skip_upload
+            target_file.save!
+
+            FileUtils.mkdir_p(File.dirname(target_file.upload_path))
+            FileUtils.copy(source_file.upload_path, target_file.upload_path, preserve: true)
+          end
+        end
       end
     end
   end
