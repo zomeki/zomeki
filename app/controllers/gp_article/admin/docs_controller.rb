@@ -15,7 +15,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = GpArticle::Doc.where(content_id: @content.id).paginate(page: params[:page], per_page: 20).order('updated_at DESC')
+    @items = GpArticle::Doc.where(content_id: @content.id).paginate(page: params[:page], per_page: 30).order('updated_at DESC')
     _index @items
   end
 
