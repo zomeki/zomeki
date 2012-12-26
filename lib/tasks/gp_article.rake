@@ -15,7 +15,8 @@ namespace :gp_article do
       documents.each do |document|
         doc = GpArticle::Doc.create!(content_id: content_id,
                                      title: document[:title],
-                                     body: document[:body])
+                                     body: document[:body],
+                                     published_at: document[:published_at])
 
         if (gp_category = GpArticle::Content::Doc.find_by_id(content_id).try(:gp_category))
           category_type = gp_category.category_types.find_by_name('categories')
