@@ -23,6 +23,7 @@ namespace :article do
       documents = Article::Doc.unscoped.where(content_id: content_id).map do |document|
           {title: document.title,
            body: document.body,
+           published_at: document.published_at,
            category_names: document.category_items.map{|ci| ci.name }.join(',')}
         end
 
