@@ -34,7 +34,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def file_content
     @doc = @content.docs.find_by_name(params[:name])
     if (file = Sys::File.where(parent_unid: @doc.unid, name: "#{params[:basename]}.#{params[:extname]}").first)
-      send_file file.upload_path, :type => file.mime_type, :filename => file.name, :disposition => 'attachment'
+      send_file file.upload_path, :type => file.mime_type, :filename => file.name, :disposition => 'inline'
     else
       http_error(404)
     end
