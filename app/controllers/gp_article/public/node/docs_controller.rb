@@ -11,7 +11,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def index
-    @docs = @content.docs.paginate(page: params[:page], per_page: 20)
+    @docs = @content.docs.paginate(page: params[:page], per_page: 20).order('published_at DESC, updated_at DESC')
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|
