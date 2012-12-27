@@ -27,7 +27,7 @@ function openMessage(id){
   <li>
     <p><a href="#" onclick="return openMessage('<%= eid %>');">
       <%= item.title %></a> （<%= item.published_at.strftime('%Y-%m-%d %H:%M') %>）</p>
-    <div id="<%= eid %>" class="body"><%= item.body %></div>
+    <div id="<%= eid %>" class="body"><%=sanitize item.body %></div>
   </li>
   <% end %>
 </ul>

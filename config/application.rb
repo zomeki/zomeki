@@ -59,6 +59,9 @@ module ZomekiCMS
     end
 
     require 'rake/dsl_definition'
+
+    config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags | %w(table tr th td)
+    config.action_view.sanitized_allowed_attributes = ActionView::Base.sanitized_allowed_attributes | %w(style class href src alt title colspan rowspan)
   end
 
   ADMIN_URL_PREFIX = '_system'
