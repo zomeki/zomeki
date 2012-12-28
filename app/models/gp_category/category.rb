@@ -41,4 +41,13 @@ class GpCategory::Category < ActiveRecord::Base
 
     return categories
   end
+
+  def ancestors(categories=[])
+    parent.ancestors(categories) if parent
+    categories << self
+  end
+
+  def path_from_root_category
+    ancestors.map{|a| a.name }.join('/')
+  end
 end

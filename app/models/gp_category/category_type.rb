@@ -4,6 +4,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   include Sys::Model::Rel::Creator
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
+  include Cms::Model::Base::Page::Publisher
 
   default_scope order(:sort_no)
 
@@ -30,5 +31,32 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   def categories_for_option
     root_categories.map{|c| c.descendants_for_option }.flatten(1)
+  end
+
+  def find_category_by_path_from_root_category(path_from_root_category)
+    category_names = path_from_root_category.split('/')
+    category_names.inject(root_categories.find_by_name(category_names.shift)) {|result, item|
+      result.children.find_by_name(item)
+    }
+  end
+
+  def public_uri=(uri)
+    @public_uri = uri
+  end
+
+  def public_uri
+    return @public_uri if @public_uri
+    return nil unless node = content.category_type_node
+    @public_uri = "#{node.public_uri}#{name}/"
+  end
+
+  def public_full_uri=(uri)
+    @public_full_uri = uri
+  end
+
+  def public_full_uri
+    return @public_full_uri if @public_full_uri
+    return nil unless node = content.category_type_node
+    @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 end
