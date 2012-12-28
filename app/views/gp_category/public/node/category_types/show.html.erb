@@ -1,0 +1,4 @@
+<%- @category_type.root_categories.each do |category| -%>
+<div><%= link_to category.title,
+                 "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+<%- end -%>
