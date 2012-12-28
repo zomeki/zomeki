@@ -1,4 +1,22 @@
-<%- @category.children.each do |category| -%>
-<div><%= link_to category.title,
-                 "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+<h1>カテゴリ</h1>
+<%- if @category.children.empty? -%>
+  <div>該当なし</div>
+<%- else -%>
+  <ul>
+    <%- @category.children.each do |category| -%>
+    <li><%= link_to category.title,
+                    "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+    <%- end -%>
+  </ul>
+<%- end -%>
+
+<h2>記事</h2>
+<%- if @category.docs.empty? -%>
+  <div>該当なし</div>
+<%- else -%>
+  <ul>
+    <%- @category.docs.each do |doc| -%>
+    <li><%= doc.title %></li>
+    <%- end -%>
+  </ul>
 <%- end -%>
