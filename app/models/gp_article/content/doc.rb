@@ -2,7 +2,7 @@
 class GpArticle::Content::Doc < Cms::Content
   default_scope where(model: 'GpArticle::Doc')
 
-  has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC', :dependent => :destroy
+  has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
 
   def doc_node
     return @doc_node if @doc_node
