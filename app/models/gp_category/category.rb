@@ -50,4 +50,27 @@ class GpCategory::Category < ActiveRecord::Base
   def path_from_root_category
     ancestors.map{|a| a.name }.join('/')
   end
+
+  def bread_crumbs(category_type_node)
+    crumbs = []
+
+    if content
+      if (node = content.category_type_node)
+        c = node.bread_crumbs.crumbs.first
+        c << [category_type.title, "#{node.public_uri}#{category_type.name}/"]
+        ancestors.each {|a| c << [a.title, "#{node.public_uri}#{category_type.name}/#{a.path_from_root_category}/"] }
+        crumbs << c
+      end
+    end
+
+    if crumbs.empty?
+      category_type_node.routes.each do |r|
+        c = []
+        r.each {|i| c << [i.title, i.public_uri] }
+        crumbs << c
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
 end
