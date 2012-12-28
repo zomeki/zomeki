@@ -59,4 +59,26 @@ class GpCategory::CategoryType < ActiveRecord::Base
     return nil unless node = content.category_type_node
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
+
+  def bread_crumbs(category_type_node)
+    crumbs = []
+
+    if content
+      if (node = content.category_type_node)
+        c = node.bread_crumbs.crumbs.first
+        c << [title, "#{node.public_uri}#{name}/"]
+        crumbs << c
+      end
+    end
+
+    if crumbs.empty?
+      category_type_node.routes.each do |r|
+        c = []
+        r.each {|i| c << [i.title, i.public_uri] }
+        crumbs << c
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
 end
