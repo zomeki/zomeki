@@ -1,0 +1,18 @@
+<div class="pieceGpArticleCategoryType">
+  <%- unless categories.empty? -%>
+  <div class="level1">
+    <%- categories.each do |category| -%>
+    <section class="<%= category_type.name -%> <%= category.name -%>">
+      <h3><%= link_to category.title, "#{category_type.public_uri}#{category.path_from_root_category}/" %></h3>
+      <%- unless category.children.empty? -%>
+      <ul class="level2">
+        <%- category.children.each do |child| -%>
+        <li><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></li>
+        <%- end -%>
+      </ul>
+      <%- end -%>
+    </section>
+    <%- end -%>
+  </div>
+  <%- end -%>
+</div>

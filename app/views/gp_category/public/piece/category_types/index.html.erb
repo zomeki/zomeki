@@ -1,0 +1,4 @@
+<%- case @item -%>
+<%- when GpCategory::CategoryType -%>
+  <%= render 'category_type', category_type: @item, categories: @items %>
+<%- end -%>
