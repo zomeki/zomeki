@@ -21,6 +21,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_category_types,
       :controller => 'admin/node/category_types',
       :path       => ':parent/node_category_types'
+
+    ## pieces
+    resources :piece_category_types,
+      :controller => 'admin/piece/category_types'
   end
 
   ## public
