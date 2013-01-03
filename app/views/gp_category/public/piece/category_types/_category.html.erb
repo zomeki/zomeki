@@ -1,0 +1,18 @@
+<div class="pieceGpArticleCategoryType pieceGpArticleCategory">
+  <%- unless category.children.empty? -%>
+  <div class="level2">
+    <%- category.children.each do |child| -%>
+    <section class="<%= category_type.name -%> <%= category.name -%> <%= child.name -%>">
+      <h3><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></h3>
+      <%- unless child.docs.empty? -%>
+      <ul class="docs">
+        <%- child.docs.each do |doc| -%>
+        <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
+        <%- end -%>
+      </ul>
+      <%- end -%>
+    </section>
+    <%- end -%>
+  </div>
+  <%- end -%>
+</div>

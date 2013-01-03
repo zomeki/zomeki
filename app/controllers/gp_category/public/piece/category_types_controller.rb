@@ -7,9 +7,6 @@ class GpCategory::Public::Piece::CategoryTypesController < Sys::Controller::Publ
   end
 
   def index
-    case (@item = Page.current_item)
-    when GpCategory::CategoryType
-      @items = @item.root_categories
-    end
+    @item = Page.current_item
   end
 end
