@@ -1,1 +1,21 @@
-<%= render 'gp_article/admin/piece/shared/show' %>
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_view @item, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :category_type_id %></th>
+    <td><%= @item.category_type.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :category_id %></th>
+    <td><%= @item.category.try(:title) %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
