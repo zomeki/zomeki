@@ -1,18 +1,37 @@
-<div class="pieceGpArticleCategoryType pieceGpArticleCategory">
-  <%- unless category.children.empty? -%>
-  <div class="level2">
-    <%- category.children.each do |child| -%>
-    <section class="<%= category_type.name -%> <%= category.name -%> <%= child.name -%>">
-      <h3><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></h3>
-      <%- unless child.docs.empty? -%>
-      <ul class="docs">
-        <%- child.docs.each do |doc| -%>
-        <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
-        <%- end -%>
-      </ul>
+<%- unless category.docs.empty? -%>
+<div class="docs">
+  <section class="category <%= category.name -%>">
+    <ul class="docs">
+      <%- category.docs.each do |doc| -%>
+      <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
       <%- end -%>
-    </section>
+    </ul>
+  </section>
+</div>
+<%- end -%>
+
+<%- unless category.children.empty? -%>
+<div class="level<%= category.level_no + 1 -%>">
+  <%- category.children.each do |child| -%>
+  <section class="category <%= child.name -%><%= cycle '', ' cycle' %>">
+    <h3><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></h3>
+
+    <%- unless child.docs.empty? -%>
+    <ul class="docs">
+      <%- child.docs.each do |doc| -%>
+      <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
+      <%- end -%>
+    </ul>
     <%- end -%>
-  </div>
+
+    <%- unless child.children.empty? -%>
+    <ul class="level<%= child.level_no + 1 -%>">
+      <%- child.children.each do |grandchild| -%>
+      <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, "#{category_type.public_uri}#{grandchild.path_from_root_category}/" %></li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </section>
   <%- end -%>
 </div>
+<%- end -%>
