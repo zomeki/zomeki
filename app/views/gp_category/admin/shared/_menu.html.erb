@@ -2,6 +2,8 @@
 
 <% if controller_name == 'categories' %>
 <div class="navi">
+  <%= link_to "#{GpCategory::CategoryType.model_name.human}一覧", gp_category_category_types_path %>
+  <span class="separator">&gt;</span>
   <%= link_to @category_type.title, gp_category_category_type_categories_path(content: @content, category_type_id: @category_type.id) %>
   <%- if @parent_category -%>
     <%- @parent_category.parents_tree.each do |c| -%>

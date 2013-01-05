@@ -16,7 +16,7 @@
 <%- else -%>
   <ul>
     <%- @category.docs.each do |doc| -%>
-    <li><%= doc.title %></li>
+    <li><%= link_to doc.title, doc.public_uri %></li>
     <%- end -%>
   </ul>
 <%- end -%>
