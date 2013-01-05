@@ -26,6 +26,11 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
   def update
     @item = GpArticle::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
+
+    if @item.name == 'gp_category_content_category_type_id'
+      @item.extra_value = params[:category_types].try(:join, ',')
+    end
+
     _update @item
   end
 end

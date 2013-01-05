@@ -7,11 +7,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
-    if (gccct = @content.gp_category_content_category_type)
-      @category_types = gccct.category_types
-    else
-      @category_types = []
-    end
+    @category_types = @content.category_types
   end
 
   def index

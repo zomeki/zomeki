@@ -9,8 +9,13 @@ class GpCategory::Admin::CategoryTypesController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = GpCategory::CategoryType.where(content_id: @content.id).paginate(page: params[:page], per_page: 50)
-    _index @items
+    if params[:check_boxes]
+      @items = GpCategory::CategoryType.where(content_id: @content.id)
+      render 'index_check_boxes', :layout => false
+    else
+      @items = GpCategory::CategoryType.where(content_id: @content.id).paginate(page: params[:page], per_page: 50)
+      _index @items
+    end
   end
 
   def show

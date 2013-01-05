@@ -12,4 +12,12 @@ class GpArticle::Content::Doc < Cms::Content
   def gp_category_content_category_type
     GpCategory::Content::CategoryType.find_by_id(setting_value(:gp_category_content_category_type_id))
   end
+
+  def category_types
+    if (cts = gp_category_content_category_type.try(:category_types))
+      cts.where(id: (setting_extra_value(:gp_category_content_category_type_id) || '').split(','))
+    else
+      []
+    end
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121224133959) do
+ActiveRecord::Schema.define(:version => 20130105014441) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -144,12 +144,13 @@ ActiveRecord::Schema.define(:version => 20121224133959) do
   add_index "cms_concepts", ["parent_id", "state", "sort_no"], :name => "parent_id"
 
   create_table "cms_content_settings", :force => true do |t|
-    t.integer  "content_id", :null => false
+    t.integer  "content_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.text     "value"
     t.integer  "sort_no"
+    t.text     "extra_value"
   end
 
   add_index "cms_content_settings", ["content_id"], :name => "content_id"
