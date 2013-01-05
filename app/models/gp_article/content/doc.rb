@@ -9,7 +9,7 @@ class GpArticle::Content::Doc < Cms::Content
     @doc_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
   end
 
-  def gp_category
+  def gp_category_content_category_type
     GpCategory::Content::CategoryType.find_by_id(setting_value(:gp_category_content_category_type_id))
   end
 end

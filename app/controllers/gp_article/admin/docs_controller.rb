@@ -7,8 +7,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
-    if (gp_category = @content.gp_category)
-      @category_types = gp_category.category_types
+    if (gccct = @content.gp_category_content_category_type)
+      @category_types = gccct.category_types
     else
       @category_types = []
     end
