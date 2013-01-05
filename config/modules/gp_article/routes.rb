@@ -23,6 +23,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_docs,
       :controller => 'admin/node/docs',
       :path       => ':parent/node_docs'
+
+    ## pieces
+    resources :piece_docs,
+      :controller => 'admin/piece/docs'
   end
 
   ## public
