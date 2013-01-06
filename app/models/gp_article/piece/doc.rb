@@ -21,6 +21,7 @@ class GpArticle::Piece::Doc < Cms::Piece
   end
 
   def category_type
+    return nil unless category_types.respond_to?(:find_by_id)
     category_types.find_by_id(setting_value(:category_type_id))
   end
 
@@ -33,7 +34,7 @@ class GpArticle::Piece::Doc < Cms::Piece
   end
 
   def category
-    return nil if categories.is_a?(Array)
+    return nil unless categories.respond_to?(:find_by_id)
     categories.find_by_id(setting_value(:category_id))
   end
 end
