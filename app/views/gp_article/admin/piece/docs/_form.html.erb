@@ -19,3 +19,19 @@
 </table>
 
 <%= creator_form f %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_in_settings_category_type_id').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    if (isNaN(category_type_id)) {
+      $('#item_in_settings_category_id').html('<option value=""></option>');
+    } else {
+      $('#item_in_settings_category_id').html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @item.content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        $('#item_in_settings_category_id').html(data);
+      });
+    }
+  });
+});
+<%- end -%>
