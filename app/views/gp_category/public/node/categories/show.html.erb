@@ -16,7 +16,13 @@
 <%- else -%>
   <ul>
     <%- @category.docs.each do |doc| -%>
-    <li><%= link_to doc.title, doc.public_uri %></li>
+    <li>
+      <%- if doc.href.present? -%>
+        <%= link_to doc.title, doc.href, target: doc.target %>
+      <%- else -%>
+        <%= link_to doc.title, doc.public_uri %>
+      <%- end -%>
+    </li>
     <%- end -%>
   </ul>
 <%- end -%>

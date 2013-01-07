@@ -4,7 +4,13 @@
     <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
     <h2 class="date"><%= item[:date] %></h2><ul>
     <%- end -%>
-    <li><%= link_to item[:doc].title, item[:doc].public_uri %><%#= item[:doc].categories_and_unit %></li>
+    <li>
+      <%- if item[:doc].href.present? -%>
+        <%= link_to item[:doc].title, item[:doc].href, target: item[:doc].target %>
+      <%- else -%>
+        <%= link_to item[:doc].title, item[:doc].public_uri %>
+      <%- end -%>
+    </li>
     <%- end -%>
     <%= '</ul>'.html_safe unless @items.empty? -%>
   </div>
