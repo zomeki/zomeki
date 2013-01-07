@@ -11,38 +11,39 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = GpArticle::Doc.where(content_id: @content.id).paginate(page: params[:page], per_page: 30).order('updated_at DESC')
+    @items = @content.docs.paginate(page: nil, per_page: 30)
     _index @items
   end
 
   def show
-    @item = GpArticle::Doc.find(params[:id])
+    @item = @content.docs.find(params[:id])
     _show @item
   end
 
   def new
-    @item = GpArticle::Doc.new(target: GpArticle::Doc::TARGET_OPTIONS.first.last)
+    @item = @content.docs.build(target: GpArticle::Doc::TARGET_OPTIONS.first.last)
     @item.in_inquiry = @item.default_inquiry
   end
 
   def create
-    @item = GpArticle::Doc.new(params[:item])
+    @item = @content.docs.build(params[:item])
     @item.concept = @content.concept
-    @item.content = @content
+
     if params[:categories].is_a?(Hash)
       @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
     end
+
     _create(@item) do
       @item.fix_tmp_files(params[:_tmp])
     end
   end
 
   def edit
-    @item = GpArticle::Doc.find(params[:id])
+    @item = @content.docs.find(params[:id])
   end
 
   def update
-    @item = GpArticle::Doc.find(params[:id])
+    @item = @content.docs.find(params[:id])
     @item.attributes = params[:item]
     if params[:categories].is_a?(Hash)
       @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
@@ -51,7 +52,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def destroy
-    @item = GpArticle::Doc.find(params[:id])
+    @item = @content.docs.find(params[:id])
     _destroy @item
   end
 end
