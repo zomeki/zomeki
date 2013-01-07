@@ -3,7 +3,14 @@
   <section class="category <%= category.name -%>">
     <ul class="docs">
       <%- category.docs.each do |doc| -%>
-      <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
+      <li>
+        <%- if doc.href.present? -%>
+          <%= link_to doc.title, doc.href, target: doc.target %>
+        <%- else -%>
+          <%= link_to doc.title, doc.public_uri %>
+        <%- end -%>
+        <p class="summary"><%= doc.summary %></p>
+      </li>
       <%- end -%>
     </ul>
   </section>
@@ -19,7 +26,14 @@
     <%- unless child.docs.empty? -%>
     <ul class="docs">
       <%- child.docs.each do |doc| -%>
-      <li><%= link_to doc.title, doc.public_uri %><p class="summary">ここに概要が入ります。</p></li>
+      <li>
+        <%- if doc.href.present? -%>
+          <%= link_to doc.title, doc.href, target: doc.target %>
+        <%- else -%>
+          <%= link_to doc.title, doc.public_uri %>
+        <%- end -%>
+        <p class="summary"><%= doc.summary %></p>
+      </li>
       <%- end -%>
     </ul>
     <%- end -%>
