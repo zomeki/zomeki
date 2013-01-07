@@ -9,7 +9,9 @@
         <%- else -%>
           <%= link_to doc.title, doc.public_uri %>
         <%- end -%>
+        <%- if doc.summary.present? -%>
         <p class="summary"><%= doc.summary %></p>
+        <%- end -%>
       </li>
       <%- end -%>
     </ul>
@@ -32,7 +34,9 @@
         <%- else -%>
           <%= link_to doc.title, doc.public_uri %>
         <%- end -%>
+        <%- if doc.summary.present? -%>
         <p class="summary"><%= doc.summary %></p>
+        <%- end -%>
       </li>
       <%- end -%>
     </ul>
