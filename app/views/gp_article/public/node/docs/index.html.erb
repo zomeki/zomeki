@@ -5,7 +5,7 @@
     <h2 class="date"><%= item[:date] %></h2><ul>
     <%- end -%>
     <li>
-      <%- if item[:doc].href.present? -%>
+      <%- if item[:doc].target.present? -%>
         <%= link_to item[:doc].title, item[:doc].href, target: item[:doc].target %>
       <%- else -%>
         <%= link_to item[:doc].title, item[:doc].public_uri %>

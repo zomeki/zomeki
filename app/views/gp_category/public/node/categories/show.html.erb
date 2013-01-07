@@ -17,7 +17,7 @@
   <ul>
     <%- @category.docs.each do |doc| -%>
     <li>
-      <%- if doc.href.present? -%>
+      <%- if doc.target.present? -%>
         <%= link_to doc.title, doc.href, target: doc.target %>
       <%- else -%>
         <%= link_to doc.title, doc.public_uri %>

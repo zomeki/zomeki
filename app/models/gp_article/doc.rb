@@ -14,7 +14,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Cms::Model::Rel::Map
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認待ち', 'recognize'], ['公開保存', 'public']]
-  TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
+  TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['無効', '']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
