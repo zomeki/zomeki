@@ -22,6 +22,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def new
     @item = GpArticle::Doc.new(target: GpArticle::Doc::TARGET_OPTIONS.first.last)
+    @item.in_inquiry = @item.default_inquiry
   end
 
   def create
