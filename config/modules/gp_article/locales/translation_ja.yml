@@ -13,6 +13,7 @@ ja:
         href: リンクURL
         subtitle: サブタイトル
         summary: 概要
+        state: 状態
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
