@@ -1,10 +1,12 @@
 # encoding: utf-8
 class GpArticle::Piece::Doc < Cms::Piece
+  default_scope where(model: 'GpArticle::Doc')
+
   validate :validate_settings
 
   def validate_settings
-    if (ct_id = in_settings['category_type_id']).present?
-      errors.add(:base, "#{self.class.human_attribute_name :category_type_id} #{errors.generate_message(:base, :not_a_number)}") unless ct_id =~ /^[0-9]+$/
+    if (lc = in_settings['list_count']).present?
+      errors.add(:base, "#{self.class.human_attribute_name :list_count} #{errors.generate_message(:base, :not_a_number)}") unless lc =~ /^[0-9]+$/
     end
   end
 
@@ -36,5 +38,9 @@ class GpArticle::Piece::Doc < Cms::Piece
   def category
     return nil unless categories.respond_to?(:find_by_id)
     categories.find_by_id(setting_value(:category_id))
+  end
+
+  def list_count
+    (setting_value(:list_count).presence || 100).to_i
   end
 end
