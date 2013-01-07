@@ -5,13 +5,18 @@ class Sys::Recognition < ActiveRecord::Base
   belongs_to :user,  :foreign_key => :user_id,  :class_name => 'Sys::User'
   
   attr_accessor :type
-  
-  def type=(type)
-    if type.to_s == 'with_admin'
+
+  def change_type(type)
+    case type.to_s
+    when 'with_admin'
       self.extend(Sys::Model::Recognition::WithAdmin)
     end
   end
-  
+
+  def type=(type)
+    change_type(type)
+  end
+
   def info(user_id = nil)
     info = nil
     info = Sys::Model::Recognition::Info::Base.find(user_id, self) if user_id
