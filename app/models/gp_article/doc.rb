@@ -8,6 +8,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Cms::Model::Auth::Concept
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
+  include Cms::Model::Rel::Inquiry
   include Cms::Model::Rel::Map
 
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
