@@ -32,13 +32,15 @@ class GpCategory::Category < ActiveRecord::Base
     category_type.content
   end
 
+  def descendants(categories=[])
+    categories << self
+    children.map {|c| c.descendants(categories) } unless children.empty?
+    return categories
+  end
+
   def descendants_for_option(categories=[])
     categories << ["#{'　　' * (level_no - 1)}#{title}", id]
-
-    unless children.empty?
-      children.map {|c| c.descendants_for_option(categories) }
-    end
-
+    children.map {|c| c.descendants_for_option(categories) } unless children.empty?
     return categories
   end
 

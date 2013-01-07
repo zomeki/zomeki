@@ -16,6 +16,10 @@
     <th><%= @item.locale :category_id %></th>
     <td><%= @item.category.try(:title) %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :list_count %></th>
+    <td><%= @item.setting_value(:list_count) %></td>
+  </tr>
 </table>
 
 <%= creator_view @item %>

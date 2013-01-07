@@ -28,3 +28,4 @@ ja:
       gp_article/piece/doc:
         category_type_id: 汎用カテゴリタイプ
         category_id: 汎用カテゴリ
+        list_count: 表示件数
