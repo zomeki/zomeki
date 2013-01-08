@@ -31,6 +31,7 @@ module Cms::Controller::Layout
       errstr = "Action Controller: Exception caught"
       raise(errstr) if body.index("<title>#{errstr}</title>")
     rescue => e
+      error_log(e.message)
       Page.error = 404
     end
     
@@ -98,7 +99,7 @@ module Cms::Controller::Layout
           body.gsub!("[[piece/#{name}]]", piece_container_html(item, data))
         end
       rescue => e
-        Rails.logger.warn(e.message)
+        error_log(e.message)
       end
     end
     
@@ -141,7 +142,7 @@ module Cms::Controller::Layout
           :body => body
         )
       rescue => e #InvalidStyleException
-        error_log(e)
+        error_log(e.message)
       end
       
       case request.mobile
