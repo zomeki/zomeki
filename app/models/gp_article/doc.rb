@@ -34,8 +34,8 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :body, :length => {maximum: 100000}
   validates :state, :presence => true
 
-  validate :validate_inquiry
-  validate :validate_recognizers
+  validate :validate_inquiry, :if => :state_recognize?
+  validate :validate_recognizers, :if => :state_recognize?
 
   def public_uri=(uri)
     @public_uri = uri
