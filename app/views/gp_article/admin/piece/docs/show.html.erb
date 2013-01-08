@@ -9,16 +9,14 @@
 
 <table class="show">
   <tr>
+    <th><%= @item.locale :list_count %></th>
+    <td colspan="3"><%= @item.setting_value(:list_count) %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale :category_type_id %></th>
     <td><%= @item.category_type.try(:title) %></td>
-  </tr>
-  <tr>
     <th><%= @item.locale :category_id %></th>
     <td><%= @item.category.try(:title) %></td>
-  </tr>
-  <tr>
-    <th><%= @item.locale :list_count %></th>
-    <td><%= @item.setting_value(:list_count) %></td>
   </tr>
 </table>
 
