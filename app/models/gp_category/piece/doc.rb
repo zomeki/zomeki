@@ -47,6 +47,6 @@ class GpCategory::Piece::Doc < Cms::Piece
   end
 
   def layer
-    setting_value(:layer)
+    setting_value(:layer) || LAYER_OPTIONS.first.last
   end
 end
