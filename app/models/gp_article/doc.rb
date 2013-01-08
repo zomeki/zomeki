@@ -39,6 +39,24 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :validate_inquiry, :if => :state_recognize?
   validate :validate_recognizers, :if => :state_recognize?
 
+  def self.find_with_content_and_criteria(content, criteria)
+    docs = self.arel_table
+    creators = Sys::Creator.arel_table
+    groups = Sys::Group.arel_table
+
+    arel = docs.project(docs.columns).join(creators, Arel::Nodes::InnerJoin).on(docs[:unid].eq(creators[:id]))
+                                     .join(groups, Arel::Nodes::InnerJoin).on(creators[:group_id].eq(groups[:id]))
+    arel.where(docs[:content_id].eq(content.id))
+
+    arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
+    arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
+    arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+
+    arel.order(docs[:updated_at].desc)
+
+    self.find_by_sql(arel.to_sql)
+  end
+
   def public_uri=(uri)
     @public_uri = uri
   end
