@@ -16,6 +16,6 @@ class GpArticle::Public::Piece::DocsController < Sys::Controller::Public::Base
     else
       category_ids = @category_type.categories.map(&:id)
     end
-    @docs = GpArticle::Doc.joins('INNER JOIN gp_article_docs_gp_category_categories AS gadgcc ON gp_article_docs.id = gadgcc.doc_id').where('gadgcc.category_id' => category_ids).order('published_at DESC').limit(@piece.list_count)
+    @docs = GpArticle::Doc.where(state: 'public').joins('INNER JOIN gp_article_docs_gp_category_categories AS gadgcc ON gp_article_docs.id = gadgcc.doc_id').where('gadgcc.category_id' => category_ids).order('published_at DESC').limit(@piece.list_count)
   end
 end
