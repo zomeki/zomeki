@@ -24,6 +24,7 @@
 
 <%= creator_form f %>
 
+<%- if @item.content.gp_category_content_category_type -%>
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#item_in_settings_category_type_id').on('change', function (event) {
@@ -38,4 +39,5 @@ $(document).ready(function () {
     }
   });
 });
+<%- end -%>
 <%- end -%>
