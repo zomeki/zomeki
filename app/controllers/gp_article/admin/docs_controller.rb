@@ -14,15 +14,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
-    if params[:force_publish_all] == 'foobar'
-      @content.docs.each do |doc|
-        doc.change_state_by_commit('commit_public')
-        if doc.editable? && doc.save
-          doc.reload
-          publish_by_update(doc)
-        end
-      end
-    end
     @items = @content.docs.paginate(page: params[:page], per_page: 30)
     _index @items
   end
