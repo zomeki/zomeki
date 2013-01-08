@@ -41,6 +41,6 @@ class GpArticle::Piece::Doc < Cms::Piece
   end
 
   def list_count
-    (setting_value(:list_count).presence || 100).to_i
+    (setting_value(:list_count).presence || 1000).to_i
   end
 end
