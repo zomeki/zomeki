@@ -27,6 +27,6 @@ ja:
         updated_at: 更新日時
         state: 状態
       gp_article/piece/doc:
-        category_type_id: 汎用カテゴリタイプ
-        category_id: 汎用カテゴリ
+        category_type_id: 表示カテゴリタイプ
+        category_id: 表示カテゴリ
         list_count: 表示件数
