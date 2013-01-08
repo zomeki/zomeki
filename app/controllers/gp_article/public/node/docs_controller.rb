@@ -11,7 +11,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def index
-    @docs = @content.public_docs.paginate(page: params[:page], per_page: 20)
+    @docs = public_or_preview_docs.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|
@@ -27,7 +27,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def show
-    @doc = @content.public_docs.find_by_name(params[:name])
+    @doc = public_or_preview_docs.find_by_name(params[:name])
     return http_error(404) unless @doc
 
     Page.current_item = @doc
@@ -35,11 +35,21 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def file_content
-    @doc = @content.public_docs.find_by_name(params[:name])
+    @doc = public_or_preview_docs.find_by_name(params[:name])
     if (file = Sys::File.where(parent_unid: @doc.unid, name: "#{params[:basename]}.#{params[:extname]}").first)
       send_file file.upload_path, :type => file.mime_type, :filename => file.name, :disposition => 'inline'
     else
       http_error(404)
+    end
+  end
+
+  private
+
+  def public_or_preview_docs
+    if Core.mode == 'preview'
+      @content.docs
+    else
+      @content.public_docs
     end
   end
 end
