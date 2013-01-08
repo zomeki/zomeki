@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <th><%= @item.locale :layer %></th>
-    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.first %></td>
+    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
   </tr>
   <tr>
     <th><%= @item.locale :category_type_id %></th>
