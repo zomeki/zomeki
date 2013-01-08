@@ -11,11 +11,11 @@
 <%- end -%>
 
 <h2>記事</h2>
-<%- if @category.docs.empty? -%>
+<%- if @category.public_docs.empty? -%>
   <div>該当なし</div>
 <%- else -%>
   <ul>
-    <%- @category.docs.each do |doc| -%>
+    <%- @category.public_docs.each do |doc| -%>
     <li>
       <%- if doc.target.present? -%>
         <%= link_to doc.title, doc.href, target: doc.target %>

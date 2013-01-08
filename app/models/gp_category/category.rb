@@ -75,4 +75,8 @@ class GpCategory::Category < ActiveRecord::Base
 
     Cms::Lib::BreadCrumbs.new(crumbs)
   end
+
+  def public_docs
+    docs.where(state: 'public')
+  end
 end

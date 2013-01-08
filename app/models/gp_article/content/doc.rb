@@ -20,4 +20,8 @@ class GpArticle::Content::Doc < Cms::Content
       []
     end
   end
+
+  def public_docs
+    docs.where(state: 'public')
+  end
 end
