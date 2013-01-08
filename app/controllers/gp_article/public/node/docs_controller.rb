@@ -16,10 +16,13 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
     @items = @docs.inject([]) do |result, doc|
         date = doc.published_at.try(:strftime, '%Y年%-m月%-d日')
-        result << {
-            date: (result.last.try('[]', :date) == date ? nil : date ),
-            doc: doc
-          }
+
+        unless result.empty?
+          last_date = result.last[:doc].published_at.try(:strftime, '%Y年%-m月%-d日')
+          date = nil if date == last_date
+        end
+
+        result.push(date: date, doc: doc)
       end
   end
 
