@@ -57,6 +57,10 @@
 
 /* Error.
 ----------------------------------------------- */
+.alert {
+ margin: 10px 10px;
+ color: #e00;
+}
 .fieldWithErrors {
   margin: 1px;
   padding: 1px;
