@@ -6,7 +6,11 @@
     <%- end -%>
     <li>
       <%- if item[:doc].target.present? -%>
-        <%= link_to item[:doc].title, item[:doc].href, target: item[:doc].target %>
+        <%- if item[:doc].href.present? -%>
+          <%= link_to item[:doc].title, item[:doc].href, target: item[:doc].target %>
+        <%- else -%>
+          <%= item[:doc].title -%>
+        <%- end -%>
       <%- else -%>
         <%= link_to item[:doc].title, item[:doc].public_uri %>
       <%- end -%>

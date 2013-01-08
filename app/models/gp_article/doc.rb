@@ -16,7 +16,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Auth::EditableGroup
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認待ち', 'recognize'], ['公開保存', 'public']]
-  TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['無効', '']]
+  TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
