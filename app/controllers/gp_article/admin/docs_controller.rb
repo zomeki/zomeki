@@ -14,7 +14,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = @content.docs.paginate(page: params[:page], per_page: 30)
+    @items = @content.docs.except(:order).order('updated_at DESC').paginate(page: params[:page], per_page: 30)
     _index @items
   end
 
