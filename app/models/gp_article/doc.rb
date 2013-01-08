@@ -7,11 +7,13 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::File
   include Sys::Model::Rel::Recognition
   include Sys::Model::Rel::Task
-  include Cms::Model::Auth::Concept
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
   include Cms::Model::Rel::Inquiry
   include Cms::Model::Rel::Map
+
+  include Cms::Model::Auth::Concept
+  include Sys::Model::Auth::EditableGroup
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認待ち', 'recognize'], ['公開保存', 'public']]
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['無効', '']]
