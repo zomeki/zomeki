@@ -1,4 +1,7 @@
 # encoding: utf-8
+
+require 'will_paginate/array'
+
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Recognition
