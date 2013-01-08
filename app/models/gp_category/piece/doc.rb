@@ -41,4 +41,12 @@ class GpCategory::Piece::Doc < Cms::Piece
     return nil unless categories.respond_to?(:find_by_id)
     categories.find_by_id(setting_value(:category_id))
   end
+
+  def list_count
+    (setting_value(:list_count).presence || 1000).to_i
+  end
+
+  def layer
+    setting_value(:layer)
+  end
 end
