@@ -34,7 +34,11 @@
       <%- @piece.categorize_docs(child.public_docs).each do |doc| -%>
       <li>
         <%- if doc.target.present? -%>
-          <%= link_to doc.title, doc.href, target: doc.target %>
+          <%- if doc.href.present? -%>
+            <%= link_to doc.title, doc.href, target: doc.target %>
+          <%- else -%>
+            <%= doc.title -%>
+          <%- end -%>
         <%- else -%>
           <%= link_to doc.title, doc.public_uri %>
         <%- end -%>
