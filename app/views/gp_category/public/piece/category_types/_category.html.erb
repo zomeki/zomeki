@@ -1,8 +1,8 @@
-<%- unless category.public_docs.empty? -%>
+<%- unless @piece.categorize_docs(category.public_docs).empty? -%>
 <div class="docs">
   <section class="category <%= category.name -%>">
     <ul class="docs">
-      <%- category.public_docs.each do |doc| -%>
+      <%- @piece.categorize_docs(category.public_docs).each do |doc| -%>
       <li>
         <%- if doc.target.present? -%>
           <%- if doc.href.present? -%>
@@ -29,9 +29,9 @@
   <section class="category <%= child.name -%><%= cycle '', ' cycle' %>">
     <h3><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></h3>
 
-    <%- unless child.public_docs.empty? -%>
+    <%- unless @piece.categorize_docs(child.public_docs).empty? -%>
     <ul class="docs">
-      <%- child.public_docs.each do |doc| -%>
+      <%- @piece.categorize_docs(child.public_docs).each do |doc| -%>
       <li>
         <%- if doc.target.present? -%>
           <%= link_to doc.title, doc.href, target: doc.target %>
