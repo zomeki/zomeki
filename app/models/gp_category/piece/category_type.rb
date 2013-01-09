@@ -22,7 +22,11 @@ class GpCategory::Piece::CategoryType < Cms::Piece
 
   def categories
     return [] unless category_type
-    category_type.categories.where(id: setting_value(:category_id))
+    if setting_value(:category_id).present?
+      category_type.categories.where(id: setting_value(:category_id))
+    else
+      category_type.categories
+    end
   end
 
   def category
@@ -31,6 +35,13 @@ class GpCategory::Piece::CategoryType < Cms::Piece
   end
 
   def layer
-    setting_value(:layer) || LAYER_OPTIONS.first.last
+    setting_value(:layer).presence || LAYER_OPTIONS.first.last
+  end
+
+  def categorize_docs(docs)
+    docs.select do |doc|
+      category_ids = (doc.respond_to?(:category_ids) ? doc.category_ids : doc.categories.map(&:id))
+      !(category_ids & self.categories.map(&:id)).empty?
+    end
   end
 end
