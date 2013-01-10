@@ -30,3 +30,6 @@ ja:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
         list_count: 表示件数
+      gp_article/piece/recent_tab:
+        list_count: 表示件数
+        more_label: 一覧リンク文字
