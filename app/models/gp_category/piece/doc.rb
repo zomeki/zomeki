@@ -41,7 +41,7 @@ class GpCategory::Piece::Doc < Cms::Piece
 
     if (category_id = setting_value(:category_id)).present?
       if layer == 'descendants'
-        category_type.categories.find(category_id).descendants
+        category_type.categories.find_by_id(category_id).try(:descendants) || []
       else
         category_type.categories.where(id: category_id)
       end
