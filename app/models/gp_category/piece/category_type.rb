@@ -4,8 +4,12 @@ class GpCategory::Piece::CategoryType < Cms::Piece
 
   default_scope where(model: 'GpCategory::CategoryType')
 
+  def layer
+    setting_value(:layer).presence || LAYER_OPTIONS.first.last
+  end
+
   def content
-    GpCategory::Content::CategoryType.find(super.id)
+    GpCategory::Content::CategoryType.find(super)
   end
 
   def category_types
@@ -22,23 +26,31 @@ class GpCategory::Piece::CategoryType < Cms::Piece
 
   def categories
     return [] unless category_type
-    if setting_value(:category_id).present?
-      category_type.categories.where(id: setting_value(:category_id))
+
+    if (category_id = setting_value(:category_id)).present?
+      if layer == 'descendants'
+        category_type.categories.find(category_id).descendants
+      else
+        category_type.categories.where(id: category_id)
+      end
     else
       category_type.categories
     end
   end
 
   def category
-    return nil if categories.empty? || !categories.respond_to?(:find_by_id)
-    categories.find_by_id(setting_value(:category_id))
-  end
+    return nil if categories.empty?
 
-  def layer
-    setting_value(:layer).presence || LAYER_OPTIONS.first.last
+    if categories.respond_to?(:find_by_id)
+      categories.find_by_id(setting_value(:category_id))
+    else
+      categories.detect {|c| c.id.to_s == setting_value(:category_id) }
+    end
   end
 
   def categorize_docs(docs)
+    return docs unless category_type
+
     docs.select do |doc|
       category_ids = (doc.respond_to?(:category_ids) ? doc.category_ids : doc.categories.map(&:id))
       !(category_ids & self.categories.map(&:id)).empty?
