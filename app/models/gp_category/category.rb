@@ -26,7 +26,7 @@ class GpCategory::Category < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :parent_id]}
   validates :title, :presence => true
 
-  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_category_categories'
+  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_category_categories', :order => 'published_at, updated_at'
 
   def content
     category_type.content
