@@ -12,8 +12,16 @@ class GpCategory::Piece::Doc < Cms::Piece
     end
   end
 
+  def list_count
+    (setting_value(:list_count).presence || 1000).to_i
+  end
+
+  def layer
+    setting_value(:layer).presence || LAYER_OPTIONS.first.last
+  end
+
   def content
-    GpCategory::Content::CategoryType.find(super.id)
+    GpCategory::Content::CategoryType.find(super)
   end
 
   def category_types
@@ -25,28 +33,30 @@ class GpCategory::Piece::Doc < Cms::Piece
   end
 
   def category_type
-    return nil unless category_types.respond_to?(:find_by_id)
     category_types.find_by_id(setting_value(:category_type_id))
   end
 
   def categories
-    category_type.try(:categories) || []
-  end
+    return [] unless category_type
 
-  def categories_for_option
-    category_type.try(:categories_for_option) || []
+    if (category_id = setting_value(:category_id)).present?
+      if layer == 'descendants'
+        category_type.categories.find(category_id).descendants
+      else
+        category_type.categories.where(id: category_id)
+      end
+    else
+      category_type.categories
+    end
   end
 
   def category
-    return nil unless categories.respond_to?(:find_by_id)
-    categories.find_by_id(setting_value(:category_id))
-  end
+    return nil if categories.empty?
 
-  def list_count
-    (setting_value(:list_count).presence || 1000).to_i
-  end
-
-  def layer
-    setting_value(:layer) || LAYER_OPTIONS.first.last
+    if categories.respond_to?(:find_by_id)
+      categories.find_by_id(setting_value(:category_id))
+    else
+      categories.detect {|c| c.id.to_s == setting_value(:category_id) }
+    end
   end
 end

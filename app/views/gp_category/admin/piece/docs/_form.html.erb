@@ -20,7 +20,7 @@
     <th><%= @item.locale :category_type_id %></th>
     <td><%= f.array_select 'in_settings[category_type_id]', @item.category_types_for_option, include_blank: true %></td>
     <th><%= @item.locale :category_id %></th>
-    <td><%= f.array_select 'in_settings[category_id]', @item.categories_for_option, include_blank: true %></td>
+    <td><%= f.array_select 'in_settings[category_id]', @item.category_type.try(:categories_for_option) || [], include_blank: true %></td>
   </tr>
 </table>
 
