@@ -30,6 +30,17 @@
   </tr>
 </table>
 
+<%- unless @category_types.empty? -%>
+<table class="show">
+  <%- @category_types.each do |category_type| -%>
+  <tr>
+    <th><%= category_type.title %></th>
+    <td><%= @item.categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
 <%= google_map_view @item %>
 <%= inquiry_view @item %>
 <%= task_view @item %>
