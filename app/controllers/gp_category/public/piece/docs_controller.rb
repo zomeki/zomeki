@@ -2,24 +2,34 @@
 class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
   def pre_dispatch
     @piece = GpCategory::Piece::Doc.find_by_id(Page.current_piece.id)
-    @category_type = @piece.category_type
-    unless @category_type
-      render :text => ''
-    else
-      @category = @piece.category
-    end
+    return http_error(404) unless @piece
+
+    @item = Page.current_item
   end
 
   def index
-    if @category
-      if @piece.layer == 'descendants'
-        category_ids = @category.descendants.map(&:id)
-      else
-        category_ids = [@category.id]
-      end
+    unless @piece.category_type
+      piece_category_ids = @piece.category_types.map{|ct| ct.categories.map(&:id) }.flatten
     else
-      category_ids = @category_type.categories.map(&:id)
+      piece_category_ids = @piece.categories.map(&:id)
     end
-    @docs = GpArticle::Doc.where(state: 'public').joins('INNER JOIN gp_article_docs_gp_category_categories AS gadgcc ON gp_article_docs.id = gadgcc.doc_id').where('gadgcc.category_id' => category_ids).order('published_at DESC').limit(@piece.list_count)
+
+    piece_doc_ids = GpArticle::Doc.where(state: 'public').joins('INNER JOIN gp_article_docs_gp_category_categories AS gadgcc ON gp_article_docs.id = gadgcc.doc_id').where('gadgcc.category_id' => piece_category_ids).map(&:id)
+
+    case @item
+    when GpCategory::CategoryType
+      page_category_ids = @item.categories.map(&:id)
+    when GpCategory::Category
+      page_category_ids = @item.descendants.map(&:id)
+    end
+
+    if page_category_ids
+      page_doc_ids = GpArticle::Doc.where(state: 'public').joins('INNER JOIN gp_article_docs_gp_category_categories AS gadgcc ON gp_article_docs.id = gadgcc.doc_id').where('gadgcc.category_id' => page_category_ids).map(&:id)
+      doc_ids = piece_doc_ids & page_doc_ids
+    else
+      doc_ids = piece_doc_ids
+    end
+
+    @docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
   end
 end
