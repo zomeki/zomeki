@@ -4,6 +4,10 @@ class GpArticle::Content::Doc < Cms::Content
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
 
+  def public_docs
+    docs.where(state: 'public')
+  end
+
   def doc_node
     return @doc_node if @doc_node
     @doc_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
@@ -19,9 +23,5 @@ class GpArticle::Content::Doc < Cms::Content
     else
       []
     end
-  end
-
-  def public_docs
-    docs.where(state: 'public')
   end
 end
