@@ -1,5 +1,5 @@
 <article class="contentGpArticleDoc">
-  <p class="publishedAt"><%= (@doc.published_at || Time.now).strftime('%Y年%-m月%-d日') %></p>
+  <p class="publishedAt"><%= @doc.published_at.strftime('%Y年%-m月%-d日') %></p>
   <div class="body"><%=sanitize @doc.body.gsub('"file_contents/', %Q("#{@doc.public_uri}file_contents/)) %></div>
   <div class="back"><%= link_to_function '戻る', 'history.back();' %></div>
 <!-- end .contentGpArticleDoc --></article>
