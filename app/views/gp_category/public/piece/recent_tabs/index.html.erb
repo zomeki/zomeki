@@ -1,0 +1,49 @@
+<%= javascript_include_tag '/_common/modules/article/js/doc_tabs.js' -%>
+<%= javascript_tag do -%>
+var docTabs<%= @piece.id %> = new ArticleDocTabs('<%= @piece.css_id %>');
+<%- end -%>
+
+<div class="tabs">
+  <%- @tabs.each do |tab| -%>
+  <%= link_to_function tab[:title], "docTabs#{@piece.id}.show('#{tab[:name]}')", class: tab[:class] %>
+  <%- end -%>
+</div>
+
+<div class="wrapper">
+  <div class="content">
+    <%- @tabs.each do |tab| -%>
+    <ul class="<%= tab[:name] %>"<%= ' style="display: none;"'.html_safe unless tab[:current] %>>
+      <%- tab[:docs].each do |doc| -%>
+        <li>
+          <%- if doc.target.present? -%>
+            <%- if doc.href.present? -%>
+              <%= link_to doc.title, doc.href, target: doc.target %>
+            <%- else -%>
+              <%= doc.title -%>
+            <%- end -%>
+            <span class="date"><%= doc.published_at.strftime('%Y年%-m月%-d日') %></span>
+          <%- else -%>
+            <%= link_to doc.title, doc.public_uri %> <span class="date"><%= doc.published_at.strftime('%Y年%-m月%-d日') %></span>
+          <%- end -%>
+        </li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </div>
+
+  <div class="links">
+    <%- @tabs.each do |tab| -%>
+    <div class="<%= tab[:name] %>"<%= ' style="display: none;"'.html_safe unless tab[:current] %>>
+      <%- if tab[:more] -%>
+<%- if false -%>
+      <ul class="feed">
+        <li><%= link_to 'RSS', "#{tab[:more]}/index.rss", title: "RSSフィードを取得", class: 'feedRss' %></li>
+        <li><%= link_to 'Atom', "#{tab[:more]}/index.atom", title: "Atomフィードを取得", class: 'feedAtom' %></li>
+      </ul>
+<%- end -%>
+      <div class="more"><%= link_to @more_label, tab[:more] %></div>
+      <%- end -%>
+    </div>
+    <%- end -%>
+  </div>
+<!-- end .wrapper --></div>
