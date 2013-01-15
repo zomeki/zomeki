@@ -20,7 +20,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpCategory::Category',
-                        :order => :sort_no, :dependent => :destroy
+                        :order => [:category_type_id, :level_no, :parent_id, :sort_no], :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
