@@ -20,18 +20,18 @@
 
 <br />
 <p class="form">タブ設定</p>
-<span style="color: #f00;">※未実装※</span><% if false %>
+
 <div class="actionMenu">
-  <%= link_to(:edit, gp_article_piece_recent_tab_tabs_path(@item.id)) if @item.editable? %>
+  <%= link_to(:edit, gp_article_piece_recent_tab_tabs_path(piece_recent_tab_id: @item.id)) if @item.editable? %>
 </div>
 
 <table class="show">
-  <% GpArticle::Piece::RecentTabXml.find(:all, @piece).each_with_index do |item, idx| %>
+  <%- GpArticle::Piece::RecentTabXml.find(:all, @piece).each_with_index do |item, idx| -%>
   <tr>
     <th>タブ <%= idx + 1 %></th>
     <td><%= item.title %></td>
   </tr>
-  <% end %>
+  <%- end -%>
 </table>
-<% end %>
+
 <%= creator_view @item %>
