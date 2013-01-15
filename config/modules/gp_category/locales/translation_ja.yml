@@ -26,3 +26,11 @@ ja:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
         layer: 表示カテゴリ階層
+      gp_category/piece/recent_tab:
+        list_count: 表示件数
+        more_label: 一覧リンク文字
+#        name: タブID
+#        title: タブ名
+#        more: 一覧リンク
+#        condition: 結合
+#        sort_no: 並び順
