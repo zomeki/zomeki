@@ -3,7 +3,7 @@
     <th style="text-align: center; width: 60px;">詳細</th>
     <th style="width: 200px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:name) %></th>
     <th style="width: 200px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:title) %></th>
-    <th>一覧リンク</th>
+    <th><%= Article::Piece::RecentTabXml.human_attribute_name(:more) %></th>
     <th style="text-align: center; width: 80px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:sort_no) %></th>
   </tr>
 
@@ -12,7 +12,7 @@
     <td style="text-align: center;"><%= link_to :show, gp_article_piece_recent_tab_tab_path(piece_recent_tab_id: @piece.id, id: item.name) %></td>
     <td><%= item.name %></td>
     <td><%= item.title %></td>
-    <td><%= item.more_label %></td>
+    <td><%= item.more %></td>
     <td style="text-align: right;"><%= item.sort_no %></td>
   </tr>
   <%- end -%>
