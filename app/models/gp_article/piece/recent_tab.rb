@@ -10,6 +10,14 @@ class GpArticle::Piece::RecentTab < Cms::Piece
     end
   end
 
+  def list_count
+    (setting_value(:list_count).presence || 10).to_i
+  end
+
+  def more_label
+    setting_value(:more_label) || ''
+  end
+
   def content
     GpArticle::Content::Doc.find(super)
   end
