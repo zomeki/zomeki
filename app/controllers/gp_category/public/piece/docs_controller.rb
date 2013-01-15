@@ -2,7 +2,7 @@
 class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
   def pre_dispatch
     @piece = GpCategory::Piece::Doc.find_by_id(Page.current_piece.id)
-    return http_error(404) unless @piece
+    render :text => '' unless @piece
 
     @item = Page.current_item
   end
