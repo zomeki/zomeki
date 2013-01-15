@@ -23,10 +23,18 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
 
   def categories
     categories_array = []
+
     category_ids.each do |category_id|
       category = GpCategory::Category.find_by_id(category_id)
       categories_array << category if category
     end
-    return categories_array
+
+    categories_array.sort do |a, b|
+      next a.category_type.sort_no <=> b.category_type.sort_no unless a.category_type.sort_no == b.category_type.sort_no
+      next a.category_type.id <=> b.category_type.id unless a.category_type.id == b.category_type.id
+      next a.level_no <=> b.level_no unless a.level_no == b.level_no
+      next a.parent_id <=> b.parent_id unless a.parent_id == b.parent_id
+      a.sort_no <=> b.sort_no
+    end
   end
 end
