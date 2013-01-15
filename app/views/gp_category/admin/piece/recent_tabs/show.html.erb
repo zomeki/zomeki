@@ -22,18 +22,16 @@
 <p class="form">タブ設定</p>
 
 <div class="actionMenu">
-  <%#= link_to(:edit, gp_article_piece_recent_tab_tabs_path(piece_recent_tab_id: @item.id)) if @item.editable? %>
+  <%= link_to(:edit, gp_category_piece_recent_tab_tabs_path(piece_recent_tab_id: @item.id)) if @item.editable? %>
 </div>
 
 <table class="show">
-<%- if false -%>
-  <%- GpArticle::Piece::RecentTabXml.find(:all, @piece).each_with_index do |item, idx| -%>
+  <%- GpCategory::Piece::RecentTabXml.find(:all, @piece).each_with_index do |item, idx| -%>
   <tr>
     <th>タブ <%= idx + 1 %></th>
     <td><%= item.title %></td>
   </tr>
   <%- end -%>
-<%- end -%>
 </table>
 
 <%= creator_view @item %>
