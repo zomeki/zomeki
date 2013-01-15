@@ -1,0 +1,35 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more %></th>
+    <td><%= @item.more %></td>
+  </tr>
+  <tr>
+    <th>条件</th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td><%= @item.locale :condition %></td>
+          <td><%= @item.condition_name %></td>
+        </tr>
+        <%- @item.categories.each do |category| -%>
+        <tr>
+          <td><%= category.category_type.title -%></td>
+          <td><%= category.title %></td>
+        </tr>
+        <%- end -%>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>

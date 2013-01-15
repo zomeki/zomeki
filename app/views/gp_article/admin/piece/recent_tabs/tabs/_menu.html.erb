@@ -1,0 +1,11 @@
+<h2><%= @piece.title %> ： タブ設定</h2>
+
+<div class="actionMenu">
+  <%= link_to 'ピース詳細', gp_article_piece_recent_tab_path(@piece) %>
+  <span class="separator"></span>
+  <%= action_menu :new if @piece.try(:editable?) %>
+  <%= action_menu :index %>
+  <%= action_menu :show %>
+  <%= action_menu :edit if @item.try(:editable?) %>
+  <%= action_menu :destroy if @item.try(:deletable?) %>
+</div>
