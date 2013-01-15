@@ -26,10 +26,6 @@ ja:
         sort_no: 並び順
         updated_at: 更新日時
         state: 状態
-      gp_article/piece/doc:
-        category_type_id: 表示カテゴリタイプ
-        category_id: 表示カテゴリ
-        list_count: 表示件数
       gp_article/piece/recent_tab:
         list_count: 表示件数
         more_label: 一覧リンク文字
