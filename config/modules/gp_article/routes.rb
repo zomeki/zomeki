@@ -25,8 +25,6 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':parent/node_docs'
 
     ## pieces
-    resources :piece_docs,
-      :controller => 'admin/piece/docs'
     resources(:piece_recent_tabs,
       :controller  => 'admin/piece/recent_tabs') do
       resources :tabs,
