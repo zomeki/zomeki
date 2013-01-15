@@ -8,8 +8,8 @@
     <td><%= f.text_field :title %></td>
   </tr>
   <tr>
-    <th><%= f.label :more %></th>
-    <td><%= f.text_field :more %></td>
+    <th><%= f.label :more_label %></th>
+    <td><%= f.text_field :more_label %></td>
   </tr>
   <tr>
     <th>条件</th>
@@ -17,7 +17,7 @@
       <table class="noDesign">
         <tr>
           <td><%= f.label :condition %></td>
-          <td><%= f.select :condition, @item.class::CONDITION_STATE_OPTIONS, :include_blank => true %></td>
+          <td><%= f.radio_buttons :condition, @item.class::CONDITION_STATE_OPTIONS %></td>
         </tr>
         <tr>
           <td>表示カテゴリ</td>

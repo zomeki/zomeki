@@ -9,7 +9,7 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
 
   attr_accessor :name
   attr_accessor :title
-  attr_accessor :more
+  attr_accessor :more_label
   attr_accessor :condition
   attr_accessor :sort_no
 
