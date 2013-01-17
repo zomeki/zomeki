@@ -19,7 +19,7 @@ class GpArticle::Admin::Piece::RecentTabs::TabsController < Cms::Controller::Adm
   end
 
   def new
-    @item = GpArticle::Piece::RecentTabXml.new(@piece, condition: GpArticle::Piece::RecentTabXml::CONDITION_STATE_OPTIONS.first.last, sort_no: 0)
+    @item = GpArticle::Piece::RecentTabXml.new(@piece, condition: GpArticle::Piece::RecentTabXml::CONDITION_OPTIONS.first.last, sort_no: 0)
   end
 
   def create

@@ -1,6 +1,6 @@
 # encoding: utf-8
 class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
-  CONDITION_STATE_OPTIONS = [['すべてを含む', 'and'], ['いずれかを含む', 'or']]
+  CONDITION_OPTIONS = [['すべてを含む', 'and'], ['いずれかを含む', 'or']]
 
   set_model_name 'gp_article/piece/recent_tab'
   set_column_name :xml_properties
@@ -18,7 +18,7 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
   validates_presence_of :name, :title, :sort_no
 
   def condition_name
-    CONDITION_STATE_OPTIONS.detect{|o| o.last == condition }.try(:first) || ''
+    CONDITION_OPTIONS.detect{|o| o.last == condition }.try(:first) || ''
   end
 
   def categories
