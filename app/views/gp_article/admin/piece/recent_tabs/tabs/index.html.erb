@@ -1,10 +1,10 @@
 <table class="index">
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
-    <th style="width: 200px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:name) %></th>
-    <th style="width: 200px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:title) %></th>
-    <th><%= Article::Piece::RecentTabXml.human_attribute_name(:more) %></th>
-    <th style="text-align: center; width: 80px;"><%= Article::Piece::RecentTabXml.human_attribute_name(:sort_no) %></th>
+    <th style="width: 200px;"><%= GpArticle::Piece::RecentTabXml.human_attribute_name(:name) %></th>
+    <th style="width: 200px;"><%= GpArticle::Piece::RecentTabXml.human_attribute_name(:title) %></th>
+    <th><%= GpArticle::Piece::RecentTabXml.human_attribute_name(:more) %></th>
+    <th style="text-align: center; width: 80px;"><%= GpArticle::Piece::RecentTabXml.human_attribute_name(:sort_no) %></th>
   </tr>
 
   <%- @items.each do |item| -%>
