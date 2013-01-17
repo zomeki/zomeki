@@ -27,7 +27,7 @@ class GpArticle::Public::Piece::RecentTabsController < Sys::Controller::Public::
       else
         doc_ids = []
       end
-      docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
+      docs = GpArticle::Doc.where(content_id: @piece.content.id).where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
 
       @tabs.push(name: tab.name,
                  title: tab.title,
