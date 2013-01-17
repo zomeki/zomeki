@@ -12,6 +12,7 @@ module Cms::Model::Base::Page::Publisher
   end
 
   def public_path
+    return '' unless public_uri
     Page.site.public_path + public_uri
   end
 
