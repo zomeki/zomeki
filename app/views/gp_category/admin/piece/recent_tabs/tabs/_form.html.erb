@@ -49,7 +49,7 @@
 $(document).ready(function () {
   $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
 
-  $('#categories > tbody > tr:first-child > td.category_type > select').on('change', function (event) {
+  $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
     var category_type_id = parseInt(event.target.value);
     var category_select = $(event.target).closest('tr').find('td.category > select');
     if (isNaN(category_type_id)) {
