@@ -34,7 +34,8 @@ class GpCategory::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
       next a.category_type.id <=> b.category_type.id unless a.category_type.id == b.category_type.id
       next a.level_no <=> b.level_no unless a.level_no == b.level_no
       next a.parent_id <=> b.parent_id unless a.parent_id == b.parent_id
-      a.sort_no <=> b.sort_no
+      next a.sort_no <=> b.sort_no unless a.sort_no == b.sort_no
+      a.id <=> b.id
     end
   end
 end
