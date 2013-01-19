@@ -24,7 +24,7 @@ class GpArticle::Admin::Piece::RecentTabs::TabsController < Cms::Controller::Adm
 
   def create
     @item = GpArticle::Piece::RecentTabXml.new(@piece, params[:item])
-    set_categories
+    set_elements
     _create @item
   end
 
@@ -32,7 +32,7 @@ class GpArticle::Admin::Piece::RecentTabs::TabsController < Cms::Controller::Adm
     @item = GpArticle::Piece::RecentTabXml.find(params[:id], @piece)
     return error_auth unless @item
     @item.attributes = params[:item]
-    set_categories
+    set_elements
     _update @item
   end
 
@@ -43,11 +43,11 @@ class GpArticle::Admin::Piece::RecentTabs::TabsController < Cms::Controller::Adm
 
   private
 
-  def set_categories
-    if (categories = params[:categories]).is_a?(Array)
-      category_ids = {}
-      categories.each_with_index {|category, index| category_ids[index.to_s] = category.to_s }
-      @item.category_ids = category_ids
-    end
+  def set_elements
+    @item.elem_category_ids = params[:categories]
+
+    elem_layers = {}
+    params[:layers].each {|k, v| elem_layers[k] = "#{k}_#{v}" }
+    @item.elem_layers = elem_layers
   end
 end
