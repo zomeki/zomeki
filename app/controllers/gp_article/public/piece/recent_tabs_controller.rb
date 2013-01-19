@@ -18,10 +18,17 @@ class GpArticle::Public::Piece::RecentTabsController < Sys::Controller::Public::
         tab_class = tab.name
       end
 
-      doc_ids = tab.categories.map {|category| category.doc_ids }
+      doc_ids = tab.categories_with_layer.map do |category_with_layer|
+          if category_with_layer[:layer] == 'descendants'
+            category_with_layer[:category].descendants.inject([]) {|result, item| result | item.doc_ids }
+          else
+            category_with_layer[:category].doc_ids
+          end
+        end
+
       case tab.condition
       when 'and'
-        doc_ids = doc_ids.inject(doc_ids.first) {|result, item| result & item }
+        doc_ids = doc_ids.inject(doc_ids.shift) {|result, item| result & item }
       when 'or'
         doc_ids = doc_ids.inject([]) {|result, item| result | item }
       else
