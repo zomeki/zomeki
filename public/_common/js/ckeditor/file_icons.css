@@ -1,54 +1,54 @@
 .iconFile, .iconDefault {
   padding: 12px 5px 12px 42px;
   background-repeat: no-repeat;
-  background-image: url(/_common/images/icons/default.gif);
+  background-image: url(/_common/images/icons/default.png);
   line-height: 3.3;
   height: 40px;
 }
 .iconBmp {
-  background-image: url(/_common/images/icons/bmp.gif);
+  background-image: url(/_common/images/icons/bmp.png);
 }
 .iconCsv {
-  background-image: url(/_common/images/icons/csv.gif);
+  background-image: url(/_common/images/icons/csv.png);
 }
 .iconDoc,
 .iconDocx {
-  background-image: url(/_common/images/icons/doc.gif);
+  background-image: url(/_common/images/icons/doc.png);
 }
 .iconGif {
-  background-image: url(/_common/images/icons/gif.gif);
+  background-image: url(/_common/images/icons/gif.png);
 }
 .iconJpg {
-  background-image: url(/_common/images/icons/jpg.gif);
+  background-image: url(/_common/images/icons/jpg.png);
 }
 .iconJpe {
-  background-image: url(/_common/images/icons/jpg.gif);
+  background-image: url(/_common/images/icons/jpg.png);
 }
 .iconJpeg {
-  background-image: url(/_common/images/icons/jpg.gif);
+  background-image: url(/_common/images/icons/jpg.png);
 }
 .iconJtd {
-  background-image: url(/_common/images/icons/jtd.gif);
+  background-image: url(/_common/images/icons/jtd.png);
 }
 .iconLzh {
-  background-image: url(/_common/images/icons/lzh.gif);
+  background-image: url(/_common/images/icons/lzh.png);
 }
 .iconPdf {
-  background-image: url(/_common/images/icons/pdf.gif);
+  background-image: url(/_common/images/icons/pdf.png);
 }
 .iconPng {
-  background-image: url(/_common/images/icons/png.gif);
+  background-image: url(/_common/images/icons/png.png);
 }
 .iconPpt {
-  background-image: url(/_common/images/icons/ppt.gif);
+  background-image: url(/_common/images/icons/ppt.png);
 }
 .iconTxt {
-  background-image: url(/_common/images/icons/txt.gif);
+  background-image: url(/_common/images/icons/txt.png);
 }
 .iconXls,
 .iconXlsx {
-  background-image: url(/_common/images/icons/xls.gif);
+  background-image: url(/_common/images/icons/xls.png);
 }
 .iconZip {
-  background-image: url(/_common/images/icons/zip.gif);
+  background-image: url(/_common/images/icons/zip.png);
 }
