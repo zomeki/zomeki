@@ -24,9 +24,11 @@
           <td>
             <table id="categories">
               <tbody>
-                <%= render 'category', category_types_for_option: @piece.category_types_for_option, category: nil, available: false -%>
-                <%- @item.categories.each do |category| -%>
-                  <%= render 'category', category_types_for_option: @piece.category_types_for_option, category: category, available: true -%>
+                <%= render 'category', category_types_for_option: @piece.category_types_for_option, layers_for_option: @item.class::LAYER_OPTIONS,
+                                       index: nil, layer: @item.class::LAYER_OPTIONS.first.last, category: nil, available: false -%>
+                <%- @item.categories_with_layer.each_with_index do |category_with_layer, index| -%>
+                <%= render 'category', category_types_for_option: @piece.category_types_for_option, layers_for_option: @item.class::LAYER_OPTIONS,
+                                       index: index, layer: category_with_layer[:layer], category: category_with_layer[:category], available: true -%>
                 <%- end -%>
                 <tr>
                   <td colspan="2">&nbsp;</td>
@@ -64,7 +66,18 @@ $(document).ready(function () {
 
   $('#add_categories_line').on('click', function () {
     var categories_tbody = $('#categories > tbody');
-    categories_tbody.find('tr:first-child').clone(true).insertBefore(categories_tbody.find('tr:last-child')).show();
+    var next_index = (categories_tbody.find('tr').length - 3) / 2; <%# コピー元(2) + 追加ボタン(1) = 3tr, 単位 = 2tr %>
+
+    var layers_tr = categories_tbody.find('tr:first-child').clone(true);
+    var layers = layers_tr.find('input[name="layers[N]"]');
+    layers.attr('name', layers.attr('name').replace('N', next_index));
+    layers_tr.insertBefore(categories_tbody.find('tr:last-child')).show();
+
+    var categories_tr = categories_tbody.find('tr:first-child + tr').clone(true);
+    var categories = categories_tr.find('select[name="categories[N]"]');
+    categories.attr('name', categories.attr('name').replace('N', next_index));
+    categories_tr.insertBefore(categories_tbody.find('tr:last-child')).show();
+
     categories_tbody.find('tr:visible').each(function (index, tr) {
       $(tr).find(':disabled').removeAttr('disabled');
     });
