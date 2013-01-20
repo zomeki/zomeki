@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130107074244) do
+ActiveRecord::Schema.define(:version => 20130120211424) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -529,6 +529,21 @@ ActiveRecord::Schema.define(:version => 20130107074244) do
   end
 
   add_index "enquete_forms", ["content_id", "sort_no"], :name => "content_id"
+
+  create_table "gnav_menu_items", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.integer  "concept_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "gnav_menu_items", ["concept_id"], :name => "index_gnav_menu_items_on_concept_id"
+  add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
 
   create_table "gp_article_categories", :force => true do |t|
     t.integer  "unid"
