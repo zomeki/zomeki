@@ -1,5 +1,7 @@
 # encoding: utf-8
 module Cms::Model::Base::Page
+  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+
   def states
     [['公開','public'],['非公開','closed']]
   end

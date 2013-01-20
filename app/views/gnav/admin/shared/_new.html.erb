@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => gnav_menu_items_path) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :create %>
+<% end %>
