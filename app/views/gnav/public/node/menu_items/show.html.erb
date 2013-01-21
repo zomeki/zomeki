@@ -1,0 +1,31 @@
+<%- unless @docs.empty? -%>
+<section>
+  <h1>記事</h1>
+  <ul>
+    <%- @docs.each do |doc| -%>
+    <li>
+      <%- if doc.target.present? -%>
+        <%- if doc.href.present? -%>
+          <%= link_to doc.title, doc.href, target: doc.target %>
+        <%- else -%>
+          <%= doc.title -%>
+        <%- end -%>
+      <%- else -%>
+        <%= link_to doc.title, doc.public_uri %>
+      <%- end -%>
+    </li>
+    <%- end -%>
+  </ul>
+</section>
+<%- end -%>
+
+<%- unless @menu_item.categories.empty? -%>
+<section>
+  <h1>カテゴリ</h1>
+  <ul>
+    <%- @menu_item.categories.each do |category| -%>
+    <li><%= link_to category.ancestors.map{|a| a.title }.join(' > '), "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+    <%- end -%>
+  </ul>
+</section>
+<%- end -%>

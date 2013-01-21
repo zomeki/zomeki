@@ -1,0 +1,11 @@
+<div class="contentGnavMenuItems">
+  <%- unless @menu_items.empty? -%>
+  <ul>
+    <%- @menu_items.each do |menu_item| -%>
+    <li><%= link_to menu_item.title, menu_item.public_uri %></li>
+    <%- end -%>
+  </ul>
+  <%- end -%>
+
+  <%= paginate @menu_items %>
+</div>
