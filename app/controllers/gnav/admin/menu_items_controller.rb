@@ -9,6 +9,7 @@ class Gnav::Admin::MenuItemsController < Cms::Controller::Admin::Base
 
     if (gccct = @content.gp_category_content_category_type)
       @category_types = gccct.category_types
+      @category_types_for_option = gccct.category_types_for_option
     else
       redirect_to gnav_content_settings_path, :alert => '汎用カテゴリタイプを設定してください。'
     end
@@ -30,17 +31,36 @@ class Gnav::Admin::MenuItemsController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.menu_items.build(params[:item])
-    _create @item
+    _create(@item) do
+      save_category_sets
+    end
   end
 
   def update
     @item = @content.menu_items.find(params[:id])
     @item.attributes = params[:item]
-    _update @item
+    _update(@item) do
+      save_category_sets
+    end
   end
 
   def destroy
     @item = @content.menu_items.find(params[:id])
     _destroy @item
+  end
+
+  private
+
+  def save_category_sets
+    categories = params[:categories]
+    layers = params[:layers]
+
+    if categories.is_a?(Hash) && layers.is_a?(Hash)
+      categories.each do |key, value|
+        next unless (category = GpCategory::Category.where(id: value).first)
+        category_set = @item.category_sets.where(category_id: category.id).first || @item.category_sets.build
+        category_set.update_attributes(category: category, layer: layers[key])
+      end
+    end
   end
 end

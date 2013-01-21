@@ -8,4 +8,8 @@ class GpCategory::Content::CategoryType < Cms::Content
     return @category_type_node if @category_type_node
     @category_type_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCategory::CategoryType').order(:id).first
   end
+
+  def category_types_for_option
+    category_types.map {|ct| [ct.title, ct.id] }
+  end
 end

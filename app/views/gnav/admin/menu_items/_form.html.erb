@@ -26,11 +26,68 @@
 
 <p class="form">カテゴリ選択</p>
 
-<table class="show">
-  <tr>
-    <th></th>
-    <td></td>
-  </tr>
+<table class="show" id="categories">
+  <tbody>
+    <%= render 'category_set', category_types_for_option: @category_types_for_option,
+                               index: nil, category_set: @item.category_sets.build, available: false -%>
+    <%- @item.category_sets.each_with_index do |category_set, index| -%>
+    <%= render 'category_set', category_types_for_option: @category_types_for_option,
+                               index: index, category_set: category_set, available: true -%>
+    <%- end -%>
+    <tr>
+      <td colspan="4">&nbsp;</td>
+      <td style="text-align: right;"><%= button_tag '追加', type: 'button', id: 'add_categories_line' %></td>
+    </tr>
+  </tbody>
 </table>
 
 <%= creator_form f %>
+
+<%= javascript_tag do -%>
+function toggle_form(link, target, open_label, close_label) {
+  if (open_label === undefined) open_label = '開く▼';
+  if (close_label === undefined) close_label = '閉じる▲';
+  var l = jQuery(link);
+  var t = jQuery(target);
+  if (t.is(':hidden')) {
+    l.html(close_label);
+  } else {
+    l.html(open_label);
+  }
+  t.toggle();
+}
+
+$(document).ready(function () {
+  $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+
+  $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $(event.target).closest('tr').find('td.category > select');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+
+  $('#add_categories_line').on('click', function () {
+    var categories_tbody = $('#categories > tbody');
+    var next_index = (categories_tbody.find('tr').length - 3) / 2; <%# コピー元(2) + 追加ボタン(1) = 3tr, 単位 = 2tr %>
+
+    var categories_tr = categories_tbody.find('tr:first-child').clone(true);
+    var categories = categories_tr.find('select[name="categories[N]"]');
+    categories.attr('name', categories.attr('name').replace('N', next_index));
+    categories_tr.find(':disabled').removeAttr('disabled');
+    categories_tr.insertBefore(categories_tbody.find('tr:last-child')).show();
+
+    var layers_tr = categories_tbody.find('tr:first-child + tr').clone(true);
+    var layers = layers_tr.find('input[name="layers[N]"]');
+    layers.attr('name', layers.attr('name').replace('N', next_index));
+    layers_tr.find(':disabled').removeAttr('disabled');
+    layers_tr.insertBefore(categories_tbody.find('tr:last-child'));
+  });
+});
+<%- end -%>
