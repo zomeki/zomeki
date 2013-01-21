@@ -18,23 +18,27 @@ class GpCategory::Public::Piece::RecentTabsController < Sys::Controller::Public:
         tab_class = tab.name
       end
 
-      doc_ids = tab.categories_with_layer.map do |category_with_layer|
-          if category_with_layer[:layer] == 'descendants'
-            category_with_layer[:category].descendants.inject([]) {|result, item| result | item.doc_ids }
-          else
-            category_with_layer[:category].doc_ids
+      unless tab.categories_with_layer.empty?
+        doc_ids = tab.categories_with_layer.map do |category_with_layer|
+            if category_with_layer[:layer] == 'descendants'
+              category_with_layer[:category].descendants.inject([]) {|result, item| result | item.doc_ids }
+            else
+              category_with_layer[:category].doc_ids
+            end
           end
-        end
 
-      case tab.condition
-      when 'and'
-        doc_ids = doc_ids.inject(doc_ids.shift) {|result, item| result & item }
-      when 'or'
-        doc_ids = doc_ids.inject([]) {|result, item| result | item }
+        case tab.condition
+        when 'and'
+          doc_ids = doc_ids.inject(doc_ids.shift) {|result, item| result & item }
+        when 'or'
+          doc_ids = doc_ids.inject([]) {|result, item| result | item }
+        else
+          doc_ids = []
+        end
+        docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
       else
-        doc_ids = []
+        docs = GpArticle::Doc.order('published_at DESC').limit(@piece.list_count)
       end
-      docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
 
       @tabs.push(name: tab.name,
                  title: tab.title,
