@@ -24,7 +24,7 @@ ol,ul,dl
 /* templates
 ----------------------------------------------- */
 
-.temp1, temp2, .temp3 {
+.temp1, temp2, .temp3, .temp4 {
   clear: both;
   margin-bottom: 30px;
 }
@@ -35,23 +35,29 @@ ol,ul,dl
 .temp2 .thumb {
   float: right;
   margin-left: 30px;
-} 
-.temp3 dl {
+}
+.temp3 dl, .temp4 dl {
   float: left;
   margin: 0 5px 0 0;
   padding: 0;
   text-align: center;
 }
-.temp3 dl dt {
+.temp3 dl dt, .temp4 dl dt {
   margin-bottom: 5px;
 }
-.adobeReader {
+.temp3 dd, .temp4 dd {
+  margin: 0;
+  text-align: center;
+}
+table.temp5 {
+  width: 100%;
+}
+.temp7 {
   margin: 10px 0;
   padding: 10px;
-  border: 1px solid #ffaaaa;
-  background-color: #fff3f3;
+  border: 1px solid #cccccc;
 }
-.adobeReader p {
+.temp7 p {
   margin: 0 0 10px 0;
 }
 
