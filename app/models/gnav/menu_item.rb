@@ -5,6 +5,8 @@ class Gnav::MenuItem < ActiveRecord::Base
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
 
+  default_scope order(:sort_no)
+
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'Gnav::Content::MenuItem'
   validates_presence_of :content_id
@@ -19,4 +21,34 @@ class Gnav::MenuItem < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
+
+  def public_uri=(uri)
+    @public_uri = uri
+  end
+
+  def public_uri
+    return @public_uri if @public_uri
+    return nil unless node = content.menu_item_node
+    @public_uri = "#{node.public_uri}#{name}/"
+  end
+
+  def public_full_uri=(uri)
+    @public_full_uri = uri
+  end
+
+  def public_full_uri
+    return @public_full_uri if @public_full_uri
+    return nil unless node = content.menu_item_node
+    @public_full_uri = "#{node.public_full_uri}#{name}/"
+  end
+
+  def categories
+    category_sets.inject([]) {|result, category_set|
+      if category_set.layer == 'descendants'
+        result | category_set.category.descendants
+      else
+        result | [category_set.category]
+      end
+    }
+  end
 end
