@@ -1,0 +1,29 @@
+<%-
+  common_attrs = {id: nil}
+  common_attrs.merge!(disabled: true) unless available
+
+  if (category = category_set.category)
+    category_type_id = category.category_type.id
+    categories_for_option = category.category_type.categories_for_option
+    category_id = category.id
+  else
+    category_type_id = nil
+    categories_for_option = []
+    category_id = nil
+  end
+-%>
+<tr style="<%= 'display: none;' unless available %>">
+  <th><%= GpCategory::CategoryType.model_name.human %></th>
+  <td class="category_type"><%= select_tag nil, options_for_select(category_types_for_option, category_type_id), common_attrs.merge(include_blank: true) %></td>
+  <th><%= GpCategory::Category.model_name.human %></th>
+  <td class="category"><%= select_tag "categories[#{index || 'N'}]", options_for_select(categories_for_option, category_id), common_attrs.merge(include_blank: true) %></td>
+  <td style="text-align: right;"><%= link_to_function '条件設定▼', "toggle_form(this, $(this).closest('tr').next(), '条件設定▼', '条件設定▲')" %></td>
+</tr>
+<tr style="display: none;">
+  <th><%= GpCategory::Category.model_name.human %>階層</th>
+  <td colspan="4">
+    <%- category_set.class::LAYER_OPTIONS.each do |lo| -%>
+    <label><%= radio_button_tag "layers[#{index || 'N'}]", lo.last, lo.last == category_set.layer, common_attrs %> <%= lo.first %></label>
+    <%- end -%>
+  </td>
+</tr>

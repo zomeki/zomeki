@@ -15,6 +15,8 @@ class Gnav::MenuItem < ActiveRecord::Base
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
+  has_many :category_sets
+
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
 end
