@@ -56,11 +56,14 @@ class Gnav::Admin::MenuItemsController < Cms::Controller::Admin::Base
     layers = params[:layers]
 
     if categories.is_a?(Hash) && layers.is_a?(Hash)
+      category_set_ids = @item.category_set_ids
       categories.each do |key, value|
         next unless (category = GpCategory::Category.where(id: value).first)
         category_set = @item.category_sets.where(category_id: category.id).first || @item.category_sets.build
         category_set.update_attributes(category: category, layer: layers[key])
+        category_set_ids.delete(category_set.id)
       end
+      @item.category_sets.find(category_set_ids).each {|cs| cs.destroy }
     end
   end
 end
