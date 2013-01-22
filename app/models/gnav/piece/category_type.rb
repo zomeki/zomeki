@@ -34,7 +34,7 @@ class Gnav::Piece::CategoryType < Cms::Piece
         category_type.categories.where(id: category_id)
       end
     else
-      category_type.categories
+      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
     end
   end
 

@@ -36,7 +36,7 @@ class Gnav::Piece::Doc < Cms::Piece
     if (category_id = setting_value(:category_id)).present?
       category_type.categories.where(id: category_id)
     else
-      category_type.categories
+      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
     end
   end
 
