@@ -40,10 +40,11 @@ class Cms::KanaDictionary < ActiveRecord::Base
       chasenrc = '../config/chasenrc_gtalk'
     end
     format   = '%P /'
-    command  = "echo \"#{str}\" | chasen -i w -r #{chasenrc} -F '#{format}'"
+    logger.info command = "echo \"#{str}\" | chasen -i w -r #{chasenrc} -F '#{format}'"
     
     res = nil
     @sh.transact { res = system("#{command}").to_s }
+    logger.info res
     return res.to_s.force_encoding('utf-8').gsub(/\/.*/, '').strip
   end
   
