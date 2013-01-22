@@ -9,14 +9,14 @@
 
 <table class="show">
   <tr>
-    <th><%= @item.locale :layer %></th>
-    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
-  </tr>
-  <tr>
     <th><%= @item.locale :category_type_id %></th>
     <td><%= @item.category_type.try(:title) %></td>
     <th><%= @item.locale :category_id %></th>
     <td><%= @item.category.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :layer %></th>
+    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
   </tr>
 </table>
 
