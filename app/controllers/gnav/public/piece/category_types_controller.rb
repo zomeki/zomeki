@@ -8,11 +8,7 @@ class Gnav::Public::Piece::CategoryTypesController < Sys::Controller::Public::Ba
   end
 
   def index
-    unless @piece.category_type
-      piece_categories = @piece.category_types.inject([]) {|result, ct| result | ct.categories }
-    else
-      piece_categories = @piece.categories
-    end
+    piece_categories = @piece.categories
 
     case @item
     when Gnav::MenuItem
@@ -24,5 +20,8 @@ class Gnav::Public::Piece::CategoryTypesController < Sys::Controller::Public::Ba
     else
       @categories = piece_categories
     end
+
+    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.level_no
+    @categories.reject! {|c| c.level_no > (@least_level_no + 1) }
   end
 end
