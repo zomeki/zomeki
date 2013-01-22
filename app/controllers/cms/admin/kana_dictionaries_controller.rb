@@ -53,13 +53,13 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   end
   
   def make
-    res = Cms::KanaDictionary.make_dic_file
-    if res == true
+    errors = Cms::KanaDictionary.make_dic_file
+    if errors.empty?
       flash[:notice] = '辞書を更新しました。'
     else
-      flash[:notice] = res.join('<br />')
+      flash[:alert] = "<ul><li>#{errors.join('</li><li>')}</li></ul>".html_safe
     end
-    
+
     redirect_to cms_kana_dictionaries_url
   end
   
