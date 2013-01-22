@@ -25,7 +25,11 @@ class GpCategory::Piece::CategoryType < Cms::Piece
   end
 
   def categories
-    return [] unless category_type
+    unless category_type
+      return category_types.inject([]) {|result, ct|
+                 result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
+               }
+    end
 
     if (category_id = setting_value(:category_id)).present?
       if layer == 'descendants'
