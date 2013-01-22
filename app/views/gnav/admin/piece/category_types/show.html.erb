@@ -1,0 +1,23 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_view @item, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :category_type_id %></th>
+    <td><%= @item.category_type.try(:title) %></td>
+    <th><%= @item.locale :category_id %></th>
+    <td><%= @item.category.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :layer %></th>
+    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

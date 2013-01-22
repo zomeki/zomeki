@@ -21,6 +21,8 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':parent/node_menu_items'
 
     ## pieces
+    resources :piece_category_types,
+      :controller => 'admin/piece/category_types'
     resources :piece_docs,
       :controller => 'admin/piece/docs'
   end
