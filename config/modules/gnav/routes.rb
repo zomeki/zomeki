@@ -19,6 +19,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_menu_items,
       :controller => 'admin/node/menu_items',
       :path       => ':parent/node_menu_items'
+
+    ## pieces
+    resources :piece_docs,
+      :controller => 'admin/piece/docs'
   end
 
   ## public

@@ -5,4 +5,7 @@ Cms::Lib::Modules::ModuleSet.draw :gnav, 'グローバルナビ' do |mod|
 
   ## directories
   mod.directory :menu_items, 'グローバルナビ'
+
+  ## pieces
+  mod.piece :docs, '汎用記事一覧'
 end
