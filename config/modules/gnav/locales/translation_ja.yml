@@ -9,3 +9,7 @@ ja:
         sort_no: 並び順
         updated_at: 更新日時
         state: 状態
+      gnav/piece/doc:
+        category_type_id: 表示カテゴリタイプ
+        category_id: 表示カテゴリ
+        list_count: 表示件数
