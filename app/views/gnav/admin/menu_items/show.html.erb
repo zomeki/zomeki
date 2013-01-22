@@ -6,6 +6,7 @@
     <td><%= @item.status.try(:name) %></td>
   </tr>
   <%= concept_view @item, :container => :tr %>
+  <%= layout_view @item, :container => :tr %>
   <tr>
     <th><%= @item.class.human_attribute_name :name %></th>
     <td><%= @item.name %></td>

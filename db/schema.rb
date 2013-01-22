@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130121021805) do
+ActiveRecord::Schema.define(:version => 20130122091121) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -549,10 +549,12 @@ ActiveRecord::Schema.define(:version => 20130121021805) do
     t.integer  "sort_no"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "layout_id"
   end
 
   add_index "gnav_menu_items", ["concept_id"], :name => "index_gnav_menu_items_on_concept_id"
   add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
+  add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
 
   create_table "gp_article_categories", :force => true do |t|
     t.integer  "unid"
