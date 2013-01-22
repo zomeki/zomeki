@@ -8,11 +8,7 @@ class Gnav::Public::Piece::DocsController < Sys::Controller::Public::Base
   end
 
   def index
-    unless @piece.category_type
-      piece_category_ids = @piece.category_types.inject([]) {|result, ct| result | ct.categories.map(&:id) }
-    else
-      piece_category_ids = @piece.categories.map(&:id)
-    end
+    piece_category_ids = @piece.categories.map(&:id)
 
     piece_doc_ids = find_public_docs_by_category_ids(piece_category_ids).map(&:id)
 
