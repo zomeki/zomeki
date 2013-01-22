@@ -1,0 +1,9 @@
+<%- unless @categories.empty? -%>
+<section>
+  <ul>
+    <%- @categories.each do |category| -%>
+    <li><%= link_to category.ancestors.map{|a| a.title }.join(' > '), "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+    <%- end -%>
+  </ul>
+</section>
+<%- end -%>
