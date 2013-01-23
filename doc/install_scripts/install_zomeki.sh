@@ -1,7 +1,7 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-if [ -z "$ZOMEKI_VERSION" ]; then ZOMEKI_VERSION='v1.0.4'; fi
+if [ -z "$ZOMEKI_VERSION" ]; then ZOMEKI_VERSION='v1.0.5'; fi
 
 echo '#### Install ZOMEKI ####'
 if [ -f $DONE_FLAG ]; then exit; fi

@@ -1,4 +1,4 @@
-## ZOMEKI v1.0.4    インストールマニュアル
+## ZOMEKI v1.0.5    インストールマニュアル
 
 **********************************************************************
  1 想定環境
@@ -9,7 +9,7 @@ OS         : CentOS 6.3
 Webサーバ  : Apache 2.2
 DBシステム : MySQL 5.1
 Ruby       : 1.9.3
-Rails      : 3.1.8
+Rails      : 3.1.10
 
 [設定]
 ドメイン   : zomeki.example.com
@@ -65,8 +65,8 @@ yumリポジトリにEPELを追加します。
 必要なパッケージをダウンロードします。
 
   # cd /usr/local/src
-  # wget https://github.com/zomeki/zomeki/tarball/v1.0.4 -O zomeki-1.0.4.tar.gz
-  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
+  # wget https://github.com/zomeki/zomeki/tarball/v1.0.5 -O zomeki-1.0.5.tar.gz
+  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p374.tar.gz
   # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
   # wget "http://sourceforge.jp/frs/redir.php?m=jaist&f=%2Fchasen-legacy%2F32224%2Fchasen-2.4.4.tar.gz"
   # wget "http://sourceforge.jp/frs/redir.php?m=iij&f=%2Fipadic%2F24435%2Fipadic-2.7.0.tar.gz"
@@ -80,7 +80,7 @@ zomekiユーザを作成します。
 ZOMEKIソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf zomeki-1.0.4.tar.gz -C /var/share
+  # tar xvzf zomeki-1.0.5.tar.gz -C /var/share
   # mv /var/share/zomeki-zomeki-* /var/share/zomeki
   # chown -R zomeki:zomeki /var/share/zomeki
 
@@ -150,8 +150,8 @@ zomekiユーザを作成します。
 Rubyをインストールします。
 
   # cd /usr/local/src
-  # tar xvzf ruby-1.9.3-p194.tar.gz
-  # cd ruby-1.9.3-p194
+  # tar xvzf ruby-1.9.3-p374.tar.gz
+  # cd ruby-1.9.3-p374
   # ./configure
   # make && make install
 
@@ -171,14 +171,14 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 3.0.14
+  # gem install passenger -v 3.0.19
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )
 
 Phusion Passengerの設定ファイルを変更します。
 
-  ※PASSENGER_VERSION を 3.0.14 に変更
+  ※PASSENGER_VERSION を 3.0.19 に変更
 
   # vi /var/share/zomeki/config/samples/passenger.conf
 

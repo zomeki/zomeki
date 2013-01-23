@@ -2,7 +2,7 @@
 # coding: utf-8
 DONE_FLAG = "/tmp/#{$0}_done"
 
-PASSENGER_VERSION = '3.0.17'
+PASSENGER_VERSION = '3.0.19'
 
 puts '#### Install Apache ####'
 exit if File.exist?(DONE_FLAG)
