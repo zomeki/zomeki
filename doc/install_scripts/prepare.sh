@@ -12,19 +12,15 @@ centos() {
   echo "It's CentOS!"
 
   rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm
-  yum install -y wget ca-certificates
 
   cd /usr/local/src
 
   files=('install_ruby.sh' 'install_zomeki.sh' 'install_apache.rb' 'install_mysql.rb'
          'configure_zomeki.rb' 'install_zomeki_kana_read.sh' 'start_servers.sh' 'install_cron.sh')
 
-  rm -f install_scripts.txt
   for file in ${files[@]}; do
-    echo "$INSTALL_SCRIPTS_URL/$file" >> install_scripts.txt
+    curl -L -O "$INSTALL_SCRIPTS_URL/$file"
   done
-
-  wget -i install_scripts.txt
 
   for file in ${files[@]}; do
     chmod 755 $file
