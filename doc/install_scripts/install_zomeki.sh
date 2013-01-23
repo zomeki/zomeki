@@ -25,7 +25,7 @@ centos() {
   yum install -y ImageMagick-devel mysql-devel openldap-devel
   cd /usr/local/src
   rm -rf zomeki-$ZOMEKI_VERSION.tar.gz zomeki-zomeki-*
-  wget https://github.com/zomeki/zomeki/tarball/$ZOMEKI_VERSION -O zomeki-$ZOMEKI_VERSION.tar.gz
+  curl -L -O https://github.com/zomeki/zomeki/tarball/$ZOMEKI_VERSION -O zomeki-$ZOMEKI_VERSION.tar.gz
   mkdir -p /var/share
   tar zxf zomeki-$ZOMEKI_VERSION.tar.gz && mv zomeki-zomeki-* /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
   cd /var/share/zomeki && gem install bundler && bundle install --without test development
