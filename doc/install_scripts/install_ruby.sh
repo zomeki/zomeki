@@ -1,7 +1,7 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_19='ruby-1.9.3-p194'
+RUBY_19='ruby-1.9.3-p374'
 
 echo "#### Install $RUBY_19 ####"
 if [ -f $DONE_FLAG ]; then exit; fi
