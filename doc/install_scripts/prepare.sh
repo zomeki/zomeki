@@ -11,7 +11,7 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
-  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-7.noarch.rpm
+  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm
   yum install -y wget
 
   cd /usr/local/src
