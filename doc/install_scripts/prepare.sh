@@ -12,7 +12,7 @@ centos() {
   echo "It's CentOS!"
 
   rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm
-  yum install -y wget
+  yum install -y wget ca-certificates
 
   cd /usr/local/src
 
