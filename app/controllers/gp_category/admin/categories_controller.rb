@@ -35,12 +35,7 @@ class GpCategory::Admin::CategoriesController < Cms::Controller::Admin::Base
 
   def create
     @item = @category_type.categories.build(params[:item])
-    if @parent_category
-      @item.parent = @parent_category
-      @item.level_no = @parent_category.level_no + 1
-    else
-      @item.level_no = 1
-    end
+    @item.parent = @parent_category if @parent_category
     _create @item
   end
 

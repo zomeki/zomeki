@@ -30,7 +30,9 @@ class GpCategory::Category < ActiveRecord::Base
 
   belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'
 
-  after_initialize :set_defaults
+  after_initialize :set_default_attributes
+
+  before_save :set_required_attributes
 
   def content
     category_type.content
@@ -90,7 +92,7 @@ class GpCategory::Category < ActiveRecord::Base
         new_state = (child_group.state == 'disabled' ? 'closed' : 'public')
         child.update_attributes(state: new_state, name: child_group.name_en, title: child_group.name)
       else
-        child = children.create(level_no: level_no + 1, name: child_group.name_en, title: child_group.name, group_code: child_group.code)
+        child = children.create(group_code: child_group.code, name: child_group.name_en, title: child_group.name)
       end
       child.copy_from_group(child_group) unless child_group.children.empty?
     end
@@ -98,10 +100,19 @@ class GpCategory::Category < ActiveRecord::Base
 
   private
 
-  def set_defaults
+  def set_default_attributes
     self.state ||= 'public'
     self.sort_no ||= 10
   rescue ActiveModel::MissingAttributeError => evar
     logger.warn(evar.message)
+  end
+
+  def set_attributes_from_parent
+    if parent
+      self.category_type = parent.category_type
+      self.level_no = parent.level_no + 1
+    else
+      self.level_no = 1
+    end
   end
 end
