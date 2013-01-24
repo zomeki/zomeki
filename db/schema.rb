@@ -824,6 +824,7 @@ ActiveRecord::Schema.define(:version => 20130124065419) do
     t.integer  "content_id"
     t.string   "state",      :default => "public"
     t.string   "title",      :default => ""
+    t.integer  "sort_no",    :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -833,6 +834,7 @@ ActiveRecord::Schema.define(:version => 20130124065419) do
     t.integer  "content_id"
     t.string   "state",      :default => "public"
     t.string   "title",      :default => ""
+    t.integer  "sort_no",    :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
