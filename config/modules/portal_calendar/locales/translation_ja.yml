@@ -1,0 +1,20 @@
+ja:
+  activerecord:
+    attributes:
+      portal_calendar/event:
+        state: "状態"
+        event_date: "イベント日"
+        event_uri: "イベントURL"
+        title: "イベント名"
+        body: "内容"
+      portal_calendar/status:
+        state: "状態"
+        title: "ステータス名"
+        name: "ステータスID"
+        sort_no: "並び順"
+      portal_calendar/montly_calendar:
+        state: "状態"
+        event_date: "イベント日"
+        event_uri: "イベントURL"
+        title: "イベント名"
+        body: "内容"
