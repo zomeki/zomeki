@@ -39,6 +39,8 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :validate_inquiry, :if => :state_recognize?
   validate :validate_recognizers, :if => :state_recognize?
 
+  after_initialize :set_defaults
+
   def self.find_with_content_and_criteria(content, criteria)
     docs = self.arel_table
     creators = Sys::Creator.arel_table
@@ -138,5 +140,11 @@ class GpArticle::Doc < ActiveRecord::Base
     date ||= Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
     seq = Util::Sequencer.next_id('gp_article_docs', :version => date)
     self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
+  end
+
+  def set_defaults
+    self.target ||= TARGET_OPTIONS.first.last
+  rescue ActiveModel::MissingAttributeError => evar
+    logger.warn(evar.message)
   end
 end

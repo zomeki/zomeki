@@ -24,4 +24,9 @@ class GpArticle::Content::Doc < Cms::Content
       []
     end
   end
+
+  def group_category_type
+    return nil unless gp_category_content_category_type
+    gp_category_content_category_type.group_category_type
+  end
 end
