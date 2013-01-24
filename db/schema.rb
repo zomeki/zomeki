@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130122091121) do
+ActiveRecord::Schema.define(:version => 20130124065419) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -801,6 +801,21 @@ ActiveRecord::Schema.define(:version => 20130122091121) do
     t.string   "name"
     t.text     "word"
   end
+
+  create_table "portal_calendar_events", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state",        :limit => 15
+    t.datetime "published_at"
+    t.date     "event_date"
+    t.string   "event_uri"
+    t.string   "title"
+    t.text     "body",         :limit => 2147483647
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "portal_calendar_events", ["content_id", "published_at", "event_date"], :name => "content_id"
 
   create_table "portal_categories", :force => true do |t|
     t.integer  "unid"
