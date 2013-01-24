@@ -21,6 +21,7 @@ class CreatePortalCalendarEvents < ActiveRecord::Migration
       t.integer  :content_id
       t.string   :state,     :default => 'public'
       t.string   :title,     :default => ''
+			t.integer  :sort_no,   :default => 0
 			
 			t.timestamps
     end
@@ -30,6 +31,7 @@ class CreatePortalCalendarEvents < ActiveRecord::Migration
       t.integer  :content_id
       t.string   :state,     :default => 'public'
       t.string   :title,     :default => ''
+			t.integer  :sort_no,   :default => 0
 			
 			t.timestamps
     end

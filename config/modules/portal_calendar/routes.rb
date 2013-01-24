@@ -14,6 +14,13 @@ ZomekiCMS::Application.routes.draw do
       :controller  => "admin/content/settings",
       :path        => ":content/content_settings"
     
+    resources :genres,
+      :controller  => "admin/genres",
+      :path        => ":content/genres"
+    resources :statuses,
+      :controller  => "admin/statuses",
+      :path        => ":content/statuses"
+		
     ## node
     resources :node_events,
       :controller  => "admin/node/events",

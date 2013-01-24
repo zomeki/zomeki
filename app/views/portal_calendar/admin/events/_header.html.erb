@@ -3,6 +3,7 @@
 </div>
 
 <div class="contentMenu">
-<%= link_to 'イベント一覧', calendar_events_path %>
-<%= link_to '設定', calendar_content_settings_path if @content.editable? %>
+<%= link_to 'イベント一覧', portal_calendar_events_path %>
+<%= link_to '設定', portal_calendar_content_settings_path if @content.editable? %>
+<%= link_to 'ステータス', portal_calendar_statuses_path if @content.editable? %>
 </div>
