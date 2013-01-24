@@ -32,7 +32,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   after_initialize :set_default_attributes
 
-  before_save :set_attributes_from_parent
+  before_validation :set_attributes_from_parent
 
   def content
     category_type.content
