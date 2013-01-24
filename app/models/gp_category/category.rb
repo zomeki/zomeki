@@ -28,6 +28,10 @@ class GpCategory::Category < ActiveRecord::Base
 
   has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_category_categories', :order => 'published_at, updated_at'
 
+  belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'
+
+  after_initialize :set_defaults
+
   def content
     category_type.content
   end
@@ -78,5 +82,26 @@ class GpCategory::Category < ActiveRecord::Base
 
   def public_docs
     docs.where(state: 'public')
+  end
+
+  def copy_from_group(group)
+    group.children.each do |child_group|
+      if (child = children.where(group_code: child_group.code).first)
+        new_state = (child_group.state == 'disabled' ? 'closed' : 'public')
+        child.update_attributes(state: new_state, name: child_group.name_en, title: child_group.name)
+      else
+        child = children.create(level_no: level_no + 1, name: child_group.name_en, title: child_group.name, group_code: child_group.code)
+      end
+      child.copy_from_group(child_group) unless child_group.children.empty?
+    end
+  end
+
+  private
+
+  def set_defaults
+    self.state ||= 'public'
+    self.sort_no ||= 10
+  rescue ActiveModel::MissingAttributeError => evar
+    logger.warn(evar.message)
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130122091121) do
+ActiveRecord::Schema.define(:version => 20130124022822) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -638,6 +638,7 @@ ActiveRecord::Schema.define(:version => 20130122091121) do
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "group_code"
   end
 
   add_index "gp_category_categories", ["category_type_id"], :name => "index_gp_category_categories_on_category_type_id"
