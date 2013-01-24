@@ -25,6 +25,8 @@ class GpCategory::CategoryType < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
 
+  after_initialize :set_defaults
+
   def root_categories
     categories.where(parent_id: nil)
   end
@@ -80,5 +82,28 @@ class GpCategory::CategoryType < ActiveRecord::Base
     end
 
     Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
+  def copy_from_groups(groups)
+    categories.each {|c| c.update_attribute(:state, 'closed') }
+
+    groups.each do |group|
+      if (category = categories.where(parent_id: nil, group_code: group.code).first)
+        new_state = (group.state == 'disabled' ? 'closed' : 'public')
+        category.update_attributes(state: new_state, name: group.name_en, title: group.name)
+      else
+        category = categories.create(parent_id: nil, level_no: 1, name: group.name_en, title: group.name, group_code: group.code)
+      end
+      category.copy_from_group(group) unless group.children.empty?
+    end
+  end
+
+  private
+
+  def set_defaults
+    self.state ||= 'public'
+    self.sort_no ||= 10
+  rescue ActiveModel::MissingAttributeError => evar
+    logger.warn(evar.message)
   end
 end

@@ -12,4 +12,12 @@ class GpCategory::Content::CategoryType < Cms::Content
   def category_types_for_option
     category_types.map {|ct| [ct.title, ct.id] }
   end
+
+  def group_category_type_name
+    setting_value(:group_category_type_name).presence || 'groups'
+  end
+
+  def group_category_type
+    category_types.find_by_name(group_category_type_name)
+  end
 end
