@@ -24,3 +24,6 @@ ext/morph/chaone/config.status
 
 vendor/bundle/
 /nbproject/private/
+/config/database.yml
+/config/virtual-hosts/zomeki.conf
+/config/virtual-hosts/sites.conf
