@@ -16,6 +16,12 @@ $(function() {
     <th><%= @item.locale(:event_date) %> <span class="note">※</span></th>
     <td><%= f.text_field :event_date, :class => 'js-date' %></td>
   </tr><tr>
+    <th><%= @item.locale(:ganre) %></th>
+    <td><%= f.text_area :title, :style => "width: 80%; height: 2.5em;" %></td>
+  </tr><tr>
+    <th><%= @item.locale(:status) %></th>
+    <td><%= f.text_area :title, :style => "width: 80%; height: 2.5em;" %></td>
+  </tr><tr>
     <th><%= @item.locale(:title) %> <span class="note">※</span></th>
     <td><%= f.text_area :title, :style => "width: 80%; height: 2.5em;" %></td>
   </tr><tr>
