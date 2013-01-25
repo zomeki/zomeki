@@ -32,7 +32,7 @@ value_form = case @item.form_type
     <th>&nbsp;</th>
     <td id="category_types">
       <%- category_types.each do |ct| -%>
-      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id.to_s), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", ct.title -%></span>
+      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id.to_s), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
       <%- end -%>
     </td>
   </tr>
