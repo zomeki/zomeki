@@ -12,7 +12,10 @@ ja:
       portal_calendar/status:
         state: "状態"
         title: "ステータス名"
-        name: "ステータスID"
+        sort_no: "並び順"
+      portal_calendar/genre:
+        state: "状態"
+        title: "ジャンル名"
         sort_no: "並び順"
       portal_calendar/montly_calendar:
         state: "状態"
