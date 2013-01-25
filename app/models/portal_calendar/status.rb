@@ -11,10 +11,9 @@ class PortalCalendar::Status < ActiveRecord::Base
   
   belongs_to :status,  :foreign_key => :state,      :class_name => 'Sys::Base::Status'
   belongs_to :content,  :foreign_key => :content_id, :class_name => 'Cms::Content'
-  belongs_to :layout,  :foreign_key => :layout_id,  :class_name => "Cms::Layout"
   
-  validates_presence_of :state, :name, :title
-  validates_uniqueness_of :name, :scope => [:content_id]
+  validates_presence_of :state, :title
+  validates_uniqueness_of :title, :scope => [:content_id]
   
   def self.root_items(conditions = {})
     conditions = conditions.merge({})
@@ -22,7 +21,7 @@ class PortalCalendar::Status < ActiveRecord::Base
   end
   
   def public_path
-    "#{content.public_path}/attributes/#{name}/index.html"
+    "#{content.public_path}/statuses/#{name}/index.html"
   end
   
   def node_label(options = {})

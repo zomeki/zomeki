@@ -24,7 +24,7 @@ class PortalCalendar::Admin::StatusesController < Cms::Controller::Admin::Base
   def new
     @item = PortalCalendar::Status.new({
       :state      => 'public',
-      :sort_no    => 1,
+      :sort_no    => 1
     })
   end
   
