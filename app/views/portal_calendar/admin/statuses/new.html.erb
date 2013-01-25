@@ -1,9 +1,9 @@
-<% form_for :item, :url => {:action => :create} do |f| %>
+<%= form_for :item, :url => {:action => :create}, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
 
-<%= f.error_messages %>
+<%= error_messages_for :item %>
 
 <%= render :partial => 'form', :locals => {:f => f} %>
 
-<%= submit :register %>
+<%= submit(:create) %>
 
 <% end %>

@@ -1,6 +1,6 @@
-<% form_for :item, :url => {:action => :update}, :html => {:method => :put} do |f| %>
+<%= form_for :item, :url => {:action => :update}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
   
-<%= f.error_messages %>
+<%= error_messages_for :item %>
 
 <%= render :partial => 'form', :locals => {:f => f} %>
 

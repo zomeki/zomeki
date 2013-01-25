@@ -3,15 +3,15 @@
 <table class="show">
   <tr>
     <th><%= @item.locale(:state) %></th>
-    <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
+    <td><%= f.radio_buttons :state, @item.states %></td>
   </tr>
   <tr>
     <th><%= @item.locale(:title) %></th>
-    <td><%= f.text_field :title, :class => 'name' %></td>
+    <td><%= f.text_field :title %></td>
   </tr>
   <tr>
     <th><%= @item.locale(:sort_no) %></th>
-    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+    <td><%= f.text_field :sort_no %></td>
   </tr>
 </table>
 
