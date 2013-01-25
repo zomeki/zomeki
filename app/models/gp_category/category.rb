@@ -90,9 +90,9 @@ class GpCategory::Category < ActiveRecord::Base
     group.children.each do |child_group|
       if (child = children.where(group_code: child_group.code).first)
         new_state = (child_group.state == 'disabled' ? 'closed' : 'public')
-        child.update_attributes(state: new_state, name: child_group.name_en, title: child_group.name)
+        child.update_attributes(state: new_state, name: child_group.name_en, title: child_group.name, sort_no: child_group.sort_no)
       else
-        child = children.create(group_code: child_group.code, name: child_group.name_en, title: child_group.name)
+        child = children.create(group_code: child_group.code, name: child_group.name_en, title: child_group.name, sort_no: child_group.sort_no)
       end
       child.copy_from_group(child_group) unless child_group.children.empty?
     end
@@ -102,7 +102,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   def set_default_attributes
     self.state ||= 'public'
-    self.sort_no ||= 10
+    self.sort_no ||= 0
   rescue ActiveModel::MissingAttributeError => evar
     logger.warn(evar.message)
   end

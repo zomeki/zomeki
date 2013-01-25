@@ -90,9 +90,9 @@ class GpCategory::CategoryType < ActiveRecord::Base
     groups.each do |group|
       if (category = categories.where(parent_id: nil, group_code: group.code).first)
         new_state = (group.state == 'disabled' ? 'closed' : 'public')
-        category.update_attributes(state: new_state, name: group.name_en, title: group.name)
+        category.update_attributes(state: new_state, name: group.name_en, title: group.name, sort_no: group.sort_no)
       else
-        category = categories.create(parent_id: nil, group_code: group.code, name: group.name_en, title: group.name)
+        category = categories.create(parent_id: nil, group_code: group.code, name: group.name_en, title: group.name, sort_no: group.sort_no)
       end
       category.copy_from_group(group) unless group.children.empty?
     end
