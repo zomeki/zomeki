@@ -4,6 +4,8 @@ class GpCategory::Piece::Doc < Cms::Piece
 
   default_scope where(model: 'GpCategory::Doc')
 
+  after_initialize :set_default_settings
+
   validate :validate_settings
 
   def validate_settings
@@ -70,5 +72,13 @@ class GpCategory::Piece::Doc < Cms::Piece
     else
       categories.detect {|c| c.id.to_s == setting_value(:category_id) }
     end
+  end
+
+  private
+
+  def set_default_settings
+    in_settings['layer'] = LAYER_OPTIONS.first.last if setting_value(:layer).nil?
+    in_settings['list_style'] = '@title' if setting_value(:list_style).nil?
+    in_settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
   end
 end
