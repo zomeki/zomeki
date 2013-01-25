@@ -8,9 +8,19 @@ class PortalCalendar::Event < ActiveRecord::Base
   include Cms::Model::Auth::Concept
 
   belongs_to :status,         :foreign_key => :state,             :class_name => 'Sys::Base::Status'
-
+	belongs_to :genre, :class_name => 'PortalCalendar::Genre', :foreign_key => :genre_id
+	belongs_to :event_status, :class_name => 'PortalCalendar::Status', :foreign_key => :status_id
+	
   validates_presence_of :state, :event_date, :title
   
+	def get_genre_title
+		self.genre.title
+	end
+	
+	def get_status_title
+		self.event_status.title
+	end
+
   def search(params)
     params.each do |n, v|
       next if v.to_s == ''

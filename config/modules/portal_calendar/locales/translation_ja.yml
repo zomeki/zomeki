@@ -7,7 +7,7 @@ ja:
         event_uri: "イベントURL"
         title: "イベント名"
         body: "内容"
-        ganre: "ジャンル"
+        genre: "ジャンル"
         status: "ステータス"
       portal_calendar/status:
         state: "状態"

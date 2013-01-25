@@ -29,7 +29,9 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def show
     @item = PortalCalendar::Event.new.find(params[:id])
     #return error_auth unless @item.readable?
-    
+
+		@statuses = PortalCalendar::Status.all
+		@genres = PortalCalendar::Genre.all
     _show @item
   end
 
@@ -37,13 +39,14 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     @item = PortalCalendar::Event.new({
       :state        => 'public'
     })
+		@statuses = PortalCalendar::Status.all
+		@genres = PortalCalendar::Genre.all
   end
 
   def create
     @item = PortalCalendar::Event.new(params[:item])
     @item.content_id = @content.id
 
-#		@statuses = PortalCalendar::Status.all
     _create @item
   end
 
