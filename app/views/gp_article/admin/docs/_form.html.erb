@@ -61,14 +61,13 @@
   <tr>
     <th><%= category_type.title %></th>
     <td>
+      <%- if category_type == @content.group_category_type && (group_category = category_type.categories.find_by_group_code(Core.user_group.code)) -%>
+      <%= hidden_field_tag "categories[#{category_type.id}][]", group_category.try(:id) %><%= group_category.try(:title) %>
+      <%- else -%>
       <table id="category_type_<%= category_type.id %>_categories" class="noDesign">
         <tbody>
           <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
-          <%- if category_type == @content.group_category_type && (group_category = category_type.categories.find_by_group_code(Core.user_group.code)) -%>
-          <tr><td><%= hidden_field_tag "categories[#{category_type.id}][]", group_category.try(:id) %><%= group_category.try(:title) %></td></tr>
-          <%- end -%>
           <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
-          <%- next if category == group_category -%>
           <%= render 'category', category_type: category_type, category: category, available: true %>
           <%- end -%>
           <tr>
@@ -77,6 +76,7 @@
           </tr>
         </tbody>
       </table>
+      <%- end -%>
     </td>
   </tr>
   <%- end -%>
