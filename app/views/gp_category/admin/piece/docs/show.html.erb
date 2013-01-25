@@ -22,6 +22,14 @@
     <th><%= @item.locale :category_id %></th>
     <td><%= @item.category.try(:title) %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :list_style %></th>
+    <td colspan="3"><%= @item.setting_value(:list_style) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= @item.setting_value(:date_style) %></td>
+  </tr>
 </table>
 
 <%= creator_view @item %>
