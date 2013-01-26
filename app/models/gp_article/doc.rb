@@ -152,6 +152,30 @@ class GpArticle::Doc < ActiveRecord::Base
     return self
   end
 
+  def bread_crumbs(doc_node)
+    crumbs = []
+
+    categories.each do |category|
+      category_type = category.category_type
+      if (node = category.content.category_type_node)
+        crumb = node.bread_crumbs.crumbs.first
+        crumb << [category_type.title, "#{node.public_uri}#{category_type.name}/"]
+        category.ancestors.each {|a| crumb << [a.title, "#{node.public_uri}#{category_type.name}/#{a.path_from_root_category}/"] }
+        crumbs << crumb
+      end
+    end
+
+    if crumbs.empty?
+      doc_node.routes.each do |r|
+        crumb = []
+        r.each {|i| crumb << [i.title, i.public_uri] }
+        crumbs << c
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
   private
 
   def set_name
