@@ -4,6 +4,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::UnidRelation
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::EditableGroup
   include Sys::Model::Rel::File
   include Sys::Model::Rel::Recognition
   include Sys::Model::Rel::Task
