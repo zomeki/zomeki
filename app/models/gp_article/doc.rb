@@ -132,6 +132,25 @@ class GpArticle::Doc < ActiveRecord::Base
     publish_page(content, :path => public_path, :uri => public_uri)
   end
 
+  def search(search_params)
+    search_params.each do |key, value|
+      next if value.blank?
+
+      case key
+      when 's_id'
+        self.and "#{GpArticle::Doc.table_name}.id", value
+      when 's_title'
+        self.and_keywords value, :title
+      when 's_affiliation_name'
+        self.join :creator
+        self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
+        self.and "#{Sys::Group.table_name}.name", 'LIKE', "%#{value}%"
+      end
+    end
+
+    return self
+  end
+
   private
 
   def set_name
