@@ -18,7 +18,54 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def index
     criteria = params[:criteria] || {}
-    @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+
+    if %w!editable recognizable publishable!.include?(params[:target])
+      search_params = {}
+      search_params[:s_id] = criteria[:id] if criteria[:id].present?
+      search_params[:s_title] = criteria[:title] if criteria[:title].present?
+      search_params[:s_affiliation_name] = criteria[:group] if criteria[:group].present?
+    end
+
+    case params[:target]
+    when 'editable'
+      item = GpArticle::Doc.new.editable
+      item.and :content_id, @content.id
+      item.search search_params
+      item.page params[:page], params[:limit]
+      item.order params[:sort], 'updated_at DESC'
+      @items = item.find(:all)
+    when 'recognizable'
+      item = GpArticle::Doc.new
+      if @content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
+        item.join_creator
+        item.join_recognition
+        cond = Condition.new do |c|
+          c.or 'sys_recognitions.user_id', Core.user.id
+          c.or 'sys_recognitions.recognizer_ids', 'REGEXP', "(^| )#{Core.user.id}( |$)"
+          c.or 'sys_recognitions.info_xml', 'LIKE', '%<admin/>%'
+        end
+        item.and cond
+        item.and "#{item.class.table_name}.state", 'recognize'
+      else
+        item.recognizable
+      end
+
+      item.and :content_id, @content.id
+      item.search search_params
+      item.page params[:page], params[:limit]
+      item.order params[:sort], 'updated_at DESC'
+      @items = item.find(:all)
+    when 'publishable'
+      item = GpArticle::Doc.new.publishable
+      item.and :content_id, @content.id
+      item.search search_params
+      item.page params[:page], params[:limit]
+      item.order params[:sort], 'updated_at DESC'
+      @items = item.find(:all)
+    else
+      @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+    end
+
     _index @items
   end
 
