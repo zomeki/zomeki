@@ -55,15 +55,12 @@
   <iframe src="<%= gp_article_doc_files_path(@content, inline_id) %>" style="width: 100%; height: 340px;"></iframe>
 </div>
 
-<%- unless @category_types.empty? -%>
+<%- unless @visible_category_types.empty? -%>
 <table class="show">
-  <%- @category_types.each do |category_type| -%>
+  <%- @visible_category_types.each do |category_type| -%>
   <tr>
     <th><%= category_type.title %></th>
     <td>
-      <%- if category_type == @content.group_category_type && (group_category = category_type.categories.find_by_group_code(Core.user_group.code)) -%>
-      <%= hidden_field_tag "categories[#{category_type.id}][]", group_category.try(:id) %><%= group_category.try(:title) %>
-      <%- else -%>
       <table id="category_type_<%= category_type.id %>_categories" class="noDesign">
         <tbody>
           <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
@@ -76,7 +73,6 @@
           </tr>
         </tbody>
       </table>
-      <%- end -%>
     </td>
   </tr>
   <%- end -%>
@@ -117,7 +113,7 @@ function set_click_event_handler(category_type_id) {
 $(document).ready(function () {
   $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
 
-  <%- @category_types.each do |category_type| -%>
+  <%- @visible_category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
   <%- end -%>
 });
