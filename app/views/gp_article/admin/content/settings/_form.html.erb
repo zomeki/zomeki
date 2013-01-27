@@ -26,13 +26,22 @@ value_form = case @item.form_type
 
 <%- if @item.name == 'gp_category_content_category_type_id'
       category_types = GpCategory::Content::CategoryType.find_by_id(@item.value).try(:category_types) || []
-      ct_ids = (@item.extra_value || '').split(',') -%>
+      ct_ids = @item.category_type_ids
+      vct_ids = @item.visible_category_type_ids -%>
 <table class="show">
   <tr>
-    <th>&nbsp;</th>
+    <th>利用<%= GpCategory::CategoryType.model_name.human %></th>
     <td id="category_types">
       <%- category_types.each do |ct| -%>
-      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id.to_s), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::CategoryType.model_name.human %></th>
+    <td id="visible_category_types">
+      <%- category_types.each do |ct| -%>
+      <span class="visible_category_type"><%= check_box_tag "vct_#{ct.id}", ct.id, vct_ids.include?(ct.id), name: 'visible_category_types[]' -%> <%= label_tag "vct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
       <%- end -%>
     </td>
   </tr>
@@ -44,10 +53,13 @@ $(document).ready(function () {
     var content_id = parseInt(event.target.value);
     if (isNaN(content_id)) {
       $('#category_types').html('');
+      $('#visible_category_types').html('');
     } else {
       $('#category_types').html('更新中...');
+      $('#visible_category_types').html('更新中...');
       $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
         $('#category_types').html(data);
+        $('#visible_category_types').html(data);
       });
     }
   });

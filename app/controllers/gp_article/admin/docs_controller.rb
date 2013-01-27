@@ -13,6 +13,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     @category_types = @content.category_types
+    @visible_category_types = @content.visible_category_types
     @recognition_type = @content.setting_value(:recognition_type)
   end
 
@@ -86,9 +87,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    if params[:categories].is_a?(Hash)
-      @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
-    end
+    set_categories
 
     _create(@item) do
       @item.fix_tmp_files(params[:_tmp])
@@ -103,14 +102,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    if params[:categories].is_a?(Hash)
-      @item.category_ids =  params[:categories].values.flatten.reject{|c| c.blank? }.uniq
-    end
+    set_categories
 
     _update(@item) do
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
-      @item.close unless @item.public? # Don't use "state_public?"
+      @item.close unless @item.public? # Don't use "state_public?" here
     end
   end
 
@@ -191,5 +188,19 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     EOT
 
     send_mail(mail_from, mail_to, subject, body)
+  end
+
+  def set_categories
+    if params[:categories].is_a?(Hash)
+      category_ids = params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+
+      if @category_types.include?(@content.group_category_type)
+        if (group_category = @content.group_category_type.categories.find_by_group_code(Core.user_group.code))
+          category_ids |= [group_category.id]
+        end
+      end
+
+      @item.category_ids = category_ids
+    end
   end
 end

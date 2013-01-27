@@ -28,7 +28,12 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
     @item.value = params[:item][:value]
 
     if @item.name == 'gp_category_content_category_type_id'
-      @item.extra_value = params[:category_types].try(:join, ',')
+      extra_values = @item.extra_values
+
+      extra_values[:category_type_ids] = (params[:category_types] || []).map {|ct| ct.to_i }
+      extra_values[:visible_category_type_ids] = (params[:visible_category_types] || []).map {|ct| ct.to_i }
+
+      @item.extra_values = extra_values
     end
 
     _update @item

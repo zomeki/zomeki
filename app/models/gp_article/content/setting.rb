@@ -12,4 +12,24 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def lower_text
   end
+
+  def extra_values=(ev)
+    self.extra_value = YAML.dump(ev) if ev.is_a?(Hash)
+    return ev
+  end
+
+  def extra_values
+    return {}.with_indifferent_access unless self.extra_value.is_a?(String)
+    ev = YAML.load(self.extra_value)
+    return {}.with_indifferent_access unless ev.is_a?(Hash)
+    return ev.with_indifferent_access
+  end
+
+  def category_type_ids
+    extra_values[:category_type_ids] || []
+  end
+
+  def visible_category_type_ids
+    extra_values[:visible_category_type_ids] || []
+  end
 end

@@ -18,8 +18,18 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def category_types
+    setting = GpArticle::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     if (cts = gp_category_content_category_type.try(:category_types))
-      cts.where(id: (setting_extra_value(:gp_category_content_category_type_id) || '').split(','))
+      cts.where(id: setting.try(:category_type_ids))
+    else
+      []
+    end
+  end
+
+  def visible_category_types
+    setting = GpArticle::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
+    if (cts = gp_category_content_category_type.try(:category_types))
+      cts.where(id: setting.try(:visible_category_type_ids))
     else
       []
     end
