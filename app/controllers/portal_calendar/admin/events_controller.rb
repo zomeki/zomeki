@@ -23,7 +23,11 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     item.page  params[:page], params[:limit]
     item.order sort, 'updated_at DESC, id DESC'
     @items = item.find(:all)
-    _index @items
+
+		respond_to do |format|
+			format.html		{_index @items}
+			format.xml		{render :xml => @items}
+		end
   end
 
   def show

@@ -47,12 +47,31 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @pagination.next_label = "次の月&gt;"
     @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
     @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
-    
-		@events = PortalCalendar::Event.find(:all)
+
+		#カレンダーの開始曜日
+		@start_wday = 0
+		first_date = Date.new(@year, @month, 1)
+		#カレンダー先頭の日(前の月の場合がある）
+		box_start_date = first_date - first_date.cwday  + @start_wday
+		if box_start_date > first_date
+			box_start_date = box_start_date - 7
+		end
+ 		max_row = 5
+		max_column = 6
+   
+		#表示のイメージのまま、その日のデータを詰めていく
+		@box=[]
+		0.upto(max_row) do |row|
+			@box[row]=[]
+			0.upto(max_column) do |coloumn|
+				data = {:date => box_start_date + row*(max_column+1) + coloumn}
+				data.merge!({:events=>PortalCalendar::Event.where(:content_id => @content.id, :event_date => data[:date])})
+				@box[row][coloumn] = data
+			end
+		end
 		
 		respond_to do |format|
-			format.html {render :action => "index_monthly"}
-			format.xml {render :xml => @events}
+			format.html {render :action => "index_calendar"}
 		end
   end
   
