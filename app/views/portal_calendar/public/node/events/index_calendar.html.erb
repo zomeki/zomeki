@@ -30,14 +30,16 @@
   <% 0.upto(max_row) do |row| %>
   <tr>
 	<% 0.upto(max_column) do |column| %>
-	<td style="border:1px solid gray;height:80px;">
-	  <% the_day = @box[row][column] %>
-	  <%= the_day[:date].strftime("%Y %m %d") %>
-	  <% the_day[:events].each do |item| %>
-		<%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %>
+	  <% this_day = @box[row][column] %>
+	  <td style="border:1px solid gray;height:80px;">
+	  <% if this_day[:date].month == @month %>
+	    <%= this_day[:date].strftime("%d") %><br>
+	    <% this_day[:events].each do |item| %>
+		  <%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %><br>
+		<% end %>
+	  </td>
 	  <% end %>
-	</td>
-	<%  end %>
+	<% end %>
   </tr>
   <% end %>
 </table>
