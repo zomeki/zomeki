@@ -200,6 +200,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
         end
       end
 
+      if @content.default_category && @category_types.include?(@content.default_category_type)
+        category_ids |= [@content.default_category.id]
+      end
+
       @item.category_ids = category_ids
     end
   end
