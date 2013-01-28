@@ -7,7 +7,15 @@ doc_line = list_style.gsub(/@title/, title).gsub(/@date/, date).gsub(/@group/, g
 -%>
 <%- if doc.target.present? -%>
   <%- if doc.href.present? -%>
-    <%= link_to doc_line, doc.href, target: doc.target %>
+    <%- if doc.target == 'attached_file' -%>
+      <%- if (file = doc.files.find_by_id(doc.href)) -%>
+        <%= link_to doc_line, "#{doc.public_uri}file_contents/#{file.name}", target: '_blank' %>
+      <%- else -%>
+        <%= doc_line -%>
+      <%- end -%>
+    <%- else -%>
+      <%= link_to doc_line, doc.href, target: doc.target %>
+    <%- end -%>
   <%- else -%>
     <%= doc_line -%>
   <%- end -%>

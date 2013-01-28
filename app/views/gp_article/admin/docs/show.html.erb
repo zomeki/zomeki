@@ -8,7 +8,7 @@
 <table class="show">
   <tr>
     <th><%= @item.locale :href %></th>
-    <td><%= link_to(@item.href, @item.href, target: '_blank') if @item.href.present? %></td>
+    <td><%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') if @item.href.present? %></td>
     <td><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></td>
   </tr>
   <tr>
