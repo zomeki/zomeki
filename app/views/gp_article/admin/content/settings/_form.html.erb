@@ -104,6 +104,13 @@ $(document).ready(function () {
       });
     }
   });
+
+  $('#category_types input[type="checkbox"]').on('click', function (event) {
+    if (!event.target.checked) { $('#' + event.target.id.replace('ct_', 'vct_')).removeAttr('checked'); }
+  });
+  $('#visible_category_types input[type="checkbox"]').on('click', function (event) {
+    if (event.target.checked) { $('#' + event.target.id.replace('vct_', 'ct_')).attr('checked', 'checked'); }
+  });
 });
 <%- end -%>
 <%- end -%>
