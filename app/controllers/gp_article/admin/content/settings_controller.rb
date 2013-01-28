@@ -32,6 +32,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
 
       extra_values[:category_type_ids] = (params[:category_types] || []).map {|ct| ct.to_i }
       extra_values[:visible_category_type_ids] = (params[:visible_category_types] || []).map {|ct| ct.to_i }
+      extra_values[:default_category_type_id] = params[:default_category_type].to_i
+      extra_values[:default_category_id] = params[:default_category].to_i
 
       @item.extra_values = extra_values
     end
