@@ -25,9 +25,16 @@ value_form = case @item.form_type
 </table>
 
 <%- if @item.name == 'gp_category_content_category_type_id'
-      category_types = GpCategory::Content::CategoryType.find_by_id(@item.value).try(:category_types) || []
+      content = GpCategory::Content::CategoryType.find_by_id(@item.value)
+      category_types = content.try(:category_types) || []
+      category_types_for_option = content.try(:category_types_for_option) || []
+
       ct_ids = @item.category_type_ids
-      vct_ids = @item.visible_category_type_ids -%>
+      vct_ids = @item.visible_category_type_ids
+      default_category_type_id = @item.default_category_type_id
+      default_categories_for_option = category_types.detect{|ct| ct.id == default_category_type_id }.try(:categories_for_option) || []
+      default_category_id = @item.default_category_id
+    -%>
 <table class="show">
   <tr>
     <th>利用<%= GpCategory::CategoryType.model_name.human %></th>
@@ -47,6 +54,18 @@ value_form = case @item.form_type
   </tr>
 </table>
 
+<br />
+<p class="form">初期値</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= select_tag 'default_category_type', options_for_select(category_types_for_option, default_category_type_id), include_blank: true %></td>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= select_tag 'default_category', options_for_select(default_categories_for_option, default_category_id), include_blank: true %></td>
+  </tr>
+</table>
+
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#item_value').on('change', function (event) {
@@ -54,12 +73,34 @@ $(document).ready(function () {
     if (isNaN(content_id)) {
       $('#category_types').html('');
       $('#visible_category_types').html('');
+      $('#default_category_type').html('<option value=""></option>');
+      $('#default_category').html('<option value=""></option>');
     } else {
       $('#category_types').html('更新中...');
       $('#visible_category_types').html('更新中...');
+      $('#default_category_type').html('<option value="">更新中...</option>');
+      $('#default_category').html('<option value=""></option>');
       $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
         $('#category_types').html(data);
-        $('#visible_category_types').html(data);
+        $('#visible_category_types').html(data.replace(/"category_type/g, '"visible_category_type').replace(/"ct_/g, '"vct_'));
+      });
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?options=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#default_category_type').html(data);
+      });
+    }
+  });
+
+  $('#default_category_type').on('change', function (event) {
+    var content_id = parseInt($('#item_value').val());
+    var category_type_id = NaN;
+    if (isFinite(content_id)) { category_type_id = parseInt(event.target.value); }
+    if (isNaN(category_type_id)) {
+      $('#default_category').html('<option value=""></option>');
+    } else {
+      $('#default_category').html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CONTENT_ID', content_id)
+                                                                                                                                        .replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        $('#default_category').html(data);
       });
     }
   });
