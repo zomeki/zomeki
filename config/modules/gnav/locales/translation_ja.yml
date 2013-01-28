@@ -13,6 +13,8 @@ ja:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
         list_count: 表示件数
+        list_style: 表示形式
+        date_style: 日付形式
       gnav/piece/category_type:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ

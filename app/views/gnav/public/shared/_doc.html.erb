@@ -1,0 +1,24 @@
+<%-
+title = %Q!<span class="title">#{h doc.title}</span>!
+date = %Q!<span class="date">#{h doc.published_at.strftime(date_style)}</span>!
+group = %Q!<span class="group">#{h doc.creator.group.name}</span>!
+
+doc_line = list_style.gsub(/@title/, title).gsub(/@date/, date).gsub(/@group/, group).html_safe
+-%>
+<%- if doc.target.present? -%>
+  <%- if doc.href.present? -%>
+    <%- if doc.target == 'attached_file' -%>
+      <%- if (file = doc.files.find_by_id(doc.href)) -%>
+        <%= link_to doc_line, "#{doc.public_uri}file_contents/#{file.name}", target: '_blank' %>
+      <%- else -%>
+        <%= doc_line -%>
+      <%- end -%>
+    <%- else -%>
+      <%= link_to doc_line, doc.href, target: doc.target %>
+    <%- end -%>
+  <%- else -%>
+    <%= doc_line -%>
+  <%- end -%>
+<%- else -%>
+  <%= link_to doc_line, doc.public_uri %>
+<%- end -%>

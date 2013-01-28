@@ -2,6 +2,8 @@
 class Gnav::Piece::Doc < Cms::Piece
   default_scope where(model: 'Gnav::Doc')
 
+  after_initialize :set_default_settings
+
   validate :validate_settings
 
   def validate_settings
@@ -12,6 +14,14 @@ class Gnav::Piece::Doc < Cms::Piece
 
   def list_count
     (setting_value(:list_count).presence || 1000).to_i
+  end
+
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
   end
 
   def content
@@ -52,5 +62,12 @@ class Gnav::Piece::Doc < Cms::Piece
     else
       categories.detect {|c| c.id.to_s == setting_value(:category_id) }
     end
+  end
+
+  private
+
+  def set_default_settings
+    in_settings['list_style'] = '@title' if setting_value(:list_style).nil?
+    in_settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
   end
 end
