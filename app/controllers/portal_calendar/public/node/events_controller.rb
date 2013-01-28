@@ -51,7 +51,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		#カレンダーの開始曜日
 		@start_wday = 0
 		first_date = Date.new(@year, @month, 1)
-		#カレンダー先頭の日(前の月の場合がある）
+		#カレンダー先頭の日(カレンダーの先頭日はだいたい前の月なのでその調整）
 		box_start_date = first_date - first_date.cwday  + @start_wday
 		if box_start_date > first_date
 			box_start_date = box_start_date - 7
