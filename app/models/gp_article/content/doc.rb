@@ -35,6 +35,16 @@ class GpArticle::Content::Doc < Cms::Content
     end
   end
 
+  def default_category_type
+    setting = GpArticle::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
+    GpCategory::CategoryType.find_by_id(setting.try(:default_category_type_id))
+  end
+
+  def default_category
+    setting = GpArticle::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
+    GpCategory::Category.find_by_id(setting.try(:default_category_id))
+  end
+
   def group_category_type
     return nil unless gp_category_content_category_type
     gp_category_content_category_type.group_category_type
