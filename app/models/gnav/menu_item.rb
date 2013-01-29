@@ -52,4 +52,26 @@ class Gnav::MenuItem < ActiveRecord::Base
       end
     }
   end
+
+  def bread_crumbs(menu_item_node)
+    crumbs = []
+
+    if content
+      if (node = content.menu_item_node)
+        crumb = node.bread_crumbs.crumbs.first
+        crumb << [title, "#{node.public_uri}#{name}/"]
+        crumbs << crumb
+      end
+    end
+
+    if crumbs.empty?
+      menu_item_node.routes.each do |r|
+        crumb = []
+        r.each {|i| crumb << [i.title, i.public_uri] }
+        crumbs << crumb
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
 end
