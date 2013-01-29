@@ -66,7 +66,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def public_uri
     return @public_uri if @public_uri
-    return nil unless node = content.doc_node
+    return '' unless node = content.doc_node
     @public_uri = "#{node.public_uri}#{name}/"
   end
 
@@ -76,7 +76,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def public_full_uri
     return @public_full_uri if @public_full_uri
-    return nil unless node = content.doc_node
+    return '' unless node = content.doc_node
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 
