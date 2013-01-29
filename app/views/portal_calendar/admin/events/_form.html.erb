@@ -13,8 +13,11 @@ $(function() {
     <th><%= @item.locale(:state) %></th>
     <td><%= f.radio_buttons :state, [["公開","public"],["非公開","closed"]], :class => 'states' %></td>
   </tr><tr>
-    <th><%= @item.locale(:event_date) %> <span class="note">※</span></th>
-    <td><%= f.text_field :event_date, :class => 'js-date' %></td>
+    <th><%= @item.locale(:event_start_date) %> <span class="note">※</span></th>
+    <td><%= f.text_field :event_start_date, :class => 'js-date' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_end_date) %> <span class="note">※</span></th>
+    <td><%= f.text_field :event_end_date, :class => 'js-date' %></td>
   </tr><tr>
     <th><%= @item.locale(:genre) %></th>
     <td><%= f.collection_select :genre_id, @genres, :id, :title %></td>

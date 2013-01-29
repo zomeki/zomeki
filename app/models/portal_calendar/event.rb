@@ -11,8 +11,20 @@ class PortalCalendar::Event < ActiveRecord::Base
 	belongs_to :genre, :class_name => 'PortalCalendar::Genre', :foreign_key => :genre_id
 	belongs_to :event_status, :class_name => 'PortalCalendar::Status', :foreign_key => :status_id
 	
-  validates_presence_of :state, :event_date, :title
+  validates :state, :presence => true
+  validates :event_start_date, :presence => true
+  validates :title, :presence => true
   
+	#指定の期間に登録されているレコードを一覧取得する（content_idでの絞り込みも行う）
+	def self.get_period_records_with_content_id(content_id, sdate, edate)
+		self.get_period_records(sdate, edate).where(:content_id => content_id)
+	end
+	
+	#指定の期間に登録されているレコードを一覧取得する
+	def self.get_period_records(sdate, edate)
+		self.where('event_start_date <= ? AND event_end_date >= ?', edate, sdate).order('event_start_date ASC, id ASC')
+	end
+
 	def get_genre_title
 		self.genre.title
 	end
@@ -27,7 +39,7 @@ class PortalCalendar::Event < ActiveRecord::Base
 
       case n
       when 's_event_date'
-        self.and :event_date, v
+        self.and :event_start_date, v
       when 's_title'
         self.and_keywords v, :title
       end

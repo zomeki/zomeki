@@ -5,7 +5,8 @@ class CreatePortalCalendarEvents < ActiveRecord::Migration
       t.integer  :content_id
       t.string   :state,        :limit => 15
       t.datetime :published_at
-      t.date     :event_date
+      t.date     :event_start_date
+      t.date     :event_end_date
       t.string   :event_uri
       t.string   :title
       t.text     :body,         :limit => 2147483647
@@ -14,7 +15,7 @@ class CreatePortalCalendarEvents < ActiveRecord::Migration
 			
 			t.timestamps
     end
-    add_index :portal_calendar_events, [:content_id, :published_at, :event_date], :name => :content_id
+    add_index :portal_calendar_events, [:content_id, :published_at, :event_start_date], :name => :content_id
 
 		create_table :portal_calendar_genres do |t|
       t.integer  :unid
