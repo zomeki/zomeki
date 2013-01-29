@@ -9,15 +9,15 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @min_date = Date.new(@today.year, @today.month, 1) << 0
     @max_date = Date.new(@today.year, @today.month, 1) >> 11
   end
-  
-  def index
+
+	def calendar
     params[:year]  = @today.strftime("%Y").to_s
     params[:month] = @today.strftime("%m").to_s
 
-    return index_monthly
-  end
-  
-  def index_monthly
+		return calendar_monthly
+	end
+	
+	def calendar_monthly
     return http_error(404) unless validate_date
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
@@ -26,7 +26,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
     
     @calendar = Util::Date::Calendar.new(@year, @month)
-    @calendar.month_uri = "#{@node_uri}:year/:month/"
+    @calendar.month_uri = "#{@node_uri}:year/:month/calendar"
     
     @items = {}
     @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
@@ -72,6 +72,51 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		
 		respond_to do |format|
 			format.html {render :action => "index_calendar"}
+		end
+
+	end
+
+  
+  def index
+    params[:year]  = @today.strftime("%Y").to_s
+    params[:month] = @today.strftime("%m").to_s
+
+    return index_monthly
+  end
+  
+  def index_monthly
+    return http_error(404) unless validate_date
+    return http_error(404) if Date.new(@year, @month, 1) < @min_date
+    return http_error(404) if Date.new(@year, @month, 1) > @max_date
+    
+    @sdate = "#{@year}-#{@month}-01"
+    @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
+    
+    @calendar = Util::Date::Calendar.new(@year, @month)
+    @calendar.month_uri = "#{@node_uri}:year/:month/"
+    
+    @items = {}
+    @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
+    
+    item = PortalCalendar::Event.new.public
+    item.and :content_id, @content.id
+    item.and :event_date, ">=", @sdate.to_s
+    item.and :event_date, "<", @edate.to_s
+    item.and :event_date, "IS NOT", nil
+    events = item.find(:all, :order => 'event_date ASC, id ASC')
+		
+    (events + event_docs).each do |ev|
+      @items[ev.event_date.to_s] << ev
+    end
+    
+    @pagination = Util::Html::SimplePagination.new
+    @pagination.prev_label = "&lt;前の月"
+    @pagination.next_label = "次の月&gt;"
+    @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
+    @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
+	
+		respond_to do |format|
+			format.html {render :action => "index_monthly"}
 		end
   end
   

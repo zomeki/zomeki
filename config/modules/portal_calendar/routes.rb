@@ -40,11 +40,10 @@ ZomekiCMS::Application.routes.draw do
   
   ## public
   scope "_public/#{mod}", :module => mod, :as => "" do
-    match "node_events/index"              => "public/node/events#index",
-      :as => nil
-    match "node_events/:year/index"        => "public/node/events#index_yearly",
-      :as => nil
-    match "node_events/:year/:month/index" => "public/node/events#index_monthly",
-      :as => nil
+    match "node_events/index"              => "public/node/events#index", :as => nil
+    match "node_events/:year/index"        => "public/node/events#index_yearly", :as => nil
+    match "node_events/:year/:month/index" => "public/node/events#index_monthly", :as => nil
+    match "node_events/calendar"              => "public/node/events#calendar", :as => nil
+    match "node_events/:year/:month/calendar" => "public/node/events#calendar_monthly", :as => nil
   end
 end
