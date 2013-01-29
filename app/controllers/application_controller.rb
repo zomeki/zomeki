@@ -83,14 +83,21 @@ private
     
     ## Render
     html = nil
-    if Page.site && FileTest.exist?("#{Page.site.public_path}/#{status}.html")
-      html = ::File.new("#{Page.site.public_path}/#{status}.html").read
-    elsif Core.site && FileTest.exist?("#{Core.site.public_path}/#{status}.html")
-      html = ::File.new("#{Core.site.public_path}/#{status}.html").read
-    elsif FileTest.exist?("#{Rails.public_path}/#{status}.html")
-      html = ::File.new("#{Rails.public_path}/#{status}.html").read
-    elsif FileTest.exist?("#{Rails.public_path}/500.html")
-      html = ::File.new("#{Rails.public_path}/500.html").read
+    if Page.mobile
+      file_status = "#{status}_mobile.html"
+      file_500 = "500_mobile.html"
+    else
+      file_status = "#{status}.html"
+      file_500 = "500.html"
+    end
+    if Page.site && FileTest.exist?("#{Page.site.public_path}/#{file_status}")
+      html = ::File.new("#{Page.site.public_path}/#{file_status}").read
+    elsif Core.site && FileTest.exist?("#{Core.site.public_path}/#{file_status}")
+      html = ::File.new("#{Core.site.public_path}/#{file_status}").read
+    elsif FileTest.exist?("#{Rails.public_path}/#{file_status}")
+      html = ::File.new("#{Rails.public_path}/#{file_status}").read
+    elsif FileTest.exist?("#{Rails.public_path}/#{file_500}")
+      html = ::File.new("#{Rails.public_path}/#{file_500}").read
     else
       html = "<html>\n<head></head>\n<body>\n<p>#{message}</p>\n</body>\n</html>\n"
     end
