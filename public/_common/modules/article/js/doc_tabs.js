@@ -6,7 +6,7 @@ function ArticleDocTabs(id) {
   
   this.initialize = function() {
     if (this.content) return true;
-    var children = document.getElementById(this.id).getElementsByTagName('div');
+    var children = $('#' + this.id).find('.tabs, .content, .links');
     for (var i = 0; i < children.length; i++) {
       if (children[i].className == 'tabs') {
         this.tabs = children[i];
