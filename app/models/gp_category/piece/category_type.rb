@@ -8,6 +8,14 @@ class GpCategory::Piece::CategoryType < Cms::Piece
     setting_value(:layer).presence || LAYER_OPTIONS.first.last
   end
 
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
+
   def content
     GpCategory::Content::CategoryType.find(super)
   end
