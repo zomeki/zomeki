@@ -42,6 +42,7 @@ class Cms::ContentSetting < ActiveRecord::Base
   end
   
   def config_options
+    return config[:options].call if config[:options].is_a?(Proc)
     config[:options] ? config[:options].collect {|e| [e[0], e[1].to_s] } : nil
   end
   
