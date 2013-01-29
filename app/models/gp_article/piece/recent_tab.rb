@@ -14,6 +14,14 @@ class GpArticle::Piece::RecentTab < Cms::Piece
     (setting_value(:list_count).presence || 10).to_i
   end
 
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
+
   def more_label
     setting_value(:more_label) || ''
   end
