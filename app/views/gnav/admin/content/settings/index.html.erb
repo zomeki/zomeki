@@ -9,7 +9,7 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :edit, edit_gnav_content_setting_path(id: item.name) %></td>
     <td><%= item.config_name %></td>
-    <td><%=truncate (item.value_name || '未設定'), length: 60 %></td>
+    <td><%=truncate (item.persisted? ? item.value_name : '未設定'), length: 60 %></td>
   </tr>
   <% end %>
 </table>
