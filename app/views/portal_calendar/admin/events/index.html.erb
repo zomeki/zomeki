@@ -5,7 +5,8 @@
   <tr>
     <th style="width: 60px; text-align: center;">詳細</th>
     <th style="width: 60px; text-align: right;">ID</th>
-    <th style="width: 100px; text-align: center;">イベント日</th>
+    <th style="width: 100px; text-align: center;">開始日</th>
+    <th style="width: 100px; text-align: center;">終了日</th>
     <th style="width: 60px; text-align: right;">ジャンル</th>
     <th style="width: 60px; text-align: right;">ステータス</th>
     <th style="width: ;">イベント名</th>
@@ -17,7 +18,8 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => item) %></td>
     <td style="text-align: right;"><%= item.id %></td>
-    <td style="text-align: center;"><%= item.event_date %></td>
+    <td style="text-align: center;"><%= item.event_start_date %></td>
+    <td style="text-align: center;"><%= item.event_end_date %></td>
     <td style="text-align: right;"><%= item.get_genre_title %></td>
     <td style="text-align: right;"><%= item.get_status_title %></td>
     <td><%= item.title %></td>

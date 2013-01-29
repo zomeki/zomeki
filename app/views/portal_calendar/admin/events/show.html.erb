@@ -6,8 +6,12 @@
     <td><%= safe{@item.status.name} %></td>
   </tr>
   <tr>
-    <th><%= @item.locale(:event_date) %></th>
-    <td><%= @item.event_date %></td>
+    <th><%= @item.locale(:event_start_date) %></th>
+    <td><%= @item.event_start_date %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:event_end_date) %></th>
+    <td><%= @item.event_end_date %></td>
   </tr>
   <tr>
     <th><%= @item.locale(:genre) %></th>

@@ -30,16 +30,16 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     
     @items = {}
     @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
-    
-    item = PortalCalendar::Event.new.public
-    item.and :content_id, @content.id
-    item.and :event_date, ">=", @sdate.to_s
-    item.and :event_date, "<", @edate.to_s
-    item.and :event_date, "IS NOT", nil
-    events = item.find(:all, :order => 'event_date ASC, id ASC')
+
+		events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
 		
-    (events + event_docs).each do |ev|
-      @items[ev.event_date.to_s] << ev
+		events.each do |ev|
+      (ev.event_start_date .. ev.event_end_date).each do |evdate|
+				#その月のイベントか？
+				next if evdate.month != @month
+
+				@items[evdate.to_s] << ev
+			end
     end
     
     @pagination = Util::Html::SimplePagination.new
@@ -58,14 +58,14 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		end
  		max_row = 5
 		max_column = 6
-   
+
 		#表示のイメージのまま、その日のデータを詰めていく
 		@box=[]
 		0.upto(max_row) do |row|
 			@box[row]=[]
 			0.upto(max_column) do |coloumn|
 				data = {:date => box_start_date + row*(max_column+1) + coloumn}
-				data.merge!({:events=>PortalCalendar::Event.where(:content_id => @content.id, :event_date => data[:date])})
+				data.merge!({:events => @items[data[:date].strftime('%Y-%m-%d')]})
 				@box[row][coloumn] = data
 			end
 		end
