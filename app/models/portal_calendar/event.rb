@@ -7,12 +7,20 @@ class PortalCalendar::Event < ActiveRecord::Base
   include Cms::Model::Rel::Content
   include Cms::Model::Auth::Concept
 
-	validates_presence_of :event_start_date, :event_end_date, :title
-  
-  belongs_to :status,         :foreign_key => :state,             :class_name => 'Sys::Base::Status'
+  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 	belongs_to :genre, :class_name => 'PortalCalendar::Genre', :foreign_key => :genre_id
 	belongs_to :event_status, :class_name => 'PortalCalendar::Status', :foreign_key => :status_id
-	  
+
+	validates_presence_of :state, :event_start_date, :event_end_date, :title
+	validate :period_check?
+	
+private
+	def period_check?
+		errors.add(:event_end_date, 'は開始日以降を設定してください。') unless event_end_date >= event_start_date
+	end
+	
+public
+	
 	#指定の期間に登録されているレコードを一覧取得する（content_idでの絞り込みも行う）
 	def self.get_period_records_with_content_id(content_id, sdate, edate)
 		self.get_period_records(sdate, edate).where(:content_id => content_id)
