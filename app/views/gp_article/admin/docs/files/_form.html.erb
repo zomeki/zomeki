@@ -2,7 +2,7 @@
   <% if @item.new_record? %>
   <tr>
     <th><%= f.label :file %></th>
-    <td><%= f.file_field :file %></td>
+    <td><%#= f.file_field :file, size: 70 %><input id="item_file" name="item[file]" type="file" size="70" /></td>
   </tr>
   <% end %>
   <tr>
