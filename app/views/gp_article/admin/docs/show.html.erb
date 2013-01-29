@@ -13,11 +13,11 @@
   </tr>
   <tr>
     <th><%= @item.locale :subtitle %></th>
-    <td colspan="2"><%= @item.subtitle %></td>
+    <td colspan="2"><%=simple_format @item.subtitle %></td>
   </tr>
   <tr>
     <th><%= @item.locale :summary %></th>
-    <td colspan="2"><%= @item.summary %></td>
+    <td colspan="2"><%=simple_format @item.summary %></td>
   </tr>
 </table>
 

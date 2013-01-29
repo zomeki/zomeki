@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130124022822) do
+ActiveRecord::Schema.define(:version => 20130129053505) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -608,8 +608,8 @@ ActiveRecord::Schema.define(:version => 20130124022822) do
     t.datetime "updated_at"
     t.string   "href"
     t.string   "target"
-    t.string   "subtitle"
-    t.string   "summary"
+    t.text     "subtitle"
+    t.text     "summary"
     t.string   "name"
     t.datetime "published_at"
     t.datetime "recognized_at"
