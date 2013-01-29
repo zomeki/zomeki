@@ -169,7 +169,7 @@ class GpArticle::Doc < ActiveRecord::Base
       doc_node.routes.each do |r|
         crumb = []
         r.each {|i| crumb << [i.title, i.public_uri] }
-        crumbs << c
+        crumbs << crumb
       end
     end
 
