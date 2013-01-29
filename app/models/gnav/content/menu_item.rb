@@ -16,4 +16,12 @@ class Gnav::Content::MenuItem < Cms::Content
   def category_types
     gp_category_content_category_type.try(:category_types) || []
   end
+
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
 end
