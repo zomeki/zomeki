@@ -7,7 +7,6 @@
     <th><%= f.label :state %></th>
     <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
   </tr>
-  <%= concept_and_layout_form f %>
   <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :class => 'id' %></td>
@@ -20,6 +19,14 @@
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
+</table>
+
+<br />
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_and_layout_form f %>
 </table>
 
 <br />
