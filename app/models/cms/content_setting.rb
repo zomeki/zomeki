@@ -55,12 +55,16 @@ class Cms::ContentSetting < ActiveRecord::Base
   end
   
   def value_name
-    if config[:options]
-      config[:options].each {|c| return c[0] if c[1].to_s == value.to_s}
+    opts = if config[:options].is_a?(Proc)
+             config[:options].call
+           else
+             config[:options]
+           end
+    if opts
+      opts.detect{|o| o.last.to_s == value.to_s }.try(:first)
     else
-      return value if !value.blank?
+      value.presence
     end
-    nil
   end
   
   def form_type
