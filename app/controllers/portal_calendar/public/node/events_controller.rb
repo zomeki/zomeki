@@ -17,7 +17,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		return calendar_monthly
 	end
 	
-	def calendar_monthly
+	def prepare_monthly_data(uri_suffix="")
     return http_error(404) unless validate_date
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
@@ -26,7 +26,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
     
     @calendar = Util::Date::Calendar.new(@year, @month)
-    @calendar.month_uri = "#{@node_uri}:year/:month/calendar"
+    @calendar.month_uri = "#{@node_uri}:year/:month/" + uri_suffix
     
     @items = {}
     @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
@@ -47,6 +47,11 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @pagination.next_label = "次の月&gt;"
     @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
     @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
+	end
+	
+	def calendar_monthly
+
+		prepare_monthly_data("calendar")
 
 		#カレンダーの開始曜日
 		@start_wday = 0
@@ -65,6 +70,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 			@box[row]=[]
 			0.upto(max_column) do |coloumn|
 				data = {:date => box_start_date + row*(max_column+1) + coloumn}
+				#hashキーのフォーマットは yyyy-mm-dd
 				data.merge!({:events => @items[data[:date].strftime('%Y-%m-%d')]})
 				@box[row][coloumn] = data
 			end
@@ -85,36 +91,9 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
   end
   
   def index_monthly
-    return http_error(404) unless validate_date
-    return http_error(404) if Date.new(@year, @month, 1) < @min_date
-    return http_error(404) if Date.new(@year, @month, 1) > @max_date
-    
-    @sdate = "#{@year}-#{@month}-01"
-    @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
-    
-    @calendar = Util::Date::Calendar.new(@year, @month)
-    @calendar.month_uri = "#{@node_uri}:year/:month/"
-    
-    @items = {}
-    @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
-    
-    item = PortalCalendar::Event.new.public
-    item.and :content_id, @content.id
-    item.and :event_date, ">=", @sdate.to_s
-    item.and :event_date, "<", @edate.to_s
-    item.and :event_date, "IS NOT", nil
-    events = item.find(:all, :order => 'event_date ASC, id ASC')
+
+		prepare_monthly_data
 		
-    (events + event_docs).each do |ev|
-      @items[ev.event_date.to_s] << ev
-    end
-    
-    @pagination = Util::Html::SimplePagination.new
-    @pagination.prev_label = "&lt;前の月"
-    @pagination.next_label = "次の月&gt;"
-    @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
-    @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
-	
 		respond_to do |format|
 			format.html {render :action => "index_monthly"}
 		end
@@ -139,7 +118,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     item.and :event_date, "IS NOT", nil
     events = item.find(:all, :order => 'event_date ASC, id ASC')
     
-    (events + event_docs).each do |ev|
+    events.each do |ev|
       unless @items.key?(ev.event_date.to_s)
         date = ev.event_date
         wday = @wdays[date.strftime("%w").to_i]
