@@ -20,4 +20,12 @@ class GpCategory::Content::CategoryType < Cms::Content
   def group_category_type
     category_types.find_by_name(group_category_type_name)
   end
+
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
 end
