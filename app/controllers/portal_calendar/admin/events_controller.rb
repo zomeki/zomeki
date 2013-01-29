@@ -50,13 +50,18 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     @item = PortalCalendar::Event.new(params[:item])
     @item.content_id = @content.id
 
+		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
+		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+
     _create @item
   end
 
   def update
     @item = PortalCalendar::Event.new.find(params[:id])
     @item.attributes = params[:item]
-
+		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
+		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+		
     _update(@item)
   end
 
