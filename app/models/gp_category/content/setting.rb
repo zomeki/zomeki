@@ -18,7 +18,7 @@ class GpCategory::Content::Setting < Cms::ContentSetting
   private
 
   def set_defaults
-    self.value = '@title' if self.name == 'list_style' && self.value.nil?
+    self.value = '@title(@date @group)' if self.name == 'list_style' && self.value.nil?
     self.value = '%Y年%m月%d日 %H時%M分' if self.name == 'date_style' && self.value.nil?
   rescue ActiveModel::MissingAttributeError => evar
     logger.warn(evar.message)
