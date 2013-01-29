@@ -48,7 +48,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   def public_uri
     return @public_uri if @public_uri
-    return nil unless node = content.category_type_node
+    return '' unless node = content.category_type_node
     @public_uri = "#{node.public_uri}#{name}/"
   end
 
@@ -58,7 +58,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   def public_full_uri
     return @public_full_uri if @public_full_uri
-    return nil unless node = content.category_type_node
+    return '' unless node = content.category_type_node
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 
