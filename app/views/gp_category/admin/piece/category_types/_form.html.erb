@@ -18,6 +18,14 @@
     <th><%= @item.locale :layer %></th>
     <td colspan="3"><%= f.array_radio_buttons  'in_settings[layer]', @item.class::LAYER_OPTIONS %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :list_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> 日付：@date タイトル：@title 組織：@group</td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+  </tr>
 </table>
 
 <%= creator_form f %>
