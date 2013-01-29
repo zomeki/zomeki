@@ -49,4 +49,12 @@ class GpArticle::Content::Doc < Cms::Content
     return nil unless gp_category_content_category_type
     gp_category_content_category_type.group_category_type
   end
+
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
 end
