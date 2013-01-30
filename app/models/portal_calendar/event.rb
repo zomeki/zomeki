@@ -31,12 +31,42 @@ public
 		self.where('event_start_date <= ? AND event_end_date >= ?', edate, sdate).order('event_start_date ASC, id ASC')
 	end
 
+	#イベントのジャンルリストの取得
+	def self.get_genre_valid_list(content_id)
+		return get_genre_list(content_id, :only_valid => true)
+	end
+
+	#イベントのジャンルリストの取得
+	def self.get_genre_list(content_id, options={})
+		list = PortalCalendar::Genre.where(:content_id => content_id)
+		return options[:only_valid] ? list.where(:state => 'public') : list
+	end
+
+	#イベントのステータスリストの取得
+	def self.get_status_valid_list(content_id)
+		return get_status_list(content_id, :only_valid => true)
+	end
+
+	#イベントのステータスリストの取得
+	def self.get_status_list(content_id, options={})
+		list = PortalCalendar::Status.where(:content_id => content_id)
+		return options[:only_valid] ? list.where(:state => 'public') : list
+	end
+	
 	def get_genre_title
-		self.genre.title
+		begin
+			self.genre.title
+		rescue
+			self.locale(:invalid)
+		end
 	end
 	
 	def get_status_title
-		self.event_status.title
+		begin
+			self.event_status.title
+		rescue
+			self.locale(:invalid)
+		end
 	end
 
   def search(params)
