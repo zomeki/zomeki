@@ -1,5 +1,7 @@
 <div class="calendarEvents calendarMonthlyEvents">
 
+<%= render 'search_cond' %>
+
 <h2><%= sprintf("%d年%d月", @year, @month) %></h2>
 
 <%= @pagination.to_links(:class => "pagination upperPagination") %>

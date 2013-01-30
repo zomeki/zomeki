@@ -8,8 +8,20 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @today    = Date.today
     @min_date = Date.new(@today.year, @today.month, 1) << 0
     @max_date = Date.new(@today.year, @today.month, 1) >> 11
+
+		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
+		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
+
+		@max_row = 5
+		@max_column = 7 - 1
+		@base_nbr = 0
+		
   end
 
+	def conv_to_i(h)
+		h.map{|item| item.to_i}
+	end
+	
 	def calendar
     params[:year]  = @today.strftime("%Y").to_s
     params[:month] = @today.strftime("%m").to_s
@@ -21,6 +33,9 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     return http_error(404) unless validate_date
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
+
+		@genre_keys = params[:genre].nil? ? [] : conv_to_i(params[:genre].keys)
+		@status_keys = params[:status].nil? ? [] : conv_to_i(params[:status].keys)
     
     @sdate = "#{@year}-#{@month}-01"
     @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
@@ -32,6 +47,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
 
 		events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
+		events = events.where("genre_id IN (?) AND status_id IN (?)", @genre_keys, @status_keys)
 		
 		events.each do |ev|
       (ev.event_start_date .. ev.event_end_date).each do |evdate|
@@ -61,14 +77,15 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		if box_start_date > first_date
 			box_start_date = box_start_date - 7
 		end
- 		max_row = 5
-		max_column = 6
-
+ 		max_row = @max_row
+		max_column = @max_column
+		base_nbr = @base_nbr
+		
 		#表示のイメージのまま、その日のデータを詰めていく
 		@box=[]
-		0.upto(max_row) do |row|
+		base_nbr.upto(max_row) do |row|
 			@box[row]=[]
-			0.upto(max_column) do |coloumn|
+			base_nbr.upto(max_column) do |coloumn|
 				data = {:date => box_start_date + row*(max_column+1) + coloumn}
 				#hashキーのフォーマットは yyyy-mm-dd
 				data.merge!({:events => @items[data[:date].strftime('%Y-%m-%d')]})

@@ -9,11 +9,14 @@
 	{:name=>'日',:num=>0,:class =>"wday sun"},{:name=>'月',:num=>1,:class=>"wday mon"},{:name=>'火',:num=>2,:class=>"wday tue"},
 	{:name=>'水',:num=>3,:class=>"wday wed"},{:name=>'木',:num=>4,:class=>"wday thu"},{:name=>'金',:num=>5,:class=>"wday fri"}]
 
-	max_row = 5
-	max_column = 7 - 1
+	base_nbr = @base_nbr
+	max_row = @max_row
+	max_column = @max_column
 %>
 
 <div class="calendarEvents calendarMonthlyEvents">
+
+<%= render 'search_cond' %>
 
 <h2><%= sprintf("%d年%d月", @year, @month) %></h2>
 
@@ -22,14 +25,14 @@
 <table border="1">
   <thead class="wdays">
   <tr>
-	<% 0.upto(6) do |idx| %>
+	<% base_nbr.upto(max_column) do |idx| %>
 	  <th class="<%= wday[start_w_index + idx][:class] %>"><%= wday[start_w_index + idx][:name]%></th>
 	<% end %>
   </tr>
   </thead>
-  <% 0.upto(max_row) do |row| %>
+  <% base_nbr.upto(max_row) do |row| %>
   <tr>
-	<% 0.upto(max_column) do |column| %>
+	<% base_nbr.upto(max_column) do |column| %>
 	  <% this_day = @box[row][column] %>
 	  <td style="border:1px solid gray;height:80px;">
 	  <% if this_day[:date].month == @month %>
