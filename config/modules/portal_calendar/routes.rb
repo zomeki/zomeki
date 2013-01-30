@@ -32,10 +32,8 @@ ZomekiCMS::Application.routes.draw do
       :path        => ":parent/node_genres"
     
     ## piece
-    resources :piece_monthly_links,
-      :controller  => "admin/piece/monthly_links"
-    resources :piece_daily_links,
-      :controller  => "admin/piece/daily_links"
+    resources :piece_event_links,
+      :controller  => "admin/piece/event_links"
   end
   
   ## public
