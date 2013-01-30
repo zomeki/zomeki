@@ -60,6 +60,11 @@ class GpArticle::Doc < ActiveRecord::Base
     self.find_by_sql(arel.to_sql)
   end
 
+  def state=(new_state)
+    self.published_at ||= Core.now if new_state == 'public'
+    super
+  end
+
   def public_uri=(uri)
     @public_uri = uri
   end
