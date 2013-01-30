@@ -18,6 +18,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		
   end
 
+	#要素を整数化した配列を返す
 	def conv_to_i(h)
 		h.map{|item| item.to_i}
 	end

@@ -1,5 +1,5 @@
 # encoding: utf-8
-class PortalCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Public::Base
+class PortalCalendar::Public::Piece::EventLinksController < Sys::Controller::Public::Base
   def index
     @content  = PortalCalendar::Content::Base.find(Page.current_piece.content_id)
     @node     = @content.event_node

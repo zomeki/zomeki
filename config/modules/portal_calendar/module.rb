@@ -11,6 +11,5 @@ Cms::Lib::Modules::ModuleSet.draw :portal_calendar, 'ポータルカレンダー
   #mod.page
   
   ## pieces
-  mod.piece :monthly_links, "月別リンク"
-  mod.piece :daily_links, "日別リンク"
+  mod.piece :event_links, "本日と明日のイベント"
 end
