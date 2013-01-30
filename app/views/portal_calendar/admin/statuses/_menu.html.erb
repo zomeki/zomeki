@@ -5,5 +5,8 @@
 <%= action_menu :index %>
 <%= action_menu :show %>
 <%= action_menu :edit    if safe{@content.editable?} %>
+<!--
+削除すると、ひも付いているイベント情報でエラーとなるので「非公開化」編集してもらう。
 <%= action_menu :destroy if safe{@content.deletable?} %>
+-->
 </div>

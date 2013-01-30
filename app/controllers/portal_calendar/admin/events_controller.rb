@@ -33,25 +33,26 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def show
     @item = PortalCalendar::Event.new.find(params[:id])
     #return error_auth unless @item.readable?
-		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
-		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+
+		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
+		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
+
     _show @item
   end
 
   def new
-    @item = PortalCalendar::Event.new({
-      :state        => 'public'
-    })
-		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
-		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+    @item = PortalCalendar::Event.new({ :state => 'public' })
+
+		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
+		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
   end
 
   def create
     @item = PortalCalendar::Event.new(params[:item])
     @item.content_id = @content.id
 
-		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
-		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
+		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
 
     _create @item
   end
@@ -59,8 +60,9 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def update
     @item = PortalCalendar::Event.new.find(params[:id])
     @item.attributes = params[:item]
-		@statuses = PortalCalendar::Status.where(:content_id => @content.id)
-		@genres = PortalCalendar::Genre.where(:content_id => @content.id)
+
+		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
+		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
 		
     _update(@item)
   end
