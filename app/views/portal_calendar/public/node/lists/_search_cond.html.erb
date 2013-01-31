@@ -1,0 +1,12 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<%= form_tag @calendar.current_month_uri, :method => :post, :class => 'search' do %>
+  <%= portal_calendar_checkbox_tag_form("ジャンル", @genres, 'genre', 'id', 'title', @genre_keys) %>
+  <br/>
+  <%= portal_calendar_checkbox_tag_form("ステータス", @statuses, 'status', 'id', 'title', @status_keys) %>
+  <br/>
+  <%= submit_tag '抽出' %>
+<% end %>

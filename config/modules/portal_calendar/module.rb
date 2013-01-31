@@ -5,7 +5,7 @@ Cms::Lib::Modules::ModuleSet.draw :portal_calendar, 'ポータルカレンダー
   
   ## directory
   mod.directory :events, "月間イベントカレンダー"
-  mod.directory :list, "月間イベントリスト"
+  mod.directory :lists, "月間イベントリスト"
 	
   ## pages
   #mod.page
