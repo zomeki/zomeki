@@ -35,8 +35,13 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
 
-		@genre_keys = params[:genre].nil? ? [] : conv_to_i(params[:genre].keys)
-		@status_keys = params[:status].nil? ? [] : conv_to_i(params[:status].keys)
+		#前後の月の抽出条件を引き継ぐ
+		_genres = params[:genres].nil? ? [] : params[:genres].split(",")
+		_statuses = params[:statuses].nil? ? [] : params[:statuses].split(",")
+		
+		#フォームでsubmitされたときはフォームの抽出条件で処理する
+		@genre_keys = params[:genre].nil? ? conv_to_i(_genres) : conv_to_i(params[:genre].keys)
+		@status_keys = params[:status].nil? ? conv_to_i(_statuses) : conv_to_i(params[:status].keys)
     
     @sdate = "#{@year}-#{@month}-01"
     @edate = (Date.new(@year, @month, 1) >> 1).strftime('%Y-%m-%d')
@@ -53,17 +58,20 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 		events.each do |ev|
       (ev.event_start_date .. ev.event_end_date).each do |evdate|
 				#その月のイベントか？
+				# TODO: 要確認/元の資料のとおりの実装だが、これだとカレンダーに表示される前後の月の範囲のイベントを表示しない仕様。前後の月に移動するとイベントを表示するので違和感あり？
 				next if evdate.month != @month
 
 				@items[evdate.to_s] << ev
 			end
     end
-    
+
+		condition_str = "genres=#{@genre_keys.join(",")}&statuses=#{@status_keys.join(",")}"
+		
     @pagination = Util::Html::SimplePagination.new
     @pagination.prev_label = "&lt;前の月"
     @pagination.next_label = "次の月&gt;"
-    @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
-    @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
+    @pagination.prev_uri   = @calendar.prev_month_uri + "?#{condition_str}" if @calendar.prev_month_date >= @min_date
+    @pagination.next_uri   = @calendar.next_month_uri + "?#{condition_str}" if @calendar.next_month_date <= @max_date
 	end
 	
 	def calendar_monthly
@@ -116,53 +124,8 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 			format.html {render :action => "index_monthly"}
 		end
   end
-  
-  def index_yearly
-    return http_error(404) unless validate_date
-    return http_error(404) if @year < @min_date.year
-    return http_error(404) if @year > @max_date.year
-    
-    @sdate = "#{@year}-01-01"
-    @edate = (Date.new(@year, 1, 1) >> 12).strftime('%Y-%m-%d')
-    
-    @days  = []
-    @items = {}
-    @wdays = Util::Date::Calendar.wday_specs
-    
-    item = PortalCalendar::Event.new.public
-    item.and :content_id, @content.id
-    item.and :event_date, ">=", @sdate.to_s
-    item.and :event_date, "<", @edate.to_s
-    item.and :event_date, "IS NOT", nil
-    events = item.find(:all, :order => 'event_date ASC, id ASC')
-    
-    events.each do |ev|
-      unless @items.key?(ev.event_date.to_s)
-        date = ev.event_date
-        wday = @wdays[date.strftime("%w").to_i]
-        day  = {
-          :date_object => date,
-          :date        => date.to_s,
-          :class       => "day #{wday[:class]}",
-          :wday_label  => wday[:label],
-          :holiday     => Util::Date::Holiday.holiday?(date.year, date.month, date.day) || nil
-        }
-        day[:class] += " holiday" if day[:holiday]
-        @days << day
-        @items[ev.event_date.to_s] = []
-      end
-      @items[ev.event_date.to_s] << ev
-    end
-    
-    @pagination = Util::Html::SimplePagination.new
-    @pagination.prev_label = "&lt;前の年"
-    @pagination.next_label = "次の年&gt;"
-    @pagination.prev_uri   = "#{@node_uri}#{@year - 1}/" if (@year - 1) >= @min_date.year
-    @pagination.next_uri   = "#{@node_uri}#{@year + 1}/" if (@year + 1) <= @max_date.year
-  
-		render :action => "index_yearly"
- 	end
-  
+ 
+ 
 protected
   def event_docs
     content_id = @content.setting_value(:doc_content_id)
