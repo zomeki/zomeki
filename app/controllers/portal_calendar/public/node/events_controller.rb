@@ -35,9 +35,9 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
 
-		#前後の月の抽出条件を引き継ぐ
-		_genres = params[:genres].nil? ? [] : params[:genres].split(",")
-		_statuses = params[:statuses].nil? ? [] : params[:statuses].split(",")
+		#前後の月の抽出条件を引き継ぐ egnr=event genres, estt=event statuses
+		_genres = params[:egnr].nil? ? [] : params[:egnr].split(",")
+		_statuses = params[:estt].nil? ? [] : params[:estt].split(",")
 		
 		#フォームでsubmitされたときはフォームの抽出条件で処理する
 		@genre_keys = params[:genre].nil? ? conv_to_i(_genres) : conv_to_i(params[:genre].keys)
@@ -65,7 +65,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
 			end
     end
 
-		condition_str = "genres=#{@genre_keys.join(",")}&statuses=#{@status_keys.join(",")}"
+		condition_str = "egnr=#{@genre_keys.join(",")}&estt=#{@status_keys.join(",")}"
 		
     @pagination = Util::Html::SimplePagination.new
     @pagination.prev_label = "&lt;前の月"
@@ -118,7 +118,7 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
   
   def index_monthly
 
-		prepare_monthly_data
+		prepare_monthly_data("index")
 		
 		respond_to do |format|
 			format.html {render :action => "index_monthly"}
