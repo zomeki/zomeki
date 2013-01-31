@@ -16,6 +16,8 @@ class GpArticle::Doc < ActiveRecord::Base
   include Cms::Model::Auth::Concept
   include Sys::Model::Auth::EditableGroup
 
+  include GpArticle::Model::Rel::Doc::Rel
+
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]

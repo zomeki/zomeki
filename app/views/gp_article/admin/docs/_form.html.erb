@@ -86,6 +86,30 @@
     <th><%= f.label :raw_tags %></th>
     <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>
   </tr>
+  <tr>
+    <th><%= f.label :in_rel_docs %></th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td style="width: 100px;"><%= GpCategory::CategoryType.model_name.human %></td>
+          <td style="width: 200px;"><%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></td>
+          <td style="width: 100px;"><%= GpCategory::Category.model_name.human %></td>
+          <td><%= select_tag 'rel_category', '', include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= GpArticle::Doc.model_name.human %></td>
+          <td colspan="2"><%= select_tag 'rel_doc', '', include_blank: true %></td>
+          <td><%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></td>
+        </tr>
+      </table>
+      <hr />
+      <div id="rel_docs">
+        <%- @item.rel_docs.each do |doc| -%>
+        <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_docs][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
+        <%- end -%>
+      </div>
+    </td>
+  </tr>
 </table>
 
 <br /><p class="form">携帯向け</p>
@@ -144,9 +168,9 @@
 function set_click_event_handler(category_type_id) {
   $('#add_category_type_' + category_type_id + '_category').on('click', function () {
     var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
-    var new_category = categories_wrapper.find('> span:first-child').clone(true);
+    var new_category = categories_wrapper.children(':first-child').clone(true);
     new_category.find(':disabled').removeAttr('disabled');
-    new_category.insertBefore(categories_wrapper.find('> span:last-child')).show();
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
   }).trigger('click');
 }
 
@@ -168,9 +192,53 @@ $(document).ready(function () {
 
   $('#add_editable_group').on('click', function () {
     var editable_groups_wrapper = $('#editable_groups');
-    var new_group = editable_groups_wrapper.find('> span:first-child').clone(true);
+    var new_group = editable_groups_wrapper.children(':first-child').clone(true);
     new_group.find(':disabled').removeAttr('disabled');
-    new_group.insertBefore(editable_groups_wrapper.find('> span:last-child')).show();
+    new_group.insertBefore(editable_groups_wrapper.children(':last-child')).show();
   }).trigger('click');
+
+  <%- if @content.gp_category_content_category_type -%>
+  $('#rel_category_type').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $('#rel_category');
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+      doc_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      doc_select.html('<option value=""></option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+
+  $('#rel_category').on('change', function (event) {
+    var category_id = parseInt(event.target.value);
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_id)) {
+      doc_select.html('<option value=""></option>');
+    } else {
+      doc_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_article_docs_path(content: @content) %>?options=true&category_id=' + category_id, function (data) {
+        doc_select.html(data);
+      });
+    }
+  });
+  <%- end -%>
+
+  $('#add_rel_doc').on('click', function () {
+    var rel_doc = $('#rel_doc');
+    if (rel_doc.val() === '') {
+      alert('記事を選択してください。');
+      return;
+    }
+
+    var new_doc = $('<select>', {name: 'item[in_rel_docs][]'}).append($('<option>', {value: ''}));
+    new_doc.append(rel_doc.children(':selected').clone(true)).val(rel_doc.val());
+    $('<div>', {style: 'margin-top: 10px; width: 700px;'}).append(new_doc).appendTo($('#rel_docs'));
+    rel_doc.val('');
+  });
 });
 <%- end -%>
