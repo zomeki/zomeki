@@ -21,6 +21,7 @@ ja:
         mobile_body: 内容
         mobile_smart: PC・スマートフォン
         mobile_feature: 携帯
+        in_editable_groups: 編集可能グループ
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
