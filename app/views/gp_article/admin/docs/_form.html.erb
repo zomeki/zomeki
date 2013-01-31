@@ -59,18 +59,13 @@
   <tr>
     <th><%= category_type.title %></th>
     <td>
-      <table id="category_type_<%= category_type.id %>_categories" class="noDesign">
-        <tbody>
+      <div id="category_type_<%= category_type.id %>_categories">
           <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
           <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
           <%= render 'category', category_type: category_type, category: category, available: true %>
           <%- end -%>
-          <tr>
-            <td>&nbsp;</td>
-            <td style="text-align: right;"><div style="margin-top: -55px;"><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_categories_line" %></div></td>
-          </tr>
-        </tbody>
-      </table>
+          <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
+      </div>
     </td>
   </tr>
   <%- end -%>
@@ -130,12 +125,11 @@
 <%= toggle_form_function -%>
 
 function set_click_event_handler(category_type_id) {
-  $('#add_category_type_' + category_type_id + '_categories_line').on('click', function () {
-    var categories_tbody = $('#category_type_' + category_type_id + '_categories > tbody');
-    categories_tbody.find('tr:first-child').clone(true).insertBefore(categories_tbody.find('tr:last-child')).show();
-    categories_tbody.find('tr:visible').each(function (idx, tr) {
-      $(tr).find(':disabled').removeAttr('disabled');
-    });
+  $('#add_category_type_' + category_type_id + '_category').on('click', function () {
+    var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
+    var new_category = categories_wrapper.find('> span:first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.find('> span:last-child')).show();
   }).trigger('click');
 }
 
