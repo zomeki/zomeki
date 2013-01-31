@@ -140,8 +140,7 @@ function set_click_event_handler(category_type_id) {
 }
 
 $(document).ready(function () {
-  $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
-
+  <%= disable_enter_script -%>
   <%= enable_datepicker_script -%>
 
   $('#item_event_date').on('change', function (event) {

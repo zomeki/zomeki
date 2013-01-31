@@ -42,4 +42,11 @@ function toggle_form(link, target, open_label, close_label) {
     EOS
     f.html_safe
   end
+
+  def disable_enter_script
+    s = <<-EOS
+$('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+    EOS
+    s.html_safe
+  end
 end
