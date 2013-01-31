@@ -1,15 +1,15 @@
 .iconFile, .iconDefault {
-  padding: 12px 5px 12px 42px;
+  padding: 2px 0px 2px 22px;
   background-repeat: no-repeat;
   background-image: url(/_common/images/icons/default.png);
-  line-height: 3.3;
-  height: 40px;
+  line-height: 1.5;
 }
 .iconBmp {
   background-image: url(/_common/images/icons/bmp.png);
 }
-.iconCsv {
-  background-image: url(/_common/images/icons/csv.png);
+.iconCsv,
+.iconTxt {
+  background-image: url(/_common/images/icons/default.png);
 }
 .iconDoc,
 .iconDocx {
@@ -18,12 +18,8 @@
 .iconGif {
   background-image: url(/_common/images/icons/gif.png);
 }
-.iconJpg {
-  background-image: url(/_common/images/icons/jpg.png);
-}
-.iconJpe {
-  background-image: url(/_common/images/icons/jpg.png);
-}
+.iconJpg,
+.iconJpe,
 .iconJpeg {
   background-image: url(/_common/images/icons/jpg.png);
 }
@@ -39,11 +35,12 @@
 .iconPng {
   background-image: url(/_common/images/icons/png.png);
 }
-.iconPpt {
+.iconPpt,
+.iconPptx {
   background-image: url(/_common/images/icons/ppt.png);
 }
 .iconTxt {
-  background-image: url(/_common/images/icons/txt.png);
+  background-image: url(/_common/images/icons/default.png);
 }
 .iconXls,
 .iconXlsx {
