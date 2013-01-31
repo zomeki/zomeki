@@ -16,7 +16,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Cms::Model::Auth::Concept
   include Sys::Model::Auth::EditableGroup
 
-  STATE_OPTIONS = [['下書き保存', 'draft'], ['承認待ち', 'recognize'], ['即時公開', 'public']]
+  STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
 
   # Content
