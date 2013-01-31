@@ -123,7 +123,7 @@
 <%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
 <table class="show">
   <tr>
-    <th>編集可能グループ</th>
+    <th><%= f.label :in_editable_groups %></th>
     <td>
       <div id="editable_groups">
         <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
