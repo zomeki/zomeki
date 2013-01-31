@@ -51,18 +51,7 @@
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
-function toggle_form(link, target, open_label, close_label) {
-  if (open_label === undefined) open_label = '開く▼';
-  if (close_label === undefined) close_label = '閉じる▲';
-  var l = jQuery(link);
-  var t = jQuery(target);
-  if (t.is(':hidden')) {
-    l.html(close_label);
-  } else {
-    l.html(open_label);
-  }
-  t.toggle();
-}
+<%= toggle_form_function -%>
 
 $(document).ready(function () {
   $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
