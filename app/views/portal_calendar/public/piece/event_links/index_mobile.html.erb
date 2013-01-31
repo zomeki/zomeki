@@ -1,3 +1,14 @@
-<ul><% @links.each do |link| %>
-  <li><%= link_to link[:name], link[:uri], :class => link[:class] %></li><% end %>
-</ul>
+<p>
+  本日のイベント
+  <% events = @events_list[0] %>
+	<% events.each do |item| %>
+	  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+	<% end %>
+</p>
+<p>
+  明日のイベント
+  <% events = @events_list[0] %>
+  <% events.each do |item| %>
+    <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+  <% end %>
+</p>
