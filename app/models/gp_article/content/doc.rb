@@ -26,6 +26,10 @@ class GpArticle::Content::Doc < Cms::Content
     end
   end
 
+  def category_types_for_option
+    category_types.map {|ct| [ct.title, ct.id] }
+  end
+
   def visible_category_types
     setting = GpArticle::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     if (cts = gp_category_content_category_type.try(:category_types))

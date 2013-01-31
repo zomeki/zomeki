@@ -18,6 +18,20 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
+    if params[:options]
+      if params[:category_id]
+        if (category = GpCategory::Category.find_by_id(params[:category_id]))
+          @items = category.docs.where(content_id: @content.id)
+        else
+          @items = []
+        end
+      else
+        @items = @content.docs
+      end
+      render 'index_options', :layout => false
+      return
+    end
+
     criteria = params[:criteria] || {}
 
     if %w!editable recognizable publishable!.include?(params[:target])
