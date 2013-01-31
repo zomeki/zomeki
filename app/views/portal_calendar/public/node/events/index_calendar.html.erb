@@ -14,7 +14,7 @@
 	max_column = @max_column
 %>
 
-<div class="calendarEvents calendarMonthlyEvents">
+<div class="portalCalendarEvents">
 
 <%= render 'search_cond' %>
 	
@@ -22,7 +22,7 @@
 
 <%= @pagination.to_links(:class => "pagination upperPagination") %>
 
-<table border="1">
+<table>
   <thead class="wdays">
   <tr>
 	<% base_nbr.upto(max_column) do |idx| %>
@@ -34,11 +34,16 @@
   <tr>
 	<% base_nbr.upto(max_column) do |column| %>
 	  <% this_day = @box[row][column] %>
-	  <td style="border:1px solid gray;height:80px;">
+	  <td>
 	  <% if this_day[:date].month == @month %>
 	    <%= this_day[:date].strftime("%d") %><br>
-	    <% this_day[:events].each do |item| %>
-		  <%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %><br>
+
+		<% if this_day[:events].size > 0 %>
+		  <ul>
+		  <% this_day[:events].each do |item| %>
+			<li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+		  <% end %>
+		  </ul>
 		<% end %>
 	  </td>
 	  <% end %>

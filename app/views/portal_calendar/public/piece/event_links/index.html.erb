@@ -16,22 +16,17 @@ function ChangeTab(tabname) {
       <a href="#tab1" class="tab1" onclick="ChangeTab('tab1'); return false;">本日</a>
       <a href="#tab2" class="tab2" onclick="ChangeTab('tab2'); return false;">明日</a>
    </p>
-   <div id="tab1" class="tab">
+
+  <% [1,2].each do |nbr| %>
+   <div id="tab<%=nbr%>" class="tab">
 	<p>
-		<% events = @events_list[0] %>
+		<% events = @events_list[nbr-1] %>
 		<% events.each do |item| %>
 		  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
 		<% end %>
 	</p>
    </div>
-   <div id="tab2" class="tab">
-	<p>
-		<% events = @events_list[1] %>
-		<% events.each do |item| %>
-		  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
-		<% end %>
-	</p>
-   </div>
+  <% end %>
 </div>
 
 <script type="text/javascript">
