@@ -60,11 +60,11 @@
     <th><%= category_type.title %></th>
     <td>
       <div id="category_type_<%= category_type.id %>_categories">
-          <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
-          <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
-          <%= render 'category', category_type: category_type, category: category, available: true %>
-          <%- end -%>
-          <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
+        <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
       </div>
     </td>
   </tr>
@@ -88,8 +88,7 @@
   </tr>
 </table>
 
-<br />
-<p class="form">携帯向け</p>
+<br /><p class="form">携帯向け</p>
 <div style="margin: 10px;"><%= link_to_function '開く▼', "toggle_form(this, '#for_mobile')" %></div>
 
 <div id="for_mobile" style="display: none;">
