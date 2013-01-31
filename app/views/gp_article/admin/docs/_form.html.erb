@@ -93,6 +93,32 @@
   </tr>
 </table>
 
+<br />
+<p class="form">携帯向け</p>
+<div style="margin: 10px;"><%= link_to_function '開く▼', "toggle_form(this, '#for_mobile')" %></div>
+
+<div id="for_mobile" style="display: none;">
+  <table class="show">
+    <tr>
+      <th>表示端末</th>
+      <td>
+        <%= f.check_box :mobile_smart %> <%= f.label :mobile_smart %>
+        <%= f.check_box :mobile_feature %> <%= f.label :mobile_feature %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :mobile_title %></th>
+      <td><%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th colspan="2"><%= f.label :mobile_body %></th>
+    </tr>
+    <tr>
+      <td colspan="2"><%= f.text_area :mobile_body, :size => '130x10' %></td>
+    </tr>
+  </table>
+</div>
+
 <%= google_map_form f %>
 <%= inquiry_form f %>
 <%= task_form f %>

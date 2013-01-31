@@ -17,6 +17,10 @@ ja:
         event_state: イベントカレンダー表示
         event_date: イベント日付
         raw_tags: 関連ワード
+        mobile_title: タイトル
+        mobile_body: 内容
+        mobile_smart: PC・スマートフォン
+        mobile_feature: 携帯
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
