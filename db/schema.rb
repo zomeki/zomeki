@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131012952) do
+ActiveRecord::Schema.define(:version => 20130131024357) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -616,6 +616,7 @@ ActiveRecord::Schema.define(:version => 20130131012952) do
     t.string   "state"
     t.string   "event_state"
     t.date     "event_date"
+    t.text     "raw_tags"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"

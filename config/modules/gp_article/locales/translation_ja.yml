@@ -16,6 +16,7 @@ ja:
         state: 状態
         event_state: イベントカレンダー表示
         event_date: イベント日付
+        raw_tags: 関連ワード
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名

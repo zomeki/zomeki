@@ -51,6 +51,10 @@
       </span>
     </td>
   </tr>
+  <tr>
+    <th><%= @item.locale :raw_tags %></th>
+    <td><%= @item.raw_tags %></td>
+  </tr>
 </table>
 
 <%= google_map_view @item %>
