@@ -68,7 +68,13 @@ class Sys::Group < ActiveRecord::Base
     n = "#{parent.name}　#{n}" if parent && parent.level_no > 1
     n
   end
-  
+
+  def descendants_for_option(groups=[])
+    groups << ["#{'　　' * (level_no - 2)}#{name}", id]
+    children.map {|g| g.descendants_for_option(groups) } unless children.empty?
+    return groups
+  end
+
 private
   def before_destroy
     users.each do |user|

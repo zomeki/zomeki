@@ -117,7 +117,25 @@
 <%= inquiry_form f %>
 <%= task_form f %>
 <%= recognizer_form f %>
-<%= editable_group_form f %>
+
+<br /><p class="form">編集権限</p>
+
+<%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
+<table class="show">
+  <tr>
+    <th>編集可能グループ</th>
+    <td>
+      <div id="editable_groups">
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
+        <%- Sys::Group.where(id: @item.in_editable_groups).each do |group| -%>
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
+      </div>
+    </td>
+  </tr>
+</table>
+
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
@@ -147,5 +165,12 @@ $(document).ready(function () {
   <%- @visible_category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
   <%- end -%>
+
+  $('#add_editable_group').on('click', function () {
+    var editable_groups_wrapper = $('#editable_groups');
+    var new_group = editable_groups_wrapper.find('> span:first-child').clone(true);
+    new_group.find(':disabled').removeAttr('disabled');
+    new_group.insertBefore(editable_groups_wrapper.find('> span:last-child')).show();
+  }).trigger('click');
 });
 <%- end -%>
