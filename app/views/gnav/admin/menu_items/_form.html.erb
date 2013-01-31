@@ -54,7 +54,7 @@
 <%= toggle_form_function -%>
 
 $(document).ready(function () {
-  $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+  <%= disable_enter_script -%>
 
   $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
     var category_type_id = parseInt(event.target.value);

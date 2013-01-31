@@ -50,7 +50,7 @@
 <%- if @piece.content.gp_category_content_category_type -%>
 <%= javascript_tag do -%>
 $(document).ready(function () {
-  $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+  <%= disable_enter_script -%>
 
   $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
     var category_type_id = parseInt(event.target.value);
