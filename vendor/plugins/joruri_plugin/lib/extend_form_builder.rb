@@ -13,6 +13,7 @@ class ActionView::Helpers::FormBuilder
       if @template.params[@object_name] && @template.params[@object_name][method]
         return @template.params[@object_name][method]
       else
+        return @object.send(method) if @object
         return @template.instance_variable_get("@#{@object_name}").send(method)
       end
     end
@@ -26,7 +27,8 @@ class ActionView::Helpers::FormBuilder
       post = true
       arr = @template.params[@object_name][pre]
     else
-      arr = @template.instance_variable_get("@#{@object_name}").send(pre)
+      arr = @object.send(pre) if @object
+      arr ||= @template.instance_variable_get("@#{@object_name}").send(pre)
     end
     return nil unless arr
     

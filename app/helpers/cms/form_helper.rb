@@ -68,7 +68,8 @@ module Cms::FormHelper
   end
 
   def inquiry_form(form)
-    item = instance_variable_get("@#{form.object_name}")
+    item = form.object
+    item ||= instance_variable_get("@#{form.object_name}")
     locals = {:f => form, :item => item}
     render :partial => 'cms/admin/_partial/inquiries/form', :locals => locals
   end
@@ -79,7 +80,8 @@ module Cms::FormHelper
   end
 
   def google_map_form(form)
-    item = instance_variable_get("@#{form.object_name}")
+    item = form.object
+    item ||= instance_variable_get("@#{form.object_name}")
     locals = {:f => form, :item => item}
     render :partial => 'cms/admin/_partial/maps/form', :locals => locals
   end
