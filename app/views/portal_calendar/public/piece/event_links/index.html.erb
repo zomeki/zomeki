@@ -1,11 +1,43 @@
-<ul>
-  <% @links.each do |year| %>
-  <li><%= link_to year[:name], year[:uri], :class => year[:class] %>
-    <ul>
-      <% year[:months].each do |month| %>
-      <li><%= link_to month[:name], month[:uri], :class => month[:class] %></li>
-      <% end %>
-    </ul>
-  </li>
-  <% end %>
-</ul>
+<script type="text/javascript">
+<!--
+function ChangeTab(tabname) {
+   // 全部消す
+   document.getElementById('tab1').style.display = 'none';
+   document.getElementById('tab2').style.display = 'none';
+   // 指定箇所のみ表示
+   document.getElementById(tabname).style.display = 'block';
+}
+//
+-->
+</script>
+
+<div class="tabbox">
+   <p class="tabs">
+      <a href="#tab1" class="tab1" onclick="ChangeTab('tab1'); return false;">本日</a>
+      <a href="#tab2" class="tab2" onclick="ChangeTab('tab2'); return false;">明日</a>
+   </p>
+   <div id="tab1" class="tab">
+	<p>
+		<% events = @events_list[0] %>
+		<% events.each do |item| %>
+		  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+		<% end %>
+	</p>
+   </div>
+   <div id="tab2" class="tab">
+	<p>
+		<% events = @events_list[1] %>
+		<% events.each do |item| %>
+		  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+		<% end %>
+	</p>
+   </div>
+</div>
+
+<script type="text/javascript">
+<!--
+  // デフォルトのタブを選択
+  ChangeTab('tab1');
+  //
+-->
+</script>
