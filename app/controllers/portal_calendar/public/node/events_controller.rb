@@ -127,17 +127,6 @@ class PortalCalendar::Public::Node::EventsController < Cms::Controller::Public::
  
  
 protected
-  def event_docs
-    content_id = @content.setting_value(:doc_content_id)
-    return [] if content_id.blank?
-    
-    doc = Article::Doc.new.public
-    doc.agent_filter(request.mobile)
-    doc.and :content_id, content_id
-    doc.event_date_is(:year => @year, :month => @month)
-    doc.find(:all, :order => 'event_date')
-  end
-  
   def validate_date
     @month = params[:month]
     @year  = params[:year]
@@ -145,10 +134,6 @@ protected
     return false if !@year.blank? && @year !~ /^[1-9][0-9][0-9][0-9]$/
     @year  = @year.to_i
     @month = @month.to_i if @month
-    params[:calendar_event_year]  = @year
-    params[:calendar_event_month] = @month
-    params[:calendar_event_min_date] = @min_date
-    params[:calendar_event_max_date] = @max_date
     return true
   end
 end

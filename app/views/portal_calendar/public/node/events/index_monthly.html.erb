@@ -1,4 +1,4 @@
-<div class="calendarEvents calendarMonthlyEvents">
+<div class="portalCalendarLists">
 
 <%= render 'search_cond' %>
 
@@ -6,7 +6,7 @@
 
 <%= @pagination.to_links(:class => "pagination upperPagination") %>
 
-<table border="1">
+<table>
   <% @calendar.days.each do |day| %><% next if day[:class] =~ /(next|prev)/ %>
   <tr class="date" id="day<%= sprintf('%02d', day[:day]) %>">
     <th class="<%= day[:class] %>">
@@ -16,21 +16,7 @@
     <% if @items[day[:date]].size > 0 || day[:holiday] %><ul class="events">
       <% if day[:holiday] %><li class="holiday"><%= day[:holiday] %></li><% end %>
       <% @items[day[:date]].each do |item| %>
-        <% if item.is_a?(Article::Doc) %>
-          <li class="event"><%= link_to item.title, item.public_uri %></li>
-        <% elsif item.is_a?(PortalArticle::Doc) %>
-          <% if @doc_content_type == :portal && @content.setting_value(:docs_list_type) == 'list' %>
-            <%= portal_group_doc_view item, @content.setting_value(:docs_list_type) %>
-          <% elsif @doc_content_type == :portal %>
-            <li class="event"><%= portal_group_doc_view item, @content.setting_value(:docs_list_type) %></li>
-          <% elsif @content.setting_value(:docs_list_type) == 'list' %>
-            <%= portal_article_doc_view item, @content.setting_value(:docs_list_type) %>
-          <% else %>
-            <li class="event"><%= portal_article_doc_view item, @content.setting_value(:docs_list_type) %></li>
-          <% end %>
-        <% else %>
-          <li class="event"><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
-        <% end %>
+        <li class="event"><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
       <% end %>
     </ul><% else %>&nbsp;<% end %>
     </td>
