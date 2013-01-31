@@ -57,6 +57,29 @@
   </tr>
 </table>
 
+<br />
+<p class="form">携帯向け</p>
+
+<table class="show">
+  <tr>
+    <th>表示端末</th>
+    <td>
+      <%= @item.locale :mobile_smart if @item.mobile_smart %>
+      <%= @item.locale :mobile_feature if @item.mobile_feature %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :mobile_title %></th>
+    <td><%= @item.mobile_title %></td>
+  </tr>
+  <tr>
+    <th colspan="2"><%= @item.locale :mobile_body %></th>
+  </tr>
+  <tr>
+    <td colspan="2"><%=simple_format @item.mobile_body %></td>
+  </tr>
+</table>
+
 <%= google_map_view @item %>
 <%= inquiry_view @item %>
 <%= task_view @item %>
