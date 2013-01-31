@@ -127,18 +127,7 @@
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
-function toggle_form(link, target, open_label, close_label) {
-  if (open_label === undefined) open_label = '開く▼';
-  if (close_label === undefined) close_label = '閉じる▲';
-  var l = jQuery(link);
-  var t = jQuery(target);
-  if (t.is(':hidden')) {
-    l.html(close_label);
-  } else {
-    l.html(open_label);
-  }
-  t.slideToggle();
-}
+<%= toggle_form_function -%>
 
 function set_click_event_handler(category_type_id) {
   $('#add_category_type_' + category_type_id + '_categories_line').on('click', function () {
