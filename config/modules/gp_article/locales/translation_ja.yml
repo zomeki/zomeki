@@ -14,6 +14,8 @@ ja:
         subtitle: サブタイトル
         summary: 概要
         state: 状態
+        event_state: イベントカレンダー表示
+        event_date: イベント日付
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
