@@ -1,7 +1,8 @@
 # encoding: utf-8
 module Sys::FormHelper
   def creator_form(form)
-    item = instance_variable_get("@#{form.object_name}")
+    item = form.object
+    item ||= instance_variable_get("@#{form.object_name}")
     locals = {:f => form, :item => item}
     render :partial => 'sys/admin/_partial/creators/form', :locals => locals
   end
@@ -12,7 +13,8 @@ module Sys::FormHelper
   end
   
   def recognizer_form(form)
-    item = instance_variable_get("@#{form.object_name}")
+    item = form.object
+    item ||= instance_variable_get("@#{form.object_name}")
     locals = {:f => form, :item => item}
     render :partial => 'sys/admin/_partial/recognizers/form', :locals => locals
   end
