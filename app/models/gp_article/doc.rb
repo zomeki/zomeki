@@ -18,6 +18,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
+  EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
@@ -193,6 +194,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def set_defaults
     self.target ||= TARGET_OPTIONS.first.last
+    self.event_state ||= 'hidden'
   rescue ActiveModel::MissingAttributeError => evar
     logger.warn(evar.message)
   end
