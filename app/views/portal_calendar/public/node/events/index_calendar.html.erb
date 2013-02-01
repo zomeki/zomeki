@@ -16,7 +16,7 @@
 
 <div class="portalCalendarEvents">
 
-<%= render 'search_cond' %>
+<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
 	
 <h2><%= sprintf("%d年%d月", @year, @month) %></h2>
 
