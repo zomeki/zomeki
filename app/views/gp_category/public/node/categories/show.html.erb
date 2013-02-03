@@ -1,22 +1,26 @@
-<h1>カテゴリ</h1>
-<%- if @category.children.empty? -%>
-  <div>該当なし</div>
-<%- else -%>
-  <ul>
-    <%- @category.children.each do |category| -%>
-    <li><%= link_to category.title,
-                    "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+<div class="contentGpCategoryCategoryType">
+  <section class="categoryType category">
+    <h2>カテゴリ</h2>
+    <%- unless @category.children.empty? -%>
+    <nav>
+      <ul>
+        <li class="categoryTypeSumple"><a href="#">サンプル</a></li>
+        <%- @category.children.each do |category| -%>
+        <li class="categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+        <%- end -%>
+      </ul>
+    </nav>
     <%- end -%>
-  </ul>
-<%- end -%>
+  </section>
 
-<h2>記事</h2>
-<%- if @category.public_docs.empty? -%>
-  <div>該当なし</div>
-<%- else -%>
-  <ul>
-    <%- @category.public_docs.each do |doc| -%>
-    <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+  <section class="categoryType docs">
+    <h2>記事</h2>
+    <%- unless @category.public_docs.empty? -%>
+    <ul>
+      <%- @category.public_docs.each do |doc| -%>
+      <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+      <%- end -%>
+    </ul>
     <%- end -%>
-  </ul>
-<%- end -%>
+  </section>
+</div>

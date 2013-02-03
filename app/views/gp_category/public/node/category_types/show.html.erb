@@ -1,11 +1,14 @@
-<h1>カテゴリ</h1>
-<%- if @category_type.root_categories.empty? -%>
-  <div>該当なし</div>
-<%- else -%>
-  <ul>
-    <%- @category_type.root_categories.each do |category| -%>
-    <li><%= link_to category.title,
-                    "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+<div class="contentGpCategoryCategoryType">
+  <section class="categoryType">
+    <h2>カテゴリ</h2>
+    <%- unless @category_type.root_categories.empty? -%>
+    <nav>
+      <ul>
+        <%- @category_type.root_categories.each do |category| -%>
+        <li class="categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+        <%- end -%>
+      </ul>
+    </nav>
     <%- end -%>
-  </ul>
-<%- end -%>
+  </section>
+</div>
