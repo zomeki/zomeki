@@ -16,7 +16,8 @@ class Gnav::Public::Node::MenuItemsController < Cms::Controller::Public::Base
     Page.current_item = @menu_item
     Page.title = @menu_item.title
 
-    doc_ids = @menu_item.categories.inject([]) {|result, category| result | category.doc_ids }
-    @docs = GpArticle::Doc.where(state: 'public').where(id: doc_ids).order('published_at DESC')
+    @categories = @menu_item.categories
+    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.level_no
+    @categories.reject! {|c| c.level_no > (@least_level_no + 1) }
   end
 end
