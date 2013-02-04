@@ -16,4 +16,11 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/node/events',
       :path       => ':parent/node_events'
   end
+
+  ## public
+  scope "_public/#{mod}", :module => mod, :as => '' do
+    match 'node_events/:year/:month(/index.:format)' => 'public/node/events#index_monthly'
+    match 'node_events/:year(/index.:format)' => 'public/node/events#index_yearly'
+    match 'node_events(/index.:format)' => 'public/node/events#index'
+  end
 end
