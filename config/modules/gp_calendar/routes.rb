@@ -10,5 +10,10 @@ ZomekiCMS::Application.routes.draw do
     resources :events,
       :controller => 'admin/events',
       :path       => ':content/events'
+
+    ## nodes
+    resources :node_events,
+      :controller => 'admin/node/events',
+      :path       => ':parent/node_events'
   end
 end
