@@ -20,7 +20,7 @@
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
     <td style="text-align: center;"><%= item.status.name %></td>
     <td style="text-align: center;">
-      <%= link_to 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if item.preview_uri.present? %>
+      <%= link_to 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
     </td>
   </tr>
   <%- end -%>
