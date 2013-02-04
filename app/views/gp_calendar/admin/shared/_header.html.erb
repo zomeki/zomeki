@@ -1,0 +1,10 @@
+<div class="mainMenu">
+  <%= render 'layouts/admin/cms/menu', :current => :content %>
+</div>
+
+<div class="contentMenu">
+  <%#= link_to "#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path, class: 'fixed' %>
+  <%- if Core.user.has_auth?(:designer) -%>
+    <%#= link_to "#{GpCalendar::Event.model_name.human}設定", gp_calendar_content_settings_path, class: 'fixed' %>
+  <%- end -%>
+</div>

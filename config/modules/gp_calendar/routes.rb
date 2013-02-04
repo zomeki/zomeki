@@ -5,5 +5,10 @@ ZomekiCMS::Application.routes.draw do
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :content_base,
       :controller => 'admin/content/base'
+
+    ## contents
+    resources :events,
+      :controller => 'admin/events',
+      :path       => ':content/events'
   end
 end
