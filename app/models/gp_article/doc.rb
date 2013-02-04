@@ -42,6 +42,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validate :validate_inquiry, :if => :state_recognize?
   validate :validate_recognizers, :if => :state_recognize?
+  validate :validate_platform_dependent_characters, :if => :state_recognize?
 
   validate :node_existence
 
@@ -210,6 +211,14 @@ class GpArticle::Doc < ActiveRecord::Base
         errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、即時公開が行えません。')
       when 'recognize'
         errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、承認依頼が行えません。')
+      end
+    end
+  end
+
+  def validate_platform_dependent_characters
+    [:title, :body, :mobile_body].each do |attr|
+      if chars = Util::String.search_platform_dependent_characters(send(attr))
+        errors.add attr, :platform_dependent_characters, :chars => chars
       end
     end
   end

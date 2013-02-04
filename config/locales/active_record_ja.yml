@@ -26,7 +26,7 @@ ja:
         even: "は偶数にしてください。"
         email: "は正しいEメールアドレスではありません。"
         onebyte_characters: "は半角で入力してください。"
-        platform_dependent_characters: "に機種依存文字が含まれています。（{{chars}}）"
+        platform_dependent_characters: "に機種依存文字が含まれています。（%{chars}）"
         # Append your own errors here or at the model/attributes scope.
 
       # You can define own errors for models or model attributes.
