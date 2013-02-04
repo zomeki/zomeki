@@ -216,7 +216,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def validate_platform_dependent_characters
-    [:title, :body, :mobile_body].each do |attr|
+    [:title, :body, :mobile_title, :mobile_body].each do |attr|
       if chars = Util::String.search_platform_dependent_characters(send(attr))
         errors.add attr, :platform_dependent_characters, :chars => chars
       end
