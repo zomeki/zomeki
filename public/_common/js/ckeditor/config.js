@@ -12,19 +12,16 @@ CKEDITOR.editorConfig = function( config )
   // ツールバーの設定
   // http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html#.toolbar_Full
   config.toolbar = [
-    { name: 'document',    items : [ 'Source','-','NewPage','DocProps','Preview','-','Templates' ] },
+    { name: 'document',    items : [ 'Source','-','DocProps','Preview','-','Templates' ] },
     { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-    { name: 'styles',      items : [ 'Styles','Format','Font','FontSize' ] },
-    { name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
-//    { name: 'forms',       items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+    { name: 'styles',      items : [ 'FontSize','Font','Format','Styles' ] },
+    { name: 'editing',     items : [ 'Find','Replace','-','SelectAll' ] },
     '/',
     { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-    { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+    { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
     { name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
-    { name: 'insert',      items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe','Youtube' ] },
-//    '/',
-//    { name: 'colors',      items : [ 'TextColor','BGColor' ] },
-    { name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+    { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube' ] },
+    { name: 'tools',       items : [ 'Maximize', 'ShowBlocks' ] }
   ];
 
   // 外部CSSを読み込み
@@ -57,12 +54,10 @@ CKEDITOR.editorConfig = function( config )
   config.templates_replaceContent = false;
 };
 
+  // スタイルの設定
 CKEDITOR.addStylesSet( 'myStyles', [
   // Block Styles
   { name : '枠線', element : 'p', styles : { 'border' : '1px solid #999' , 'padding' : '10px' } },
-  { name : '見出し1'	 , element : 'p', attributes : { 'class' : 'midashi01' } },
-  { name : '見出し2'	 , element : 'p', attributes : { 'class' : 'midashi02' } },
-
   // Inline Styles
   { name : '強調（赤文字）' , element : 'span', styles : { 'color' : '#e00' } },
 ]);
