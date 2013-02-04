@@ -151,10 +151,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish(item)
-    unless @content.doc_node
-      redirect_to(gp_article_doc_path(@content, item), alert: '先に「ディレクトリ/汎用記事ページ」を作成してください。')
-      return
-    end
     item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
     item.update_column(:published_at, Core.now)
     _publish(item) { publish_ruby(item) }

@@ -43,6 +43,8 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :validate_inquiry, :if => :state_recognize?
   validate :validate_recognizers, :if => :state_recognize?
 
+  validate :node_existence
+
   after_initialize :set_defaults
 
   def self.find_with_content_and_criteria(content, criteria)
@@ -199,5 +201,16 @@ class GpArticle::Doc < ActiveRecord::Base
     self.event_state ||= 'hidden'
   rescue ActiveModel::MissingAttributeError => evar
     logger.warn(evar.message)
+  end
+
+  def node_existence
+    unless content.doc_node
+      case state
+      when 'public'
+        errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、即時公開が行えません。')
+      when 'recognize'
+        errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、承認依頼が行えません。')
+      end
+    end
   end
 end
