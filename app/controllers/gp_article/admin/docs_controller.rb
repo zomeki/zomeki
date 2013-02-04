@@ -156,7 +156,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return
     end
     item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
-    item.published_at ||= Core.now
+    item.update_column(:published_at, Core.now)
     _publish(item) { publish_ruby(item) }
   end
 
