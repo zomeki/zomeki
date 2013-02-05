@@ -20,10 +20,10 @@ $(function() {
     <td><%= f.text_field :event_end_date, :class => 'js-date' %></td>
   </tr><tr>
     <th><%= @item.locale(:genre) %></th>
-    <td><%= f.collection_select :genre_id, @genres, :id, :title, :class => 'genre' %></td>
+    <td><%= f.collection_select :event_genre_id, @genres, :id, :title, :class => 'genre' %></td>
   </tr><tr>
     <th><%= @item.locale(:status) %></th>
-    <td><%= f.collection_select :status_id, @statuses, :id, :title, :class => 'statuses' %></td>
+    <td><%= f.collection_select :event_status_id, @statuses, :id, :title, :class => 'statuses' %></td>
   </tr><tr>
     <th><%= @item.locale(:title) %> <span class="note">※</span></th>
     <td><%= f.text_area :title, :style => "width: 80%; height: 2.5em;" %></td>

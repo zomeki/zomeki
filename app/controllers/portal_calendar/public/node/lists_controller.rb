@@ -13,7 +13,7 @@ class PortalCalendar::Public::Node::ListsController < PortalCalendar::Public::No
 		prepare_monthly_data
 		
 		respond_to do |format|
-			format.xml  {render :xml => @events}
+			format.xml  {render :xml => to_xml(@events)}
 			format.html {render :action => "index_monthly"}
 		end
   end

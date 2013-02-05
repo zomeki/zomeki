@@ -10,9 +10,6 @@ ZomekiCMS::Application.routes.draw do
     ## content
     resources :content_base,
       :controller => "admin/content/base"
-    resources :content_settings,
-      :controller  => "admin/content/settings",
-      :path        => ":content/content_settings"
     resources :statuses,
       :controller  => "admin/statuses",
       :path        => ":content/statuses"

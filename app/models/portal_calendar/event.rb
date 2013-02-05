@@ -8,8 +8,10 @@ class PortalCalendar::Event < ActiveRecord::Base
   include Cms::Model::Auth::Concept
 
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
-	belongs_to :genre, :class_name => 'PortalCalendar::Genre', :foreign_key => :genre_id
-	belongs_to :event_status, :class_name => 'PortalCalendar::Status', :foreign_key => :status_id
+	belongs_to :event_genre, :class_name => 'PortalCalendar::Genre', :foreign_key => :event_genre_id
+	belongs_to :event_status, :class_name => 'PortalCalendar::Status', :foreign_key => :event_status_id
+	#XML出力用にassociationしておく。:event_statusだと<event_statu>となるため。
+	belongs_to :event_statuses, :class_name => 'PortalCalendar::Status', :foreign_key => :event_status_id
 
 	validates_presence_of :state, :event_start_date, :event_end_date, :title
 	validate :period_check?
@@ -55,7 +57,7 @@ public
 	
 	def get_genre_title
 		begin
-			self.genre.title
+			self.event_genre.title
 		rescue
 			self.locale(:invalid)
 		end

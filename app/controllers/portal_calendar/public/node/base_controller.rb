@@ -1,6 +1,21 @@
 # encoding: utf-8
 class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
-  def pre_dispatch
+  
+	def to_xml(items)
+		items.to_xml(:skip_types => true, :dasherize => false, :include => [:event_genre, :event_statuses])
+	end
+	
+	#指定月の日数を求める
+	def get_days(yyyy,mm)
+		return ((Date.new(yyyy,mm,1) >> 1) - 1).day
+	end
+
+	#指定日の暦週の日 (曜日) を返します (1-7、月曜は1)。
+	def get_cwday(yyyy,mm,dd)
+		return Date.new(yyyy,mm,dd).cwday
+	end
+	
+	def pre_dispatch
     @node     = Page.current_node
     @node_uri = @node.public_uri
     return http_error(404) unless @content = @node.content
@@ -56,7 +71,7 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
     @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
 
 		@events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
-		@events = @events.where("genre_id IN (?) AND status_id IN (?)", @genre_keys, @status_keys)
+		@events = @events.where("event_genre_id IN (?) AND event_status_id IN (?)", @genre_keys, @status_keys)
 		
 		@events.each do |ev|
       (ev.event_start_date .. ev.event_end_date).each do |evdate|
@@ -75,6 +90,9 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
     @pagination.next_label = "次の月&gt;"
     @pagination.prev_uri   = @calendar.prev_month_uri + "?#{condition_str}" if @calendar.prev_month_date >= @min_date
     @pagination.next_uri   = @calendar.next_month_uri + "?#{condition_str}" if @calendar.next_month_date <= @max_date
+	
+		@max_row = (get_days(@year, @month) + get_cwday(@year, @month, 1) - 1) / 7
+	
 	end
 
 protected
