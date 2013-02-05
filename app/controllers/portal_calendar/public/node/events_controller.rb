@@ -36,7 +36,7 @@ class PortalCalendar::Public::Node::EventsController < PortalCalendar::Public::N
 		end
 		
 		respond_to do |format|
-			format.xml {render :xml => @events}
+			format.xml {render :xml => to_xml(@events)}
 			format.html {render :action => "index_calendar"}
 		end
 	end

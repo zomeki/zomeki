@@ -806,19 +806,18 @@ ActiveRecord::Schema.define(:version => 20130124065419) do
     t.integer  "unid"
     t.integer  "content_id"
     t.string   "state",            :limit => 15
-    t.datetime "published_at"
     t.date     "event_start_date"
     t.date     "event_end_date"
-    t.string   "event_uri"
+    t.string   "event_uri",                              :default => ""
     t.string   "title"
     t.text     "body",             :limit => 2147483647
-    t.integer  "genre_id",                               :default => 0
-    t.integer  "status_id",                              :default => 0
+    t.integer  "event_genre_id",                         :default => 0
+    t.integer  "event_status_id",                        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "portal_calendar_events", ["content_id", "published_at", "event_start_date"], :name => "content_id"
+  add_index "portal_calendar_events", ["content_id", "event_start_date"], :name => "content_id"
 
   create_table "portal_calendar_genres", :force => true do |t|
     t.integer  "unid"
