@@ -19,6 +19,8 @@ ZomekiCMS::Application.routes.draw do
     ## pieces
     resources :piece_daily_links,
       :controller => 'admin/piece/daily_links'
+    resources :piece_monthly_links,
+      :controller => 'admin/piece/monthly_links'
   end
 
   ## public
