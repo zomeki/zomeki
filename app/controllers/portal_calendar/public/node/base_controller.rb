@@ -1,6 +1,5 @@
 # encoding: utf-8
 class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
-  
 	def to_xml(items)
 		return items.to_xml(:skip_types => true, :dasherize => false, :include => [:event_genre, :event_statuses])
 	end
@@ -64,19 +63,19 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
     @calendar = Util::Date::Calendar.new(@year, @month)
     @calendar.month_uri = "#{@node_uri}:year/:month/index"
     
-    @items = {}
-    @calendar.days.each{|d| @items[d[:date]] = [] if d[:month].to_i == @month }
+    items = {}
+    @calendar.days.each{|d| items[d[:date]] = [] if d[:month].to_i == @month }
 
-		@events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
-		@events = @events.where("event_genre_id IN (?) AND event_status_id IN (?)", @genre_keys, @status_keys)
+		events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
+		events = events.where("event_genre_id IN (?) AND event_status_id IN (?)", @genre_keys, @status_keys)
 		
-		@events.each do |ev|
+		events.each do |ev|
       (ev.event_start_date .. ev.event_end_date).each do |evdate|
 				#その月のイベントか？
 				# TODO: 要確認/元の資料のとおりの実装だが、これだとカレンダーに表示される前後の月の範囲のイベントを表示しない仕様。前後の月に移動するとイベントを表示するので違和感あり？
 				next if evdate.month != @month
-
-				@items[evdate.to_s] << ev
+			
+				items[evdate.to_s] << ev
 			end
     end
 
@@ -90,6 +89,7 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
 	
 		@max_row = (get_days(@year, @month) + get_cwday(@year, @month, 1) - 1) / 7
 	
+		return events, items
 	end
 
 protected

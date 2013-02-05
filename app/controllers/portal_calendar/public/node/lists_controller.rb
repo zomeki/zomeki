@@ -13,8 +13,8 @@ class PortalCalendar::Public::Node::ListsController < PortalCalendar::Public::No
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
 
-		prepare_monthly_data
-		
+		@events, @items = prepare_monthly_data
+
 		respond_to do |format|
 			format.xml  {render :xml => to_xml(@events)}
 			format.html {render :action => "index_monthly"}

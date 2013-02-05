@@ -26,7 +26,7 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
 
 		respond_to do |format|
 			format.html		{_index @items}
-			format.xml		{render :xml => @items}
+			format.xml		{render :xml => @items.to_xml(:dasherize => false)}
 		end
   end
 
