@@ -2,7 +2,7 @@
 class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
   
 	def to_xml(items)
-		items.to_xml(:skip_types => true, :dasherize => false, :include => [:event_genre, :event_statuses])
+		return items.to_xml(:skip_types => true, :dasherize => false, :include => [:event_genre, :event_statuses])
 	end
 	
 	#指定月の日数を求める
@@ -21,7 +21,7 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
     return http_error(404) unless @content = @node.content
     
     @today    = Date.today
-    @min_date = Date.new(@today.year, @today.month, 1) << 0
+    @min_date = Date.new(@today.year, @today.month, 1) << 11
     @max_date = Date.new(@today.year, @today.month, 1) >> 11
 
 		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
@@ -44,21 +44,18 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
 	end
 	
 	def prepare_monthly_data
-    return http_error(404) unless validate_date
-    return http_error(404) if Date.new(@year, @month, 1) < @min_date
-    return http_error(404) if Date.new(@year, @month, 1) > @max_date
-		
+
 		if @init_page
 			@genre_keys = @genres.map{|item| item.id}
 			@status_keys = @statuses.map{|item| item.id}
 		else
 			#前後の月の抽出条件を引き継ぐ egnr=event genres, estt=event statuses
-			_genres = params[:egnr].nil? ? [] : params[:egnr].split(",")
-			_statuses = params[:estt].nil? ? [] : params[:estt].split(",")
+			genres = params[:egnr].nil? ? [] : params[:egnr].split(",")
+			statuses = params[:estt].nil? ? [] : params[:estt].split(",")
 		
 			#フォームでsubmitされたときはフォームの抽出条件で処理する
-			@genre_keys = params[:genre].nil? ? conv_to_i(_genres) : conv_to_i(params[:genre].keys)
-			@status_keys = params[:status].nil? ? conv_to_i(_statuses) : conv_to_i(params[:status].keys)
+			@genre_keys = params[:genre].nil? ? conv_to_i(genres) : conv_to_i(params[:genre].keys)
+			@status_keys = params[:status].nil? ? conv_to_i(statuses) : conv_to_i(params[:status].keys)
 		end
     
     @sdate = "#{@year}-#{@month}-01"

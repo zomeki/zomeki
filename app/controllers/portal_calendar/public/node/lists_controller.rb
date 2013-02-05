@@ -9,6 +9,9 @@ class PortalCalendar::Public::Node::ListsController < PortalCalendar::Public::No
   end
   
   def index_monthly
+    return http_error(404) unless validate_date
+    return http_error(404) if Date.new(@year, @month, 1) < @min_date
+    return http_error(404) if Date.new(@year, @month, 1) > @max_date
 
 		prepare_monthly_data
 		
