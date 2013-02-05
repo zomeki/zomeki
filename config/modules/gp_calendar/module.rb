@@ -5,4 +5,7 @@ Cms::Lib::Modules::ModuleSet.draw :gp_calendar, '汎用カレンダー' do |mod|
 
   ## directories
   mod.directory :events, 'イベント一覧'
+
+  ## pieces
+  mod.piece :daily_links, '日別リンク'
 end
