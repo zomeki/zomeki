@@ -84,10 +84,12 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
       @year = params[:year].to_i
       return false if @year <= 0 || !@year.between?(1000, 9999)
     end
-#    params[:calendar_event_year] = @year
-#    params[:calendar_event_month] = @month
-#    params[:calendar_event_min_date] = @min_date
-#    params[:calendar_event_max_date] = @max_date
+
+    params[:gp_calendar_event_year]     = @year
+    params[:gp_calendar_event_month]    = @month
+    params[:gp_calendar_event_min_date] = @min_date
+    params[:gp_calendar_event_max_date] = @max_date
+
     return true
   end
 
