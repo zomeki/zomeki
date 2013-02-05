@@ -9,6 +9,10 @@ class PortalCalendar::Public::Node::EventsController < PortalCalendar::Public::N
 	end
 	
 	def calendar_monthly
+    return http_error(404) unless validate_date
+    return http_error(404) if Date.new(@year, @month, 1) < @min_date
+    return http_error(404) if Date.new(@year, @month, 1) > @max_date
+
 		prepare_monthly_data
 
 		#カレンダーの開始曜日
