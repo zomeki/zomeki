@@ -37,12 +37,14 @@ class GpArticle::Doc < ActiveRecord::Base
   before_save :set_name
 
   validates :title, :presence => true, :length => {maximum: 200}
+  validates :mobile_title, :length => {maximum: 200}
   validates :body, :length => {maximum: 100000}
+  validates :mobile_body, :length => {maximum: 100000}
   validates :state, :presence => true
 
-  validate :validate_inquiry, :if => :state_recognize?
-  validate :validate_recognizers, :if => :state_recognize?
-  validate :validate_platform_dependent_characters, :if => :state_recognize?
+  validate :validate_inquiry
+  validate :validate_recognizers
+  validate :validate_platform_dependent_characters
 
   validate :node_existence
 
