@@ -13,7 +13,7 @@ class PortalCalendar::Public::Node::EventsController < PortalCalendar::Public::N
     return http_error(404) if Date.new(@year, @month, 1) < @min_date
     return http_error(404) if Date.new(@year, @month, 1) > @max_date
 
-		prepare_monthly_data
+		@events, @items = prepare_monthly_data
 
 		#カレンダーの開始曜日
 		@start_wday = 0
@@ -38,7 +38,7 @@ class PortalCalendar::Public::Node::EventsController < PortalCalendar::Public::N
 				@box[row][coloumn] = data
 			end
 		end
-		
+
 		respond_to do |format|
 			format.xml {render :xml => to_xml(@events)}
 			format.html {render :action => "index_calendar"}
