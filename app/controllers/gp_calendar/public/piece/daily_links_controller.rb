@@ -17,6 +17,8 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       today = Date.today
       year = today.year
       month = today.month
+      min_date = today.beginning_of_month
+      max_date = min_date.since(11.months).to_date
     end
 
     sdate = Date.new(year, month, 1)
@@ -39,6 +41,7 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
     if min_date && max_date
       @pagination = Util::Html::SimplePagination.new
       @pagination.prev_label = '前の月'
+      @pagination.separator  = %Q(<span class="separator">|</span> <a href="#{@calendar.current_month_uri}">一覧</a> <span class="separator">|</span>)
       @pagination.next_label = '次の月'
       @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= min_date
       @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= max_date
