@@ -50,6 +50,8 @@ class GpArticle::Doc < ActiveRecord::Base
 
   after_initialize :set_defaults
 
+  scope :public, where(state: 'public')
+
   def self.find_with_content_and_criteria(content, criteria)
     docs = self.arel_table
     creators = Sys::Creator.arel_table

@@ -83,7 +83,7 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def public_docs
-    docs.where(state: 'public')
+    docs.public
   end
 
   def copy_from_group(group)

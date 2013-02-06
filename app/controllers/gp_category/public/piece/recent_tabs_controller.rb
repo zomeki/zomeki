@@ -35,9 +35,9 @@ class GpCategory::Public::Piece::RecentTabsController < Sys::Controller::Public:
         else
           doc_ids = []
         end
-        docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
+        docs = GpArticle::Doc.public.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
       else
-        docs = GpArticle::Doc.order('published_at DESC').limit(@piece.list_count)
+        docs = GpArticle::Doc.public.order('published_at DESC').limit(@piece.list_count)
       end
 
       @tabs.push(name: tab.name,
