@@ -5,7 +5,7 @@ class GpArticle::Content::Doc < Cms::Content
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
 
   def public_docs
-    docs.where(state: 'public')
+    docs.public
   end
 
   def doc_node
