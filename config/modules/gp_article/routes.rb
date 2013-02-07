@@ -30,8 +30,6 @@ ZomekiCMS::Application.routes.draw do
       resources :tabs,
         :controller => 'admin/piece/recent_tabs/tabs'
     end
-    resources :piece_tags,
-      :controller => 'admin/piece/tags'
   end
 
   ## public

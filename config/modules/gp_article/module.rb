@@ -8,5 +8,4 @@ Cms::Lib::Modules::ModuleSet.draw :gp_article, '汎用記事' do |mod|
 
   ## pieces
   mod.piece :recent_tabs, '新着タブ'
-  mod.piece :tags, '関連ワード一覧'
 end

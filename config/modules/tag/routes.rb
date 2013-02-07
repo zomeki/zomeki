@@ -19,6 +19,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_tags,
       :controller => 'admin/node/tags',
       :path       => ':parent/node_tags'
+
+    ## pieces
+    resources :piece_tags,
+      :controller => 'admin/piece/tags'
   end
 
   ## public
