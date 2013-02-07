@@ -1,0 +1,8 @@
+ja:
+  activerecord:
+    models:
+      tag/tag: 関連ワード
+    attributes:
+      tag/tag:
+        word: ワード
+        last_tagged_at: 最終使用日時
