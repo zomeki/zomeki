@@ -15,8 +15,6 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :tag_content_tag_id, :name => '関連ワード',
     :options => lambda { Tag::Content::Tag.all.map {|t| [t.name, t.id] } }
 
-  after_initialize :set_defaults
-
   def upper_text
   end
 
@@ -49,14 +47,5 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def default_category_id
     extra_values[:default_category_id] || 0
-  end
-
-  private
-
-  def set_defaults
-    self.value = '@title(@date @group)' if self.name == 'list_style' && self.value.nil?
-    self.value = '%Y年%m月%d日 %H時%M分' if self.name == 'date_style' && self.value.nil?
-  rescue ActiveModel::MissingAttributeError => evar
-    logger.warn(evar.message)
   end
 end
