@@ -239,6 +239,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.tags = words.map do |word|
         content.tags.find_by_word(word) || content.tags.create(word: word)
       end
+    self.tags.each {|t| t.update_last_tagged_at }
     content.tags.each {|t| t.destroy if t.docs.empty? }
   end
 end
