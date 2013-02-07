@@ -37,9 +37,9 @@ class Tag::Tag < ActiveRecord::Base
 #    Cms::Lib::BreadCrumbs.new(crumbs)
 #  end
 
-#  def public_docs
-#    docs.public
-#  end
+  def public_docs
+    docs.public
+  end
 
   def update_last_tagged_at(doc=nil)
     update_column(:last_tagged_at, Time.now)

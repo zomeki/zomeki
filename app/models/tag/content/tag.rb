@@ -8,4 +8,12 @@ class Tag::Content::Tag < Cms::Content
     return @tag_node if @tag_node
     @tag_node = Cms::Node.where(state: 'public', content_id: id, model: 'Tag::Tag').order(:id).first
   end
+
+  def list_style
+    setting_value(:list_style) || ''
+  end
+
+  def date_style
+    setting_value(:date_style) || ''
+  end
 end

@@ -1,0 +1,15 @@
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;">編集</th>
+    <th style="width: 250px;">設定名</th>
+    <th>設定値</th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :edit, edit_tag_content_setting_path(id: item.name) %></td>
+    <td><%= item.config_name %></td>
+    <td><%=truncate (item.persisted? ? item.value_name : '未設定'), length: 60 %></td>
+  </tr>
+  <% end %>
+</table>
