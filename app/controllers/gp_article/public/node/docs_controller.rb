@@ -27,11 +27,11 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def show
-    @doc = public_or_preview_docs.find_by_name(params[:name])
-    return http_error(404) unless @doc
+    @item = public_or_preview_docs.find_by_name(params[:name])
+    return http_error(404) unless @item
 
-    Page.current_item = @doc
-    Page.title = @doc.title
+    Page.current_item = @item
+    Page.title = @item.title
   end
 
   def file_content
