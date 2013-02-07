@@ -87,7 +87,7 @@
     <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>
   </tr>
   <tr>
-    <th><%= f.label :in_rel_docs %></th>
+    <th><%= f.label :in_rel_doc_ids %></th>
     <td>
       <table class="noDesign">
         <tr>
@@ -105,7 +105,7 @@
       <hr />
       <div id="rel_docs">
         <%- @item.rel_docs.each do |doc| -%>
-        <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_docs][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
+        <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
         <%- end -%>
       </div>
     </td>
@@ -235,7 +235,7 @@ $(document).ready(function () {
       return;
     }
 
-    var new_doc = $('<select>', {name: 'item[in_rel_docs][]'}).append($('<option>', {value: ''}));
+    var new_doc = $('<select>', {name: 'item[in_rel_doc_ids][]'}).append($('<option>', {value: ''}));
     new_doc.append(rel_doc.children(':selected').clone(true)).val(rel_doc.val());
     $('<div>', {style: 'margin-top: 10px; width: 700px;'}).append(new_doc).appendTo($('#rel_docs'));
     rel_doc.val('');
