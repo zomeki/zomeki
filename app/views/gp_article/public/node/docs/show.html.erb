@@ -25,14 +25,14 @@
   </ul>
 </div>
 <%- end -%>
-<%# FIXME: 未実装 %>
-<% if @item.tags.size > 0 && (node = @item.content.tag_node) %>
+
+<%- if (node = @item.content.tag_node) && !@item.tags.empty? -%>
 <div class="tags">
   <h2>関連ワード</h2>
   <div>
-    <% for tag in @item.tags
-    %><%=link_to h(tag.word), node.public_uri + CGI::escape(tag.word) %>
-    <% end %>
+    <%- @item.tags.each do |tag| -%>
+    <span class="tag"><%= link_to tag.word, "#{node.public_uri}#{CGI::escape(tag.word)}" %></span>
+    <%- end -%>
   </div>
 </div>
 <% end %>
