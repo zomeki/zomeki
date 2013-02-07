@@ -12,6 +12,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
   set_config :gp_calendar_content_event_id, :name => '汎用カレンダー',
     :options => lambda { GpCalendar::Content::Event.all.map {|e| [e.name, e.id] } }
+  set_config :tag_content_tag_id, :name => '関連ワード',
+    :options => lambda { Tag::Content::Tag.all.map {|t| [t.name, t.id] } }
 
   after_initialize :set_defaults
 
