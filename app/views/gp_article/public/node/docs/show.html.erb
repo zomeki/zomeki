@@ -1,15 +1,6 @@
 <article class="contentGpArticleDoc">
 
-<header class="header">
-<div class="headerInner">
-  <h1><%= @item.title %></h1>
-</div>
-  <%- if @item.creator.group -%>
-  <span class="unit"><%= @item.creator.group.name %></span>
-  <span class="separetor">/</span>
-  <%- end -%>
-  <p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
-</header>
+<p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
 
 <div class="body"><%=sanitize @item.body.gsub('"file_contents/', %Q("#{@item.public_uri}file_contents/)) %></div>
 
