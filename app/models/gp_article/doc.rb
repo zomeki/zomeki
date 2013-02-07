@@ -198,6 +198,66 @@ class GpArticle::Doc < ActiveRecord::Base
     Cms::Lib::BreadCrumbs.new(crumbs)
   end
 
+  def duplicate(rel_type=nil)
+    new_attributes = self.attributes
+
+    new_attributes[:id] = nil
+    new_attributes[:unid] = nil
+    new_attributes[:created_at] = nil
+    new_attributes[:updated_at] = nil
+    new_attributes[:recognized_at] = nil
+    new_attributes[:published_at] = nil
+    new_attributes[:state] = 'draft'
+
+    item = self.class.new(new_attributes)
+
+    if rel_type.nil?
+      item.name = nil
+      item.title = item.title.gsub(/^(【複製】)*/, '【複製】')
+    end
+
+    item.in_recognizer_ids  = recognition.recognizer_ids if recognition
+    item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
+
+    if inquiry.try(:group_id) == Core.user.group_id
+      item.in_inquiry = inquiry.attributes
+    else
+      item.in_inquiry = {:group_id => Core.user.group_id}
+    end
+
+    unless maps.empty?
+      _maps = {}
+      maps.each do |m|
+        _maps[m.name] = m.in_attributes.symbolize_keys
+        _maps[m.name][:markers] = {}
+        m.markers.each_with_index{|mm, key| _maps[m.name][:markers][key] = mm.attributes.symbolize_keys}
+      end
+      item.in_maps = _maps
+    end
+
+    return nil unless item.save
+
+    files.each do |f|
+      file = Sys::File.new(f.attributes)
+      file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+      file.unid = nil
+      file.parent_unid = item.unid
+      file.save
+    end
+
+    item.categories = self.categories
+
+    if rel_type == :replace
+      rel = Sys::UnidRelation.new
+      rel.unid = item.unid
+      rel.rel_unid = self.unid
+      rel.rel_type = 'replace'
+      rel.save
+    end
+
+    return item
+  end
+
   private
 
   def set_name
