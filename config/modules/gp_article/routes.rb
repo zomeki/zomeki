@@ -40,5 +40,7 @@ ZomekiCMS::Application.routes.draw do
     match 'node_docs(/index.:format)' => 'public/node/docs#index'
     match 'node_docs/:name(/index.:format)' => 'public/node/docs#show'
     match 'node_docs/:name/file_contents/:basename.:extname' => 'public/node/docs#file_content'
+    match 'node_tags(/index.:format)' => 'public/node/tags#index'
+    match 'node_tags/:word(/index.:format)' => 'public/node/tags#show'
   end
 end
