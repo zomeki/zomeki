@@ -4,6 +4,8 @@ class GpArticle::Content::Doc < Cms::Content
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
 
+  before_create :set_default_settings
+
   def public_docs
     docs.public
   end
@@ -64,5 +66,12 @@ class GpArticle::Content::Doc < Cms::Content
 
   def tag_content_tag
     Tag::Content::Tag.find_by_id(setting_value(:tag_content_tag_id))
+  end
+
+  private
+
+  def set_default_settings
+    in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
+    in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
   end
 end

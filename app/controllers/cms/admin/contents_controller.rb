@@ -48,14 +48,18 @@ class Cms::Admin::ContentsController < Cms::Controller::Admin::Base
       :state      => 'public',
     })
   end
-  
+
   def create
-    @item = Cms::Content.new(params[:item])
+    begin
+      @item = params[:item][:model].split('::').join('::Content::').constantize.new(params[:item])
+    rescue
+      @item = Cms::Content.new(params[:item])
+    end
     @item.state   = 'public'
     @item.site_id = Core.site.id
     _create @item
   end
-  
+
   def update
     @item = Cms::Content.new.find(params[:id])
     @item.attributes = params[:item]
