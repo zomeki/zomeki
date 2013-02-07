@@ -633,12 +633,15 @@ ActiveRecord::Schema.define(:version => 20130207010418) do
   end
 
   create_table "gp_article_tags", :force => true do |t|
+    t.integer  "content_id"
     t.integer  "unid"
     t.string   "name"
     t.text     "word"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "gp_article_tags", ["content_id"], :name => "index_gp_article_tags_on_content_id"
 
   create_table "gp_category_categories", :force => true do |t|
     t.integer  "unid"

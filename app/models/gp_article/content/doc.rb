@@ -3,6 +3,7 @@ class GpArticle::Content::Doc < Cms::Content
   default_scope where(model: 'GpArticle::Doc')
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
+  has_many :tags, :foreign_key => :content_id, :class_name => 'GpArticle::Tag', :dependent => :destroy
 
   def public_docs
     docs.public
