@@ -56,7 +56,7 @@
     <td><%= @item.raw_tags %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :in_rel_docs %></th>
+    <th><%= @item.locale :in_rel_doc_ids %></th>
     <td>
       <% @item.rel_docs.each {|doc| %><div style="margin-top: 10px; width: 700px;"><%= doc.title %></div><% } %>
     </td>

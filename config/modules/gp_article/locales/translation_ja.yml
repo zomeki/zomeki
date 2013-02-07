@@ -22,7 +22,7 @@ ja:
         mobile_smart: PC・スマートフォン
         mobile_feature: 携帯
         in_editable_groups: 編集可能グループ
-        in_rel_docs: 関連記事
+        in_rel_doc_ids: 関連記事
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名

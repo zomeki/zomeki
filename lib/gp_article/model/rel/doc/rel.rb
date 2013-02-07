@@ -1,6 +1,6 @@
 # encoding: utf-8
 module GpArticle::Model::Rel::Doc::Rel
-  attr_accessor :in_rel_docs
+  attr_accessor :in_rel_doc_ids
 
   def rel_docs
     docs = []
@@ -13,14 +13,14 @@ module GpArticle::Model::Rel::Doc::Rel
     docs
   end
 
-  def in_rel_docs
-    unless val = read_attribute(:in_rel_docs)
-      write_attribute(:in_rel_docs, rel_doc_ids.to_s.split(' ').uniq)
+  def in_rel_doc_ids
+    unless val = read_attribute(:in_rel_doc_ids)
+      write_attribute(:in_rel_doc_ids, rel_doc_ids.to_s.split(' ').uniq)
     end
-    read_attribute(:in_rel_docs)
+    read_attribute(:in_rel_doc_ids)
   end
 
-  def in_rel_docs=(ids)
+  def in_rel_doc_ids=(ids)
     _ids = []
     if ids.class == Array
       ids.each {|val| _ids << val}
