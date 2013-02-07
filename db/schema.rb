@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131132544) do
+ActiveRecord::Schema.define(:version => 20130207010418) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -630,6 +630,14 @@ ActiveRecord::Schema.define(:version => 20130131132544) do
   create_table "gp_article_docs_gp_category_categories", :id => false, :force => true do |t|
     t.integer "doc_id"
     t.integer "category_id"
+  end
+
+  create_table "gp_article_tags", :force => true do |t|
+    t.integer  "unid"
+    t.string   "name"
+    t.text     "word"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "gp_category_categories", :force => true do |t|

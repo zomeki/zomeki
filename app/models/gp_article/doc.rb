@@ -17,6 +17,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Auth::EditableGroup
 
   include GpArticle::Model::Rel::Doc::Rel
+  include GpArticle::Model::Rel::Doc::Tag
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
@@ -73,6 +74,10 @@ class GpArticle::Doc < ActiveRecord::Base
   def state=(new_state)
     self.published_at ||= Core.now if new_state == 'public'
     super
+  end
+
+  def raw_tags=(raw_tags)
+    super raw_tags.gsub('　', ' ')
   end
 
   def public_uri=(uri)
