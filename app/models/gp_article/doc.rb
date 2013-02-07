@@ -43,7 +43,7 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :state, :presence => true
 
   validate :validate_inquiry
-  validate :validate_recognizers
+  validate :validate_recognizers, :if => :state_recognize?
   validate :validate_platform_dependent_characters
 
   validate :node_existence
