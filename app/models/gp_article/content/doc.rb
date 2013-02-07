@@ -3,7 +3,6 @@ class GpArticle::Content::Doc < Cms::Content
   default_scope where(model: 'GpArticle::Doc')
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
-  has_many :tags, :foreign_key => :content_id, :class_name => 'GpArticle::Tag', :order => 'last_tagged_at DESC', :dependent => :destroy
 
   def public_docs
     docs.public
@@ -12,11 +11,6 @@ class GpArticle::Content::Doc < Cms::Content
   def doc_node
     return @doc_node if @doc_node
     @doc_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
-  end
-
-  def tag_node
-    return @tag_node if @tag_node
-    @tag_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Tag').order(:id).first
   end
 
   def gp_category_content_category_type
@@ -66,5 +60,9 @@ class GpArticle::Content::Doc < Cms::Content
 
   def date_style
     setting_value(:date_style) || ''
+  end
+
+  def tag_content_tag
+    Tag::Content::Tag.find_by_id(setting_value(:tag_content_tag_id))
   end
 end

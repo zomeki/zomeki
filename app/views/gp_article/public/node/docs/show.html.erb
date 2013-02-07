@@ -17,9 +17,9 @@
 </div>
 <%- end -%>
 
-<%- if (node = @item.content.tag_node) && !@item.tags.empty? -%>
+<%- if (node = @item.content.tag_content_tag.try(:tag_node)) && !@item.tags.empty? -%>
 <div class="tags">
-  <h2><%= GpArticle::Tag.model_name.human %></h2>
+  <h2>関連ワード</h2>
   <ul>
     <%- @item.tags.each do |tag| -%>
     <li><%= link_to tag.word, tag.public_uri %></li>

@@ -33,7 +33,8 @@ class GpArticle::Doc < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
-  has_and_belongs_to_many :tags, :class_name => 'GpArticle::Tag', :join_table => 'gp_article_docs_gp_article_tags'
+  has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
+                          :conditions => proc { ['content_id = ?', self.content.tag_content_tag.try(:id)] }
 
   before_save :set_name
 
@@ -234,12 +235,14 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def set_tags
+    return tags.clear unless content.tag_content_tag
+    all_tags = content.tag_content_tag.tags
     return tags.clear if raw_tags.blank?
     words = raw_tags.split(/[、､，,]/)
     self.tags = words.map do |word|
-        content.tags.find_by_word(word) || content.tags.create(word: word)
+        all_tags.find_by_word(word) || all_tags.create(word: word)
       end
     self.tags.each {|t| t.update_last_tagged_at }
-    content.tags.each {|t| t.destroy if t.docs.empty? }
+    all_tags.each {|t| t.destroy if t.docs.empty? }
   end
 end
