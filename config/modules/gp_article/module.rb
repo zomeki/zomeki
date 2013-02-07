@@ -5,7 +5,6 @@ Cms::Lib::Modules::ModuleSet.draw :gp_article, '汎用記事' do |mod|
 
   ## directories
   mod.directory :docs, '汎用記事ページ'
-  mod.directory :tags, '関連ワードページ'
 
   ## pieces
   mod.piece :recent_tabs, '新着タブ'

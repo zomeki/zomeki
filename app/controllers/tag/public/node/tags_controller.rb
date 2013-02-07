@@ -1,8 +1,8 @@
 # encoding: utf-8
-class GpArticle::Public::Node::TagsController < Cms::Controller::Public::Base
+class Tag::Public::Node::TagsController < Cms::Controller::Public::Base
   def pre_dispatch
     @node = Page.current_node
-    @content = GpArticle::Content::Doc.find_by_id(Page.current_node.content.id)
+    @content = Tag::Content::Tag.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
   end
 
@@ -10,7 +10,7 @@ class GpArticle::Public::Node::TagsController < Cms::Controller::Public::Base
     if @content.tags.empty?
       http_error(404)
     else
-      redirect_to "#{@node.public_uri}#{CGI::escape(@content.tags.first.word)}/"
+      redirect_to @content.tags.first.public_uri
     end
   end
 

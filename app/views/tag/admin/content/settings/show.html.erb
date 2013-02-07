@@ -1,0 +1,16 @@
+<div id="settingContent">
+  <table class="show">
+    <tr>
+      <th>設定名</th>
+      <td><%= @item.config_name %></td>
+    </tr>
+    <tr>
+      <th>設定値</th>
+      <td>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+        <%= @item.persisted? ? item.value_name : '未設定' %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+      </td>
+    </tr>
+  </table>
+</div>
