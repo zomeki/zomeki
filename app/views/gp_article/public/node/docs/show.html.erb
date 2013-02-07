@@ -31,7 +31,7 @@
   <h2>関連ワード</h2>
   <div>
     <%- @item.tags.each do |tag| -%>
-    <span class="tag"><%= link_to tag.word, "#{node.public_uri}#{CGI::escape(tag.word)}" %></span>
+    <span class="tag"><%= link_to tag.word, tag.public_uri %></span>
     <%- end -%>
   </div>
 </div>

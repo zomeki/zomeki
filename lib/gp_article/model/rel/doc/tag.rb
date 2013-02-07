@@ -48,7 +48,7 @@ module GpArticle::Model::Rel::Doc::Tag
     3.times do |i|
       if value = values[i]
         unless  tag = tags[i]
-          tag = GpArticle::Tag.new({:unid => unid, :name => i})
+          tag = content.tags.build({:unid => unid, :name => i})
         end
         tag.word = value
         tag.save
