@@ -29,10 +29,12 @@ ZomekiCMS::Application.routes.draw do
 
     ## pieces
     resources(:piece_recent_tabs,
-      :controller  => 'admin/piece/recent_tabs') do
+      :controller => 'admin/piece/recent_tabs') do
       resources :tabs,
-        :controller  => 'admin/piece/recent_tabs/tabs'
+        :controller => 'admin/piece/recent_tabs/tabs'
     end
+    resources :piece_tags,
+      :controller => 'admin/piece/tags'
   end
 
   ## public
