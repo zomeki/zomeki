@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207010418) do
+ActiveRecord::Schema.define(:version => 20130207052815) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -627,6 +627,11 @@ ActiveRecord::Schema.define(:version => 20130207010418) do
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
   add_index "gp_article_docs", ["content_id"], :name => "index_gp_article_docs_on_content_id"
 
+  create_table "gp_article_docs_gp_article_tags", :id => false, :force => true do |t|
+    t.integer "doc_id"
+    t.integer "tag_id"
+  end
+
   create_table "gp_article_docs_gp_category_categories", :id => false, :force => true do |t|
     t.integer "doc_id"
     t.integer "category_id"
@@ -634,8 +639,6 @@ ActiveRecord::Schema.define(:version => 20130207010418) do
 
   create_table "gp_article_tags", :force => true do |t|
     t.integer  "content_id"
-    t.integer  "unid"
-    t.string   "name"
     t.text     "word"
     t.datetime "created_at"
     t.datetime "updated_at"

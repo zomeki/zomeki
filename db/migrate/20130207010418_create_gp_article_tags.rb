@@ -3,9 +3,7 @@ class CreateGpArticleTags < ActiveRecord::Migration
     create_table :gp_article_tags do |t|
       t.references :content
 
-      t.integer :unid
-      t.string  :name
-      t.text    :word
+      t.text :word
 
       t.timestamps
     end
