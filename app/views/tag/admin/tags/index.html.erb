@@ -1,0 +1,17 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= Tag::Tag.human_attribute_name :word %></th>
+    <th style="text-align: center; width: 120px;"><%= Tag::Tag.human_attribute_name :last_tagged_at %></th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, tag_tag_path(content: @content, id: item.id) %></td>
+    <td><%= item.word %></td>
+    <td style="text-align: center;"><%= item.last_tagged_at.strftime('%Y-%m-%d %H:%M') %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207070330) do
+ActiveRecord::Schema.define(:version => 20130207090627) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -1170,6 +1170,16 @@ ActiveRecord::Schema.define(:version => 20130207070330) do
   end
 
   add_index "sys_users_roles", ["user_id", "role_id"], :name => "user_id"
+
+  create_table "tag_tags", :force => true do |t|
+    t.integer  "content_id"
+    t.text     "word"
+    t.datetime "last_tagged_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
 
   create_table "tool_simple_captcha_data", :force => true do |t|
     t.string   "key",        :limit => 40
