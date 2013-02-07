@@ -17,4 +17,22 @@ class GpArticle::Tag < ActiveRecord::Base
     return '' unless node = content.tag_node
     @public_uri = "#{node.public_uri}#{CGI::escape(word)}/"
   end
+
+  def bread_crumbs(tag_node)
+    crumbs = []
+
+    crumb = tag_node.bread_crumbs.crumbs.first
+    crumb << [word, "#{tag_node.public_uri}#{CGI::escape(word)}/"]
+    crumbs << crumb
+
+    if crumbs.empty?
+      tag_node.routes.each do |r|
+        crumb = []
+        r.each {|r| crumb << [r.title, r.public_uri] }
+        crumbs << crumb
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
 end
