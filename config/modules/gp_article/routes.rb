@@ -23,6 +23,9 @@ ZomekiCMS::Application.routes.draw do
     resources :node_docs,
       :controller => 'admin/node/docs',
       :path       => ':parent/node_docs'
+    resources :node_tags,
+      :controller => 'admin/node/tags',
+      :path       => ':parent/node_tags'
 
     ## pieces
     resources(:piece_recent_tabs,
