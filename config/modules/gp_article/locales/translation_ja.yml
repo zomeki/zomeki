@@ -4,6 +4,7 @@ ja:
       gp_article/doc: 記事
       gp_article/category_type: カテゴリタイプ
       gp_article/category: カテゴリ
+      gp_article/tag: 関連ワード
     attributes:
       gp_article/doc:
         id: 記事番号
