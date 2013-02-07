@@ -20,11 +20,11 @@
 <%- if (node = @item.content.tag_node) && !@item.tags.empty? -%>
 <div class="tags">
   <h2><%= GpArticle::Tag.model_name.human %></h2>
-  <div>
+  <ul>
     <%- @item.tags.each do |tag| -%>
-    <span class="tag"><%= link_to tag.word, tag.public_uri %></span>
+    <li><%= link_to tag.word, tag.public_uri %></li>
     <%- end -%>
-  </div>
+  </ul>
 </div>
 <% end %>
 
