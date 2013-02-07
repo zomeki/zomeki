@@ -5,4 +5,7 @@ Cms::Lib::Modules::ModuleSet.draw :tag, '関連ワード' do |mod|
 
   ## directories
   mod.directory :tags, '関連ワードページ'
+
+  ## pieces
+  mod.piece :tags, '関連ワード一覧'
 end
