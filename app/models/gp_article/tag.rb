@@ -6,7 +6,8 @@ class GpArticle::Tag < ActiveRecord::Base
   validates_presence_of :content_id
 
   # Proper
-  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_article_tags', :order => 'published_at DESC'
+  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_article_tags', :order => 'published_at DESC',
+    :after_add => :update_last_tagged_at
 
   def public_uri=(uri)
     @public_uri = uri
@@ -38,5 +39,9 @@ class GpArticle::Tag < ActiveRecord::Base
 
   def public_docs
     docs.public
+  end
+
+  def update_last_tagged_at(doc=nil)
+    update_column(:last_tagged_at, Time.now)
   end
 end
