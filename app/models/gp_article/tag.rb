@@ -5,6 +5,9 @@ class GpArticle::Tag < ActiveRecord::Base
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
   validates_presence_of :content_id
 
+  # Proper
+  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_article_tags'
+
   def public_uri=(uri)
     @public_uri = uri
   end

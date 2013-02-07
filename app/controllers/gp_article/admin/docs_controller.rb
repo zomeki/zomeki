@@ -97,7 +97,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.docs.build(params[:item])
-    @item.in_tags = @item.raw_tags.split(/[、､，,]/) if @item.raw_tags.present?
     @item.concept = @content.concept
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
@@ -114,7 +113,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def update
     @item = @content.docs.find(params[:id])
     @item.attributes = params[:item]
-    @item.in_tags = @item.raw_tags.split(/[、､，,]/) if @item.raw_tags.present?
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
