@@ -6,7 +6,7 @@ class GpArticle::Tag < ActiveRecord::Base
   validates_presence_of :content_id
 
   # Proper
-  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_article_tags'
+  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_article_tags', :order => 'published_at DESC'
 
   def public_uri=(uri)
     @public_uri = uri
@@ -34,5 +34,9 @@ class GpArticle::Tag < ActiveRecord::Base
     end
 
     Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
+  def public_docs
+    docs.public
   end
 end

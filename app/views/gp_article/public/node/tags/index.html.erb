@@ -1,0 +1,11 @@
+<div class="contentGpArticleTags">
+
+<%- unless @tags.empty? -%>
+<ul>
+  <%- @tags.each do |tag| -%>
+  <li><%= link_to tag.word, tag.public_uri %></li>
+  <%- end -%>
+</ul>
+<%- end -%>
+
+</div>
