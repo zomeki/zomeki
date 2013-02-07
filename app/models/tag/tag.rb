@@ -7,7 +7,7 @@ class Tag::Tag < ActiveRecord::Base
 
   # Proper
   has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_tag_tags', :order => 'published_at DESC',
-    :after_add => :update_last_tagged_at
+    :after_add => :update_last_tagged_at, :after_remove => :update_last_tagged_at
 
   def public_uri=(uri)
     @public_uri = uri
