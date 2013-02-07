@@ -6,7 +6,7 @@ var docTabs<%= @piece.id %> = new ArticleDocTabs('<%= @piece.css_id %>');
 <nav class="tabs">
   <ul>
     <%- @tabs.each do |tab| -%>
-    <li><%= link_to_function tab[:title], "docTabs#{@piece.id}.show('#{tab[:name]}')", class: tab[:class] %></li>
+    <li class="<%= tab[:class] %>"><%= link_to_function tab[:title], "docTabs#{@piece.id}.show('#{tab[:name]}')" %></li>
     <%- end -%>
   </ul>
 </nav>
