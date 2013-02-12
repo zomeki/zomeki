@@ -19,7 +19,7 @@ class Tag::Public::Node::TagsController < Cms::Controller::Public::Base
     return http_error(404) unless @item
 
     Page.current_item = @item
-    Page.title = @item.word
+    Page.title = @node.title
 
     @docs = @item.public_docs
   end
