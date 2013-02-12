@@ -298,11 +298,13 @@ class GpArticle::Doc < ActiveRecord::Base
     return tags.clear unless content.tag_content_tag
     all_tags = content.tag_content_tag.tags
     return tags.clear if raw_tags.blank?
-    words = raw_tags.split(/[、､，,]/)
+
+    words = Moji.normalize_zen_han(raw_tags).downcase.split(/[、,]/).map{|w| w.presence }.compact.uniq
     self.tags = words.map do |word|
         all_tags.find_by_word(word) || all_tags.create(word: word)
       end
     self.tags.each {|t| t.update_last_tagged_at }
+
     all_tags.each {|t| t.destroy if t.docs.empty? }
   end
 end
