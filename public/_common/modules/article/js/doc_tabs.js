@@ -24,7 +24,7 @@ function ArticleDocTabs(id) {
     this.initialize();
 
     // select tab
-    var tabs = $(this.tabs).find('a');
+    var tabs = $(this.tabs).find('li');
     var tab = null;
     for (var i = 0; i < tabs.length; i++) {
       tab = tabs[i];
