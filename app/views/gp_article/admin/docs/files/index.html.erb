@@ -39,7 +39,7 @@
     <td style="text-align: right;"><%= item.id %></td>
     <td style="text-align: center;">
       <%= link_to_function '添付',
-        %Q(ckeInsertContent('<a href="#{file_content_relative_path}" class="#{item.css_class}">#{h item.united_name}</a>')), id: "link_attach#{item.id}" %>
+        %Q(ckeInsertContent('<a href="#{file_content_path}" class="#{item.css_class}">#{h item.united_name}</a>')), id: "link_attach#{item.id}" %>
     </td>
     <td style="text-align: center;">
       <% if item.image_file? %>
@@ -51,7 +51,7 @@
     <td style="text-align: center;">
       <% if item.image_file? %>
         <%= link_to_function '貼付',
-          %Q(ckeInsertContent('<img src="#{file_content_relative_path}" alt="#{item.alt}" title="#{item.alt}" />')), id: "link_image#{item.id}" %>
+          %Q(ckeInsertContent('<img src="#{file_content_path}" alt="#{item.alt}" title="#{item.alt}" />')), id: "link_image#{item.id}" %>
       <% end %>
     </td>
     <td><%= item.name %></td>

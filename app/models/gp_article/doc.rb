@@ -37,6 +37,7 @@ class GpArticle::Doc < ActiveRecord::Base
                           :conditions => proc { ['content_id = ?', self.content.tag_content_tag.try(:id)] }
 
   before_save :set_name
+  before_save :make_file_contents_path_relative
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
@@ -306,5 +307,9 @@ class GpArticle::Doc < ActiveRecord::Base
     self.tags.each {|t| t.update_last_tagged_at }
 
     all_tags.each {|t| t.destroy if t.docs.empty? }
+  end
+
+  def make_file_contents_path_relative
+    self.body = self.body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.body.present?
   end
 end
