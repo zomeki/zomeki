@@ -4,7 +4,6 @@ class GpCategory::Admin::CategoriesController < Cms::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless @content = GpCategory::Content::CategoryType.find_by_id(params[:content])
-    return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     return error_auth unless @category_type = GpCategory::CategoryType.find_by_id(params[:category_type_id])
