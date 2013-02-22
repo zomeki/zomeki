@@ -104,10 +104,10 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def state_options
-    unless Core.user.has_auth?(:manager)
-      STATE_OPTIONS.reject {|so| so.last == 'public' }
-    else
+    if Core.user.has_auth?(:manager) || content.save_button_states.include?('public')
       STATE_OPTIONS
+    else
+      STATE_OPTIONS.reject {|so| so.last == 'public' }
     end
   end
 
