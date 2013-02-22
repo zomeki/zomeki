@@ -18,7 +18,8 @@
     <%- unless @category.public_docs.empty? -%>
     <ul>
       <%- @category.public_docs.each do |doc| -%>
-      <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+      <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %>
+        <p class="summary"><%= doc.summary %></p></li>
       <%- end -%>
     </ul>
     <%- end -%>
