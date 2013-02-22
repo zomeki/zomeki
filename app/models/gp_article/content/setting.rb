@@ -14,7 +14,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => lambda { GpCalendar::Content::Event.all.map {|e| [e.name, e.id] } }
   set_config :tag_content_tag_id, :name => '関連ワード',
     :options => lambda { Tag::Content::Tag.all.map {|t| [t.name, t.id] } }
-  set_config :save_buttons, :name => '保存ボタン',
+  set_config :save_button_states, :name => '保存ボタン',
 #TODO: 暫定として即時公開のみ
     :options => GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },
 #    :options => GpArticle::Doc::STATE_OPTIONS,

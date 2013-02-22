@@ -68,6 +68,10 @@ class GpArticle::Content::Doc < Cms::Content
     Tag::Content::Tag.find_by_id(setting_value(:tag_content_tag_id))
   end
 
+  def save_button_states
+    YAML.load(setting_value(:save_button_states).presence || '[]')
+  end
+
   private
 
   def set_default_settings
