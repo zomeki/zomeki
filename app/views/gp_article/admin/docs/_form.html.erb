@@ -156,6 +156,7 @@
         <%- end -%>
         <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
       </div>
+      <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL', @item.editable_group.try(:all?), id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
     </td>
   </tr>
 </table>

@@ -259,6 +259,12 @@ class GpArticle::Doc < ActiveRecord::Base
     return item
   end
 
+  def editable?
+    result = super
+    return result unless result.nil? # See "Sys::Model::Auth::EditableGroup"
+    return editable_group.all?
+  end
+
   private
 
   def set_name
