@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207095012) do
+ActiveRecord::Schema.define(:version => 20130223174531) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -972,6 +972,7 @@ ActiveRecord::Schema.define(:version => 20130207095012) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "group_ids"
+    t.boolean  "all"
   end
 
   create_table "sys_files", :force => true do |t|
