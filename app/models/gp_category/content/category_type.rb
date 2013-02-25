@@ -4,6 +4,8 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => :sort_no, :dependent => :destroy
 
+  before_create :set_default_settings
+
   def category_type_node
     return @category_type_node if @category_type_node
     @category_type_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCategory::CategoryType').order(:id).first
@@ -27,5 +29,12 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   def date_style
     setting_value(:date_style) || ''
+  end
+
+  private
+
+  def set_default_settings
+    in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
+    in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
   end
 end
