@@ -16,9 +16,6 @@ class Gnav::CategorySet < ActiveRecord::Base
   private
 
   def set_defaults
-    self.layer ||= LAYER_OPTIONS.first.last
-  rescue ActiveModel::MissingAttributeError => evar
-    # May be called via Gnav::MenuItem#category_set_ids
-    logger.warn(evar.message)
+    self.layer ||= LAYER_OPTIONS.first.last if self.has_attribute?(:layer)
   end
 end

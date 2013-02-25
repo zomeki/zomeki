@@ -276,10 +276,8 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def set_defaults
-    self.target ||= TARGET_OPTIONS.first.last
-    self.event_state ||= 'hidden'
-  rescue ActiveModel::MissingAttributeError => evar
-    logger.warn(evar.message)
+    self.target      ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
+    self.event_state ||= 'hidden'                  if self.has_attribute?(:event_state)
   end
 
   def node_existence
