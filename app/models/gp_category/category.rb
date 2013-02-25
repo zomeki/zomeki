@@ -101,10 +101,8 @@ class GpCategory::Category < ActiveRecord::Base
   private
 
   def set_default_attributes
-    self.state ||= 'public'
-    self.sort_no ||= 0
-  rescue ActiveModel::MissingAttributeError => evar
-    logger.warn(evar.message)
+    self.state   ||= 'public' if self.has_attribute?(:state)
+    self.sort_no ||= 0        if self.has_attribute?(:sort_no)
   end
 
   def set_attributes_from_parent
