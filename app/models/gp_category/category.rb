@@ -30,7 +30,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'
 
-  after_initialize :set_default_attributes
+  after_initialize :set_defaults
 
   before_validation :set_attributes_from_parent
 
@@ -100,7 +100,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   private
 
-  def set_default_attributes
+  def set_defaults
     self.state   ||= 'public' if self.has_attribute?(:state)
     self.sort_no ||= 0        if self.has_attribute?(:sort_no)
   end
