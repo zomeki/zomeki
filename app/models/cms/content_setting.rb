@@ -61,7 +61,11 @@ class Cms::ContentSetting < ActiveRecord::Base
              config[:options]
            end
     if opts
-      opts.detect{|o| o.last.to_s == value.to_s }.try(:first)
+      if config[:form_type] == :check_boxes
+        YAML.load(value.presence || '[]').map{|v| opts.detect{|o| o.last == v }.try(:first) }.compact.join(', ')
+      else
+        opts.detect{|o| o.last.to_s == value.to_s }.try(:first)
+      end
     else
       value.presence
     end
