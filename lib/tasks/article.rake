@@ -1,43 +1,45 @@
 # encoding: utf-8
 
-namespace :article do
-  task :set_user_and_group do
-    Core.user       = Sys::User.first
-    Core.user_group = Core.user.group
-  end
-
-  namespace :save do
-    desc 'Save categories.'
-    task(:categories => :environment) do
-      next if (content_id = ENV['content_id'].to_i).zero?
-
-      categories = Article::Category.unscoped.where(content_id: content_id, parent_id: 0).map {|c| descendants_to_hash(c) }
-
-      File.write(Rails.root.join("tmp/article_#{content_id}_categories.yml"), YAML.dump(categories))
+namespace :zomeki do
+  namespace :article do
+    task :set_user_and_group do
+      Core.user       = Sys::User.first
+      Core.user_group = Core.user.group
     end
 
-    desc 'Save documents.'
-    task(:documents => :environment) do
-      next if (content_id = ENV['content_id'].to_i).zero?
+    namespace :save do
+      desc 'Save categories.'
+      task(:categories => :environment) do
+        next if (content_id = ENV['content_id'].to_i).zero?
 
-      documents = Article::Doc.unscoped.where(content_id: content_id).map do |document|
-          {title: document.title,
-           body: document.body,
-           published_at: document.published_at,
-           category_names: document.category_items.map{|ci| ci.name }.join(',')}
-        end
+        categories = Article::Category.unscoped.where(content_id: content_id, parent_id: 0).map {|c| descendants_to_hash(c) }
 
-      File.write(Rails.root.join("tmp/article_#{content_id}_documents.yml"), YAML.dump(documents))
+        File.write(Rails.root.join("tmp/article_#{content_id}_categories.yml"), YAML.dump(categories))
+      end
+
+      desc 'Save documents.'
+      task(:documents => :environment) do
+        next if (content_id = ENV['content_id'].to_i).zero?
+
+        documents = Article::Doc.unscoped.where(content_id: content_id).map do |document|
+            {title: document.title,
+             body: document.body,
+             published_at: document.published_at,
+             category_names: document.category_items.map{|ci| ci.name }.join(',')}
+          end
+
+        File.write(Rails.root.join("tmp/article_#{content_id}_documents.yml"), YAML.dump(documents))
+      end
     end
-  end
 
-  namespace :load do
-    desc 'Load categories.'
-    task(:categories => [:environment, :set_user_and_group]) do
-      next if (content_id = ENV['content_id'].to_i).zero?
+    namespace :load do
+      desc 'Load categories.'
+      task(:categories => [:environment, :set_user_and_group]) do
+        next if (content_id = ENV['content_id'].to_i).zero?
 
-      categories = YAML.load_file(Rails.root.join("tmp/article_#{content_id}_categories.yml"))
-      categories.each {|c| descendants_from_hash(c, content_id, 0) }
+        categories = YAML.load_file(Rails.root.join("tmp/article_#{content_id}_categories.yml"))
+        categories.each {|c| descendants_from_hash(c, content_id, 0) }
+      end
     end
   end
 end
