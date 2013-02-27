@@ -1,0 +1,12 @@
+<h2><%= @content.name %> ： ステータス設定</h2>
+
+<div class="actionMenu">
+<%= action_menu :new     if @content.creatable? %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit    if safe{@content.editable?} %>
+<!--
+削除すると、ひも付いているイベント情報でエラーとなるので「非公開化」編集してもらう。
+<%= action_menu :destroy if safe{@content.deletable?} %>
+-->
+</div>
