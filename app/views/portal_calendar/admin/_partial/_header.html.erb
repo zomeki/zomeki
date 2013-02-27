@@ -1,0 +1,9 @@
+<div class="mainMenu">
+<%= render :partial => 'layouts/admin/cms/menu', :locals => {:current => :content} %>
+</div>
+
+<div class="contentMenu">
+<%= link_to 'イベント一覧', portal_calendar_events_path %>
+<%= link_to 'ステータス', portal_calendar_statuses_path if @content.editable? %>
+<%= link_to 'ジャンル', portal_calendar_genres_path if @content.editable? %>
+</div>
