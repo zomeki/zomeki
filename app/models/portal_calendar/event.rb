@@ -13,12 +13,17 @@ class PortalCalendar::Event < ActiveRecord::Base
 	#XML出力用にassociationしておく。:event_statusだと<event_statu>となるため。
 	belongs_to :event_statuses, :class_name => 'PortalCalendar::Status', :foreign_key => :event_status_id
 
-	validates_presence_of :state, :event_start_date, :event_end_date, :title
+	validates :title,	:presence => true
+	validates :state, :presence => true
+	validates :event_start_date, :presence => true
+	validates :event_end_date, :presence => true
 	validate :period_check?
 	
 private
 	def period_check?
-		errors.add(:event_end_date, 'は開始日以降を設定してください。') unless event_end_date >= event_start_date
+		if (! event_end_date.blank?) && (! event_start_date.blank?)
+			errors.add(:event_end_date, 'は開始日以降を設定してください。') unless event_end_date >= event_start_date
+		end
 	end
 	
 public
