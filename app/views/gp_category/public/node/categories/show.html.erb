@@ -4,7 +4,6 @@
     <%- unless @category.children.empty? -%>
     <nav>
       <ul>
-        <li class="categoryTypeSumple"><a href="#">サンプル</a></li>
         <%- @category.children.each do |category| -%>
         <li class="categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
         <%- end -%>
