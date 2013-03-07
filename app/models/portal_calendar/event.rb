@@ -82,7 +82,8 @@ public
 
       case n
       when 's_event_date'
-        self.and :event_start_date, v
+        self.and :event_start_date, "<=", v
+        self.and :event_end_date, ">=", v
       when 's_title'
         self.and_keywords v, :title
       end

@@ -14,8 +14,8 @@ class PortalCalendar::Admin::EventsController < Cms::Controller::Admin::Base
 
   def index
     sort = nil
-    sort = "event_date" if params[:sort] == "event_date"
-    sort = "event_date DESC" if params[:sort] == "event_date -1"
+    sort = "event_start_date" if params[:sort] == "event_date"
+    sort = "event_start_date DESC" if params[:sort] == "event_date -1"
     
     item = PortalCalendar::Event.new#.public#.readable
     item.and :content_id, @content.id
