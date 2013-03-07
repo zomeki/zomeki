@@ -72,6 +72,11 @@ class GpArticle::Content::Doc < Cms::Content
     YAML.load(setting_value(:save_button_states).presence || '[]')
   end
 
+  def required_recognizers
+    ids = YAML.load(setting_value(:required_recognizers).presence || '[]')
+    Sys::User.where(id: ids)
+  end
+
   private
 
   def set_default_settings

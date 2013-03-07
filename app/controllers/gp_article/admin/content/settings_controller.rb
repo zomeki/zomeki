@@ -21,13 +21,20 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
 
   def edit
     @item = GpArticle::Content::Setting.config(@content, params[:id])
-    @item.value = YAML.load(@item.value.presence || '[]') if @item.form_type == :check_boxes
+    @item.value = YAML.load(@item.value.presence || '[]') if [:check_boxes, :multiple_select].include?(@item.form_type)
   end
 
   def update
     @item = GpArticle::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
-    @item.value = YAML.dump(@item.value.is_a?(Hash) ? @item.value.keys : []) if @item.form_type == :check_boxes
+    if [:check_boxes, :multiple_select].include?(@item.form_type)
+      @item.value = YAML.dump(case @item.value
+                              when Hash; @item.value.keys
+                              when Array; @item.value
+                              else []
+                              end)
+    end
+
 
     if @item.name == 'gp_category_content_category_type_id'
       extra_values = @item.extra_values

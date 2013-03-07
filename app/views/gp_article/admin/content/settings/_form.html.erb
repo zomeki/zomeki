@@ -6,6 +6,8 @@ value_form = case @item.form_type
                f.text_area(:value, style: 'width: 600px; height: 120px;')
              when :check_boxes
                f.check_boxes(:value, @item.config_options)
+             when :multiple_select
+               select_tag 'item[value]', options_from_collection_for_select(@item.config_options.where(id: @item.value), :id, :name), multiple: true, style: 'height: 150px; width: 250px;'
              else
                f.text_field(:value, style: 'width: 400px;')
              end
@@ -19,9 +21,48 @@ value_form = case @item.form_type
   <tr>
     <th>設定値</th>
     <td>
-      <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
-      <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
-      <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+      <%- if @item.form_type == :multiple_select -%>
+        <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_from_collection_for_select(Core.site.groups, :id, :name), prompt: '---- 選択してください ----' %></div>
+        <div style="float: left;"><%= select_tag 'user_candidates', '<option value=""></option>', multiple: true, style: 'height: 150px; width: 250px;' %></div>
+        <div style="float: left; margin: 35px 20px; height: 70px;">
+          <div><%= button_to_function '追加 →', "move_option('user_candidates', 'item_value')" %></div>
+          <div style="margin-top: 20px;"><%= button_to_function '← 除外', "move_option('item_value', 'user_candidates')" %></div>
+        </div>
+        <div style="float: left;"><%= value_form %></div>
+        <%= javascript_tag do %>
+        function move_option(from, to) {
+          var selected_ids = $('#' + to + ' > option').map(function (index, item) { return parseInt($(item).val()); });
+          $('#' + from + ' > option:selected').each(function (index, item) {
+            if (selected_ids.index(parseInt($(item).val())) < 0) {
+              $(item).appendTo($('#' + to)).attr('selected', false);
+            } else {
+              $(item).remove();
+            }
+          });
+        }
+
+        $('#item_value').closest('form').submit(function (e) {
+          $('#user_candidates > option').attr('selected', false);
+          $('#item_value > option').attr('selected', true);
+        });
+
+        $('#groups').on('change', function (event) {
+          var group_id = parseInt(event.target.value);
+          if (isNaN(group_id)) {
+            $('#user_candidates').html('<option value=""></option>');
+          } else {
+            $('#user_candidates').html('<option value="">更新中...</option>');
+            $.get('<%= sys_group_users_path(parent: 'PARENT') %>?options=true'.replace('PARENT', group_id), function (data) {
+              $('#user_candidates').html(data);
+            });
+          }
+        });
+        <% end %>
+      <%- else -%>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+        <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+      <%- end -%>
     </td>
   </tr>
 </table>
