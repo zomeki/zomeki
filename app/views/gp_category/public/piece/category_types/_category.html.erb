@@ -4,6 +4,7 @@
     <ul class="docs">
       <%- @piece.categorize_docs(category.public_docs).each do |doc| -%>
       <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %>
+        <span class="subTitle"><%= doc.subtitle %></span>
         <p class="summary"><%= doc.summary %></p></li>
       <%- end -%>
     </ul>
@@ -21,6 +22,7 @@
     <ul class="docs">
       <%- @piece.categorize_docs(child.public_docs).each do |doc| -%>
       <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %>
+        <span class="subTitle"><%= doc.subtitle %></span>
         <p class="summary"><%= doc.summary %></p></li>
       <%- end -%>
     </ul>
