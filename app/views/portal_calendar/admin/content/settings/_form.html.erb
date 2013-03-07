@@ -1,0 +1,16 @@
+<%
+
+opt = @item.config_options
+value_form = opt ? f.select(:value, opt, :include_blank => true) : f.text_field(:value, :style => "width: 400px;")
+
+%><%= f.hidden_field :content_id %>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr><tr>
+    <th>設定値</th>
+    <td><%= value_form %></td>
+  </tr>
+</table>
