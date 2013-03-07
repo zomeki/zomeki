@@ -6,6 +6,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
   set_config :recognition_type, :name => '承認/承認フロー',
     :options => [['管理者承認が必要', 'with_admin']]
+  set_config :required_recognizers, :name => '承認/必須承認者',
+    :form_type => :multiple_select,
+    :options => lambda { Sys::User }
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :comment => '日付：@date タイトル：@title 組織：@group カテゴリ：@category'
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
