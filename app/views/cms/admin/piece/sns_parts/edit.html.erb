@@ -1,4 +1,4 @@
-<%= form_for(:item, :url => path, :html => {:method => :put}) do |f| %>
+<%= form_for(:item, :url => cms_piece_sns_part_path, :html => {:method => :put}) do |f| %>
   <%= error_messages_for :item %>
   <%= render 'form', f: f %>
   <%= submit :update %>
