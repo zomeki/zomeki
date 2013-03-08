@@ -23,3 +23,7 @@ ext/morph/chaone/config.status
 /upload/
 
 vendor/bundle/
+
+config/core.yml
+config/virtual-hosts/sites.conf
+config/virtual-hosts/zomeki.conf
