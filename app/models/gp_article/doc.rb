@@ -310,7 +310,7 @@ class GpArticle::Doc < ActiveRecord::Base
       end
     self.tags.each {|t| t.update_last_tagged_at }
 
-    all_tags.each {|t| t.destroy if t.docs.empty? }
+    all_tags.each {|t| t.destroy if t.public_docs.empty? }
   end
 
   def make_file_contents_path_relative
