@@ -24,6 +24,8 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
         result.push(date: date, doc: doc)
       end
+
+    render :index_mobile if Page.mobile?
   end
 
   def show
