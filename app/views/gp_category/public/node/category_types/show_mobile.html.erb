@@ -1,0 +1,10 @@
+<div class="contentGpCategoryCategoryType">
+  <%- unless @category_type.root_categories.empty? -%>
+  <section class="categoryType">
+    <div class="h2"><%= @category_type.title %></div>
+    <%- @category_type.root_categories.each do |category| -%>
+    <div class="category<%= category.name.try(:camelize) %>">・<%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>
