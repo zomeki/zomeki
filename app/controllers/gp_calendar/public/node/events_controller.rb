@@ -35,6 +35,8 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @pagination.next_label = '次の月'
     @pagination.prev_uri = @calendar.prev_month_uri if @calendar.prev_month_date >= @min_date
     @pagination.next_uri = @calendar.next_month_uri if @calendar.next_month_date <= @max_date
+
+    render :index_monthly_mobile if Page.mobile?
   end
 
   def index_yearly

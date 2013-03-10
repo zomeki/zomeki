@@ -16,17 +16,17 @@
           <%- @items[day[:date]].each do |item| -%>
             <%- if item.is_a?(GpArticle::Doc) -%>
               <li class="event"><%= render 'gp_calendar/public/shared/doc', doc: item, list_style: item.content.list_style, date_style: item.content.date_style %></li>
-            <% else %>
+            <%- else -%>
               <li class="event"><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => '_blank') %></li>
-            <% end %>
-          <% end %>
+            <%- end -%>
+          <%- end -%>
         </ul>
         <%- else -%>
         &nbsp;
         <%- end -%>
       </td>
     </tr>
-    <% end %>
+    <%- end -%>
   </table>
 
   <%= @pagination.to_links(:class => 'pagination lowerPagination') %>
