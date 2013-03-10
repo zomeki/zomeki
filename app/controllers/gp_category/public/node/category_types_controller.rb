@@ -11,6 +11,8 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
   def index
     @category_types = @content.category_types.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @category_types.current_page > @category_types.total_pages
+
+    render :index_mobile if Page.mobile?
   end
 
   def show
@@ -19,5 +21,7 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
 
     Page.current_item = @category_type
     Page.title = @category_type.title
+
+    render :show_mobile if Page.mobile?
   end
 end
