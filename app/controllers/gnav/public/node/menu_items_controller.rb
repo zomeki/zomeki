@@ -7,6 +7,8 @@ class Gnav::Public::Node::MenuItemsController < Cms::Controller::Public::Base
   def index
     @menu_items = @content.menu_items.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @menu_items.current_page > @menu_items.total_pages
+
+    render :index_mobile if Page.mobile?
   end
 
   def show
@@ -19,5 +21,7 @@ class Gnav::Public::Node::MenuItemsController < Cms::Controller::Public::Base
     @categories = @menu_item.categories
     @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.level_no
     @categories.reject! {|c| c.level_no > (@least_level_no + 1) }
+
+    render :show_mobile if Page.mobile?
   end
 end

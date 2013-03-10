@@ -1,0 +1,5 @@
+<div class="contentGnavMenuItems">
+  <%- @menu_items.each do |menu_item| -%>
+  <div class="GnavMenu GnavMenu<%= menu_item.name.try(:camelize) %>">・<%= link_to menu_item.title, menu_item.public_uri %></div>
+  <%- end -%>
+</div>

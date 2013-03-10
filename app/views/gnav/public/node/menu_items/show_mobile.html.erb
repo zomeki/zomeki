@@ -1,0 +1,16 @@
+<div class="contentGnavMenuItem">
+<%- unless @categories.empty? -%>
+<%- last_level_no = nil -%>
+<%- @categories.each do |category| -%>
+  <%- if category.level_no == @least_level_no -%>
+    <div class="h2 categoryType categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+    <%- last_level_no = category.level_no -%>
+  <%- else -%>
+    <%- if last_level_no -%>
+    <div class="categoryType categoryType<%= category.name.try(:camelize) %>">・<%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+    <%- last_level_no = category.level_no -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- end -%>
+</div>
