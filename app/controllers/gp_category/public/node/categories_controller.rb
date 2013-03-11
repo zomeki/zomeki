@@ -15,5 +15,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
     Page.current_item = @category
     Page.title = @category.title
+
+    render :show_mobile if Page.mobile?
   end
 end
