@@ -59,14 +59,7 @@ function moveSelectOptions(form, srcId, dstId) {
       srcOpt.remove();
     }
   });
-
-  var ids = [];
-  $('#<%= e2_name %> option').each(function() {
-    ids.push($(this).val())
-  });
-  $('<%= in_name %>').val(ids.join(' '));
 }
-
 //]]>
 </script>
 
@@ -89,3 +82,15 @@ function moveSelectOptions(form, srcId, dstId) {
     </td>
   </tr>
 </table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('<%= in_name %>').closest('form').submit(function (e) {
+    var ids = [];
+    $('#<%= e2_name %> > option').each(function() {
+      ids.push($(this).val());
+    });
+    $('<%= in_name %>').val(ids.join(' '));
+  });
+});
+<%- end -%>
