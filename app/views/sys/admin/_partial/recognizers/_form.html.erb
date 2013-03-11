@@ -25,7 +25,7 @@ item.in_recognizer_ids = e2_list.join(' ')
 
 e1_opt  = []
 e2_opt  = @content.respond_to?(:required_recognizers) ? @content.required_recognizers : []
-users.each {|u| e2_list.index(u.id.to_s) ? e2_opt << u : e1_opt << u }
+users.each {|u| e2_list.index(u.id.to_s) && !e2_opt.include?(u) ? e2_opt << u : e1_opt << u }
 e1_opt  = options_for_select(e1_opt.collect{|u| [u.name_with_account, u.id]})
 e2_opt  = options_for_select(e2_opt.collect{|u| [u.name_with_account, u.id]})
 
