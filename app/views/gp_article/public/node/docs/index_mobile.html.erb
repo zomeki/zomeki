@@ -1,0 +1,11 @@
+<div class="contentGpArticleDocs">
+  <div class="docs">
+    <% @items.each_with_index do |item, idx| %>
+    <%- if item[:date] -%>
+    <div class="h2 date"><%= item[:date] %></div>
+    <%- end -%>
+    <div class="doc">・<%= render 'gp_article/public/shared/doc', doc: item[:doc], list_style: @content.list_style, date_style: @content.date_style %></div>
+    <%- end -%>
+  </div>
+  <%= paginate @docs %>
+</div>
