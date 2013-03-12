@@ -45,8 +45,9 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
 	def prepare_monthly_data
 
 		if @init_page
-			@genre_keys = @genres.map{|item| item.id}
-			@status_keys = @statuses.map{|item| item.id}
+			#全選択状態で画面表示する
+			@genre_keys = [0]
+			@status_keys = [0]
 		else
 			#前後の月の抽出条件を引き継ぐ egnr=event genres, estt=event statuses
 			genres = params[:egnr].nil? ? [] : params[:egnr].split(",")
