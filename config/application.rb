@@ -59,7 +59,7 @@ module ZomekiCMS
       config.i18n.load_path << file if FileTest.exist?(file)
     end
 
-    config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags | %w(table tr th td iframe)
+    config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags | %w(table caption tr th td iframe)
     config.action_view.sanitized_allowed_attributes = ActionView::Base.sanitized_allowed_attributes | %w(style class href src alt title colspan rowspan target id)
   end
 
