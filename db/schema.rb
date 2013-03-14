@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130223174531) do
+ActiveRecord::Schema.define(:version => 20130314031731) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -603,7 +603,7 @@ ActiveRecord::Schema.define(:version => 20130223174531) do
     t.integer  "concept_id"
     t.integer  "content_id"
     t.string   "title"
-    t.text     "body"
+    t.text     "body",           :limit => 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "href"
