@@ -41,8 +41,8 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
-  validates :body, :length => {maximum: 100000}
-  validates :mobile_body, :length => {maximum: 100000}
+  validates :body, :length => {maximum: 300000}
+  validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
 
   validate :validate_inquiry
