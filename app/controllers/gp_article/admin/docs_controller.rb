@@ -21,7 +21,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     if params[:options]
       if params[:category_id]
         if (category = GpCategory::Category.find_by_id(params[:category_id]))
-          @items = category.docs.where(content_id: @content.id)
+          @items = category.docs
         else
           @items = []
         end
