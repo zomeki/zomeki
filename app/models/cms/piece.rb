@@ -36,7 +36,7 @@ class Cms::Piece < ActiveRecord::Base
       end
       write_attribute(:in_settings, values)
     end
-    read_attribute(:in_settings)
+    read_attribute(:in_settings).with_indifferent_access
   end
   
   def in_settings=(values)
