@@ -22,7 +22,7 @@ value_form = case @item.form_type
     <th>設定値</th>
     <td>
       <%- if @item.form_type == :multiple_select -%>
-        <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_from_collection_for_select(Core.site.groups, :id, :name), prompt: '---- 選択してください ----' %></div>
+        <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '---- 選択してください ----' %></div>
         <div style="float: left;"><%= select_tag 'user_candidates', '<option value=""></option>', multiple: true, style: 'height: 150px; width: 250px;' %></div>
         <div style="float: left; margin: 35px 20px; height: 70px;">
           <div><%= button_to_function '追加 →', "move_option('user_candidates', 'item_value')" %></div>
