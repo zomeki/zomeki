@@ -2,9 +2,17 @@
 
 <p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
 
-<div class="body"><%=raw @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/)) %></div>
+<div class="body"><%=raw (if Page.mobile?
+  body_doc = Nokogiri::XML("<root>#{@item.body}</root>")
+  body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
+  body_doc.xpath('/root/*').to_xml
+else
+  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
+end) %></div>
 
+<%- unless Page.mobile? -%>
 <%= render 'cms/public/_partial/maps/view', item: @item %>
+<%- end -%>
 
 <%- unless @item.rel_docs.empty? -%>
 <div class="rels">
@@ -17,6 +25,7 @@
 </div>
 <%- end -%>
 
+<%- unless Page.mobile? -%>
 <%- if (node = @item.content.tag_content_tag.try(:tag_node)) && !@item.tags.empty? -%>
 <div class="tags">
   <h2>関連ワード</h2>
@@ -26,7 +35,8 @@
     <%- end -%>
   </ul>
 </div>
-<% end %>
+<%- end -%>
+<%- end -%>
 
 <%= render 'cms/public/_partial/inquiries/view', item: @item %>
 
