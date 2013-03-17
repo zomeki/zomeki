@@ -17,6 +17,7 @@ gem 'rails_autolink', '1.0.5'
 gem 'omniauth-facebook', '1.3.0'
 gem 'render_component_vho', '3.2.1'
 gem 'moji', '1.6'
+gem 'nokogiri', '1.5.6'
 
 # Gems used only for assets and not required
 # in production environments by default.
