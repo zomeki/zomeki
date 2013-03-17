@@ -27,6 +27,8 @@ class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
     end
 
     @docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
+
+    render :index_mobile if Page.mobile?
   end
 
   private
