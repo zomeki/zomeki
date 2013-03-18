@@ -1,0 +1,10 @@
+<%- unless @item.rel_docs.empty? -%>
+<div class="rels">
+  <h2>関連記事</h2>
+  <ul>
+    <%- @item.rel_docs.each do |doc| next unless doc.public? -%>
+    <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+    <%- end -%>
+  </ul>
+</div>
+<%- end -%>
