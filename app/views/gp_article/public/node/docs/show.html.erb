@@ -5,6 +5,7 @@
 <div class="body"><%=raw (if Page.mobile?
   body_doc = Nokogiri::XML("<root>#{@item.body}</root>")
   body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
+  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').value =~ %r!^file_contents/! }
   body_doc.xpath('/root/*').to_xml
 else
   @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
