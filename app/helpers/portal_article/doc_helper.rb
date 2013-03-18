@@ -1,5 +1,17 @@
 # encoding: utf-8
 module PortalArticle::DocHelper
+	def portal_article_archive_list(base_uri, list)
+		content_tag(:ul) do
+			list.each do |item|
+				year = item[0][0,4]
+				month = item[0][4,2]
+				count = item[1]
+				uri = base_uri + year + '/' + month + '/'
+				concat content_tag(:li, link_to_if(count.to_i > 0, sprintf("%s年%s月(%d)", year, month, count), uri))
+			end
+		end
+	end
+
   def portal_article_docs_view(docs, list_type = :opened)
     return nil if docs.size == 0
     
