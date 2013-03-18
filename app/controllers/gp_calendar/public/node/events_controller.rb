@@ -98,7 +98,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   def event_docs(sdate, edate)
     doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @content.id).map(&:content)
     doc_contents.reject! {|dc| dc.site != Page.site }
-    return [] if doc_contents.empty?
+    return doc_contents if doc_contents.empty?
 
     doc_contents.map {|dc|
       case dc.model
