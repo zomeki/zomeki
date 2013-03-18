@@ -27,10 +27,12 @@ class PortalArticle::Public::Piece::ArchivesController < Sys::Controller::Public
     limit = Page.current_piece.setting_value(:list_count)
     limit = (limit.to_s =~ /^[1-9][0-9]*$/) ? limit.to_i : 10
 
-		#設定に設定した表示月数
-		terms = @content.setting_value(:archive_show_terms).to_i
+		#設定に設定した表示月数(未選択の時は@@termsを設定）
+		term = @content.setting_value(:archive_show_terms).to_i
+		term = @@term if term == 0
+		
 		edate = last_date_of_this_month()
-		sdate = (edate << terms) + 1
+		sdate = (edate << term) + 1
 		@lists = get_count(edate, sdate, @piece.content_id)
 		@base_uri = Page.current_node.public_uri
   end
