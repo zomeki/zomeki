@@ -34,6 +34,8 @@ class GpCategory::Category < ActiveRecord::Base
 
   before_validation :set_attributes_from_parent
 
+  scope :public, where(state: 'public')
+
   def content
     category_type.content
   end
@@ -96,6 +98,10 @@ class GpCategory::Category < ActiveRecord::Base
       end
       child.copy_from_group(child_group) unless child_group.children.empty?
     end
+  end
+
+  def public_children
+    children.public
   end
 
   private

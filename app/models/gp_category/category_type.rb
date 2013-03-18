@@ -27,8 +27,14 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   after_initialize :set_defaults
 
+  scope :public, where(state: 'public')
+
   def root_categories
     categories.where(parent_id: nil)
+  end
+
+  def public_root_categories
+    root_categories.public
   end
 
   def categories_for_option
