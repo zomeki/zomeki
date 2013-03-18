@@ -27,3 +27,7 @@ vendor/bundle/
 /config/database.yml
 /config/virtual-hosts/zomeki.conf
 /config/virtual-hosts/sites.conf
+/.Gemfile.swp
+/nbproject/project.properties
+/nbproject/project.xml
+/.gitignore
