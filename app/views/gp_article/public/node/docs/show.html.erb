@@ -2,28 +2,23 @@
 
 <p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
 
-<div class="body"><%=raw (if Page.mobile?
+<div class="body"><%=raw (unless Page.mobile?
+  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
+else
   body_doc = Nokogiri::XML("<root>#{@item.body}</root>")
   body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
   body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').value =~ %r!^file_contents/! }
   body_doc.xpath('/root/*').to_xml
-else
-  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
 end) %></div>
 
 <%- unless Page.mobile? -%>
 <%= render 'cms/public/_partial/maps/view', item: @item %>
 <%- end -%>
 
-<%- unless @item.rel_docs.empty? -%>
-<div class="rels">
-  <h2>関連記事</h2>
-  <ul>
-    <%- @item.rel_docs.each do |doc| next unless doc.public? -%>
-    <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
-    <%- end -%>
-  </ul>
-</div>
+<%- unless Page.mobile? -%>
+<%= render 'rel_docs', item: @item %>
+<%- else -%>
+<%= render 'rel_docs_mobile', item: @item %>
 <%- end -%>
 
 <%- unless Page.mobile? -%>
