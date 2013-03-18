@@ -19,6 +19,8 @@ class PortalArticle::Content::Setting < Cms::ContentSetting
   #set_config :default_recognizers, :name => "承認/デフォルト承認者"
   set_config :open_fb_comments, :name => 'Facebookコメント表示',
     :options => [['表示する', 'open'], ['表示しない', 'close']]
+  set_config :archive_show_terms, :name => 'アーカイブ表示月数',
+    :options => [['18ヶ月', '18'], ['12ヶ月', '12'], ['6ヶ月', '6']]
 
   validate :validate_value
   
