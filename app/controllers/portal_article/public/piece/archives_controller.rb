@@ -1,7 +1,9 @@
 # encoding: utf-8
 class PortalArticle::Public::Piece::ArchivesController < Sys::Controller::Public::Base
   include PortalArticle::Controller::Feed
-
+	#12ヶ月分表示する
+	@@term = 12
+	
 	def last_date_of_the_month(year, month)
 		dt = Date.new(year, month, 1)
 		return (dt >> 1) - 1
@@ -21,13 +23,14 @@ class PortalArticle::Public::Piece::ArchivesController < Sys::Controller::Public
     @piece   = Page.current_piece
     @content = PortalArticle::Content::Doc.find(@piece.content_id)
     @node = @content.recent_node
-    
+		
     limit = Page.current_piece.setting_value(:list_count)
     limit = (limit.to_s =~ /^[1-9][0-9]*$/) ? limit.to_i : 10
 
-		#この１年間
+		#設定に設定した表示月数
+		terms = @content.setting_value(:archive_show_terms).to_i
 		edate = last_date_of_this_month()
-		sdate = (edate << 12) + 1
+		sdate = (edate << terms) + 1
 		@lists = get_count(edate, sdate, @piece.content_id)
 		@base_uri = Page.current_node.public_uri
   end
