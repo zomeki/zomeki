@@ -11,6 +11,10 @@ class GpCategory::Content::CategoryType < Cms::Content
     @category_type_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCategory::CategoryType').order(:id).first
   end
 
+  def public_category_types
+    category_types.public
+  end
+
   def category_types_for_option
     category_types.map {|ct| [ct.title, ct.id] }
   end
