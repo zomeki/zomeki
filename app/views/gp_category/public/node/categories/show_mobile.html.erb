@@ -1,7 +1,7 @@
 <div class="contentGpCategoryCategoryType">
-  <%- unless @category.children.empty? -%>
+  <%- unless @category.public_children.empty? -%>
     <div class="h2"><%= @category.title %></div>
-    <%- @category.children.each do |category| -%>
+    <%- @category.public_children.each do |category| -%>
     <div class="category<%= category.name.try(:camelize) %>">・<%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
     <%- end -%>
   <%- end -%>
