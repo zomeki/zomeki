@@ -21,6 +21,8 @@ class PortalArticle::Content::Setting < Cms::ContentSetting
     :options => [['表示する', 'open'], ['表示しない', 'close']]
   set_config :archive_show_terms, :name => 'アーカイブ表示月数',
     :options => [['18ヶ月', '18'], ['12ヶ月', '12'], ['6ヶ月', '6']]
+  set_config :archive_show_count_zero, :name => 'アーカイブ記事数ゼロ月の表示',
+    :options => [['記事数ゼロを表示する', '1'], ['記事数ゼロを表示しない', '0']]
 
   validate :validate_value
   
