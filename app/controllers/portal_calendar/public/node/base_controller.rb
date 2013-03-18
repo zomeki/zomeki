@@ -45,8 +45,9 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
 	def prepare_monthly_data
 
 		if @init_page
-			@genre_keys = @genres.map{|item| item.id}
-			@status_keys = @statuses.map{|item| item.id}
+			#全選択状態で画面表示する
+			@genre_keys = [0]
+			@status_keys = [0]
 		else
 			#前後の月の抽出条件を引き継ぐ egnr=event genres, estt=event statuses
 			genres = params[:egnr].nil? ? [] : params[:egnr].split(",")
@@ -66,8 +67,10 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
     items = {}
     @calendar.days.each{|d| items[d[:date]] = [] if d[:month].to_i == @month }
 
+		#@genre_keys, @status_keysに０が含まれるときは全選択指定。それ以外の時、指定のコードで絞り込む。
 		events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, @sdate, @edate)
-		events = events.where("event_genre_id IN (?) AND event_status_id IN (?)", @genre_keys, @status_keys)
+		events = events.where("event_genre_id IN (?)", @genre_keys) unless @genre_keys.include?(0)
+		events = events.where("event_status_id IN (?)", @status_keys) unless @status_keys.include?(0)
 		
 		events.each do |ev|
       (ev.event_start_date .. ev.event_end_date).each do |evdate|
