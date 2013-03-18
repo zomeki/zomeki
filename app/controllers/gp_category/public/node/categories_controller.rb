@@ -16,6 +16,11 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     Page.current_item = @category
     Page.title = @category.title
 
+    @children = @category.public_children
+
+    @docs = @category.public_docs.paginate(page: params[:page], per_page: 20)
+    return http_error(404) if @docs.current_page > @docs.total_pages
+
     render :show_mobile if Page.mobile?
   end
 end
