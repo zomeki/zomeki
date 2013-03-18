@@ -38,24 +38,4 @@ module PortalCalendar::FormHelper
 			end
 		end
   end
-
-  def portal_calendar_link_tag_form(disp_name, url, collection, select_all=true)
-		
-		#ステータスは全て
-		param_estt = "estt=0"
-		content_tag(:p) do
-			concat content_tag(:h3){ disp_name }
-
-			if select_all
-				#全選択オプションの追加
-				concat link_to('全選択', url+"?egnr=0&#{param_estt}")
-				concat '  '
-			end
-				
-			collection.each do |item|
-				concat link_to(item.attributes['title'], url+"?egnr=#{item.attributes['id']}&#{param_estt}")
-				concat '  '
-			end
-		end
-  end
 end
