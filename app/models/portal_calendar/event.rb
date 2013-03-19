@@ -59,20 +59,49 @@ public
 		list = PortalCalendar::Status.where(:content_id => content_id)
 		return options[:only_valid] ? list.where(:state => 'public') : list
 	end
-	
-	def get_genre_title
+
+	#ジャンルの設定値は有効か？（未設定ではないか？）
+	def genre_exists?
 		begin
 			self.event_genre.title
 		rescue
-			self.locale(:invalid)
+			return false
 		end
+		return true
 	end
-	
-	def get_status_title
+
+	#ステイタスの設定値は有効か？（未設定ではないか？）
+	def status_exists?
 		begin
 			self.event_status.title
 		rescue
-			self.locale(:invalid)
+			return false
+		end
+		return true
+	end
+
+	#ジャンルもステイタスも設定値は有効か？（両方未設定ではないか？）
+	def attr_exists?
+		return genre_exists? && status_exists?
+	end
+	
+	#ジャンルのタイトルを取得する
+	def get_genre_title(bEmptyIfMisettei=false)
+		begin
+			self.event_genre.title
+		rescue
+			#未設定の場合には空白、もしくは「未設定」を返す
+			bEmptyIfMisettei ? '' : self.locale(:invalid)
+		end
+	end
+	
+	#ステイタスのタイトルを取得する
+	def get_status_title(bEmptyIfMisettei=false)
+		begin
+			self.event_status.title
+		rescue
+			#未設定の場合には空白、もしくは「未設定」を返す
+			bEmptyIfMisettei ? '' : self.locale(:invalid)
 		end
 	end
 
