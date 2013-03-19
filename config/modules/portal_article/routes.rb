@@ -49,6 +49,9 @@ ZomekiCMS::Application.routes.draw do
     resources :node_categories,
       :controller  => "admin/node/categories",
       :path        => ":parent/node_categories"
+    resources :node_archives,
+      :controller  => "admin/node/archives",
+      :path        => ":parent/node_archives"
 
     ## piece
     resources :piece_recent_docs,
@@ -62,6 +65,8 @@ ZomekiCMS::Application.routes.draw do
       :controller  => "admin/piece/calendars"
     resources :piece_categories,
       :controller  => "admin/piece/categories"
+    resources :piece_archives,
+      :controller  => "admin/piece/archives"
 
     ## tool
     match "tool_import_uri"  => "admin/tool/import_uri#import"
@@ -81,5 +86,7 @@ ZomekiCMS::Application.routes.draw do
     match "node_categories/:name/:attr/index.:format"  => "public/node/categories#show_attr"
     match "node_categories/:name/:file.:format"        => "public/node/categories#show"
     match "node_categories/index.:format"              => "public/node/categories#index"
+    match "node_archives/:year/:month/index.:format"   => "public/node/archives#index"
+    match "node_archives/index.:format"                => "public/node/archives#index"
   end
 end

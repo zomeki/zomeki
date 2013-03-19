@@ -1,0 +1,11 @@
+<div class="contentPortalArticleArchiveDocs">
+
+<ul class="feed">
+  <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+  <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+</ul>
+
+<%= portal_article_docs_view @docs, @content.setting_value(:docs_list_type) %>
+<%= paginate @docs %>
+
+</div>

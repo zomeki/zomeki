@@ -5,7 +5,7 @@
 
   <%- @calendar.days.each do |day| next if day[:class] =~ /^(prev|next)/ -%>
   <%- next unless @items[day[:date]].size > 0 || day[:holiday] -%>
-  <div class="h2"><%= day[:day] %>日（<%= day[:wday_label] %>）</div>
+  <div id="day<%= '%02d' % day[:day] %>" class="date"><%= day[:day] %>日（<%= day[:wday_label] %>）</div>
   <% if day[:holiday] %><div class="doc">・<%= day[:holiday] %></div><% end %>
   <%- @items[day[:date]].each do |item| -%>
     <%- if item.is_a?(GpArticle::Doc) -%>
