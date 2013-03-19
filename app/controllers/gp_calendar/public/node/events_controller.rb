@@ -8,14 +8,20 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @today = Date.today
     @min_date = @today.beginning_of_month
     @max_date = @min_date.since(11.months).to_date
+
+    return http_error(404) unless validate_date
   end
 
   def index
-    redirect_to "#{@node.public_uri}#{@today.year}/#{@today.month.to_s}/"
+    index_monthly
+    if Page.mobile?
+      render :index_monthly_mobile
+    else
+      render :index_monthly
+    end
   end
 
   def index_monthly
-    return http_error(404) unless validate_date
     sdate = Date.new(@year, @month, 1)
     return http_error(404) unless sdate.between?(@min_date, @max_date)
     edate = sdate.since(1.month).to_date
@@ -40,7 +46,6 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   end
 
   def index_yearly
-    return http_error(404) unless validate_date
     return http_error(404) unless @year.between?(@min_date.year, @max_date.year)
     sdate = Date.new(@year, 1, 1)
     edate = sdate.since(1.year).to_date
@@ -78,14 +83,13 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   private
 
   def validate_date
-    if params[:month]
-      @month = params[:month].to_i
-      return false if @month <= 0 || !@month.between?(1, 12)
-    end
-    if params[:year]
-      @year = params[:year].to_i
-      return false if @year <= 0 || !@year.between?(1000, 9999)
-    end
+    @month = params[:month].to_i
+    @month = @today.month if @month.zero?
+    return false unless @month.between?(1, 12)
+
+    @year = params[:year].to_i
+    @year = @today.year if @year.zero?
+    return false unless @year.between?(1000, 9999)
 
     params[:gp_calendar_event_year]     = @year
     params[:gp_calendar_event_month]    = @month
