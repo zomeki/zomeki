@@ -3,7 +3,7 @@
 module PortalArticle::Controller::Feed
 
 	#そのyyyymmに何件のレコードが登録されているかを配列で返す
-	def get_count(et, st, content_id)
+	def get_count(et, st, content_id, show_zero)
 		#et, st には yyyy-mm-dd 形式の日付型がくることを期待している
 		#[[201312,0],[201311,1],,,,[YYYYMM,count]]形式の返り値
 
@@ -19,7 +19,7 @@ module PortalArticle::Controller::Feed
 
 			r = PortalArticle::Doc.find_by_sql(sql)
 			if r.empty?
-				months << [yyyymm, 0]
+				months << [yyyymm, 0] if show_zero
 			else
 				months << [r[0].attributes['YYYYMM'], r[0].attributes['count']]
 			end

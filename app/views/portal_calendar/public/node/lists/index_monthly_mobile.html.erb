@@ -1,8 +1,7 @@
 <div class="calendarEvents calendarMonthlyEvents">
 
-<%= render 'search_cond' %>
-
 <div class="h2"><%= sprintf("%d年%d月", @year, @month) %></div>
+<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
 
 <% @calendar.days.each do |day| %><% next if day[:class] =~ /(next|prev)/ %>
   <div class="date <%= day[:class] %>" id="day<%= sprintf('%02d', day[:day]) %>">
