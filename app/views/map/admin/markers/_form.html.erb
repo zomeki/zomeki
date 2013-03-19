@@ -1,0 +1,24 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :latitude %> <span class="note">※</span></th>
+    <td><%= f.text_field :latitude %> （例：35.7026137299332）</td>
+  </tr>
+  <tr>
+    <th><%= f.label :longitude %> <span class="note">※</span></th>
+    <td><%= f.text_field :longitude %> （例：139.56087112426758）</td>
+  </tr>
+  <tr>
+    <th><%= f.label :window_text %></th>
+    <td><%= f.text_area :window_text, :size => '130x10' %></td>
+  </tr>
+</table>

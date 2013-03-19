@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130314031731) do
+ActiveRecord::Schema.define(:version => 20130318215357) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -687,6 +687,18 @@ ActiveRecord::Schema.define(:version => 20130314031731) do
     t.text     "title"
     t.text     "head",         :limit => 2147483647
     t.text     "body",         :limit => 2147483647
+  end
+
+  create_table "map_markers", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.string   "latitude"
+    t.string   "longitude"
+    t.text     "window_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|

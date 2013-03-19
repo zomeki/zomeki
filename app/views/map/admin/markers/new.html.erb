@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => map_markers_path) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :create %>
+<% end %>
