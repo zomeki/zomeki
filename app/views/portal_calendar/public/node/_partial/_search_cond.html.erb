@@ -3,5 +3,5 @@
 # and open the template in the editor.
 %>
 
-<%= portal_calendar_link_tag_form("ジャンル", @calendar.current_month_uri, @genres) %>
-<br/>
+<%= content_tag(:h3, "ジャンル", :class=>'genre_title')  %>
+<%= portal_calendar_link_tag_form(@calendar.current_month_uri, @genres) %>
