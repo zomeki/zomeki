@@ -5,7 +5,7 @@
 
   <table border="1">
     <%- @calendar.days.each do |day| next if day[:class] =~ /^(prev|next)/ -%>
-    <tr class="date" id="day<%= '%02d' % day[:day] %>">
+    <tr id="day<%= '%02d' % day[:day] %>" class="date">
       <th class="<%= day[:class] %>">
         <%= day[:day] %>日（<%= day[:wday_label] %>）
       </th>
