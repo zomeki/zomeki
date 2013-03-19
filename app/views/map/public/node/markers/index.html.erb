@@ -13,6 +13,11 @@ google.maps.event.addDomListener(window, 'load', function (event) {
 });
 <%- end -%>
 
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+  <%= select_tag 'c', options_from_collection_for_select(@categories, :id, :title, params[:c]), :prompt => '----- すべて -----',
+                 :onchange => 'this.form.submit()' %>
+<%- end -%>
+
 <%- unless @markers.empty? -%>
 <table>
   <%- @markers.each do |marker| -%>
