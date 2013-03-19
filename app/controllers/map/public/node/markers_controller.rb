@@ -9,7 +9,11 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
   end
 
   def index
-    @markers = @content.public_markers + public_doc_markers
+    if params[:c].present?
+      @markers = public_doc_markers
+    else
+      @markers = @content.public_markers + public_doc_markers
+    end
   end
 
   private
