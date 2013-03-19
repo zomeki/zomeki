@@ -1,6 +1,15 @@
 # encoding: utf-8
 module PortalCalendar::FormHelper
-  def portal_calendar_link_tag_form(url, collection, select_all=true)
+  def monthly_event_tag(item)
+		content_tag(:table,
+			content_tag(:tr) do
+				content_tag(:td, item.get_genre_title)
+				content_tag(:td, content_tag(:li, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event'))
+			end
+			)
+	end
+
+	def portal_calendar_link_tag_form(url, collection, select_all=true)
 		
 		#ステータスは全て
 		param_estt = "estt=0"
