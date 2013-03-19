@@ -22,6 +22,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },
 #    :options => GpArticle::Doc::STATE_OPTIONS,
     :form_type => :check_boxes
+  set_config :map_content_marker_id, :name => 'マップ',
+    :options => lambda { Map::Content::Marker.all.map {|m| [m.name, m.id] } }
 
   def upper_text
   end
