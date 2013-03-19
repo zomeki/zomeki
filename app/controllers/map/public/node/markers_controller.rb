@@ -23,7 +23,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
 
     doc_contents.each do |dc|
       GpArticle::Content::Doc.find(dc.id).public_docs.each do |d|
-        if d.maps.empty?
+        if d.maps.empty? || d.maps.first.markers.empty?
           next
         else
           @categories |= d.categories.select {|c| c.public? }
