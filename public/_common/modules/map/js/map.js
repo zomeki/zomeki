@@ -43,7 +43,7 @@ Map.prototype.set_marker = function (id, latitude, longitude, title, window_text
     this._markers[id] = this.create_marker({
         position: new google.maps.LatLng(latitude, longitude),
         title: title,
-        icon: 'http://chart.googleapis.com/chart?chst=d_map_pin_icon_withshadow&chld=star|ffcccc',
+        icon: 'http://chart.googleapis.com/chart?chst=d_map_pin_icon_withshadow&chld=info|ff9999',
         map: this._map_canvas,
         animation: google.maps.Animation.DROP,
         window_text: window_text

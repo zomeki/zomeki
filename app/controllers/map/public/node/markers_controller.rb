@@ -4,6 +4,8 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     @node = Page.current_node
     @content = Map::Content::Marker.find_by_id(@node.content.id)
     return http_error(404) unless @content
+
+    @categories = []
   end
 
   def index
@@ -16,12 +18,19 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     markers = []
 
     doc_contents = Cms::ContentSetting.where(name: 'map_content_marker_id', value: @content.id).map(&:content)
-    doc_contents.reject! {|dc| dc.model != 'GpArticle::Doc' || dc.site != Page.site }
+    doc_contents.select! {|dc| dc.model == 'GpArticle::Doc' && dc.site == Page.site }
     return markers if doc_contents.empty?
 
     doc_contents.each do |dc|
       GpArticle::Content::Doc.find(dc.id).public_docs.each do |d|
-        next if d.maps.empty?
+        if d.maps.empty?
+          next
+        else
+          @categories |= d.categories.select {|c| c.public? }
+        end
+
+        next if params[:c].present? && !d.category_ids.include?(params[:c].to_i)
+
         d.maps.first.markers.each do |m|
           markers << @content.markers.build(title: m.name, latitude: m.lat, longitude: m.lng,
                                             window_text: %Q(<a href="#{d.public_uri}">#{d.title}</a>))
