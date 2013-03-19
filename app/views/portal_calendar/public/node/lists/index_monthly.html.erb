@@ -1,8 +1,7 @@
 <div class="portalCalendarLists">
 
-<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
-
 <h2><%= sprintf("%d年%d月", @year, @month) %></h2>
+<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
 
 <%= @pagination.to_links(:class => "pagination upperPagination") %>
 
