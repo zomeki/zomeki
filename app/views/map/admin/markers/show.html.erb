@@ -1,0 +1,22 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :latitude %></th>
+    <td><%= @item.latitude %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :longitude %></th>
+    <td><%= @item.longitude %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :window_text %></th>
+    <td><%=simple_format @item.window_text %></td>
+  </tr>
+</table>
