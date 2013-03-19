@@ -70,10 +70,6 @@ class Cms::Node < ActiveRecord::Base
     uri = site.uri
     parents_tree.each{|n| uri += "#{n.name}/" if n.name != '/' }
     uri = uri.gsub(/\/$/, '') if directory == 0
-    if self.model == 'GpCalendar::Event'
-      today = Date.today
-      uri += "#{today.year}/#{today.month.to_s}/"
-    end
     @public_uri = uri
   end
   
@@ -82,10 +78,6 @@ class Cms::Node < ActiveRecord::Base
     uri = site.full_uri
     parents_tree.each{|n| uri += "#{n.name}/" if n.name != '/' }
     uri = uri.gsub(/\/$/, '') if directory == 0
-    if self.model == 'GpCalendar::Event'
-      today = Date.today
-      uri += "#{today.year}/#{today.month.to_s}/"
-    end
     @public_full_uri = uri
   end
   
