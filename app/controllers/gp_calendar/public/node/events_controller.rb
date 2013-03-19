@@ -14,11 +14,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
 
   def index
     index_monthly
-    if Page.mobile?
-      render :index_monthly_mobile
-    else
-      render :index_monthly
-    end
+    render :index_monthly unless Page.mobile?
   end
 
   def index_monthly

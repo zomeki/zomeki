@@ -1,5 +1,15 @@
 # encoding: utf-8
 module PortalCalendar::FormHelper
+	def get_genre_title(item)
+		title = item.get_genre_title(true)
+		return title.size > 0 ? content_tag(:span, title, :class=>sprintf("genre%02d", item.id)) : "&nbsp;".html_safe
+	end
+	
+	def get_status_title(item)
+		title = item.get_status_title(false)
+		return title.size > 0 ? content_tag(:span, title, :class=>sprintf("status%02d", item.id)) : "&nbsp;".html_safe
+	end
+	
   def monthly_event_tag(item)
 		content_tag(:table,
 			content_tag(:tr) do

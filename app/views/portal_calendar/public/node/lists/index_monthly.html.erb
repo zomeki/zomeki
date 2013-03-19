@@ -14,19 +14,22 @@
 	  </th>
 	  <td>
 	  <% if @items[day[:date]].size > 0 || day[:holiday] %>
-		<ul class="events">
+		<table class="events">
 	    <% if day[:holiday] %>
-		  <li class="holiday"><%= day[:holiday] %></li>
+		  <%= content_tag(:tr) do %>
+			<%= content_tag(:td, day[:holiday], :class=>"holiday") %>
+		  <% end %>
 		<% end %>
 
 		<% @items[day[:date]].each do |item| %>
-		  <%= content_tag(:div, '', :class=>'event_body') do  %>
-			<%= content_tag(:li, item.get_genre_title, :class=>'event_genre') %>
-		    <%= content_tag(:li, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event') %>
-			<%= content_tag(:li, item.get_status_title, :class=>'event_status') %>
+		  <% next unless item.attr_exists? %>
+		  <%= content_tag(:tr) do  %>
+			<%= content_tag(:td, get_genre_title(item), :class=>'event_genre') %>
+		    <%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
+			<%= content_tag(:td, get_status_title(item), :class=>'event_status') %>
 		  <% end %>
 		<% end %>
-		</ul>
+		</table>
 	  <% else %>
 		&nbsp;
 	  <% end %>
