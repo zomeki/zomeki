@@ -53,6 +53,17 @@ class Gnav::MenuItem < ActiveRecord::Base
     }
   end
 
+  def public_categories
+    category_sets.inject([]) {|result, category_set|
+      next result unless category_set.category.public?
+      if category_set.layer == 'descendants'
+        result | category_set.category.public_descendants
+      else
+        result | [category_set.category]
+      end
+    }
+  end
+
   def bread_crumbs(menu_item_node)
     crumbs = []
 
