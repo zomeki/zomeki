@@ -2,7 +2,9 @@ var Map = function (id, latitude, longitude) {
   this._map_canvas = new google.maps.Map(document.getElementById(id), {
       center: new google.maps.LatLng(latitude, longitude),
       zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scaleControl: true,
+      scrollwheel: false
     });
 
   this._markers = {};
@@ -17,7 +19,6 @@ Map.prototype.create_marker = function (options) {
     var iw_opened = false;
 
     var marker = new google.maps.Marker(options);
-
     marker.open_info_window = function () {
         info_window.open(marker.getMap(), marker);
         iw_opened = true;

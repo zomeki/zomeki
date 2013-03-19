@@ -1,13 +1,25 @@
-<div id="map_canvas" style="height: 500px; width: 700px;"></div>
+<div id="map_canvas" style="height: 350px; width: 700px;"></div>
 
 <%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false' %>
 <%= javascript_include_tag '/_common/modules/map/js/map.js' %>
 <%= javascript_tag do -%>
 var map;
 google.maps.event.addDomListener(window, 'load', function (event) {
-  map = new Map('map_canvas', 35.702708, 139.560831);
-  map.set_marker('mitaka', 35.702708, 139.560831, '三鷹駅', 'ここが三鷹駅です！');
-  map.set_marker('ino', 35.699129, 139.571428, '井の頭公園', 'ここが井の頭公園です！');
-  map.set_marker('tokyo', 35.681382, 139.766084, '東京駅る', 'ここが東京駅です！');
+  map = new Map('map_canvas', <%= @markers.first.try(:latitude) || 0 %>, <%= @markers.first.try(:longitude) || 0 %>);
+  <%- @markers.each do |marker| -%>
+    map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
+                   '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>');
+  <%- end -%>
 });
+<%- end -%>
+
+<%- unless @markers.empty? -%>
+<table>
+  <%- @markers.each do |marker| -%>
+  <tr>
+    <td><%= marker.title %></td>
+    <td><%= link_to_function '移動', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
+  </tr>
+  <%- end -%>
+</table>
 <%- end -%>

@@ -14,10 +14,12 @@ class Map::Marker < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   validates :title, :presence => true
-  validates :latitude, :presence => true
-  validates :longitude, :presence => true
+  validates :latitude, :presence => true, :numericality => true
+  validates :longitude, :presence => true, :numericality => true
 
   after_initialize :set_defaults
+
+  scope :public, where(state: 'public')
 
   private
 
