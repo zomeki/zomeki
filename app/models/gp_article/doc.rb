@@ -83,6 +83,15 @@ class GpArticle::Doc < ActiveRecord::Base
     super raw_tags.gsub('　', ' ')
   end
 
+  def public_path
+    if name =~ /^[0-9]{13}$/
+      _name = name.gsub(/^((\d{4})(\d\d)(\d\d)(\d\d)(\d\d).*)$/, '\2/\3/\4/\5/\6/\1')
+    else
+      _name = ::File.join(name[0..0], name[0..1], name[0..2], name)
+    end
+    "#{content.public_path}/docs/#{_name}/index.html"
+  end
+
   def public_uri=(uri)
     @public_uri = uri
   end
