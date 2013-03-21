@@ -110,9 +110,6 @@ class Cms::KanaDictionary < ActiveRecord::Base
       dic_data[:unidic] += item.unidic_body.gsub(/\r\n/, "\n") + "\n"
     end
 
-    dic_data[:ipadic] = '' if dic_data[:ipadic] =~ /^\n*$/
-    dic_data[:unidic] = '' if dic_data[:unidic] =~ /^\n*$/
-    
     if dic_data[:ipadic].blank?
       dic_data[:ipadic] = '(品詞 (記号 アルファベット)) ((見出し語 (ZOMEKI 500)) (読み ゾメキ) (発音 ゾメキ))'
     end
