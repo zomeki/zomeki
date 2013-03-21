@@ -2,6 +2,8 @@
 require 'nkf'
 class Cms::Lib::Navi::Ruby
   def self.convert(str)
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     return str if str.to_s == ''
     
     chasenrc = './config/chasenrc_ruby'
