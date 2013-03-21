@@ -10,10 +10,11 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
 
   def index
     if params[:c].present?
-      @markers = public_doc_markers
+      markers = public_doc_markers
     else
-      @markers = @content.public_markers + public_doc_markers
+      markers = @content.public_markers + public_doc_markers
     end
+    @markers = markers.paginate(page: params[:page], per_page: 30)
   end
 
   private
@@ -36,8 +37,8 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
         next if params[:c].present? && !d.category_ids.include?(params[:c].to_i)
 
         d.maps.first.markers.each do |m|
-          markers << @content.markers.build(title: m.name, latitude: m.lat, longitude: m.lng,
-                                            window_text: %Q(<a href="#{d.public_uri}">#{d.title}</a>))
+          markers << @content.markers.build(title: d.title, latitude: m.lat, longitude: m.lng,
+                                            window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>))
         end
       end
     end
