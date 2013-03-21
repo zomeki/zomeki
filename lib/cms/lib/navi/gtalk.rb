@@ -7,6 +7,8 @@ class Cms::Lib::Navi::Gtalk
   end
   
   def make(*args)
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     text    = nil
     options = {}
     
