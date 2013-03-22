@@ -41,7 +41,6 @@
 		<% if this_day[:events].size > 0 %>
 		  <ul>
 		  <% this_day[:events].each do |item| %>
-			<% next unless item.attr_exists? %>
 			<li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
 		  <% end %>
 		  </ul>
