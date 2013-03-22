@@ -14,7 +14,7 @@
   });
   <%- end -%>
 
-  <div class="searchForm">カテゴリ：<%= form_tag '', :method => 'get', :class => 'search' do -%>
+  <div class="searchForm"><span>カテゴリ：</span><%= form_tag '', :method => 'get', :class => 'search' do -%>
     <%= select_tag 'c', options_from_collection_for_select(@categories, :id, :title, params[:c]), :prompt => '----- すべて -----',
                    :onchange => 'this.form.submit()' %>
   <%- end -%></div>
@@ -27,8 +27,8 @@
     </tr>
     <%- @markers.each do |marker| -%>
     <tr>
-      <td><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
-      <td><%= link_to_function '移動', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
+      <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
+      <td class="marker"><%= link_to_function '移動', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
     </tr>
     <%- end -%>
   </table>
