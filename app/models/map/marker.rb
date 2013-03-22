@@ -21,6 +21,8 @@ class Map::Marker < ActiveRecord::Base
 
   scope :public, where(state: 'public')
 
+  belongs_to :doc, :class_name => 'GpArticle::Doc' # Not saved to database
+
   private
 
   def set_defaults
