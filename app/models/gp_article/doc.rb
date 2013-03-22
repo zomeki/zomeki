@@ -10,6 +10,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Task
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
+  include Cms::Model::Base::Page::TalkTask
   include Cms::Model::Rel::Inquiry
   include Cms::Model::Rel::Map
 

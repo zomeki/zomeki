@@ -1,8 +1,6 @@
 # encoding: utf-8
 require 'nkf'
 class Cms::Lib::Navi::Gtalk
-  include ::ActionView::Helpers::SanitizeHelper
-
   def self.make_text(content)
     text = self.html_to_string(NKF.nkf('-w', content.to_s))
     return self.to_gtalk_string(text)
@@ -29,7 +27,7 @@ class Cms::Lib::Navi::Gtalk
     return false unless text
     
     text = self.class.make_text(text)
-    text = text[0, 600]
+    text = text[0, 500]
     
     cnf = Tempfile::new("gtalk_cnf", '/tmp')
     wav = Tempfile::new("gtalk_wav", '/tmp')
