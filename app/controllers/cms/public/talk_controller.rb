@@ -15,7 +15,7 @@ class Cms::Public::TalkController < ApplicationController
     return http_error(404) if res.status != 200
     
     gtalk = Cms::Lib::Navi::Gtalk.new
-    gtalk.make gtalk.strip_tags(gtalk.sanitize(res.body)).gsub(/\r|\n/, ' ').gsub(/ +/, ' ')
+    gtalk.make res.body
     file = gtalk.output
     send_file(file[:path], :type => file[:mime_type], :filename => 'sound.mp3', :disposition => 'inline')
     
