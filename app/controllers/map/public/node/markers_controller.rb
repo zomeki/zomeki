@@ -1,4 +1,7 @@
 # encoding: utf-8
+
+require 'will_paginate/array'
+
 class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
   def pre_dispatch
     @node = Page.current_node
@@ -38,7 +41,8 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
 
         d.maps.first.markers.each do |m|
           markers << @content.markers.build(title: d.title, latitude: m.lat, longitude: m.lng,
-                                            window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>))
+                                            window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>),
+                                            doc: d)
         end
       end
     end
