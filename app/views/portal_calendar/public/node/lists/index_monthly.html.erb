@@ -22,11 +22,10 @@
 		<% end %>
 
 		<% @items[day[:date]].each do |item| %>
-		  <% next unless item.attr_exists? %>
 		  <%= content_tag(:tr) do  %>
-			<%= content_tag(:td, get_genre_title(item), :class=>'event_genre') %>
-		    <%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
-			<%= content_tag(:td, get_status_title(item), :class=>'event_status') %>
+			<%= content_tag(:td, get_genre_title(item), :class=>'event_genre') if item.genre_exists? %>
+			<%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
+			<%= content_tag(:td, get_status_title(item), :class=>'event_status') if item.status_exists? %>
 		  <% end %>
 		<% end %>
 		</table>
