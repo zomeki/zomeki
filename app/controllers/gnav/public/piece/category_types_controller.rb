@@ -8,7 +8,7 @@ class Gnav::Public::Piece::CategoryTypesController < Sys::Controller::Public::Ba
   end
 
   def index
-    piece_categories = @piece.categories
+    piece_categories = @piece.public_categories
 
     case @item
     when Gnav::MenuItem

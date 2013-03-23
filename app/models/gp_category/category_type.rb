@@ -29,6 +29,10 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   scope :public, where(state: 'public')
 
+  def public_categories
+    categories.public
+  end
+
   def root_categories
     categories.where(parent_id: nil)
   end

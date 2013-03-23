@@ -42,6 +42,24 @@ class Gnav::Piece::CategoryType < Cms::Piece
     end
   end
 
+  def public_categories
+    unless category_type
+      return category_types.inject([]) {|result, ct|
+                 result | ct.public_root_categories.inject([]) {|r, c| r | c.public_descendants }
+               }
+    end
+
+    if (category_id = setting_value(:category_id)).present?
+      if layer == 'descendants'
+        category_type.public_categories.find_by_id(category_id).try(:public_descendants) || []
+      else
+        category_type.public_categories.where(id: category_id)
+      end
+    else
+      category_type.public_root_categories.inject([]) {|r, c| r | c.public_descendants }
+    end
+  end
+
   def category
     return nil if categories.empty?
 
