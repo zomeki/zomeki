@@ -1,8 +1,8 @@
-<%- unless @piece.categorize_docs(category.public_docs).empty? -%>
+<%- unless @piece.categorize_docs(@category.public_docs).empty? -%>
 <div class="docs">
-  <section class="category <%= category.name -%>">
+  <section class="category <%= @category.name -%>">
     <ul class="docs">
-      <%- @piece.categorize_docs(category.public_docs).each do |doc| -%>
+      <%- @piece.categorize_docs(@category.public_docs).each do |doc| -%>
       <li><%= render 'gp_category/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %>
         <span class="subTitle"><%= doc.subtitle %></span>
         <p class="summary"><%= doc.summary %></p></li>
@@ -12,11 +12,11 @@
 </div>
 <%- end -%>
 
-<%- unless category.children.empty? -%>
-<div class="level<%= category.level_no + 1 -%>">
-  <%- category.children.each do |child| -%>
+<%- unless @category.public_children.empty? -%>
+<div class="level<%= @category.level_no + 1 -%>">
+  <%- @category.public_children.each do |child| -%>
   <section class="category <%= child.name -%><%= cycle '', ' cycle' %>">
-    <h3><%= link_to child.title, "#{category_type.public_uri}#{child.path_from_root_category}/" %></h3>
+    <h3><%= link_to child.title, "#{@category.category_type.public_uri}#{child.path_from_root_category}/" %></h3>
 
     <%- unless @piece.categorize_docs(child.public_docs).empty? -%>
     <ul class="docs">
@@ -28,10 +28,10 @@
     </ul>
     <%- end -%>
 
-    <%- unless child.children.empty? -%>
+    <%- unless child.public_children.empty? -%>
     <ul class="level<%= child.level_no + 1 -%>">
-      <%- child.children.each do |grandchild| -%>
-      <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, "#{category_type.public_uri}#{grandchild.path_from_root_category}/" %></li>
+      <%- child.public_children.each do |grandchild| -%>
+      <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, "#{@category.category_type.public_uri}#{grandchild.path_from_root_category}/" %></li>
       <%- end -%>
     </ul>
     <%- end -%>
