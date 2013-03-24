@@ -24,6 +24,10 @@ class GpCategory::Piece::CategoryType < Cms::Piece
     content.category_types
   end
 
+  def public_category_types
+    category_types.public
+  end
+
   def category_types_for_option
     category_types.map {|ct| [ct.title, ct.id] }
   end
