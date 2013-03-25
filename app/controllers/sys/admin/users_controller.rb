@@ -19,10 +19,10 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
     # システム管理者以外は選択サイトのユーザしか操作できない
     unless Core.user.root?
       site_restriction = {
-             joins: ['JOIN sys_users_groups AS sug ON sug.user_id = sys_users.id',
-                     'JOIN cms_site_belongings AS csb ON csb.group_id = sug.group_id'],
-        conditions: ['csb.site_id = ?', Core.site.id]
-      }
+          joins: ['JOIN sys_users_groups AS sug ON sug.user_id = sys_users.id',
+                  'JOIN cms_site_belongings AS csb ON csb.group_id = sug.group_id']
+        }
+      item.and 'csb.site_id', Core.site.id
     end
 
     @items = item.find(:all, site_restriction)
