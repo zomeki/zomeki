@@ -278,9 +278,12 @@ class GpArticle::Doc < ActiveRecord::Base
   private
 
   def set_name
-    return unless self.name.blank?
-    date = created_at.try(:strftime, '%Y%m%d')
-    date ||= Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
+    return if self.name.present?
+    date = if created_at
+             created_at.strftime('%Y%m%d')
+           else
+             Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
+           end
     seq = Util::Sequencer.next_id('gp_article_docs', :version => date)
     self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
   end
