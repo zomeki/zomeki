@@ -14,21 +14,23 @@
 	  </th>
 	  <td>
 	  <% if @items[day[:date]].size > 0 || day[:holiday] %>
-		<table class="events">
-	    <% if day[:holiday] %>
-		  <%= content_tag(:tr) do %>
-			<%= content_tag(:td, day[:holiday], :class=>"holiday") %>
-		  <% end %>
-		<% end %>
+      <%= content_tag(:ul, :class=>'events') do %>
+        <%= content_tag(:li, day[:holiday], :class=>"holiday") if day[:holiday] %>
 
-		<% @items[day[:date]].each do |item| %>
-		  <%= content_tag(:tr) do  %>
-			<%= content_tag(:td, get_genre_title(item), :class=>'event_genre') if item.genre_exists? %>
-			<%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
-			<%= content_tag(:td, get_status_title(item), :class=>'event_status') if item.status_exists? %>
-		  <% end %>
-		<% end %>
-		</table>
+      	<% @items[day[:date]].each do |item| %>
+          <%= content_tag(:li, '', :class=>'event') do %>
+            <%= content_tag(:table) do %>
+              <%= content_tag(:tbody) do %>
+                <%= content_tag(:tr) do  %>
+                  <%= content_tag(:td, get_genre_title(item), :class=>'event_genre') if @genre_registered %>
+                  <%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
+                  <%= content_tag(:td, get_status_title(item), :class=>'event_status') if @status_registered %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
 	  <% else %>
 		&nbsp;
 	  <% end %>

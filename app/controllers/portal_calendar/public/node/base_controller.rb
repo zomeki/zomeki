@@ -26,6 +26,9 @@ class PortalCalendar::Public::Node::BaseController < Cms::Controller::Public::Ba
 		@genres = PortalCalendar::Event.get_genre_valid_list(@content.id)
 		@statuses = PortalCalendar::Event.get_status_valid_list(@content.id)
 
+    @genre_registered = @genres.size > 0
+    @status_registered = @statuses.size > 0
+    
 		@max_row = 5
 		@max_column = 7 - 1
 		@base_nbr = 0
