@@ -19,7 +19,6 @@ function ChangeTab(tabname) {
 
   <% [1,2].each do |nbr| %>
    <div id="tab<%=nbr%>" class="tab">
-	<p>
 		<% events = @events_list[nbr-1] %>
 		<% if events.count > 0 %>
 		  <ul>
@@ -28,7 +27,6 @@ function ChangeTab(tabname) {
 		  <% end %>
 		  </ul>
 		<% end %>
-	  </p>
    </div>
   <% end %>
 </div>
