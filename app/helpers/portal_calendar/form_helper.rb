@@ -6,7 +6,7 @@ module PortalCalendar::FormHelper
 	end
 	
 	def get_status_title(item)
-		title = item.get_status_title(false)
+		title = item.get_status_title(true)
 		return title.size > 0 ? content_tag(:span, title, :class=>sprintf("status%02d", item.id)) : "&nbsp;".html_safe
 	end
 	
