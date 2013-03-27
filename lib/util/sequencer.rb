@@ -4,10 +4,8 @@ class Util::Sequencer
     name    = name.to_s
     version = options[:version] || 0
     
-    lock = name.to_s + '_' + version.to_s
-    unless Util::File::Lock.lock_by_name(lock)
-      raise "error: sequencer locked"
-    end
+    lock = Util::File::Lock.lock("#{name}_#{version}")
+    raise("error: sequencer locked") unless lock
     
     if seq = Sys::Sequence.versioned(version.to_s).find_by_name(name)
       seq.value += 1
@@ -20,7 +18,7 @@ class Util::Sequencer
       seq.save
     end
     
-    Util::File::Lock.unlock_by_name(lock)
+    lock.unlock
     
     if options[:md5]
       require 'digest/md5'
