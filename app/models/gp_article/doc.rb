@@ -188,7 +188,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def bread_crumbs(doc_node)
     crumbs = []
 
-    categories.each do |category|
+    categories.public.each do |category|
       category_type = category.category_type
       if (node = category.content.category_type_node)
         crumb = node.bread_crumbs.crumbs.first
