@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130318215357) do
+ActiveRecord::Schema.define(:version => 20130408125038) do
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -1178,12 +1178,12 @@ ActiveRecord::Schema.define(:version => 20130318215357) do
   end
 
   create_table "sys_users", :force => true do |t|
-    t.string   "state",                     :limit => 15
+    t.string   "state",                           :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ldap",                                                       :null => false
+    t.integer  "ldap",                                                             :null => false
     t.string   "ldap_version"
-    t.integer  "auth_no",                                                    :null => false
+    t.integer  "auth_no",                                                          :null => false
     t.string   "name"
     t.string   "name_en"
     t.string   "account"
@@ -1191,8 +1191,10 @@ ActiveRecord::Schema.define(:version => 20130318215357) do
     t.string   "email"
     t.text     "remember_token"
     t.datetime "remember_token_expires_at"
-    t.boolean  "admin_creatable",                         :default => false
-    t.boolean  "site_creatable",                          :default => false
+    t.boolean  "admin_creatable",                               :default => false
+    t.boolean  "site_creatable",                                :default => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_token_expires_at"
   end
 
   create_table "sys_users_groups", :id => false, :force => true do |t|

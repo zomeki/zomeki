@@ -1,0 +1,23 @@
+    <div class="copyright"><small>Copyright &copy; 2012 ZOMEKI All Rights Reserved. <%= image_tag '/_common/themes/admin/images/poweredby.gif', alt: 'Powered By ZOMEKI' %></small></div>
+  </div>
+</div>
+
+<!--[if lt IE 10]>
+<%= javascript_include_tag '/_common/js/jquery.min.js' %>
+<%= javascript_include_tag '/_common/js/jquery.placeholder.min.js' %>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('[placeholder]').placeholder().css('color', '#999').focus(function () {
+    $(this).css('color', '#000');
+  }).blur(function () {
+    if($(this).val() == 'ユーザID' || $(this).val() == 'パスワード' || $(this).val() == 'パスワード確認') {
+      $(this).css('color', '#999').focus(function () {
+        $(this).css('color', '#000');
+      });
+    }
+  });
+});
+<%- end -%>
+<![endif]-->
+</body>
+</html>

@@ -35,6 +35,7 @@ private
   def authenticate
     return true  if logged_in?
     return false if request.env['PATH_INFO'] =~ Regexp.new("^/#{ZomekiCMS::ADMIN_URL_PREFIX}/login")
+    return false if request.env['PATH_INFO'] =~ Regexp.new("^/#{ZomekiCMS::ADMIN_URL_PREFIX}/password")
     uri  = request.env['PATH_INFO']
     uri += "?#{request.env['QUERY_STRING']}" if !request.env['QUERY_STRING'].blank?
     cookies[:sys_login_referrer] = uri

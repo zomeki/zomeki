@@ -72,6 +72,11 @@ input {
 
 .notice {
   height: 0px;
+  color: #090;
+  font-weight: bold;
+}
+.alert {
+  height: 0px;
   color: #f00;
   font-weight: bold;
 }
@@ -83,7 +88,9 @@ input {
 
 }
 #account,
-#password {
+#email,
+#password,
+#password_confirmation {
   width: 253px;
   padding: 8px 10px;
   border: 1px solid #bbb;
@@ -105,12 +112,16 @@ input {
     color: #999;
 }
 .submitters {
-  padding: 0px 0px 50px 0px;
+  padding: 0px 0px 20px 0px;
   text-align: center;
 }
 .submitters .login {
   width: 276px;
   height: 47px;
+}
+.password_reminder {
+  padding: 20px;
+  text-align: right;
 }
 
 .copyright {
