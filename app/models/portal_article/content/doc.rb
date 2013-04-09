@@ -37,6 +37,14 @@ class PortalArticle::Content::Doc < Cms::Content
     item.and :model, 'PortalArticle::RecentDoc'
     @recent_node = item.find(:first, :order => :id)
   end
+
+  def archive_node
+    return @archive_node if @archive_node
+    item = Cms::Node.new.public
+    item.and :content_id, id
+    item.and :model, 'PortalArticle::Archive'
+    @archive_node = item.find(:first, :order => :id)
+  end
   
   def portal_category_node
     return @portal_category_node if @portal_category_node
