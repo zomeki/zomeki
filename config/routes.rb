@@ -75,13 +75,15 @@ ZomekiCMS::Application.routes.draw do
   match "*path.html.r.m3u"       => "cms/public/talk#down_m3u"
 
   ## Admin
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}"                 => "sys/admin/front#index"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/login.:format"   => "sys/admin/account#login"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/login"           => "sys/admin/account#login"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/logout.:format"  => "sys/admin/account#logout"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/logout"          => "sys/admin/account#logout"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/account.:format" => "sys/admin/account#info"
-  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/account"         => "sys/admin/account#info"
+  match "#{ZomekiCMS::ADMIN_URL_PREFIX}"         => 'sys/admin/front#index'
+  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/login"   => 'sys/admin/account#login',  :as => :admin_login
+  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/logout"  => 'sys/admin/account#logout', :as => :admin_logout
+  match "#{ZomekiCMS::ADMIN_URL_PREFIX}/account" => 'sys/admin/account#info',   :as => :admin_account
+
+  get  "#{ZomekiCMS::ADMIN_URL_PREFIX}/password_reminders/new" => 'sys/admin/account#new_password_reminder',    :as => :new_admin_password_reminder
+  post "#{ZomekiCMS::ADMIN_URL_PREFIX}/password_reminders"     => 'sys/admin/account#create_password_reminder', :as => :admin_password_reminders
+  get  "#{ZomekiCMS::ADMIN_URL_PREFIX}/password/edit"          => 'sys/admin/account#edit_password',            :as => :edit_admin_password
+  put  "#{ZomekiCMS::ADMIN_URL_PREFIX}/password"               => 'sys/admin/account#update_password',          :as => :admin_password
 
   ## Modules
   Dir::entries("#{Rails.root}/config/modules").each do |mod|
