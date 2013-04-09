@@ -20,7 +20,7 @@ class PortalArticle::Public::Piece::ArchivesController < Sys::Controller::Public
   def index
     @piece   = Page.current_piece
     @content = PortalArticle::Content::Doc.find(@piece.content_id)
-    @node = @content.recent_node
+    @node = @content.archive_node
 		
     limit = Page.current_piece.setting_value(:list_count)
     limit = (limit.to_s =~ /^[1-9][0-9]*$/) ? limit.to_i : 10
@@ -46,6 +46,6 @@ class PortalArticle::Public::Piece::ArchivesController < Sys::Controller::Public
 		end
 		
 		@lists = get_count(edate, sdate, @piece.content_id, show_count_zero)
-		@base_uri = Page.current_node.public_uri
+		@base_uri = @node.public_uri
   end
 end
