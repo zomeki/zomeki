@@ -75,10 +75,11 @@ private
     
     if Core.mode =~ /^(admin|script)$/ && status != 404
       error_log("#{status} #{request.env['REQUEST_URI']}") if status != 404
-      return respond_to do |format|
-        format.html { render :status => status, :text => "<p>#{message}</p>", :layout => "admin/cms/error" }
-        format.xml  { render :status => status, :xml => "<errors><error>#{message}</error></errors>" }
-      end
+      render :status => status, :text => "<p>#{message}</p>", :layout => "admin/cms/error"
+#      return respond_to do |format|
+#        format.html { render :status => status, :text => "<p>#{message}</p>", :layout => "admin/cms/error" }
+#        format.xml  { render :status => status, :xml => "<errors><error>#{message}</error></errors>" }
+#      end
     end
     
     ## Render
@@ -102,10 +103,11 @@ private
       html = "<html>\n<head></head>\n<body>\n<p>#{message}</p>\n</body>\n</html>\n"
     end
     
-    return respond_to do |format|
-      format.html { render :status => status, :inline => html }
-      format.xml  { render :status => status, :xml => "<errors><error>#{message}</error></errors>" }
-    end
+    render :status => status, :inline => html
+#    return respond_to do |format|
+#      format.html { render :status => status, :inline => html }
+#      format.xml  { render :status => status, :xml => "<errors><error>#{message}</error></errors>" }
+#    end
   end
   
 #  def rescue_exception(exception)
