@@ -101,9 +101,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    set_categories
-
     _create(@item) do
+      set_categories
+
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
@@ -116,9 +116,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    set_categories
-
     _update(@item) do
+      set_categories
+
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
       @item.close unless @item.public? # Don't use "state_public?" here
@@ -226,7 +226,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       category_ids = params[:categories].values.flatten.reject{|c| c.blank? }.uniq
 
       if @category_types.include?(@content.group_category_type)
-        if (group_category = @content.group_category_type.categories.find_by_group_code(Core.user_group.code))
+        if (group_category = @content.group_category_type.categories.find_by_group_code(@item.creator.group.code))
           category_ids |= [group_category.id]
         end
       end
