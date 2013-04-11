@@ -69,10 +69,11 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
 
       body = <<-EOT
 パスワード変更を受け付けました。12時間以内に下記URLから変更を行ってください。
+
 #{edit_admin_password_url(token: token)}
       EOT
 
-      send_mail('noreply', email, '【ZOMEKI】パスワード再設定', body)
+      send_mail('noreply', email, "【#{Core.site.try(:name).presence || 'ZOMEKI'}】パスワード再設定", body)
     end
 
     redirect_to admin_login_url, notice: 'メールにてパスワード再設定手順をお送りしました。'
