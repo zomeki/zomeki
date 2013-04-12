@@ -39,7 +39,8 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def file_content
     @doc = public_or_preview_docs.find_by_name(params[:name])
     if (file = Sys::File.where(parent_unid: @doc.unid, name: "#{params[:basename]}.#{params[:extname]}").first)
-      send_file file.upload_path, :type => file.mime_type, :filename => file.name, :disposition => 'inline'
+      type, disposition = (params[:extname] == 'pdf' ? ['application/pdf', 'inline'] : [file.mime_type, 'attachment'])
+      send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
     else
       http_error(404)
     end
