@@ -40,6 +40,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
     @doc = public_or_preview_docs.find_by_name(params[:name])
     if (file = Sys::File.where(parent_unid: @doc.unid, name: "#{params[:basename]}.#{params[:extname]}").first)
       type, disposition = (params[:extname] == 'pdf' ? ['application/pdf', 'inline'] : [file.mime_type, 'attachment'])
+      disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
       send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
     else
       http_error(404)
