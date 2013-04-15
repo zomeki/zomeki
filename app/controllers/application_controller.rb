@@ -73,9 +73,11 @@ private
     message = " ( #{message} )" if message
     message = "#{status}#{name}#{message}"
     
-    if Core.mode =~ /^(admin|script)$/ && status != 404
+    mode_regexp = Regexp.new("^(#{ZomekiCMS::ADMIN_URL_PREFIX.sub(/^_/, '')}|script)$")
+    if Core.mode =~ mode_regexp && status != 404
       error_log("#{status} #{request.env['REQUEST_URI']}") if status != 404
       render :status => status, :text => "<p>#{message}</p>", :layout => "admin/cms/error"
+      return
 #      return respond_to do |format|
 #        format.html { render :status => status, :text => "<p>#{message}</p>", :layout => "admin/cms/error" }
 #        format.xml  { render :status => status, :xml => "<errors><error>#{message}</error></errors>" }
