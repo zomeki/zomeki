@@ -39,7 +39,7 @@
     <td style="text-align: right;"><%= item.id %></td>
     <td style="text-align: center;">
       <%= link_to_function '添付',
-        %Q(ckeInsertContent('<a href="#{file_content_path}" class="#{item.css_class}" target="_blank">#{h item.united_name}</a>')), id: "link_attach#{item.id}" %>
+        %Q(ckeInsertContent('<a href="#{file_content_path}" class="#{item.css_class}">#{h item.united_name}</a>')), id: "link_attach#{item.id}" %>
     </td>
     <td style="text-align: center;">
       <% if item.image_file? %>
