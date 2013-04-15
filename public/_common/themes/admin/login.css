@@ -66,12 +66,10 @@ input {
   text-align: center;
 }
 .notice {
-  height: 0px;
   color: #090;
   font-weight: bold;
 }
 .alert {
-  height: 0px;
   color: #f00;
   font-weight: bold;
 }
