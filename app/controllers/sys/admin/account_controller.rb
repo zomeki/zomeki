@@ -60,6 +60,11 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   end
 
   def create_password_reminder
+    if params[:account].blank? || params[:email].blank?
+      redirect_to new_admin_password_reminder_url, alert: 'ユーザIDと登録されているメールアドレスを入力してください。'
+      return
+    end
+
     user = Sys::User.where(account: params[:account], email: params[:email]).first
 
     if (email = user.try(:email))
