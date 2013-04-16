@@ -44,15 +44,16 @@ input {
   text-align: center;
 }
 .box {
-  background-color: #ffffff;
-  text-align: center;
   margin: 0px auto;
   -webkit-box-shadow: #999 0px 0px 5px;
   -moz-box-shadow: #999 0px 0px 5px;
   box-shadow: #999 0px 0px 5px;
   behavior: url(/_common/js/PIE.htc);
   position: relative;
+  background-color: #ffffff;
+  text-align: center;
   color: #888;
+  line-height: 1.5;
 }
 .box h2 {
   height: 119px;
@@ -70,6 +71,7 @@ input {
   font-weight: bold;
 }
 .alert {
+  margin-bottom: 10px;
   color: #f00;
   font-weight: bold;
 }

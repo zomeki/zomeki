@@ -61,7 +61,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
 
   def create_password_reminder
     if params[:account].blank? || params[:email].blank?
-      redirect_to new_admin_password_reminder_url, alert: 'ユーザIDと登録されているメールアドレスを入力してください。'
+      redirect_to new_admin_password_reminder_url, alert: 'ユーザIDと登録されているメールアドレスを<br />入力してください。'.html_safe
       return
     end
 
