@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   def send_mail(fr_addr, to_addr, subject, body)
     return false if fr_addr.blank?
     return false if to_addr.blank?
-    DefaultMailer::Mail.deliver(fr_addr, to_addr, subject, body)
+    CommonMailer.plain(from: fr_addr, to: to_addr, subject: subject, body: body).deliver
   end
   
   def send_download
