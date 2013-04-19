@@ -17,12 +17,13 @@ class PortalCalendar::Public::Piece::CalendarsController < Sys::Controller::Publ
     @calendar.month_uri = "#{uri}:year/:month/"
     @calendar.day_uri   = "#{uri}:year/:month/#day:day"
     
+    @events = nil
     dates = []
     if @node
       first_date = Date.new(year, month, 1)
       last_date = (first_date >> 1) - 1
-      events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, first_date, last_date)
-      events.each do |event|
+      @events = PortalCalendar::Event.get_period_records_with_content_id(@content.id, first_date, last_date)
+      @events.each do |event|
         dates << event.get_event_dates
       end
       dates.flatten!.uniq!
