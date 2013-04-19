@@ -34,6 +34,8 @@ ZomekiCMS::Application.routes.draw do
     ## piece
     resources :piece_event_links,
       :controller  => "admin/piece/event_links"
+    resources :piece_calendars,
+      :controller  => "admin/piece/calendars"
   end
   
   ## public
