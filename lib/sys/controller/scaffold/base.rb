@@ -22,7 +22,7 @@ protected
   
   def _create(item, options = {}, &block)
     if item.creatable? && item.save
-      item.reload if item.respond_to?(:reload)
+      item.reload if item.respond_to?(:reload) rescue nil
       status         = params[:_created_status] || :created
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || '登録処理が完了しました。'
