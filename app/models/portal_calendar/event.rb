@@ -28,6 +28,15 @@ private
 	
 public
 	
+  #イベント開催日の日付の配列を返す
+  def get_event_dates
+    dates = []
+    (event_start_date .. event_end_date).each do |date|
+      dates << date
+    end
+    return dates
+  end
+  
 	#指定の期間に登録されているレコードを一覧取得する（content_idでの絞り込みも行う）
 	def self.get_period_records_with_content_id(content_id, sdate, edate)
 		self.get_period_records(sdate, edate).where(:content_id => content_id)
