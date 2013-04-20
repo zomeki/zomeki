@@ -1,0 +1,5 @@
+<ul>
+	<% @events.each do |item| %>
+	  <li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+	<% end %>
+</ul>
