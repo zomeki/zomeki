@@ -49,7 +49,10 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
 
   def content
     if (file = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid), name: "#{params[:basename]}.#{params[:extname]}").first)
-      send_file file.upload_path, :type => file.mime_type, :filename => file.name, :disposition => 'inline'
+      mt = Rack::Mime.mime_type(".#{params[:extname]}")
+      type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
+      disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
+      send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
     else
       http_error(404)
     end
