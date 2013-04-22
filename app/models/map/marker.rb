@@ -7,7 +7,7 @@ class Map::Marker < ActiveRecord::Base
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
 
   # Content
-  belongs_to :content, :foreign_key => :content_id, :class_name => 'Tag::Content::Tag'
+  belongs_to :content, :foreign_key => :content_id, :class_name => 'Map::Content::Marker'
   validates_presence_of :content_id
 
   # Proper
