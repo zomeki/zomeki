@@ -47,7 +47,7 @@ Spork.prefork do
 
 # TODO: 相応しい実装が思いついたときに移動する
   def fg_find_or_create(fg_id)
-    klass = FactoryGirl.build(fg_id).class.name.constantize
+    klass = FactoryGirl.build(fg_id).class
     klass.find_by_id(FactoryGirl.attributes_for(fg_id)[:id]) || FactoryGirl.create(fg_id)
   end
 end
