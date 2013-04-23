@@ -9,11 +9,15 @@ class Util::Sequencer
     lock = Util::File::Lock.lock("#{name}_#{version}")
     raise 'error: sequencer locked' unless lock
 
-    if seq = Sys::Sequence.versioned(version.to_s).find_by_name(name)
-      seq.value += 1
-      seq.save
-    else
-      seq = Sys::Sequence.create(name: name, version: version, value: 1)
+    seq = nil
+
+    Sys::Sequence.transaction do
+      if seq = Sys::Sequence.versioned(version.to_s).find_by_name(name)
+        seq.value += 1
+        seq.save
+      else
+        seq = Sys::Sequence.create(name: name, version: version, value: 1)
+      end
     end
 
     lock.unlock
