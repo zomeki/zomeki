@@ -4,22 +4,12 @@ require 'digest/md5'
 class Util::Sequencer
   def self.next_id(name, options = {})
     name    = name.to_s
-    version = options[:version] || 0
+    version = options[:version].to_i
 
     lock = Util::File::Lock.lock("#{name}_#{version}")
     raise 'error: sequencer locked' unless lock
 
-    seq = nil
-
-    Sys::Sequence.transaction do
-      Sys::Sequence.uncached do
-        if seq = Sys::Sequence.versioned(version.to_s).find_by_name(name)
-          seq.update_column(:value, seq.value + 1)
-        else
-          seq = Sys::Sequence.create(name: name, version: version, value: 1)
-        end
-      end
-    end
+    seq = Sys::Sequence.next(name, version)
 
     lock.unlock
 
