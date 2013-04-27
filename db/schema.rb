@@ -1151,7 +1151,7 @@ ActiveRecord::Schema.define(:version => 20130408125038) do
     t.integer  "value"
   end
 
-  add_index "sys_sequences", ["name", "version"], :name => "name"
+  add_index "sys_sequences", ["name", "version"], :name => "index_sys_sequences_on_name_and_version", :unique => true
 
   create_table "sys_tasks", :force => true do |t|
     t.integer  "unid"
