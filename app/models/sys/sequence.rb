@@ -3,5 +3,5 @@ class Sys::Sequence < ActiveRecord::Base
 
   scope :versioned, lambda {|v| where(version: v) }
 
-  validates :value, :uniqueness => {:scope => [:name, :version]}
+  validates :version, :uniqueness => {:scope => :name}
 end
