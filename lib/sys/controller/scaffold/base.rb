@@ -42,7 +42,7 @@ protected
   
   def _update(item, options = {}, &block)
     if item.editable? && item.save
-      item.reload if item.respond_to?(:reload)
+      item.reload if item.respond_to?(:reload) rescue nil
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = '更新処理が完了しました。'
       yield if block_given?
