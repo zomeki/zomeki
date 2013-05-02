@@ -45,6 +45,20 @@ Spork.prefork do
     config.include(EmailSpec::Matchers)
   end
 
+  def login_as(account)
+    # See Sys::Controller::Admin::Auth#new_login
+    user = Sys::User.find_by_account(account)
+    return nil unless user
+    session[Sys::Controller::Admin::Base::ACCOUNT_KEY] = user.account
+    session[Sys::Controller::Admin::Base::PASSWD_KEY] = user.encrypt_password
+
+    # See Sys::Controller::Admin::Base#initialize_application
+    Core.user = user
+    Core.user.password = Util::String::Crypt.decrypt(user.encrypt_password, Zomeki.config.application['sys.crypt_pass'])
+    Core.user_group = user.group
+    return user
+  end
+
 # TODO: 相応しい実装が思いついたときに移動する
   def fg_find_or_create(fg_id)
     klass = FactoryGirl.build(fg_id).class
