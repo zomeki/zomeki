@@ -5,5 +5,10 @@ ZomekiCMS::Application.routes.draw do
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :content_base,
       :controller => 'admin/content/base'
+
+    ## contents
+    resources :banners,
+      :controller => 'admin/banners',
+      :path       => ':content/banners'
   end
 end

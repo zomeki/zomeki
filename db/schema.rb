@@ -14,9 +14,9 @@
 ActiveRecord::Schema.define(:version => 20130427053031) do
 
   create_table "ad_banner_banners", :force => true do |t|
-    t.integer  "content_id"
     t.string   "name"
     t.string   "title"
+    t.integer  "content_id"
     t.string   "state"
     t.string   "advertiser"
     t.datetime "published_at"
