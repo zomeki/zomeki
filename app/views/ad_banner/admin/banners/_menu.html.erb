@@ -1,0 +1,6 @@
+<%= render 'ad_banner/admin/shared/menu', index_path: ad_banner_banners_path(content: @content),
+                                                 sub: "#{AdBanner::Banner.model_name.human}#{case action_name.to_sym
+                                                                                             when :index; '一覧'
+                                                                                             when :new;   '登録'
+                                                                                             when :edit;  '編集'
+                                                                                             end}" %>
