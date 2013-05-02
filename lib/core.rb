@@ -20,7 +20,7 @@ class Core
   cattr_accessor :publish
   
   ## Initializes.
-  def self.initialize(env = nil)
+  def self.initialize(env = {})
     @@now          = Time.now.to_s(:db)
     @@config       = Util::Config.load(:core)
     @@title        = @@config['title'] || 'ZOMEKI'
