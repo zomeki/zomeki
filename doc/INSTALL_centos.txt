@@ -84,6 +84,9 @@ ZOMEKIソースコードを設置します。
   # mv /var/share/zomeki-zomeki-* /var/share/zomeki
   # chown -R zomeki:zomeki /var/share/zomeki
 
+ログローテーションを設定します。
+  # ln -s /var/share/zomeki/script/logrotation/zomeki /etc/logrotate.d/
+
 **********************************************************************
  4 Apache の設定
 **********************************************************************
