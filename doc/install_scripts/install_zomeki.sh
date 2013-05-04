@@ -29,6 +29,8 @@ centos() {
   mkdir -p /var/share
   tar zxf zomeki-$ZOMEKI_VERSION.tar.gz && mv zomeki-zomeki-* /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
   cd /var/share/zomeki && gem install bundler && bundle install --without test development
+
+  ln -s /var/share/zomeki/script/logrotation/zomeki /etc/logrotate.d/
 }
 
 others() {
