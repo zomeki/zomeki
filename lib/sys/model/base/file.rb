@@ -241,7 +241,12 @@ module Sys::Model::Base::File
     end
     return img
   end
-  
+
+  def file_exist?
+    return false if new_record?
+    File.exist?(upload_path)
+  end
+
 private
   ## filter/aftar_save
   def upload_internal_file
@@ -253,7 +258,7 @@ private
   
   ## filter/aftar_destroy
   def remove_internal_file
-    return true unless FileTest.exist?(upload_path)
+    return true unless file_exist?
     FileUtils.remove_entry_secure(upload_path)
     return true
   end

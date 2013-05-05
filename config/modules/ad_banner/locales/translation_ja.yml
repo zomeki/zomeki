@@ -4,8 +4,16 @@ ja:
       ad_banner/banner: 広告バナー
     attributes:
       ad_banner/banner:
-        advertiser: 業者名
+        advertiser_name: 業者名
+        advertiser_phone: 電話番号
+        advertiser_email: メールアドレス
+        advertiser_contact: 担当者
         published_at: 公開開始日時
         closed_at: 公開終了日時
+        url: URL
+        sort_no: 表示順
         created_at: 作成日時
         state: 状態
+        file: ファイル
+        name: 保存ファイル名
+        title: 表示ファイル名
