@@ -36,9 +36,15 @@ describe AdBanner::Banner do
     expect(banner).to have(1).error_on(:state)
   end
 
-  it 'is invalid without an advertiser' do
-    banner = FactoryGirl.build(:ad_banner_banner_1, advertiser: nil)
+  it 'is invalid without an advertiser name' do
+    banner = FactoryGirl.build(:ad_banner_banner_1, advertiser_name: nil)
     banner.skip_upload
-    expect(banner).to have(1).error_on(:advertiser)
+    expect(banner).to have(1).error_on(:advertiser_name)
+  end
+
+  it 'is invalid without an url' do
+    banner = FactoryGirl.build(:ad_banner_banner_1, url: nil)
+    banner.skip_upload
+    expect(banner).to have(1).error_on(:url)
   end
 end

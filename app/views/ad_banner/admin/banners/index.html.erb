@@ -3,7 +3,7 @@
     <th style="text-align: center; width: 60px;">詳細</th>
     <th>サムネイル</th>
     <th>グループ</th>
-    <th><%= AdBanner::Banner.human_attribute_name :advertiser %></th>
+    <th><%= AdBanner::Banner.human_attribute_name :advertiser_name %></th>
     <th><%= AdBanner::Banner.human_attribute_name :published_at %></th>
     <th><%= AdBanner::Banner.human_attribute_name :closed_at %></th>
     <th><%= AdBanner::Banner.human_attribute_name :created_at %></th>
@@ -12,10 +12,13 @@
 
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: center;"><%= link_to :show, map_marker_path(content: @content, id: item.id) %></td>
-    <td style="text-align: left;"><%= item.title %></td>
-    <td style="text-align: left;"><%= item.latitude %></td>
-    <td style="text-align: left;"><%= item.longitude %></td>
+    <td style="text-align: center;"><%= link_to :show, ad_banner_banner_path(content: @content, id: item.id) %></td>
+    <td style="text-align: center;"><%= image_tag file_content_ad_banner_banner_path(content: @content, id: item.id), width: 100 %></td>
+    <td style="text-align: left;"></td>
+    <td style="text-align: left;"><%= item.advertiser_name %></td>
+    <td style="text-align: left; width: 150px;"><%= item.published_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td style="text-align: left; width: 150px;"><%= item.closed_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td style="text-align: left; width: 150px;"><%= item.created_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
     <td style="text-align: center;"><%= item.status.try(:name) %></td>
   </tr>
   <%- end -%>

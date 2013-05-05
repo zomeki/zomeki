@@ -13,11 +13,11 @@ describe AdBanner::Admin::BannersController do
 
     describe 'response' do
       before do
+        fg_find_or_create(:cms_site_first_example_com)
+
         Core.initialize
         Core.recognize_path("/#{ZomekiCMS::ADMIN_URL_PREFIX}/ad_banner/1/banners")
         login_as(fg_find_or_create(:sys_user_site_admin).account)
-
-        fg_find_or_create(:cms_site_first_example_com)
       end
 
       it 'has banner content' do

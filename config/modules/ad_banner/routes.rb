@@ -7,8 +7,12 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/content/base'
 
     ## contents
-    resources :banners,
+    resources(:banners,
       :controller => 'admin/banners',
-      :path       => ':content/banners'
+      :path       => ':content/banners') do
+      member do
+        get :file_content
+      end
+    end
   end
 end
