@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20130506135350) do
     t.integer  "image_height"
     t.integer  "unid"
     t.integer  "content_id"
+    t.integer  "group_id"
     t.string   "state"
     t.string   "advertiser_name"
     t.string   "advertiser_phone"

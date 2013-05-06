@@ -9,7 +9,7 @@ class AdBanner::Admin::BannersController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = @content.banners.paginate(page: params[:page], per_page: 50)
+    @items = @content.banners.except(:order).order('created_at DESC').paginate(page: params[:page], per_page: 50)
     _index @items
   end
 

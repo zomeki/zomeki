@@ -4,11 +4,11 @@
 
 <table class="show">
   <tr>
-    <th>グループ</th>
-    <td></td>
+    <th><%= AdBanner::Group.model_name.human %></th>
+    <td><%= f.select :group_id, options_from_collection_for_select(@content.groups, :id, :title), include_blank: true %></td>
   </tr>
   <tr>
-    <th><%= f.label :file %></th>
+    <th><%= f.label :file %> <span class="note">※</span></th>
     <td>
       <%- if @item.file_exist? -%>
       <%= image_tag file_content_ad_banner_banner_path(content: @content, id: @item.id), width: 100 %><br />

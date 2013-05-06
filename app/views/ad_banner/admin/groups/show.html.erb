@@ -21,11 +21,14 @@
     <th><%= AdBanner::Banner.model_name.human %>一覧</th>
     <td>
       <%- unless @item.banners.empty? -%>
-      <ul>
+      <table class="noDesign">
         <%- @item.banners.each do |banner| -%>
-        <li><%= image_tag file_content_ad_banner_banner_path(content: @content, id: banner.id), width: 100 %> <%= banner.sort_no %></li>
+        <tr>
+          <td><%= link_to image_tag(file_content_ad_banner_banner_path(content: @content, id: banner.id), width: 100), ad_banner_banner_path(content: @content, id: banner.id) %></td>
+          <td><%= banner.sort_no %></td>
+        </tr>
         <%- end -%>
-      </ul>
+      </table>
       <%- end -%>
     </td>
   </tr>
