@@ -9,7 +9,21 @@ class AdBanner::Admin::BannersController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = @content.banners.except(:order).order('created_at DESC').paginate(page: params[:page], per_page: 50)
+    banners = AdBanner::Banner.arel_table
+    now = Time.now
+
+    items = @content.banners.except(:order).order('created_at DESC')
+
+    items = if params[:published].present?
+              items.where(banners[:state].eq('public').and(banners[:published_at].eq(nil).or(banners[:published_at].lteq(now)).and(banners[:closed_at].eq(nil).or(banners[:closed_at].gt(now)))))
+            elsif params[:closed].present?
+              items.where(banners[:state].eq('closed').or(banners[:published_at].gt(now)).or(banners[:closed_at].lteq(now)))
+            else
+              items
+            end
+
+    @items = items.paginate(page: params[:page], per_page: 50)
+
     _index @items
   end
 
