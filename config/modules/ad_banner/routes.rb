@@ -14,5 +14,9 @@ ZomekiCMS::Application.routes.draw do
         get :file_content
       end
     end
+
+    resources :groups,
+      :controller => 'admin/groups',
+      :path       => ':content/groups'
   end
 end

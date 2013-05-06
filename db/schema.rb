@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130427053031) do
+ActiveRecord::Schema.define(:version => 20130506135350) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -31,6 +31,17 @@ ActiveRecord::Schema.define(:version => 20130427053031) do
     t.datetime "published_at"
     t.datetime "closed_at"
     t.string   "url"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ad_banner_groups", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
     t.integer  "sort_no"
     t.datetime "created_at"
     t.datetime "updated_at"
