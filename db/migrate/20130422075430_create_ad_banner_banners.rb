@@ -12,6 +12,8 @@ class CreateAdBannerBanners < ActiveRecord::Migration
       t.integer    :unid
       t.references :content
 
+      t.references :group
+
       t.string     :state
 
       t.string     :advertiser_name

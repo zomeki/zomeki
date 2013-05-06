@@ -2,8 +2,8 @@
 
 <table class="show">
   <tr>
-    <th>グループ</th>
-    <td></td>
+    <th><%= AdBanner::Group.model_name.human %></th>
+    <td><%= @item.group.try(:title) %></td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :file %></th>

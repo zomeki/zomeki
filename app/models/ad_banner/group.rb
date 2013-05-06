@@ -15,7 +15,7 @@ class AdBanner::Group < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
   validates_presence_of :state
 
-  has_many :banners, :foreign_key => :content_id, :class_name => 'AdBanner::Banner'
+  has_many :banners, :foreign_key => :group_id, :class_name => 'AdBanner::Banner'
 
   validates :name, :presence => true
   validates :title, :presence => true
