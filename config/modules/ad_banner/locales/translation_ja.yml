@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       ad_banner/banner: 広告バナー
+      ad_banner/group: グループ
     attributes:
       ad_banner/banner:
         advertiser_name: 業者名
@@ -17,3 +18,9 @@ ja:
         file: ファイル
         name: 保存ファイル名
         title: 表示ファイル名
+      ad_banner/group:
+        name: グループID
+        title: グループ名
+        sort_no: 表示順
+        updated_at: 更新日時
+        state: 状態
