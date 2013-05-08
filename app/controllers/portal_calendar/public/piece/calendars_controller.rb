@@ -8,6 +8,8 @@ class PortalCalendar::Public::Piece::CalendarsController < Sys::Controller::Publ
       @calendar = Util::Date::Calendar.new params[:year].to_i, params[:month].to_i
     else
       @calendar = Util::Date::Calendar.new
+      year = @calendar.year
+      month = @calendar.month
     end
     
     @content  = PortalCalendar::Content::Base.find(Page.current_piece.content_id)
