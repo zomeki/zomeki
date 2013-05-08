@@ -26,7 +26,7 @@ class PortalCalendar::Public::Piece::CalendarsController < Sys::Controller::Publ
       @events.each do |event|
         dates << event.get_event_dates
       end
-      dates.flatten!.uniq!
+      dates.flatten!.uniq! if dates.size > 0
     end
     
     @calendar.day_link = dates
