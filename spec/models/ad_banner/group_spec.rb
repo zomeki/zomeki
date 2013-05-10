@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe AdBanner::Banner do
+  before do
+    Core.initialize
+    login_as(fg_find_or_create(:sys_user_site_admin).account)
+    fg_find_or_create(:cms_site_first_example_com)
+    Core.recognize_path("/#{ZomekiCMS::ADMIN_URL_PREFIX}/ad_banner/1/banners")
+  end
+
   it 'has a valid factory' do
     group = FactoryGirl.build(:ad_banner_group_1)
     expect(group).to be_valid
