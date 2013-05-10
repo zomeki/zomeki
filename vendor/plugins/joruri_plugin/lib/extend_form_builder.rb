@@ -1,48 +1,43 @@
 # encoding: utf-8
 class ActionView::Helpers::FormBuilder
   def array_name(method)
-    pos = method.index('[').to_i
-    pre = pos == 0 ? method : method.slice(0, pos)
-    suf = pos == 0 ? "" : method.slice(pos, method.size)
-    
-    "#{@object_name}[#{pre}]#{suf}"
+    pos = method.index('[')
+
+    first, second = if pos.zero?
+                      [method, '']
+                    else
+                      [method.slice(0, pos), method.slice(pos, method.size)]
+                    end
+
+    "#{@object_name}[#{first}]#{second}"
   end
-  
+
   def array_value(method)
-    unless pos = method.to_s.index('[')
-      if @template.params[@object_name] && @template.params[@object_name][method]
-        return @template.params[@object_name][method]
-      else
-        return @object.send(method) if @object
-        return @template.instance_variable_get("@#{@object_name}").send(method)
-      end
+    method = method.to_s
+
+    unless pos = method.index('[')
+      return @template.params[@object_name].try(method) ||
+             (@object || @template.instance_variable_get("@#{@object_name}")).try(method)
     end
-    pos = pos.to_i
-    pre = pos == 0 ? method : method.slice(0, pos)
-    suf = pos == 0 ? "" : method.slice(pos, method.size)
-    
-    arr  = nil
-    post = nil
-    if @template.params[@object_name] && @template.params[@object_name][pre]
-      post = true
-      arr = @template.params[@object_name][pre]
-    else
-      arr = @object.send(pre) if @object
-      arr ||= @template.instance_variable_get("@#{@object_name}").send(pre)
-    end
-    return nil unless arr
-    
-    value  = nil
-    script = "value = arr"
-    suf.scan(/\[(.*?)\]/).each do |m|
-      script += (post == nil && m[0] =~ /^[0-9]+$/ ? "[#{m[0]}]" : "['#{m[0]}']")
-    end
-    eval("#{script} rescue nil")
-    value.force_encoding(Encoding::UTF_8) if value.respond_to?(:force_encoding)
-    
-    return value
+
+    first, second = if pos.zero?
+                      [method, '']
+                    else
+                      [method.slice(0, pos), method.slice(pos, method.size)]
+                    end
+
+    array = @template.params[@object_name].try(first) ||
+            (@object || @template.instance_variable_get("@#{@object_name}")).try(first)
+
+    return array if array.nil?
+
+    value = second.scan(/(?<=\[).*?(?=\])/).inject(array) {|result, key|
+              result[key =~ /^\d+$/ ? key.to_i : key.to_s]
+            }
+
+    value.respond_to?(:force_encoding) ? value.force_encoding(Encoding::UTF_8) : value
   end
-  
+
   def array_text_field(method, options = {})
     value  = array_value(method)
     method = array_name(method)
@@ -137,22 +132,21 @@ class ActionView::Helpers::FormBuilder
     end
     html.html_safe
   end
-  
+
   def array_radio_buttons(method, choices, options = {})
     value = array_value(method)
     method = array_name(method)
-    
-    checked = []
+
     h = ''
     choices.each do |c|
       name = "#{@object_name}[#{method}][#{c[1]}]"
-      id   = method.gsub(/\]/, '').gsub(/\[/, '_') + "_#{c[1]}"
-      h += @template.radio_button_tag(method, c[1], (value.to_s == c[1]))
-      h += %Q(\n<label for="#{id}">#{c[0]}</label>\n).html_safe
+      id   = "#{method.gsub(']', '').gsub('[', '_')}_#{c[1]}"
+      h << @template.radio_button_tag(method, c[1], (value.to_s == c[1]))
+      h << %Q(<label for="#{id}">#{c[0]}</label>)
     end
     h.html_safe
   end
-  
+
   def check_boxes(method, choices, options = {})
     method = method.to_s
     
