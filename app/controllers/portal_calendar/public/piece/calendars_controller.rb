@@ -8,6 +8,8 @@ class PortalCalendar::Public::Piece::CalendarsController < Sys::Controller::Publ
       @calendar = Util::Date::Calendar.new params[:year].to_i, params[:month].to_i
     else
       @calendar = Util::Date::Calendar.new
+      year = @calendar.year
+      month = @calendar.month
     end
     
     @content  = PortalCalendar::Content::Base.find(Page.current_piece.content_id)
@@ -26,7 +28,7 @@ class PortalCalendar::Public::Piece::CalendarsController < Sys::Controller::Publ
       @events.each do |event|
         dates << event.get_event_dates
       end
-      dates.flatten!.uniq!
+      dates.flatten!.uniq! if dates.size > 0
     end
     
     @calendar.day_link = dates
