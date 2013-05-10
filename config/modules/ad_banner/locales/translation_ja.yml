@@ -24,3 +24,8 @@ ja:
         sort_no: 表示順
         updated_at: 更新日時
         state: 状態
+      ad_banner/piece/banner:
+        group_id: グループ
+        sort: 表示形式
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト

@@ -142,7 +142,7 @@ class ActionView::Helpers::FormBuilder
       name = "#{@object_name}[#{method}][#{c[1]}]"
       id   = "#{method.gsub(']', '').gsub('[', '_')}_#{c[1]}"
       h << @template.radio_button_tag(method, c[1], (value.to_s == c[1]))
-      h << %Q(<label for="#{id}">#{c[0]}</label>)
+      h << %Q(&nbsp;<label for="#{id}">#{c[0]}</label>&nbsp;)
     end
     h.html_safe
   end
@@ -168,5 +168,12 @@ class ActionView::Helpers::FormBuilder
       h += %Q(<label for="#{id}">#{c[0]}</label>\n).html_safe
     end
     h.html_safe
+  end
+
+  def array_text_area(method, options = {})
+    value = array_value(method)
+    method = array_name(method)
+
+    @template.text_area_tag(method, value, options)
   end
 end

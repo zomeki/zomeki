@@ -1,0 +1,39 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_view @item, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :group_id %></th>
+    <td><%= @item.groups.find_by_id(@item.setting_value(:group_id)).try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort %></th>
+    <td><%= @item.class::SORT_OPTIONS.detect{|so| so.last == @item.setting_value(:sort) }.try(:first) %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">挿入テキスト</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :upper_text %></th>
+  </tr>
+  <tr>
+    <td><%= @item.setting_value(:upper_text) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :lower_text %></th>
+  </tr>
+  <tr>
+    <td><%= @item.setting_value(:lower_text) %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
