@@ -14,9 +14,12 @@ ZomekiCMS::Application.routes.draw do
         get :file_content
       end
     end
-
     resources :groups,
       :controller => 'admin/groups',
       :path       => ':content/groups'
+
+    ## pieces
+    resources :piece_banners,
+      :controller => 'admin/piece/banners'
   end
 end
