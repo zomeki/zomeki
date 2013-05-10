@@ -41,31 +41,31 @@ class ActionView::Helpers::FormBuilder
   def array_text_field(method, options = {})
     value  = array_value(method)
     method = array_name(method)
-    
+
     @template.text_field_tag(method, value, options)
   end
-  
+
   def array_select(method, choices, options = {}, html_options = {})
     options[:selected] ||= array_value(method)
     method = array_name(method)
-    
+
     ## choices
     choices.each_with_index {|v,i| choices[i][1] = v[1].to_s }
     choices = @template.options_for_select(choices, options[:selected].to_s)
     options.delete(:selected)
-    
+
     @template.select_tag(method, choices, options)
   end
-  
+
   def select_group_with_tree(method, root, options = {})
     options[:selected] ||= array_value(method)
     method = method.to_s.index('[') ? array_name(method) : "#{@object_name}[#{method}]"
-    
+
     value   = options[:value] || :id
     label   = options[:label] || :name
     order   = options[:order] || :sort_no
     cond    = options[:conditions] || {}
-    
+
     choices = []
     roots = root.to_a
     if roots.size > 0
@@ -86,19 +86,19 @@ class ActionView::Helpers::FormBuilder
       options.delete(:selected)
     end
     options.delete(:conditions)
-    
+
     return @template.select_tag(method, choices, options).html_safe
   end
-  
+
   def select_with_tree(method, root, options = {})
     options[:selected] ||= array_value(method)
     method = method.to_s.index('[') ? array_name(method) : "#{@object_name}[#{method}]"
-    
+
     value   = options[:value] || :id
     label   = options[:label] || :name
     order   = options[:order] || :sort_no
     cond    = options[:conditions] || {}
-    
+
     roots = root.to_a
     if roots.size > 0
       choices = []
@@ -117,10 +117,10 @@ class ActionView::Helpers::FormBuilder
       choices = ''
     end
     options.delete(:conditions)
-    
+
     return @template.select_tag(method, choices, options).html_safe
   end
-  
+
   def radio_buttons(method, choices, options = {})
     if method.to_s.index('[')
       return array_radio_buttons(method, choices, options)
@@ -149,7 +149,7 @@ class ActionView::Helpers::FormBuilder
 
   def check_boxes(method, choices, options = {})
     method = method.to_s
-    
+
     checked = []
     if @template.params[@object_name] && @template.params[@object_name][method]
       @template.params[@object_name][method].each {|k, v| checked << k }
@@ -158,7 +158,7 @@ class ActionView::Helpers::FormBuilder
         checked = var
       end
     end
-    
+
     h = ''
     choices.each do |c|
       c[1] = c[1].to_s
