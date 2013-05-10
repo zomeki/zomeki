@@ -49,8 +49,10 @@ Spork.prefork do
     # See Sys::Controller::Admin::Auth#new_login
     user = Sys::User.find_by_account(account)
     return nil unless user
-    session[Sys::Controller::Admin::Base::ACCOUNT_KEY] = user.account
-    session[Sys::Controller::Admin::Base::PASSWD_KEY] = user.encrypt_password
+    if defined?(session)
+      session[Sys::Controller::Admin::Base::ACCOUNT_KEY] = user.account
+      session[Sys::Controller::Admin::Base::PASSWD_KEY] = user.encrypt_password
+    end
 
     # See Sys::Controller::Admin::Base#initialize_application
     Core.user = user
