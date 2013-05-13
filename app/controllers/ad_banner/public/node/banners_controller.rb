@@ -17,6 +17,9 @@ class AdBanner::Public::Node::BannersController < Cms::Controller::Public::Base
       send_file banner.upload_path, :type => type, :filename => banner.name, :disposition => disposition
     elsif (token = params[:r]).present?
       @banner = @content.banners.find_by_token(token)
+      return http_error(404) unless @banner
+#TODO 連打防止
+      @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent)
     else
       http_error(404)
     end

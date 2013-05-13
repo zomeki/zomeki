@@ -13,6 +13,8 @@ ZomekiCMS::Application.routes.draw do
       member do
         get :file_content
       end
+      resources :clicks, :only => :index,
+        :controller => 'admin/clicks'
     end
     resources :groups,
       :controller => 'admin/groups',

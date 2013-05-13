@@ -3,6 +3,7 @@ ja:
     models:
       ad_banner/banner: 広告バナー
       ad_banner/group: グループ
+      ad_banner/click: クリック履歴
     attributes:
       ad_banner/banner:
         advertiser_name: 業者名
@@ -24,6 +25,11 @@ ja:
         sort_no: 表示順
         updated_at: 更新日時
         state: 状態
+      ad_banner/click:
+        referer: バナーが貼られたURL
+        remote_addr: アクセス元
+        user_agent: ブラウザ
+        created_at: クリック日時
       ad_banner/piece/banner:
         group_id: グループ
         sort: 表示形式
