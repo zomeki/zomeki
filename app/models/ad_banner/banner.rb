@@ -20,6 +20,8 @@ class AdBanner::Banner < ActiveRecord::Base
 
   belongs_to :group, :foreign_key => :group_id, :class_name => 'AdBanner::Group'
 
+  has_many :clicks, :foreign_key => :banner_id, :class_name => 'AdBanner::Click', :dependent => :destroy
+
   validates :advertiser_name, :presence => true
   validates :url, :presence => true
 

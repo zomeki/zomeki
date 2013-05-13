@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506135350) do
+ActiveRecord::Schema.define(:version => 20130513010748) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -39,6 +39,15 @@ ActiveRecord::Schema.define(:version => 20130506135350) do
   end
 
   add_index "ad_banner_banners", ["token"], :name => "index_ad_banner_banners_on_token", :unique => true
+
+  create_table "ad_banner_clicks", :force => true do |t|
+    t.integer  "banner_id"
+    t.string   "referer"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "ad_banner_groups", :force => true do |t|
     t.integer  "unid"

@@ -1,0 +1,2 @@
+<h2><%= @content.name %> ： <%= link_to AdBanner::Banner.model_name.human, ad_banner_banner_path(content: @content, id: @banner.id) %>
+                         ： <%= AdBanner::Click.model_name.human %>一覧</h2>
