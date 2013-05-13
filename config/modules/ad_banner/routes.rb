@@ -18,8 +18,18 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/groups',
       :path       => ':content/groups'
 
+    ## nodes
+    resources :node_banners,
+      :controller => 'admin/node/banners',
+      :path       => ':parent/node_banners'
+
     ## pieces
     resources :piece_banners,
       :controller => 'admin/piece/banners'
+  end
+
+  ## public
+  scope "_public/#{mod}", :module => mod, :as => '' do
+    match 'node_banners(/index.:format)' => 'public/node/banners#index'
   end
 end

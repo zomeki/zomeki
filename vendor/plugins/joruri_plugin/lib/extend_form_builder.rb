@@ -26,7 +26,7 @@ class ActionView::Helpers::FormBuilder
                       [method.slice(0, pos), method.slice(pos, method.size)]
                     end
 
-    array = @template.params[@object_name].try(first) ||
+    array = @template.params[@object_name].try(:[], first) ||
             (@object || @template.instance_variable_get("@#{@object_name}")).try(first)
 
     return array if array.nil?

@@ -24,6 +24,30 @@ class AdBanner::Piece::Banner < Cms::Piece
     groups.map {|g| [g.title, g.id] }
   end
 
+  def group
+    groups.find_by_id(setting_value(:group_id))
+  end
+
+  def banners
+    content.banners
+  end
+
+  def banner_node
+    content.banner_node
+  end
+
+  def sort
+    self.class::SORT_OPTIONS.detect{|so| so.last == setting_value(:sort) }
+  end
+
+  def upper_text
+    setting_value(:upper_text).to_s
+  end
+
+  def lower_text
+    setting_value(:lower_text).to_s
+  end
+
   private
 
   def set_default_settings
