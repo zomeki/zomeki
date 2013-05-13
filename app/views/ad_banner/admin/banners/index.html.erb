@@ -3,7 +3,6 @@
     <th style="text-align: center; width: 60px;">詳細</th>
     <th>サムネイル</th>
     <th><%= AdBanner::Group.model_name.human %></th>
-    <th><%= AdBanner::Banner.human_attribute_name :sort_no %></th>
     <th><%= AdBanner::Banner.human_attribute_name :advertiser_name %></th>
     <th><%= AdBanner::Banner.human_attribute_name :published_at %></th>
     <th><%= AdBanner::Banner.human_attribute_name :closed_at %></th>
@@ -16,7 +15,6 @@
     <td style="text-align: center;"><%= link_to :show, ad_banner_banner_path(content: @content, id: item.id) %></td>
     <td style="text-align: center;"><%= link_to image_tag(file_content_ad_banner_banner_path(content: @content, id: item.id), width: 100), item.url, target: '_blank' %></td>
     <td style="text-align: left;"><%= item.group.try(:title) %></td>
-    <td style="text-align: rigit; width: 100px;"><%= item.sort_no %></td>
     <td style="text-align: left;"><%= item.advertiser_name %></td>
     <td style="text-align: left; width: 150px;"><%= item.published_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
     <td style="text-align: left; width: 150px;"><%= item.closed_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
