@@ -24,11 +24,16 @@ class AdBanner::Banner < ActiveRecord::Base
   validates :url, :presence => true
 
   after_initialize :set_defaults
+  before_create :set_token
 
   private
 
   def set_defaults
     self.state   ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
     self.sort_no ||= 10 if self.has_attribute?(:sort_no)
+  end
+
+  def set_token
+    self.token = Util::String::Token.generate_unique_token(self.class, :token)
   end
 end

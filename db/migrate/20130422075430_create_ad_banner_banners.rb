@@ -24,8 +24,11 @@ class CreateAdBannerBanners < ActiveRecord::Migration
       t.datetime   :closed_at
       t.string     :url
       t.integer    :sort_no
+      t.string     :token
 
       t.timestamps
     end
+
+    add_index :ad_banner_banners, :token, :unique => true
   end
 end

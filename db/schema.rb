@@ -33,9 +33,12 @@ ActiveRecord::Schema.define(:version => 20130506135350) do
     t.datetime "closed_at"
     t.string   "url"
     t.integer  "sort_no"
+    t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ad_banner_banners", ["token"], :name => "index_ad_banner_banners_on_token", :unique => true
 
   create_table "ad_banner_groups", :force => true do |t|
     t.integer  "unid"
