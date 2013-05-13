@@ -1,5 +1,17 @@
 <table class="show">
   <tr>
+    <th><%= @item.locale :id %></th>
+    <td><%= @item.id %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :public_full_uri %></th>
+    <td><%= @item.public_full_uri %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale :title %></th>
     <td><%= @item.title %></td>
   </tr>
@@ -8,8 +20,12 @@
 <table class="show">
   <tr>
     <th><%= @item.locale :href %></th>
-    <td><%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') if @item.href.present? %></td>
+    <%- if @item.href.present? -%>
+    <td><%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %></td>
     <td><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></td>
+    <%- else -%>
+    <td colspan="2"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></td>
+    <%- end -%>
   </tr>
   <tr>
     <th><%= @item.locale :subtitle %></th>
@@ -46,9 +62,9 @@
     <th><%= @item.locale :event_state %></th>
     <td>
       <%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %>
-      <span style="margin-left: 10px;">
-        <%= @item.locale :event_date %> ： <%= @item.event_date %>
-      </span>
+      <%- if @item.event_state == 'visible' -%>
+      <span style="margin-left: 10px;"><%= @item.locale :event_date %> ： <%= @item.event_date %></span>
+      <%- end -%>
     </td>
   </tr>
   <tr>
