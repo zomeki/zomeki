@@ -10,6 +10,11 @@ class AdBanner::Banner < ActiveRecord::Base
 
   default_scope order(:sort_no)
 
+  banners = self.arel_table
+  now = Time.now
+  scope :published, where(banners[:state].eq('public').and(banners[:published_at].eq(nil).or(banners[:published_at].lteq(now)).and(banners[:closed_at].eq(nil).or(banners[:closed_at].gt(now)))))
+  scope :closed, where(banners[:state].eq('closed').or(banners[:published_at].gt(now)).or(banners[:closed_at].lteq(now)))
+
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'AdBanner::Content::Banner'
   validates_presence_of :content_id
