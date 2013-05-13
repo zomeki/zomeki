@@ -7,12 +7,12 @@ class AdBanner::Public::Piece::BannersController < Sys::Controller::Public::Base
 
   def index
     @banners = if @piece.groups.empty?
-                 @piece.banners
+                 @piece.banners.published
                else
                  if @piece.group
-                   @piece.group.banners
+                   @piece.group.banners.published
                  else
-                   @piece.banners.select {|b| b.group.nil? }
+                   @piece.banners.published.select {|b| b.group.nil? }
                  end
                end
 
