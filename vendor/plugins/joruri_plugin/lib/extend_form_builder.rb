@@ -32,6 +32,7 @@ class ActionView::Helpers::FormBuilder
     return array if array.nil?
 
     value = second.scan(/(?<=\[).*?(?=\])/).inject(array) {|result, key|
+              next nil unless result.respond_to?(:[])
               result[key =~ /^\d+$/ ? key.to_i : key.to_s]
             }
 
