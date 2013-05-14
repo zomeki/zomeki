@@ -21,7 +21,7 @@ class AdBanner::Piece::Banner < Cms::Piece
   end
 
   def groups_for_option
-    groups.map {|g| [g.title, g.id] }
+    content.groups_for_option
   end
 
   def group
