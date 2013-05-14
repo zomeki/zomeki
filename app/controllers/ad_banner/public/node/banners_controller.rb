@@ -19,8 +19,10 @@ class AdBanner::Public::Node::BannersController < Cms::Controller::Public::Base
       @banner = @content.banners.find_by_token(token)
       return http_error(404) unless @banner
       clicks = AdBanner::Click.arel_table
-      click = @banner.clicks.where(clicks[:remote_addr].eq(request.remote_addr).and(clicks[:created_at].gteq(30.minutes.ago))).first
-      @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent) unless click
+# Accept all clicks
+#      click = @banner.clicks.where(clicks[:remote_addr].eq(request.remote_addr).and(clicks[:created_at].gteq(30.minutes.ago))).first
+#      @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent) unless click
+      @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent)
     else
       http_error(404)
     end
