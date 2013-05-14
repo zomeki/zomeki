@@ -14,7 +14,7 @@
     <td style="text-align: left;"><%= item.name %></td>
     <td style="text-align: left;"><%= item.title %></td>
     <td style="text-align: right; width: 100px;"><%= item.sort_no %></td>
-    <td style="text-align: left; width: 150px;"><%= item.updated_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.updated_at %></td>
     <td style="text-align: center;"><%= item.status.try(:name) %></td>
   </tr>
   <%- end -%>

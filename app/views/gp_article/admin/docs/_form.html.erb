@@ -78,7 +78,8 @@
     <td>
       <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
       <span style="margin-left: 10px;">
-        <%= f.label :event_date %> ： <%= f.text_field :event_date, :style => 'width: 100px;', :class => 'datepicker' %>
+        <%= f.label :event_date %> ： <%= f.text_field :event_date, :value => value_for_datepicker(f.object_name, :event_date),
+                                                                    :style => 'width: 100px;', :class => 'datepicker' %>
       </span>
     </td>
   </tr>

@@ -35,11 +35,11 @@
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :published_at %></th>
-    <td><%= @item.published_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td><%=i18n_l @item.published_at %></td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :closed_at %></th>
-    <td><%= @item.closed_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td><%=i18n_l @item.closed_at %></td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :url %></th>
