@@ -14,9 +14,6 @@ class AdBanner::Group < ActiveRecord::Base
   validates_presence_of :content_id
 
   # Proper
-  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
-  validates_presence_of :state
-
   has_many :banners, :foreign_key => :group_id, :class_name => 'AdBanner::Banner'
 
   validates :name, :presence => true
@@ -28,7 +25,6 @@ class AdBanner::Group < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state   ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
     self.sort_no ||= 10 if self.has_attribute?(:sort_no)
   end
 
