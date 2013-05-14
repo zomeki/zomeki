@@ -23,6 +23,8 @@ class AdBanner::Public::Node::BannersController < Cms::Controller::Public::Base
 #      click = @banner.clicks.where(clicks[:remote_addr].eq(request.remote_addr).and(clicks[:created_at].gteq(30.minutes.ago))).first
 #      @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent) unless click
       @banner.clicks.create(referer: request.referer, remote_addr: request.remote_addr, user_agent: request.user_agent)
+
+      redirect_to @banner.url
     else
       http_error(404)
     end
