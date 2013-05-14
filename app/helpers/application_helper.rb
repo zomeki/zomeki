@@ -82,4 +82,9 @@ module ApplicationHelper
     ruby = Page.ruby unless ruby
     return ruby == true ? Cms::Lib::Navi::Ruby.convert(str) : str
   end
+
+  def i18n_l(value)
+    return value if value.nil?
+    I18n.l value
+  end
 end

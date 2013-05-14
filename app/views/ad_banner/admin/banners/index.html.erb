@@ -16,9 +16,9 @@
     <td style="text-align: center;"><%= link_to image_tag(file_content_ad_banner_banner_path(content: @content, id: item.id), width: 100), item.url, target: '_blank' %></td>
     <td style="text-align: left;"><%= item.group.try(:title) %></td>
     <td style="text-align: left;"><%= item.advertiser_name %></td>
-    <td style="text-align: left; width: 150px;"><%= item.published_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
-    <td style="text-align: left; width: 150px;"><%= item.closed_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
-    <td style="text-align: left; width: 150px;"><%= item.created_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.published_at %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.closed_at %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.created_at %></td>
     <td style="text-align: center;"><%= item.status.try(:name) %></td>
   </tr>
   <%- end -%>

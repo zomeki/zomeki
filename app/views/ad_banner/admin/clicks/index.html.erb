@@ -11,7 +11,7 @@
     <td style="text-align: left;"><%= link_to item.referer, item.referer, target: '_blank' %></td>
     <td style="text-align: left; width: 100px;"><%= item.remote_addr %></td>
     <td style="text-align: left;"><%= item.user_agent %></td>
-    <td style="text-align: left; width: 150px;"><%= item.created_at.try(:strftime, '%Y-%m-%d %H:%m') %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.created_at %></td>
   </tr>
   <%- end -%>
 </table>
