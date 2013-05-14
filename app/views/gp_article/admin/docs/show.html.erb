@@ -20,29 +20,27 @@
 <table class="show">
   <tr>
     <th><%= @item.locale :href %></th>
-    <%- if @item.href.present? -%>
-    <td><%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %></td>
-    <td><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></td>
-    <%- else -%>
-    <td colspan="2"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></td>
-    <%- end -%>
+    <td>
+      <%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %>
+      <span style="<%= 'margin-left: 10px;' unless @item.href.blank? %>"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+    </td>
   </tr>
   <tr>
     <th><%= @item.locale :subtitle %></th>
-    <td colspan="2"><%=simple_format @item.subtitle %></td>
+    <td><%=simple_format @item.subtitle %></td>
   </tr>
   <tr>
     <th><%= @item.locale :summary %></th>
-    <td colspan="2"><%=simple_format @item.summary %></td>
+    <td><%=simple_format @item.summary %></td>
   </tr>
 </table>
 
 <table class="show">
   <tr>
-    <th colspan="2"><%= @item.locale :body %></th>
+    <th><%= @item.locale :body %></th>
   </tr>
   <tr>
-    <td colspan="2"><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+    <td><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
   </tr>
 </table>
 
