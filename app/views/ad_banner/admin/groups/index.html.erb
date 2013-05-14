@@ -5,7 +5,6 @@
     <th><%= AdBanner::Group.human_attribute_name :title %></th>
     <th><%= AdBanner::Group.human_attribute_name :sort_no %></th>
     <th><%= AdBanner::Group.human_attribute_name :updated_at %></th>
-    <th style="text-align: center; width: 60px;"><%= AdBanner::Group.human_attribute_name :state %></th>
   </tr>
 
   <%- @items.each do |item| -%>
@@ -15,7 +14,6 @@
     <td style="text-align: left;"><%= item.title %></td>
     <td style="text-align: right; width: 100px;"><%= item.sort_no %></td>
     <td style="text-align: left; width: 150px;"><%=i18n_l item.updated_at %></td>
-    <td style="text-align: center;"><%= item.status.try(:name) %></td>
   </tr>
   <%- end -%>
 </table>

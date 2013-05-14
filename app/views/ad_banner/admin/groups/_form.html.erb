@@ -4,10 +4,6 @@
 
 <table class="show">
   <tr>
-    <th><%= f.label :state %></th>
-    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
-  </tr>
-  <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :style => 'width: 400px;' %></td>
   </tr>
