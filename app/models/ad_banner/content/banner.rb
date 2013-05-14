@@ -9,4 +9,8 @@ class AdBanner::Content::Banner < Cms::Content
     return @banner_node if @banner_node
     @banner_node = Cms::Node.where(state: 'public', content_id: id, model: 'AdBanner::Banner').order(:id).first
   end
+
+  def groups_for_option
+    groups.map {|g| [g.title, g.id] }
+  end
 end
