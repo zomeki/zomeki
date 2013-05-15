@@ -25,21 +25,7 @@ module FormHelper
     [ '<script type="text/javascript" src="/_common/js/ckeditor/ckeditor.js"></script>',
       javascript_tag(settings.join) ].join.html_safe
   end
-  
-  ## tinyMCE
-  def init_tiny_mce(options = {})
-    settings = []
-    options.each do |k, v|
-      v = %Q("#{v}") if v.class == String
-      settings << "#{k}:#{v}"
-    end
-    [
-      %Q(<script type="text/javascript" src="/_common/js/tiny_mce/tiny_mce.js"></script>),
-      %Q(<script type="text/javascript" src="/_common/js/tiny_mce/init.js"></script>),
-      javascript_tag("initTinyMCE({#{settings.join(',')}});")
-    ].join("\n").html_safe
-  end
-  
+
   def submission_label(name)
     {
       :add       => '追加する',
