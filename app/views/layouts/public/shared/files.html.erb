@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <title>title</title>
-  <link href="/_common/themes/admin/style.css" media="all" rel="stylesheet" type="text/css" />
-  <%#= javascript_include_tag 'jquery' %>
-  <%#= javascript_include_tag 'jquery_ujs' %>
+  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
   <%= javascript_include_tag '/_common/js/jquery.min.js' %>
   <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-<%- request.flash.discard(:notice) -%>
-<% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
-<%- request.flash.discard(:alert) -%>
-<% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
+  <%- request.flash.discard(:notice) -%>
+  <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+  <%- request.flash.discard(:alert) -%>
+  <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
 
-<%= yield  %>
-
+  <%= yield  %>
 </body>
 </html>
