@@ -1,16 +1,20 @@
-<%
-
-return '' if item.recognizers.size == 0
-
-%><br /><p class="form">承認設定</p>
+<%- return '' if item.recognizers.empty? -%>
+<br />
+<p class="form">承認設定</p>
 
 <table class="show">
   <tr>
     <th>承認者</th>
     <td>
-      <% item.recognition.to_a.each do |r| %>
-      <%= safe{r[:user].name_with_account} %> ： <%= r[:recognized_at].blank? ? "未承認" : "承認日時 #{r[:recognized_at]}" %><br />
-      <% end %>
+      <%- item.recognition.to_a.each do |r| -%>
+        <%= r[:user].try(:name_with_account) %> ：
+        <%- if item.state == 'draft' -%>
+          未依頼
+        <%- else -%>
+          <%= r[:recognized_at].blank? ? '未承認' : "承認日時 #{r[:recognized_at]}" %>
+        <%- end -%>
+        <br />
+      <%- end -%>
     </td>
   </tr>
 </table>
