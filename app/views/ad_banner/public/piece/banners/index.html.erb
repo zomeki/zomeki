@@ -1,4 +1,4 @@
-<div class="upper_text"><%= @piece.upper_text %></div>
+<div class="upper_text"><%=raw @piece.upper_text %></div>
 
 <%- unless @banners.empty? -%>
 <ul class="ad_banner">
@@ -8,4 +8,4 @@
 </ul>
 <%- end -%>
 
-<div class="lower_text"><%= @piece.lower_text %></div>
+<div class="lower_text"><%=raw @piece.lower_text %></div>
