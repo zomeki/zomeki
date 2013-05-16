@@ -2,7 +2,8 @@
 module Sys::Model::Base::File
   def self.included(mod)
     mod.validates_presence_of :file, :if => "@_skip_upload != true"
-    mod.validates_presence_of :name, :title
+    mod.validates :name, :presence => true, :uniqueness => {:scope => :content_id}
+    mod.validates :title, :presence => true
     mod.validate :validate_file_name
     mod.validate :validate_file_type
     mod.validate :validate_upload_file
