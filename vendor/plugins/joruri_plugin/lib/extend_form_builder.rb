@@ -16,7 +16,7 @@ class ActionView::Helpers::FormBuilder
     method = method.to_s
 
     unless pos = method.index('[')
-      return @template.params[@object_name].try(method) ||
+      return @template.params[@object_name].try(:[], method) ||
              (@object || @template.instance_variable_get("@#{@object_name}")).try(method)
     end
 
