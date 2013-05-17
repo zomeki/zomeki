@@ -43,4 +43,10 @@ class AdBanner::Banner < ActiveRecord::Base
   def set_token
     self.token = Util::String::Token.generate_unique_token(self.class, :token)
   end
+
+  # Override Sys::Model::Base::File#duplicated?
+  def duplicated?
+    banners = self.class.arel_table
+    not self.class.where(content_id: self.content_id, name: self.name).where(banners[:id].not_eq(self.id)).empty?
+  end
 end
