@@ -2,8 +2,7 @@
 module Sys::Model::Base::File
   def self.included(mod)
     mod.validates_presence_of :file, :if => "@_skip_upload != true"
-    mod.validates :name, :presence => true, :uniqueness => {:scope => :content_id}
-    mod.validates :title, :presence => true
+    mod.validates_presence_of :name, :title
     mod.validate :validate_file_name
     mod.validate :validate_file_type
     mod.validate :validate_upload_file
@@ -21,13 +20,13 @@ module Sys::Model::Base::File
   
   def validate_file_name
     return true if name.blank?
-    
+
     if self.name !~ /^[0-9a-zA-Z\-\_\.]+$/
-      errors.add :name, "は半角英数字を入力してください。"
-    elsif self.name.count('.') != 1
+      errors.add :name, 'は半角英数字を入力してください。'
+    elsif self.name !~ /^[^\.]+?\.[^\.]+$/
       errors.add(:name, 'を正しく入力してください。＜ファイル名.拡張子＞')
     elsif duplicated?
-      errors.add :name, "は既に存在しています。"
+      errors.add :name, 'は既に存在しています。'
       return false
     end
     self.title = self.name if title.blank?
