@@ -2,6 +2,8 @@
 class GpArticle::Piece::RecentTab < Cms::Piece
   default_scope where(model: 'GpArticle::RecentTab')
 
+  after_initialize :set_default_settings
+
   validate :validate_settings
 
   def validate_settings
@@ -36,5 +38,16 @@ class GpArticle::Piece::RecentTab < Cms::Piece
 
   def category_types_for_option
     category_types.map {|ct| [ct.title, ct.id] }
+  end
+
+  private
+
+  def set_default_settings
+    settings = self.in_settings
+    settings[:list_count] = 10 if setting_value(:list_count).nil?
+    settings[:list_style] = '@title(@date @group)' if setting_value(:list_style).nil?
+    settings[:date_style] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
+    settings[:more_label] = '' if setting_value(:list_count).nil?
+    self.in_settings = settings
   end
 end
