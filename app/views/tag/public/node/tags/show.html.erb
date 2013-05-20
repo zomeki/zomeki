@@ -5,7 +5,7 @@
 <%- unless @docs.empty? -%>
 <ul>
   <%- @docs.each do |doc| -%>
-  <li><%= render 'tag/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+  <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
   <%- end -%>
 </ul>
 <%- end -%>
