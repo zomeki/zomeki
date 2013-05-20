@@ -6,8 +6,12 @@ class GpArticle::Content::Doc < Cms::Content
 
   before_create :set_default_settings
 
+  def preview_docs
+    docs.mobile(::Page.mobile?)
+  end
+
   def public_docs
-    docs.public
+    docs.mobile(::Page.mobile?).public
   end
 
   def doc_node

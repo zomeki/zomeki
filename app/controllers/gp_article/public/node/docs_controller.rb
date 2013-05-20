@@ -54,7 +54,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
   def public_or_preview_docs
     if Core.mode == 'preview'
-      @content.docs
+      @content.preview_docs
     else
       @content.public_docs
     end

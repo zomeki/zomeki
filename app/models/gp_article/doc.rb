@@ -56,6 +56,7 @@ class GpArticle::Doc < ActiveRecord::Base
   after_save :set_tags
 
   scope :public, where(state: 'public')
+  scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
 
   def self.find_with_content_and_criteria(content, criteria)
     docs = self.arel_table

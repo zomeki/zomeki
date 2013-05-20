@@ -60,7 +60,7 @@ GEM
     hpricot (0.8.6)
     httpauth (0.2.0)
     i18n (0.6.4)
-    jpmobile (3.0.1)
+    jpmobile (3.0.7)
     jquery-rails (2.2.1)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
@@ -181,7 +181,7 @@ DEPENDENCIES
   factory_girl_rails (~> 3.0)
   fast_spork_runner (~> 0.0.4)
   hpricot (= 0.8.6)
-  jpmobile (= 3.0.1)
+  jpmobile (= 3.0.7)
   jquery-rails
   mail-iso-2022-jp (= 2.0.1)
   moji (= 1.6)

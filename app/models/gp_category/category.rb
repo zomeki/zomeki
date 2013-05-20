@@ -92,7 +92,7 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def public_docs
-    docs.public
+    docs.mobile(::Page.mobile?).public
   end
 
   def copy_from_group(group)
