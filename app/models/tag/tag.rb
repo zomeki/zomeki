@@ -38,7 +38,7 @@ class Tag::Tag < ActiveRecord::Base
   end
 
   def public_docs
-    docs.public
+    docs.mobile(::Page.mobile?).public
   end
 
   def update_last_tagged_at(doc=nil)
