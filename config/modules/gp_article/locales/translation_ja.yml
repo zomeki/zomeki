@@ -22,8 +22,8 @@ ja:
         raw_tags: 関連ワード
         mobile_title: タイトル
         mobile_body: 内容
-        mobile_smart: PC・スマートフォン
-        mobile_feature: 携帯
+        terminal_pc_or_smart_phone: PC・スマートフォン
+        terminal_mobile: 携帯
         in_editable_groups: 編集可能グループ
         in_rel_doc_ids: 関連記事
       gp_article/category_type:

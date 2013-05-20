@@ -291,6 +291,8 @@ class GpArticle::Doc < ActiveRecord::Base
   def set_defaults
     self.target      ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
     self.event_state ||= 'hidden'                  if self.has_attribute?(:event_state)
+    self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
+    self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
   end
 
   def node_existence
