@@ -7,7 +7,7 @@
 else
   body_doc = Nokogiri::XML("<bory_root>#{@item.mobile_body.presence || @item.body}</bory_root>")
   body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
-  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').value =~ %r!^file_contents/! }
+  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
   body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
 end) %></div>
 
