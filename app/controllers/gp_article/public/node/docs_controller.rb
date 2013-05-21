@@ -33,7 +33,11 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
     return http_error(404) unless @item
 
     Page.current_item = @item
-    Page.title = @item.title
+    Page.title = unless Page.mobile?
+                   @item.title
+                 else
+                   @item.mobile_title.presence || @item.title
+                 end
   end
 
   def file_content
