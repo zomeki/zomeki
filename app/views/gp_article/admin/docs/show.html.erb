@@ -96,7 +96,7 @@
     <th colspan="2"><%= @item.locale :mobile_body %></th>
   </tr>
   <tr>
-    <td colspan="2"><%=simple_format @item.mobile_body %></td>
+    <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
   </tr>
 </table>
 
