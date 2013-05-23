@@ -10,7 +10,7 @@
   word-break: break-all;
 }
 .monospace {
-  font-family: "MS Gothic", "ＭＳ　ゴシック", "Courier New", sans-serif;
+  font-family:  Tahoma, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
 }
 
 /* Notice.
