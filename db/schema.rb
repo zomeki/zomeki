@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130520024434) do
+ActiveRecord::Schema.define(:version => 20130524021106) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -601,48 +601,6 @@ ActiveRecord::Schema.define(:version => 20130520024434) do
   add_index "gnav_menu_items", ["concept_id"], :name => "index_gnav_menu_items_on_concept_id"
   add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
   add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
-
-  create_table "gp_article_categories", :force => true do |t|
-    t.integer  "unid"
-    t.integer  "concept_id"
-    t.integer  "content_id"
-    t.integer  "category_type_id"
-    t.integer  "parent_id"
-    t.integer  "layout_id"
-    t.string   "state"
-    t.string   "name"
-    t.string   "title"
-    t.integer  "level_no"
-    t.integer  "sort_no"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "gp_article_categories", ["category_type_id"], :name => "index_gp_article_categories_on_category_type_id"
-  add_index "gp_article_categories", ["concept_id"], :name => "index_gp_article_categories_on_concept_id"
-  add_index "gp_article_categories", ["content_id"], :name => "index_gp_article_categories_on_content_id"
-  add_index "gp_article_categories", ["layout_id"], :name => "index_gp_article_categories_on_layout_id"
-  add_index "gp_article_categories", ["parent_id"], :name => "index_gp_article_categories_on_parent_id"
-
-  create_table "gp_article_categories_gp_article_docs", :id => false, :force => true do |t|
-    t.integer "category_id"
-    t.integer "doc_id"
-  end
-
-  create_table "gp_article_category_types", :force => true do |t|
-    t.integer  "unid"
-    t.integer  "concept_id"
-    t.integer  "content_id"
-    t.string   "state"
-    t.string   "name"
-    t.string   "title"
-    t.integer  "sort_no"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "gp_article_category_types", ["concept_id"], :name => "index_gp_article_category_types_on_concept_id"
-  add_index "gp_article_category_types", ["content_id"], :name => "index_gp_article_category_types_on_content_id"
 
   create_table "gp_article_docs", :force => true do |t|
     t.integer  "unid"
