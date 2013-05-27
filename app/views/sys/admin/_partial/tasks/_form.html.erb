@@ -5,13 +5,13 @@
   <tr>
     <th>表示日時</th>
     <td><%= f.text_field :published_at, :value => value_for_datetimepicker(f.object_name, :published_at),
-                                        :style => 'width: 120px;', :class => 'datetimepicker' %></td>
+                                        :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr><tr>
     <th>公開開始日時</th>
-    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 120px;', :class => 'datetimepicker' %></td>
+    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr><tr>
     <th>公開終了日時</th>
-    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 120px;', :class => 'datetimepicker' %></td>
+    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
 </table>
 

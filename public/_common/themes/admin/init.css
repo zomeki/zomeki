@@ -24,7 +24,7 @@ html {
 body {
   background-color: #fff;
   font-size: 80%;
-  font-family: "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
+  font-family:  Tahoma, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
   line-height: 1.4;
 }
 article, aside, dialog, figure, footer, header, hgroup, nav, section, summary {
@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 input, textarea, select, option {
   font-size: 100%;
-  font-family: "MS Gothic", "ＭＳ　ゴシック", sans-serif;
+  font-family: Tahoma, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
 }
 table {
   border-collapse: collapse;
@@ -43,7 +43,6 @@ table {
   empty-cells: show;
 }
 caption, th, td {
-  font-family: "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
   font-weight: 400;
   text-align: left;
 }
