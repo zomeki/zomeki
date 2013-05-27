@@ -8,7 +8,7 @@
     <th style="text-align: center; width: 150px">所属</th>
     <th style="text-align: center; width: 120px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
     <th style="text-align: center; width: 60px;"><%= GpArticle::Doc.human_attribute_name :state %></th>
-    <th style="text-align: center; width: 60px;">プレビュー</th>
+    <th style="text-align: center; width: 65px;">プレビュー</th>
   </tr>
 
   <%- @items.each do |item| -%>
@@ -20,8 +20,8 @@
     <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
     <td style="text-align: center;">
-      <%= link_to 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
-      <%= link_to '携帯', item.preview_uri(mobile: true, params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
+      <%= link_to_if item.terminal_pc_or_smart_phone, 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
+      <%= link_to_if item.terminal_mobile, '携帯', item.preview_uri(mobile: true, params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
     </td>
   </tr>
   <%- end -%>

@@ -133,7 +133,10 @@
       <th colspan="2"><%= f.label :mobile_body %></th>
     </tr>
     <tr>
-      <td colspan="2"><%= f.text_area :mobile_body, :size => '130x10' %></td>
+      <td colspan="2" class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
+      </td>
     </tr>
   </table>
 </div>
