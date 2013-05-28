@@ -84,9 +84,12 @@ module Sys::Model::Base::File
           self.image_width  = image.columns
           self.image_height = image.rows
         end
-      rescue LoadError
-      rescue Magick::ImageMagickError
-      rescue NoMethodError
+      rescue LoadError => e
+        warn_log(e.message)
+      rescue Magick::ImageMagickError => e
+        warn_log(e.message)
+      rescue NoMethodError => e
+        warn_log(e.message)
       end
     end
   end
