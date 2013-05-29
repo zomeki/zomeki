@@ -19,9 +19,9 @@ centos() {
   tar zxf darts-0.32.tar.gz && cd darts-0.32 && ./configure && make && make install
 
   cd /usr/local/src
-  rm -rf lame-3.99.1.tar.gz lame-3.99.1
-  wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.1.tar.gz
-  tar zxf lame-3.99.1.tar.gz && cd lame-3.99.1 && ./configure && make && make install
+  rm -rf lame-3.99.5.tar.gz lame-3.99.5
+  wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+  tar zxf lame-3.99.5.tar.gz && cd lame-3.99.5 && ./configure && make && make install
 
   cd /usr/local/src
   rm -rf chasen-2.4.4.tar.gz chasen-2.4.4

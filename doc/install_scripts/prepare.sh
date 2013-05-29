@@ -1,5 +1,6 @@
 #!/bin/bash
 
+EPEL_RPM_URL="http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm"
 INSTALL_SCRIPTS_URL='https://raw.github.com/zomeki/zomeki/master/doc/install_scripts'
 
 echo '#### Prepare to install ####'
@@ -11,7 +12,7 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
-  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-7.noarch.rpm
+  rpm -ivh $EPEL_RPM_URL
   yum install -y wget
 
   cd /usr/local/src
