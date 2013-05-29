@@ -101,6 +101,9 @@ class GpCategory::Category < ActiveRecord::Base
         new_state = (child_group.state == 'disabled' ? 'closed' : 'public')
         child.update_attributes(state: new_state, name: child_group.name_en, title: child_group.name, sort_no: child_group.sort_no)
       else
+        if (old_child = children.find_by_name(child_group.name_en))
+          old_child.update_column(:name, "#{old_child.name}_#{old_child.id}")
+        end
         child = children.create(group_code: child_group.code, name: child_group.name_en, title: child_group.name, sort_no: child_group.sort_no)
       end
       child.copy_from_group(child_group) unless child_group.children.empty?
