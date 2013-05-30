@@ -64,12 +64,11 @@
 
 /* Error.
 ----------------------------------------------- */
-.fieldWithErrors {
+.field_with_errors {
   margin: 1px;
   padding: 1px;
   border: 1px solid #f00;
-  display: inline-block;
-  /display: inline;
+  display: inline;
 }
 #errorExplanation {
   width: 600px;
