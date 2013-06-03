@@ -1,0 +1,108 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale :id %></th>
+    <td><%= @item.id %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :public_full_uri %></th>
+    <td><%= @item.public_full_uri %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :href %></th>
+    <td>
+      <%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %>
+      <span style="<%= 'margin-left: 10px;' unless @item.href.blank? %>"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :subtitle %></th>
+    <td><%=simple_format @item.subtitle %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :summary %></th>
+    <td><%=simple_format @item.summary %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :body %></th>
+  </tr>
+  <tr>
+    <td><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+  </tr>
+</table>
+
+<%- unless @category_types.empty? -%>
+<table class="show">
+  <%- @category_types.each do |category_type| -%>
+  <tr>
+    <th><%= category_type.title %></th>
+    <td><%= @item.categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :event_state %></th>
+    <td>
+      <%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %>
+      <%- if @item.event_state == 'visible' -%>
+      <span style="margin-left: 10px;"><%= @item.locale :event_date %> ： <%= @item.event_date %></span>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :raw_tags %></th>
+    <td><%= @item.raw_tags %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :in_rel_doc_ids %></th>
+    <td>
+      <% @item.rel_docs.each {|doc| %><div style="margin-top: 10px; width: 700px;"><%= doc.title %></div><% } %>
+    </td>
+  </tr>
+</table>
+
+<br />
+<p class="form">携帯向け</p>
+
+<table class="show">
+  <tr>
+    <th>表示端末</th>
+    <td>
+      <%= @item.locale :terminal_pc_or_smart_phone if @item.terminal_pc_or_smart_phone %>
+      <%= @item.locale :terminal_mobile if @item.terminal_mobile %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :mobile_title %></th>
+    <td><%= @item.mobile_title %></td>
+  </tr>
+  <tr>
+    <th colspan="2"><%= @item.locale :mobile_body %></th>
+  </tr>
+  <tr>
+    <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+  </tr>
+</table>
+
+<%= google_map_view @item %>
+<%= inquiry_view @item %>
+<%= task_view @item %>
+<%= recognizer_view @item %>
+<%= editable_group_view @item %>
+<%= creator_view @item %>

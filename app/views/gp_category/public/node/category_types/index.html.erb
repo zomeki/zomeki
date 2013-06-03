@@ -1,0 +1,8 @@
+<div class="contentGpCategoryCategoryTypes">
+  <%- @category_types.each do |category_type| -%>
+  <section class="categoryType categoryType<%= category_type.name.try(:camelize) %>">
+    <h2><%= link_to category_type.title, category_type.public_uri %></h2>
+  </section>
+  <%- end -%>
+  <%= paginate @category_types %>
+</div>

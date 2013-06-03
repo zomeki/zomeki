@@ -1,0 +1,249 @@
+<%- inline_id = @item.id || Util::Sequencer.next_id(:tmp, md5: true) -%>
+
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
+    <th><%= f.label :title %>設定</th>
+    <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
+  </tr>
+</table>
+
+<div id="title_settings" style="display: none;">
+  <table class="show">
+    <tr>
+      <th><%= f.label :href %></th>
+      <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
+      <td><%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :subtitle %></th>
+      <td colspan="2"><%= f.text_area :subtitle, :size => '100x2' %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :summary %></th>
+      <td colspan="2"><%= f.text_area :summary, :size => '100x5' %></td>
+    </tr>
+  </table>
+</div>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :body %></th>
+  </tr>
+  <tr>
+    <td class="cke_editor_wrapper">
+      <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+      <%= f.text_area :body, :class => 'body ckeditor' %>
+    </td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>添付ファイル</th>
+    <td><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></td>
+  </tr>
+</table>
+
+<div id="inline_files" style="display: none;">
+  <%= hidden_field_tag :_tmp, inline_id %>
+  <iframe src="<%= gp_article_doc_files_path(@content, inline_id) %>" style="width: 100%; height: 340px;"></iframe>
+</div>
+
+<%- unless @visible_category_types.empty? -%>
+<table class="show">
+  <%- @visible_category_types.each do |category_type| -%>
+  <tr>
+    <th><%= category_type.title %></th>
+    <td>
+      <div id="category_type_<%= category_type.id %>_categories">
+        <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
+      </div>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :event_state %></th>
+    <td>
+      <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
+      <span style="margin-left: 10px;">
+        <%= f.label :event_date %> ： <%= f.text_field :event_date, :value => value_for_datepicker(f.object_name, :event_date),
+                                                                    :style => 'width: 100px;', :class => 'datepicker' %>
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :raw_tags %></th>
+    <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :in_rel_doc_ids %></th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td style="width: 100px;"><%= GpCategory::CategoryType.model_name.human %></td>
+          <td style="width: 200px;"><%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></td>
+          <td style="width: 100px;"><%= GpCategory::Category.model_name.human %></td>
+          <td><%= select_tag 'rel_category', '', include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= GpArticle::Doc.model_name.human %></td>
+          <td colspan="2"><%= select_tag 'rel_doc', '', include_blank: true %></td>
+          <td><%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></td>
+        </tr>
+      </table>
+      <hr />
+      <div id="rel_docs">
+        <%- @item.rel_docs.each do |doc| -%>
+        <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
+        <%- end -%>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<br /><p class="form">携帯向け</p>
+<div style="margin: 10px;"><%= link_to_function '開く▼', "toggle_form(this, '#for_mobile')" %></div>
+
+<div id="for_mobile" style="display: none;">
+  <table class="show">
+    <tr>
+      <th>表示端末</th>
+      <td>
+        <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
+        <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :mobile_title %></th>
+      <td><%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th colspan="2"><%= f.label :mobile_body %></th>
+    </tr>
+    <tr>
+      <td colspan="2" class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<%= google_map_form f %>
+<%= inquiry_form f %>
+<%= task_form f %>
+<%= recognizer_form f %>
+
+<br /><p class="form">編集権限</p>
+
+<%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
+<table class="show">
+  <tr>
+    <th><%= f.label :in_editable_groups %></th>
+    <td>
+      <div id="editable_groups">
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
+        <%- Sys::Group.where(id: @item.in_editable_groups).each do |group| -%>
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
+      </div>
+      <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL', @item.editable_group.try(:all?), id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
+    </td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+<%= toggle_form_function -%>
+
+function set_click_event_handler(category_type_id) {
+  $('#add_category_type_' + category_type_id + '_category').on('click', function () {
+    var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
+    var new_category = categories_wrapper.children(':first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
+  }).trigger('click');
+}
+
+$(document).ready(function () {
+  <%= disable_enter_script -%>
+  <%= enable_datepicker_script -%>
+
+  $('#item_event_date').on('change', function (event) {
+    if (event.target.value == '') {
+      $('#item_event_state_hidden').attr('checked', true);
+    } else {
+      $('#item_event_state_visible').attr('checked', true);
+    }
+  });
+
+  <%- @visible_category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+
+  $('#add_editable_group').on('click', function () {
+    var editable_groups_wrapper = $('#editable_groups');
+    var new_group = editable_groups_wrapper.children(':first-child').clone(true);
+    new_group.find(':disabled').removeAttr('disabled');
+    new_group.insertBefore(editable_groups_wrapper.children(':last-child')).show();
+  }).trigger('click');
+
+  <%- if @content.gp_category_content_category_type -%>
+  $('#rel_category_type').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $('#rel_category');
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+      doc_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      doc_select.html('<option value=""></option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+
+  $('#rel_category').on('change', function (event) {
+    var category_id = parseInt(event.target.value);
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_id)) {
+      doc_select.html('<option value=""></option>');
+    } else {
+      doc_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_article_docs_path(content: @content) %>?options=true&category_id=' + category_id, function (data) {
+        doc_select.html(data);
+      });
+    }
+  });
+  <%- end -%>
+
+  $('#add_rel_doc').on('click', function () {
+    var rel_doc = $('#rel_doc');
+    if (rel_doc.val() === '') {
+      alert('記事を選択してください。');
+      return;
+    }
+
+    var new_doc = $('<select>', {name: 'item[in_rel_doc_ids][]'}).append($('<option>', {value: ''}));
+    new_doc.append(rel_doc.children(':selected').clone(true)).val(rel_doc.val());
+    $('<div>', {style: 'margin-top: 10px; width: 700px;'}).append(new_doc).appendTo($('#rel_docs'));
+    rel_doc.val('');
+  });
+});
+<%- end -%>

@@ -1,20 +1,22 @@
-<%= javascript_tag do %>
-$(function() {
-  $('.js-datetime').datetime();
-});
-<% end %>
 <br />
 <p class="form">公開日時設定</p>
 
 <table class="show">
   <tr>
     <th>表示日時</th>
-    <td><%= f.text_field :published_at, :class => 'js-datetime' %></td>
+    <td><%= f.text_field :published_at, :value => value_for_datetimepicker(f.object_name, :published_at),
+                                        :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr><tr>
     <th>公開開始日時</th>
-    <td><%= f.array_text_field 'in_tasks[publish]', :class => 'js-datetime' %></td>
+    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr><tr>
     <th>公開終了日時</th>
-    <td><%= f.array_text_field 'in_tasks[close]', :class => 'js-datetime' %></td>
+    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
 </table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datetimepicker_script -%>
+});
+<%- end -%>

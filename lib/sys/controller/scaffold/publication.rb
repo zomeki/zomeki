@@ -24,7 +24,7 @@ protected
         format.xml  { head :ok }
       end
     else
-      flash[:notice] = "公開処理に失敗しました。"
+      flash[:alert] = '公開処理に失敗しました。'
       respond_to do |format|
         format.html { redirect_to url_for(:action => :show) }
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
@@ -42,7 +42,7 @@ protected
         format.xml  { head :ok }
       end
     else
-      flash[:notice] = "非公開処理に失敗しました。"
+      flash[:alert] = '非公開処理に失敗しました。'
       respond_to do |format|
         format.html { redirect_to url_for(:action => :show) }
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }

@@ -199,6 +199,10 @@ class Cms::Site < ActiveRecord::Base
     self.id == 1
   end
 
+  def groups_for_option
+    groups.where(level_no: 2).map{|g| g.descendants_for_option }.flatten(1)
+  end
+
 protected
   def validate_attributes
     if !full_uri.blank? && full_uri !~ /^[a-z]+:\/\/[^\/]+\//

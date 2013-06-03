@@ -1,0 +1,17 @@
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+<%= hidden_field_tag 'target', params[:target] if params[:target].present? %>
+<table>
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :id %></th>
+    <td><%= text_field_tag 'criteria[id]', params[:criteria].try('[]', :id), :style => 'width: 100px;' %></td>
+    <th><%= GpArticle::Doc.human_attribute_name :title %></th>
+    <td><%= text_field_tag 'criteria[title]', params[:criteria].try('[]', :title), :style => 'width: 400px;' %></td>
+    <th>所属</th>
+    <td><%= text_field_tag 'criteria[group]', params[:criteria].try('[]', :group), :style => 'width: 150px;' %></td>
+    <td class="submitters">
+      <%= submit_tag '検索', :name => 'search' %>
+      <%= submit_tag 'リセット', :name => 'reset' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>

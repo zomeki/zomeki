@@ -1,5 +1,7 @@
 # encoding: utf-8
 module Cms::Model::Base::Page
+  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+
   def states
     [['公開','public'],['非公開','closed']]
   end
@@ -8,9 +10,9 @@ module Cms::Model::Base::Page
     self.and "#{self.class.table_name}.state", 'public'
     self
   end
-  
+
   def public?
-    return state == 'public' && !published_at.blank?
+    return state == 'public'
   end
 
   def public_or_preview

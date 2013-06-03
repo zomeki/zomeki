@@ -1,0 +1,23 @@
+<h2><%= @content.name %><%= sub ? " ： #{sub}" : '' %></h2>
+
+<% if controller_name == 'categories' %>
+<div class="navi">
+  <%= link_to "#{GpCategory::CategoryType.model_name.human}一覧", gp_category_category_types_path %>
+  <span class="separator">&gt;</span>
+  <%= link_to @category_type.title, gp_category_category_type_categories_path(content: @content, category_type_id: @category_type.id) %>
+  <%- if @parent_category -%>
+    <%- @parent_category.parents_tree.each do |c| -%>
+    <span class="separator">&gt;</span><%= link_to c.title,
+                                                   gp_category_category_type_category_categories_path(content: @content, category_type_id: @category_type.id, category_id: c.id) %>
+    <%- end -%>
+  <%- end -%>
+</div>
+<% end %>
+
+<div class="actionMenu">
+  <%= action_menu :new if Core.user.has_auth?(:designer) && Core.user.has_priv?(:create, item: Core.concept) %>
+  <%= action_menu :index, index_path %>
+  <%= action_menu :show %>
+  <%= action_menu :edit if @item.try(:editable?) %>
+  <%= action_menu :destroy if @item.try(:deletable?) %>
+</div>

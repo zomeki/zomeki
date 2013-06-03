@@ -1,0 +1,42 @@
+ja:
+  activerecord:
+    models:
+      gp_category/category_type: カテゴリタイプ
+      gp_category/category: カテゴリ
+    attributes:
+      gp_category/category_type:
+        name: カテゴリタイプID
+        title: カテゴリタイプ名
+        sort_no: 並び順
+        updated_at: 更新日時
+        state: 状態
+      gp_category/category:
+        name: カテゴリID
+        title: カテゴリ名
+        sort_no: 並び順
+        updated_at: 更新日時
+        state: 状態
+        description: 説明
+      gp_category/piece/doc:
+        category_type_id: 表示カテゴリタイプ
+        category_id: 表示カテゴリ
+        list_count: 表示件数
+        layer: 表示カテゴリ階層
+        list_style: 表示形式
+        date_style: 日付形式
+      gp_category/piece/category_type:
+        category_type_id: 表示カテゴリタイプ
+        category_id: 表示カテゴリ
+        layer: 表示カテゴリ階層
+        list_style: 表示形式
+        date_style: 日付形式
+      gp_category/piece/recent_tab:
+        list_count: 表示件数
+        list_style: 表示形式
+        date_style: 日付形式
+        more_label: 一覧リンク文字
+        name: タブID
+        title: タブ名
+        more: 一覧リンク
+        condition: 結合
+        sort_no: 並び順

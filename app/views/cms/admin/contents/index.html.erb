@@ -3,6 +3,7 @@
   <tr>
     <th style="width: 60px; text-align: center;">詳細</th>
     <th style="width: ;"><%= Cms::Content.new.locale(:name) %></th>
+    <th><%= Cms::Content.human_attribute_name :note %></th>
     <th style="width: 25%;">コンテンツ種別</th>
     <th style="width: 120px; text-align: center;">更新日時</th>
   </tr>
@@ -11,6 +12,7 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, item.admin_content_uri %></td>
     <td><%= link_to h(item.name), item.admin_uri %></td>
+    <td><%= item.note %></td>
     <td><%= item.model_name(:short) %></td>
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
   </tr>

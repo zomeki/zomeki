@@ -1,0 +1,3 @@
+<%- @items.each do |ct| -%>
+<span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, true, name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+<%- end -%>

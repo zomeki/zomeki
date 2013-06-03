@@ -18,17 +18,18 @@ def centos
   puts "It's CentOS!"
 
   core_yml = '/var/share/zomeki/config/core.yml'
-
-  FileUtils.copy(core_yml, "#{core_yml}.#{Time.now.strftime('%Y%m%d%H%M')}", preserve: true)
+  FileUtils.copy("#{core_yml}.sample", core_yml, preserve: true)
 
   db = YAML::Store.new(core_yml)
   db.transaction do
     db['production']['uri'] = "http://#{`hostname`.chomp}/"
   end
 
-  zomeki_conf = '/var/share/zomeki/config/virtual-hosts/zomeki.conf'
+  sites_conf = '/var/share/zomeki/config/virtual-hosts/sites.conf'
+  FileUtils.copy("#{sites_conf}.sample", sites_conf, preserve: true)
 
-  FileUtils.copy(zomeki_conf, "#{zomeki_conf}.#{Time.now.strftime('%Y%m%d%H%M')}", preserve: true)
+  zomeki_conf = '/var/share/zomeki/config/virtual-hosts/zomeki.conf'
+  FileUtils.copy("#{zomeki_conf}.sample", zomeki_conf, preserve: true)
 
   File.open(zomeki_conf, File::RDWR) do |f|
     f.flock(File::LOCK_EX)

@@ -7,8 +7,10 @@ require 'shell'
 
 class GtalkFilter
   def initialize
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     dir = File.dirname(__FILE__)
-    @chasen   = '/usr/bin/chasen'
+    @chasen   = 'chasen'
     @chasenrc = File.expand_path('./config/chasenrc_gtalk', dir)
     @chaone   = File.expand_path('./morph/chaone/chaone', dir)
     @log_file = File.expand_path('./filter.log', dir)

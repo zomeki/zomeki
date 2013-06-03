@@ -19,9 +19,9 @@ module Sys::Model::Base
     quote = Proc.new{|v| self.class.connection.quote(v)}
     
     table = self.class.table_name
-    sql = "INSERT INTO #{table} ("
-    sql += self.class.column_names.sort.join(',')
-    sql += ") VALUES ("
+    sql = "INSERT INTO #{table} (`"
+    sql += self.class.column_names.sort.join('`,`')
+    sql += "`) VALUES ("
     
     self.class.column_names.sort.each_with_index do |name, i|
       sql += ',' if i != 0

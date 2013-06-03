@@ -1,0 +1,7 @@
+<%-
+  common_attrs = {id: nil}
+  common_attrs.merge!(disabled: true) unless available
+-%>
+<span style="<%= 'display: none;' unless available %>">
+  <%= select_tag "categories[#{category_type.id}][]", options_for_select(category_type.categories_for_option, category.id), common_attrs.merge(include_blank: true) %>
+</span>

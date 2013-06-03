@@ -25,7 +25,7 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
       c.or :body, 'LIKE', "%#{@item.keyword}%"
       c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
     end
-    item.find(:all, :order => :id).each {|c| group[1] << [c.id, "#{c.title} #{c.public_uri}"] }
+    item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, c.public_uri] }
     @items << group
 
     cond = ["site_id = ? AND model = ?", Core.site.id, 'Article::Doc'] 
@@ -37,7 +37,7 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
         c.or :body, 'LIKE', "%#{@item.keyword}%"
         c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
       end
-      item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title] }
+      item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, article_doc_path(c.content, c.id)] }
       @items << group
     end
 
@@ -50,7 +50,20 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
         c.or :body, 'LIKE', "%#{@item.keyword}%"
         c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
       end
-      item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title] }
+      item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, portal_article_doc_path(c.content, c.id)] }
+      @items << group
+    end
+
+    cond = ["site_id = ? AND model = ?", Core.site.id, 'GpArticle::Doc']
+    Cms::Content.find(:all, :conditions => cond, :order => :id).each do |content|
+      group = [ "汎用記事：#{content.name}", [] ]
+      item = GpArticle::Doc.new
+      item.and :content_id, content.id
+      item.and Condition.new do |c|
+        c.or :body, 'LIKE', "%#{@item.keyword}%"
+        c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
+      end
+      item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, gp_article_doc_path(c.content, c.id)] }
       @items << group
     end
   end

@@ -1,0 +1,50 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>
+
+<br />
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_view @item, :container => :tr %>
+  <%= layout_view @item, :container => :tr %>
+</table>
+
+<br />
+
+<p class="form">カテゴリ選択</p>
+
+<table class="show">
+  <%- @item.category_sets.each_with_index do |category_set, index| -%>
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= category_set.category.category_type.title %></td>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= category_set.category.title %></td>
+  </tr>
+  <tr>
+    <th><%= GpCategory::Category.model_name.human %>階層</th>
+    <td colspan="4"><%= category_set.layer_text %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= creator_view @item %>

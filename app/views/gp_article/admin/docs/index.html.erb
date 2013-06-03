@@ -1,0 +1,30 @@
+<%= render 'search' -%>
+
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="width: 60px; text-align: right;"><%= GpArticle::Doc.human_attribute_name :id %></th>
+    <th><%= GpArticle::Doc.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 150px">所属</th>
+    <th style="text-align: center; width: 120px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 60px;"><%= GpArticle::Doc.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 65px;">プレビュー</th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_article_doc_path(content: @content, id: item.id) %></td>
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td><%= item.creator.group.try(:name) %></td>
+    <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
+    <td style="text-align: center;"><%= item.status.name %></td>
+    <td style="text-align: center;">
+      <%= link_to_if item.terminal_pc_or_smart_phone, 'PC', item.preview_uri(params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
+      <%= link_to_if item.terminal_mobile, '携帯', item.preview_uri(mobile: true, params: {doc_id: item.id}), target: '_blank' if @content.doc_node && item.preview_uri.present? %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

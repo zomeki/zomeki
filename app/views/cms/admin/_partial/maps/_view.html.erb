@@ -6,7 +6,7 @@ return render(:text => "") unless map
 return render(:text => "") if map.map_lat.blank? || map.map_lng.blank?
 
 %><br />
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
 <script type="text/javascript">
 //<![CDATA[
 
@@ -50,6 +50,6 @@ addEvent(window, 'load', function() {
 <p class="form">地図</p>
 
 <div style="padding: 0px 10px;">
-  <%= "#{h(map.title)}<br />" if !map.title.blank? %>
+  <%= "#{h map.title}<br />".html_safe if map.title.present? %>
   <div id="map1" style="width: 100%; height: 400px"></div>
 </div>

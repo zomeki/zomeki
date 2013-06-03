@@ -6,11 +6,11 @@ See COPYING
 
 == 想定環境
 
-OS:: CentOS 6.3 / Ubuntu 12.04
+OS:: CentOS 6.4 / Ubuntu 12.04
 Webサーバ:: Apache 2.2
 DBシステム:: MySQL 5.1
 Ruby:: 1.9.3
-Rails:: 3.1.10
+Rails:: 3.1
 
 == 自動スクリプト
 

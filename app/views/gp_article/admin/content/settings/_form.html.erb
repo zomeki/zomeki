@@ -1,0 +1,159 @@
+<%-
+value_form = case @item.form_type
+             when :select
+               f.select(:value, @item.config_options, include_blank: true)
+             when :text
+               f.text_area(:value, style: 'width: 600px; height: 120px;')
+             when :check_boxes
+               f.check_boxes(:value, @item.config_options)
+             when :multiple_select
+               select_tag 'item[value]', options_from_collection_for_select(@item.config_options.where(id: @item.value), :id, :name), multiple: true, style: 'height: 150px; width: 250px;'
+             else
+               f.text_field(:value, style: 'width: 400px;')
+             end
+%><%= f.hidden_field :content_id -%>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr>
+  <tr>
+    <th>設定値</th>
+    <td>
+      <%- if @item.form_type == :multiple_select -%>
+        <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '---- 選択してください ----' %></div>
+        <div style="float: left;"><%= select_tag 'user_candidates', '<option value=""></option>', multiple: true, style: 'height: 150px; width: 250px;' %></div>
+        <div style="float: left; margin: 35px 20px; height: 70px;">
+          <div><%= button_to_function '追加 →', "move_option('user_candidates', 'item_value')" %></div>
+          <div style="margin-top: 20px;"><%= button_to_function '← 除外', "move_option('item_value', 'user_candidates')" %></div>
+        </div>
+        <div style="float: left;"><%= value_form %></div>
+        <%= javascript_tag do %>
+        function move_option(from, to) {
+          var selected_ids = $('#' + to + ' > option').map(function (index, item) { return parseInt($(item).val()); });
+          $('#' + from + ' > option:selected').each(function (index, item) {
+            if (selected_ids.index(parseInt($(item).val())) < 0) {
+              $(item).appendTo($('#' + to)).attr('selected', false);
+            } else {
+              $(item).remove();
+            }
+          });
+        }
+
+        $('#item_value').closest('form').submit(function (e) {
+          $('#user_candidates > option').attr('selected', false);
+          $('#item_value > option').attr('selected', true);
+        });
+
+        $('#groups').on('change', function (event) {
+          var group_id = parseInt(event.target.value);
+          if (isNaN(group_id)) {
+            $('#user_candidates').html('<option value=""></option>');
+          } else {
+            $('#user_candidates').html('<option value="">更新中...</option>');
+            $.get('<%= sys_group_users_path(parent: 'PARENT') %>?options=true'.replace('PARENT', group_id), function (data) {
+              $('#user_candidates').html(data);
+            });
+          }
+        });
+        <% end %>
+      <%- else -%>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+        <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<%- if @item.name == 'gp_category_content_category_type_id'
+      content = GpCategory::Content::CategoryType.find_by_id(@item.value)
+      category_types = content.try(:category_types) || []
+      category_types_for_option = content.try(:category_types_for_option) || []
+
+      ct_ids = @item.category_type_ids
+      vct_ids = @item.visible_category_type_ids
+      default_category_type_id = @item.default_category_type_id
+      default_categories_for_option = category_types.detect{|ct| ct.id == default_category_type_id }.try(:categories_for_option) || []
+      default_category_id = @item.default_category_id
+    -%>
+<table class="show">
+  <tr>
+    <th>利用<%= GpCategory::CategoryType.model_name.human %></th>
+    <td id="category_types">
+      <%- category_types.each do |ct| -%>
+      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::CategoryType.model_name.human %></th>
+    <td id="visible_category_types">
+      <%- category_types.each do |ct| -%>
+      <span class="visible_category_type"><%= check_box_tag "vct_#{ct.id}", ct.id, vct_ids.include?(ct.id), name: 'visible_category_types[]' -%> <%= label_tag "vct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<br />
+<p class="form">初期値</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= select_tag 'default_category_type', options_for_select(category_types_for_option, default_category_type_id), include_blank: true %></td>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= select_tag 'default_category', options_for_select(default_categories_for_option, default_category_id), include_blank: true %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    var content_id = parseInt(event.target.value);
+    if (isNaN(content_id)) {
+      $('#category_types').html('');
+      $('#visible_category_types').html('');
+      $('#default_category_type').html('<option value=""></option>');
+      $('#default_category').html('<option value=""></option>');
+    } else {
+      $('#category_types').html('更新中...');
+      $('#visible_category_types').html('更新中...');
+      $('#default_category_type').html('<option value="">更新中...</option>');
+      $('#default_category').html('<option value=""></option>');
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#category_types').html(data);
+        $('#visible_category_types').html(data.replace(/"category_type/g, '"visible_category_type').replace(/"ct_/g, '"vct_'));
+      });
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?options=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#default_category_type').html(data);
+      });
+    }
+  });
+
+  $('#default_category_type').on('change', function (event) {
+    var content_id = parseInt($('#item_value').val());
+    var category_type_id = NaN;
+    if (isFinite(content_id)) { category_type_id = parseInt(event.target.value); }
+    if (isNaN(category_type_id)) {
+      $('#default_category').html('<option value=""></option>');
+    } else {
+      $('#default_category').html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CONTENT_ID', content_id)
+                                                                                                                                        .replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        $('#default_category').html(data);
+      });
+    }
+  });
+
+  $('#category_types input[type="checkbox"]').on('click', function (event) {
+    if (!event.target.checked) { $('#' + event.target.id.replace('ct_', 'vct_')).removeAttr('checked'); }
+  });
+  $('#visible_category_types input[type="checkbox"]').on('click', function (event) {
+    if (event.target.checked) { $('#' + event.target.id.replace('vct_', 'ct_')).attr('checked', 'checked'); }
+  });
+});
+<%- end -%>
+<%- end -%>

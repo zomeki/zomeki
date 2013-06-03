@@ -1,0 +1,50 @@
+ja:
+  activerecord:
+    models:
+      gp_article/doc: 記事
+      gp_article/category_type: カテゴリタイプ
+      gp_article/category: カテゴリ
+      gp_article/tag: 関連ワード
+    attributes:
+      gp_article/doc:
+        id: 記事番号
+        name: 記事URL番号
+        public_full_uri: 記事URL
+        title: タイトル
+        body: 内容
+        updated_at: 更新日時
+        href: リンクURL
+        subtitle: サブタイトル
+        summary: 概要
+        state: 状態
+        event_state: イベントカレンダー表示
+        event_date: イベント日付
+        raw_tags: 関連ワード
+        mobile_title: タイトル
+        mobile_body: 内容
+        terminal_pc_or_smart_phone: PC・スマートフォン
+        terminal_mobile: 携帯
+        in_editable_groups: 編集可能グループ
+        in_rel_doc_ids: 関連記事
+      gp_article/category_type:
+        name: カテゴリタイプID
+        title: カテゴリタイプ名
+        sort_no: 並び順
+        updated_at: 更新日時
+        state: 状態
+      gp_article/category:
+        name: カテゴリID
+        title: カテゴリ名
+        sort_no: 並び順
+        updated_at: 更新日時
+        state: 状態
+      gp_article/piece/recent_tab:
+        list_count: 表示件数
+        list_style: 表示形式
+        date_style: 日付形式
+        more_label: 一覧リンク文字
+        name: タブID
+        title: タブ名
+        more: 一覧リンク
+        condition: 結合
+        sort_no: 並び順

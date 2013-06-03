@@ -1,0 +1,59 @@
+<%
+  #カレンダーの先頭曜日の指定（0:日曜、1:月曜、、、6:土曜)
+  start_w_index = @start_wday
+
+  #カレンダーの開始日が何曜日でも良いように２週分用意しておく
+  wday=[{:name=>'日',:num=>0,:class =>"wday sun"},{:name=>'月',:num=>1,:class=>"wday mon"},{:name=>'火',:num=>2,:class=>"wday tue"},
+	{:name=>'水',:num=>3,:class=>"wday wed"},{:name=>'木',:num=>4,:class=>"wday thu"},{:name=>'金',:num=>5,:class=>"wday fri"},
+	{:name=>'土',:num=>6,:class=>"wday sat"},
+	{:name=>'日',:num=>0,:class =>"wday sun"},{:name=>'月',:num=>1,:class=>"wday mon"},{:name=>'火',:num=>2,:class=>"wday tue"},
+	{:name=>'水',:num=>3,:class=>"wday wed"},{:name=>'木',:num=>4,:class=>"wday thu"},{:name=>'金',:num=>5,:class=>"wday fri"}]
+
+	base_nbr = @base_nbr
+	max_row = @max_row
+	max_column = @max_column
+%>
+
+<div class="portalCalendarEvents">
+
+<h2><%= sprintf("%d年%d月", @year, @month) %></h2>
+
+<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
+
+<%= @pagination.to_links(:class => "pagination upperPagination") %>
+
+<table>
+  <thead class="wdays">
+  <tr>
+	<% base_nbr.upto(max_column) do |idx| %>
+	  <th class="<%= wday[start_w_index + idx][:class] %>"><%= wday[start_w_index + idx][:name]%></th>
+	<% end %>
+  </tr>
+  </thead>
+  <% base_nbr.upto(max_row) do |row| %>
+  <tr>
+	<% base_nbr.upto(max_column) do |column| %>
+	  <% this_day = @box[row][column] %>
+	  <td>
+	  <% if this_day[:date].month == @month %>
+	    <%= this_day[:date].strftime("%d") %><br>
+
+		<% if this_day[:events].size > 0 %>
+		  <ul>
+		  <% this_day[:events].each do |item| %>
+			<li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+		  <% end %>
+		  </ul>
+		<% end %>
+	  <% else %>
+		&nbsp;
+	  <% end %>
+	  </td>
+	<% end %>
+  </tr>
+  <% end %>
+</table>
+
+<%= @pagination.to_links(:class => "pagination lowerPagination") %>
+
+<!-- end .calendarEvents --></div>

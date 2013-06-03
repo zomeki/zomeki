@@ -1,0 +1,33 @@
+<%-
+link_to_options = if doc.target.present?
+                    if doc.href.present?
+                      if doc.target == 'attached_file'
+                        if (file = doc.files.find_by_id(doc.href))
+                          ["#{doc.public_uri}file_contents/#{file.name}", target: '_blank']
+                        else
+                          nil
+                        end
+                      else
+                        [doc.href, target: doc.target]
+                      end
+                    else
+                      nil
+                    end
+                  else
+                    [doc.public_uri]
+                  end
+
+doc_title = if link_to_options
+              link_to *(link_to_options.unshift doc.title)
+            else
+              h doc.title
+            end
+
+title = %Q!<span class="title">#{doc_title}</span>!
+date = %Q!<span class="date">#{h (doc.published_at || Time.now).strftime(date_style)}</span>! # In preview mode, published_at is nil
+group = %Q!<span class="group">#{h doc.creator.group.name}</span>!
+category = %Q!<span class="category">#{h doc.categories.map(&:title).join(', ')}</span>!
+
+doc_line = (Page.mobile? ? title : list_style.gsub(/@title/, title).gsub(/@date/, date).gsub(/@group/, group).gsub(/@category/, category)).html_safe
+-%>
+<%= doc_line %>

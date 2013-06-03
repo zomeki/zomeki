@@ -1,0 +1,6 @@
+<%= render 'gp_article/admin/shared/menu', index_path: gp_article_docs_path(content: @content),
+                                                  sub: "#{GpArticle::Doc.model_name.human}#{case action_name.to_sym
+                                                                                            when :index; '一覧'
+                                                                                            when :new;   '登録'
+                                                                                            when :edit;  '編集'
+                                                                                            end}" %>

@@ -1,0 +1,89 @@
+<span class="note">※は必須項目です。</span>
+
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td><%= f.text_field :name, :class => 'id' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>
+
+<br />
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_and_layout_form f %>
+</table>
+
+<br />
+
+<p class="form">カテゴリ選択</p>
+
+<table class="show" id="categories">
+  <tbody>
+    <%= render 'category_set', category_types_for_option: @category_types_for_option,
+                               index: nil, category_set: @item.category_sets.build, available: false -%>
+    <%- @item.category_sets.each_with_index do |category_set, index| -%>
+    <%= render 'category_set', category_types_for_option: @category_types_for_option,
+                               index: index, category_set: category_set, available: true -%>
+    <%- end -%>
+    <tr>
+      <td colspan="4">&nbsp;</td>
+      <td style="text-align: right;"><%= button_tag '追加', type: 'button', id: 'add_categories_line' %></td>
+    </tr>
+  </tbody>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+<%= toggle_form_function -%>
+
+$(document).ready(function () {
+  <%= disable_enter_script -%>
+
+  $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $(event.target).closest('tr').find('td.category > select');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+
+  $('#add_categories_line').on('click', function () {
+    var categories_tbody = $('#categories > tbody');
+    var next_index = (categories_tbody.find('tr').length - 3) / 2; <%# コピー元(2) + 追加ボタン(1) = 3tr, 単位 = 2tr %>
+
+    var categories_tr = categories_tbody.find('tr:first-child').clone(true);
+    var categories = categories_tr.find('select[name="categories[N]"]');
+    categories.attr('name', categories.attr('name').replace('N', next_index));
+    categories_tr.find(':disabled').removeAttr('disabled');
+    categories_tr.insertBefore(categories_tbody.find('tr:last-child')).show();
+
+    var layers_tr = categories_tbody.find('tr:first-child + tr').clone(true);
+    var layers = layers_tr.find('input[name="layers[N]"]');
+    layers.attr('name', layers.attr('name').replace('N', next_index));
+    layers_tr.find(':disabled').removeAttr('disabled');
+    layers_tr.insertBefore(categories_tbody.find('tr:last-child'));
+  });
+});
+<%- end -%>

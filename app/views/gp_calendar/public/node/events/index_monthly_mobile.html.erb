@@ -1,0 +1,20 @@
+<div class="calendarEvents calendarMonthlyEvents">
+  <div class="h2"><%= @year %>年<%= @month %>月</div>
+
+  <%= @pagination.to_links(:class => 'pagination upperPagination') %>
+
+  <%- @calendar.days.each do |day| next if day[:class] =~ /^(prev|next)/ -%>
+  <%- next unless @items[day[:date]].size > 0 || day[:holiday] -%>
+  <div id="day<%= '%02d' % day[:day] %>" class="date"><%= day[:day] %>日（<%= day[:wday_label] %>）</div>
+  <% if day[:holiday] %><div class="doc">・<%= day[:holiday] %></div><% end %>
+  <%- @items[day[:date]].each do |item| -%>
+    <%- if item.is_a?(GpArticle::Doc) -%>
+      <div class="doc">・<%= render 'gp_article/public/shared/doc', doc: item, list_style: item.content.list_style, date_style: item.content.date_style %></div>
+    <%- else -%>
+      <div class="doc">・<%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => '_blank') %></div>
+    <%- end -%>
+  <%- end -%>
+  <%- end -%>
+
+  <%= @pagination.to_links(:class => 'pagination lowerPagination') %>
+<!-- end .calendarEvents --></div>

@@ -1,0 +1,31 @@
+<%- unless @categories.empty? -%>
+<%- last_level_no = nil -%>
+<%- @categories.each do |category| -%>
+  <%- if last_level_no && category.level_no == @least_level_no -%>
+    <%- unless last_level_no == @least_level_no -%>
+    </ul>
+    <%- end -%>
+  </section>
+</div>
+  <%- end -%>
+  <%- if category.level_no == @least_level_no -%>
+<div class="level<%= category.level_no %>">
+  <section class="category <%= category.name %><%= cycle '', ' cycle' %>">
+    <h3><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></h3>
+    <%- last_level_no = category.level_no -%>
+  <%- else -%>
+    <%- if last_level_no == @least_level_no -%>
+    <ul class="level<%= category.level_no %>">
+    <%- end -%>
+      <%- if last_level_no -%>
+      <li class="<%= category.name -%>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+      <%- last_level_no = category.level_no -%>
+      <%- end -%>
+  <%- end -%>
+<%- end -%>
+    <%- unless last_level_no == @least_level_no -%>
+    </ul>
+    <%- end -%>
+  </section>
+</div>
+<%- end -%>

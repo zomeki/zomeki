@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <title><%= Page.window_title %></title>
-<%= Page.layout.head_tag(request) %></head>
+<%= Page.layout.head_tag(request) %>
+</head>
+<%= javascript_include_tag '/_common/js/jquery.min.js' %>
+<%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+<%= csrf_meta_tags %>
 <body <%= Page.body_id %> <%= Page.body_class %>>
-
 <%= yield %>
-
 </body>
 </html>

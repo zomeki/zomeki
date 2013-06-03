@@ -1,0 +1,40 @@
+<script type="text/javascript">
+<!--
+function ChangeTab(tabname) {
+   // 全部消す
+   document.getElementById('tab1').style.display = 'none';
+   document.getElementById('tab2').style.display = 'none';
+   // 指定箇所のみ表示
+   document.getElementById(tabname).style.display = 'block';
+}
+//
+-->
+</script>
+
+<div class="tabbox">
+   <p class="tabs">
+      <a href="#tab1" class="tab1" onclick="ChangeTab('tab1'); return false;">本日</a>
+      <a href="#tab2" class="tab2" onclick="ChangeTab('tab2'); return false;">明日</a>
+   </p>
+
+  <% [1,2].each do |nbr| %>
+   <div id="tab<%=nbr%>" class="tab">
+		<% events = @events_list[nbr-1] %>
+		<% if events.count > 0 %>
+		  <ul>
+		  <% events.each do |item| %>
+			<li><%= item.event_uri.blank? ? hbr(item.title) : link_to(hbr(item.title), item.event_uri, :target => "_blank") %></li>
+		  <% end %>
+		  </ul>
+		<% end %>
+   </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+<!--
+  // デフォルトのタブを選択
+  ChangeTab('tab1');
+  //
+-->
+</script>

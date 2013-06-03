@@ -20,7 +20,7 @@ class Core
   cattr_accessor :publish
   
   ## Initializes.
-  def self.initialize(env = nil)
+  def self.initialize(env = {})
     @@now          = Time.now.to_s(:db)
     @@config       = Util::Config.load(:core)
     @@title        = @@config['title'] || 'ZOMEKI'
@@ -182,7 +182,7 @@ private
   def self.recognize_site
     case @@mode
     when 'system'
-      @@site          = self.get_site_by_cookie || Cms::Site.find_by_script_uri(@@script_uri) || Cms::Site.order(:id).first
+      @@site          = self.get_site_by_cookie || find_site_by_script_uri(@@script_uri) || Cms::Site.order(:id).first
       Page.site       = @@site
       @@internal_uri  = @@request_uri
     when 'preview'
@@ -194,11 +194,11 @@ private
       @@internal_uri  = @@request_uri
       @@internal_uri += "index.html" if @@internal_uri =~ /\/$/
     when 'public'
-      @@site          = Cms::Site.find_by_script_uri(@@script_uri)
+      @@site          = find_site_by_script_uri(@@script_uri)
       Page.site       = @@site
       @@internal_uri  = search_node @@request_uri
     when 'layouts'
-      @@site          = Cms::Site.find_by_script_uri(@@script_uri)
+      @@site          = find_site_by_script_uri(@@script_uri)
       Page.site       = @@site
       @@internal_uri  = '/_public/cms/layouts' + @@request_uri.gsub(/.*?_layouts/, '')
     when 'script'
@@ -208,7 +208,7 @@ private
         @@internal_uri  = @@request_uri
       end
     else
-      @@site          = Cms::Site.find_by_script_uri(@@script_uri)
+      @@site          = find_site_by_script_uri(@@script_uri)
       Page.site       = @@site
       @@internal_uri  = @@request_uri
     end
@@ -222,5 +222,9 @@ private
     cookies = CGI::Cookie.parse(Core.env['HTTP_COOKIE'])
     return cookies[name].value.first if cookies.has_key?(name)
     return nil
+  end
+
+  def self.find_site_by_script_uri(uri)
+    Cms::Site.find_by_script_uri(uri) || Cms::Site.find_by_script_uri(uri.sub(/^https:/, 'http:'))
   end
 end

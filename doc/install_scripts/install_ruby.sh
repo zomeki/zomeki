@@ -1,9 +1,10 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_19='ruby-1.9.3-p374'
+RUBY_VERSION='ruby-1.9.3-p429'
+RUBY_SOURCE_URL="http://core.ring.gr.jp/archives/lang/ruby/1.9/$RUBY_VERSION.tar.gz"
 
-echo "#### Install $RUBY_19 ####"
+echo "#### Install $RUBY_VERSION ####"
 if [ -f $DONE_FLAG ]; then exit; fi
 echo '-- PRESS ENTER KEY --'
 read KEY
@@ -17,9 +18,9 @@ centos() {
 
   yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
   cd /usr/local/src
-  rm -rf $RUBY_19.tar.gz $RUBY_19
-  curl -L -O http://core.ring.gr.jp/archives/lang/ruby/1.9/$RUBY_19.tar.gz
-  tar zxf $RUBY_19.tar.gz && cd $RUBY_19 && ./configure && make && make install
+  rm -rf $RUBY_VERSION.tar.gz $RUBY_VERSION
+  wget $RUBY_SOURCE_URL
+  tar zxf $RUBY_VERSION.tar.gz && cd $RUBY_VERSION && ./configure && make && make install
 }
 
 others() {

@@ -1,7 +1,7 @@
 <%
 
 def error?(col)
-  @item.errors[col].size > 0 ? 'class="fieldWithErrors"' : ''
+  @item.errors[col].size > 0 ? 'class="field_with_errors"' : ''
 end
 
 groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no)

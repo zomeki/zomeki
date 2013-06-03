@@ -13,11 +13,10 @@ end
 users = users.uniq
 user_ids = users.collect{|u| u.id.to_s}
 
-max     = 5
 in_name = "##{f.object_name}_in_recognizer_ids"
 e1_name = 'recognizers1'
 e2_name = 'recognizers2'
-e1_evt  = "moveSelectOptions(this.form, '##{e1_name}', '##{e2_name}', #{max});"
+e1_evt  = "moveSelectOptions(this.form, '##{e1_name}', '##{e2_name}');"
 e2_evt  = "moveSelectOptions(this.form, '##{e2_name}', '##{e1_name}');"
 
 e2_list = item.in_recognizer_ids.to_s.split(' ').uniq
@@ -25,8 +24,8 @@ e2_list.each{|id| e2_list.delete(id) unless user_ids.index(id)}
 item.in_recognizer_ids = e2_list.join(' ')
 
 e1_opt  = []
-e2_opt  = []
-users.each {|u| e2_list.index(u.id.to_s) ? e2_opt << u : e1_opt << u }
+e2_opt  = @content.respond_to?(:required_recognizers) ? @content.required_recognizers : []
+users.each {|u| e2_list.index(u.id.to_s) && !e2_opt.include?(u) ? e2_opt << u : e1_opt << u }
 e1_opt  = options_for_select(e1_opt.collect{|u| [u.name_with_account, u.id]})
 e2_opt  = options_for_select(e2_opt.collect{|u| [u.name_with_account, u.id]})
 
@@ -36,18 +35,19 @@ e2_tag  = select_tag(e2_name, e2_opt, :multiple => true, :onDblClick => e2_evt, 
 
 %><script type="text/javascript">
 //<![CDATA[
-function moveSelectOptions(form, srcId, dstId, max) {
-  if (max) {
-    var num = $(srcId + ' option:selected').size() + $(dstId + ' option').size();
-    if (num > max) {
-      alert("承認者は設定は5人以内で入力してください。");
-      return false;
-    }
-  }
-  
+function moveSelectOptions(form, srcId, dstId) {
   $(srcId + ' option:selected').each(function() {
     var exist = false;
     var srcOpt = $(this);
+
+<%- if @content.respond_to?(:required_recognizers) -%>
+    if (srcId == '#<%= e2_name %>' &&
+        $([<%= @content.required_recognizers.map{|r| r.id }.join(',') %>]).index(parseInt(srcOpt.val())) >= 0) {
+      alert('「' + srcOpt.text() + '」さんは除外できません。');
+      return;
+    }
+<%- end -%>
+
     $(dstId + ' option').each(function() {
       if ($(this).val() == srcOpt.val()) {
         exist = true;
@@ -59,20 +59,7 @@ function moveSelectOptions(form, srcId, dstId, max) {
       srcOpt.remove();
     }
   });
-  
-  var ids = [];
-  if (max) {
-    $(dstId + ' option').each(function() {
-      ids.push($(this).val())
-    });
-  } else {
-    $(srcId + ' option').each(function() {
-      ids.push($(this).val())
-    });
-  }
-  $('<%= in_name %>').val(ids.join(' '));
 }
-
 //]]>
 </script>
 
@@ -90,8 +77,20 @@ function moveSelectOptions(form, srcId, dstId, max) {
       <input type="button" value="追加 →" onClick="<%= e1_evt %>" /><br /><br />
       <input type="button" value="← 除外" onClick="<%= e2_evt %>" />
       </td><td>
-      <div class="<%= 'fieldWithErrors' if @item.errors['承認者'].size > 0 %>"><%= e2_tag %></div>
+      <div class="<%= 'field_with_errors' if @item.errors['承認者'].size > 0 %>"><%= e2_tag %></div>
       </td></tr></table>
     </td>
   </tr>
 </table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('<%= in_name %>').closest('form').submit(function (e) {
+    var ids = [];
+    $('#<%= e2_name %> > option').each(function() {
+      ids.push($(this).val());
+    });
+    $('<%= in_name %>').val(ids.join(' '));
+  });
+});
+<%- end -%>

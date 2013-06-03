@@ -20,13 +20,13 @@ module Sys::Model::Base::File
   
   def validate_file_name
     return true if name.blank?
-    
+
     if self.name !~ /^[0-9a-zA-Z\-\_\.]+$/
-      errors.add :name, "は半角英数字を入力してください。"
-    elsif self.name.count('.') != 1
+      errors.add :name, 'は半角英数字を入力してください。'
+    elsif self.name !~ /^[^\.]+?\.[^\.]+$/
       errors.add(:name, 'を正しく入力してください。＜ファイル名.拡張子＞')
     elsif duplicated?
-      errors.add :name, "は既に存在しています。"
+      errors.add :name, 'は既に存在しています。'
       return false
     end
     self.title = self.name if title.blank?
@@ -84,9 +84,12 @@ module Sys::Model::Base::File
           self.image_width  = image.columns
           self.image_height = image.rows
         end
-      rescue LoadError
-      rescue Magick::ImageMagickError
-      rescue NoMethodError
+      rescue LoadError => e
+        warn_log(e.message)
+      rescue Magick::ImageMagickError => e
+        warn_log(e.message)
+      rescue NoMethodError => e
+        warn_log(e.message)
       end
     end
   end
@@ -241,7 +244,12 @@ module Sys::Model::Base::File
     end
     return img
   end
-  
+
+  def file_exist?
+    return false if new_record?
+    File.exist?(upload_path)
+  end
+
 private
   ## filter/aftar_save
   def upload_internal_file
@@ -253,7 +261,7 @@ private
   
   ## filter/aftar_destroy
   def remove_internal_file
-    return true unless FileTest.exist?(upload_path)
+    return true unless file_exist?
     FileUtils.remove_entry_secure(upload_path)
     return true
   end

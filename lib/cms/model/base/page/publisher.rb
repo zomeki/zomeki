@@ -12,6 +12,7 @@ module Cms::Model::Base::Page::Publisher
   end
 
   def public_path
+    return '' unless public_uri
     Page.site.public_path + public_uri
   end
 
@@ -26,12 +27,12 @@ module Cms::Model::Base::Page::Publisher
     params = []
     options[:params].each {|k, v| params << "#{k}=#{v}" } if options[:params]
     params = params.size > 0 ? "?#{params.join('&')}" : ""
-    "#{Core.site.full_uri}_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}" 
+    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}" 
   end
 
   def publish_uri(options = {})
     site = options[:site] || Page.site
-    "#{Core.site.full_uri}_publish/#{format('%08d', site.id)}#{public_uri}" 
+    "#{site.full_uri}_publish/#{format('%08d', site.id)}#{public_uri}" 
   end
 
   def publishable

@@ -1,0 +1,40 @@
+<%= javascript_include_tag '/_common/modules/article/js/doc_tabs.js' -%>
+<%= javascript_tag do -%>
+var docTabs<%= @piece.id %> = new ArticleDocTabs('<%= @piece.css_id %>');
+<%- end -%>
+
+<nav class="tabs">
+  <ul>
+    <%- @tabs.each do |tab| -%>
+    <li class="<%= tab[:class] %>"><%= link_to_function tab[:title], "docTabs#{@piece.id}.show('#{tab[:name]}')" %></li>
+    <%- end -%>
+  </ul>
+</nav>
+
+<div class="wrapper">
+  <div class="content">
+    <%- @tabs.each do |tab| -%>
+    <ul class="<%= tab[:name] %>"<%= ' style="display: none;"'.html_safe unless tab[:current] %>>
+      <%- tab[:docs].each do |doc| -%>
+      <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %></li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </div>
+
+  <div class="links">
+    <%- @tabs.each do |tab| -%>
+    <div class="<%= tab[:name] %>"<%= ' style="display: none;"'.html_safe unless tab[:current] %>>
+      <%- if tab[:more] -%>
+<%- if false -%>
+      <ul class="feed">
+        <li><%= link_to 'RSS', "#{tab[:more]}/index.rss", title: "RSSフィードを取得", class: 'feedRss' %></li>
+        <li><%= link_to 'Atom', "#{tab[:more]}/index.atom", title: "Atomフィードを取得", class: 'feedAtom' %></li>
+      </ul>
+<%- end -%>
+      <div class="more"><%= link_to @more_label, tab[:more] %></div>
+      <%- end -%>
+    </div>
+    <%- end -%>
+  </div>
+<!-- end .wrapper --></div>

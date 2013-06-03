@@ -10,6 +10,9 @@
   </tr><tr>
     <th><%= @item.locale(:name) %></th>
     <td><%=hbr @item.name %></td>
+  </tr><tr>
+    <th><%= @item.class.human_attribute_name(:note) %></th>
+    <td><%= @item.note %></td>
   </tr>
 <% if defined?(container) && container != :tr %>
 </table>

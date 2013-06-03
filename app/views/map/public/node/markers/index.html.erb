@@ -1,0 +1,38 @@
+<div class="contentMapMarkers">
+  <div id="map_canvas" style="height: 350px; width: 700px;"></div>
+
+  <%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false&region=jp' %>
+  <%= javascript_include_tag '/_common/modules/map/js/map.js' %>
+  <%= javascript_tag do -%>
+  var map;
+  google.maps.event.addDomListener(window, 'load', function (event) {
+    map = new Map('map_canvas', <%= @markers.first.try(:latitude) || 0 %>, <%= @markers.first.try(:longitude) || 0 %>);
+    <%- @markers.each do |marker| -%>
+      map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
+                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>');
+    <%- end -%>
+  });
+  <%- end -%>
+
+  <div class="searchForm"><span>カテゴリ：</span><%= form_tag '', :method => 'get', :class => 'search' do -%>
+    <%= select_tag 'c', options_from_collection_for_select(@categories, :id, :title, params[:c]), :prompt => '----- すべて -----',
+                   :onchange => 'this.form.submit()' %>
+  <%- end -%></div>
+
+  <%- unless @markers.empty? -%>
+  <table>
+    <tr>
+      <th>名称</th>
+      <th>マーカー</th>
+    </tr>
+    <%- @markers.each do |marker| -%>
+    <tr>
+      <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
+      <td class="marker"><%= link_to_function '移動', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
+    </tr>
+    <%- end -%>
+  </table>
+  <%- end -%>
+
+  <%= paginate @markers %>
+</div>

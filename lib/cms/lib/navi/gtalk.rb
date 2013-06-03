@@ -7,6 +7,8 @@ class Cms::Lib::Navi::Gtalk
   end
   
   def make(*args)
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     text    = nil
     options = {}
     
@@ -25,7 +27,7 @@ class Cms::Lib::Navi::Gtalk
     return false unless text
     
     text = self.class.make_text(text)
-    text = text.split(//u).slice(0, 3000).join
+    text = text[0, 500]
     
     cnf = Tempfile::new("gtalk_cnf", '/tmp')
     wav = Tempfile::new("gtalk_wav", '/tmp')

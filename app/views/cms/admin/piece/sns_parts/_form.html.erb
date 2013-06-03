@@ -1,0 +1,22 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_form f, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th>表示種別</th>
+    <td>
+      <%- in_settings = instance_variable_get("@#{f.object_name}").in_settings -%>
+      <%- @piece.class::SETTING_KEYS.each do |key| %>
+      <%= check_box_tag "item[in_settings][#{key}]", '1', in_settings[key] %> <%= label_tag "item[in_settings][#{key}]", @piece.class::SETTING_NAMES[key] %>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<%= creator_form f %>

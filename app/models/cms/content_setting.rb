@@ -42,6 +42,7 @@ class Cms::ContentSetting < ActiveRecord::Base
   end
   
   def config_options
+    return config[:options].call if config[:options].is_a?(Proc)
     config[:options] ? config[:options].collect {|e| [e[0], e[1].to_s] } : nil
   end
   
@@ -54,12 +55,24 @@ class Cms::ContentSetting < ActiveRecord::Base
   end
   
   def value_name
-    if config[:options]
-      config[:options].each {|c| return c[0] if c[1].to_s == value.to_s}
+    opts = if config[:options].is_a?(Proc)
+             config[:options].call
+           else
+             config[:options]
+           end
+    if opts
+      case config[:form_type]
+      when :check_boxes
+        YAML.load(value.presence || '[]').map{|v| opts.detect{|o| o.last == v }.try(:first) }.compact.join(', ')
+      when :multiple_select
+        ids = YAML.load(value.presence || '[]')
+        config_options.where(id: ids).map(&:name).join(', ')
+      else
+        opts.detect{|o| o.last.to_s == value.to_s }.try(:first)
+      end
     else
-      return value if !value.blank?
+      value.presence
     end
-    nil
   end
   
   def form_type

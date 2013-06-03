@@ -33,12 +33,15 @@ module Sys::Model::Rel::EditableGroup
   def save_editable_groups
     return false unless unid
     return true unless @editable_group_ids
-    
+
+    all_group = @editable_group_ids.delete('ALL')
+
     value = @editable_group_ids.join(' ').strip
     @editable_group_ids = nil
     
     if editable_group
       editable_group.group_ids = value
+      editable_group.all = !!all_group
       editable_group.save
     else
       group = Sys::EditableGroup.new
@@ -46,6 +49,7 @@ module Sys::Model::Rel::EditableGroup
       group.created_at = Core.now
       group.updated_at = Core.now
       group.group_ids  = value
+      group.all = !!all_group
       return false unless group.save_with_direct_sql
       editable_group(true)
     end

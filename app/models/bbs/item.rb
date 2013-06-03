@@ -25,8 +25,6 @@ class Bbs::Item < ActiveRecord::Base
   validate :validate_block_word
   validate :validate_block_ipaddr
   
-  apply_simple_captcha :message => "画像と文字が一致しません。", :add_to_base => true
-  
   after_save :save_thread_id,
     :if => %Q(parent_id == 0 && thread_id.nil?)
   
