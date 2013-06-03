@@ -8,8 +8,6 @@ class Bbs::Content::Setting < Cms::ContentSetting
     :options => [["表示する", 1], ["表示しない", 0]]
   set_config :show_uri, :name => "URLの表示",
     :options => [["表示する", 1], ["表示しない", 0]]
-  set_config :use_captcha, :name => "画像認証",
-    :options => [["使用する", 1], ["使用しない", 0]]
   set_config :use_password, :name => "パスワードによる削除機能",
     :options => [["使用する", 1], ["使用しない", 0]]
   set_config :use_once_click, :name => "２重送信防止機能",

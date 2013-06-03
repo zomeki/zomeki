@@ -1,0 +1,25 @@
+<%-
+value_form = case @item.form_type
+             when :select
+               f.select(:value, @item.config_options, include_blank: true)
+             when :text
+               f.text_area(:value, style: 'width: 600px; height: 120px;')
+             else
+               f.text_field(:value, style: 'width: 400px;')
+             end
+%><%= f.hidden_field :content_id -%>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr>
+  <tr>
+    <th>設定値</th>
+    <td>
+      <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+      <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+      <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+    </td>
+  </tr>
+</table>

@@ -1,5 +1,36 @@
 # encoding: utf-8
+#require 'date'
 module PortalArticle::Controller::Feed
+
+	#そのyyyymmに何件のレコードが登録されているかを配列で返す
+	def get_count(et, st, content_id, show_zero)
+		#et, st には yyyy-mm-dd 形式の日付型がくることを期待している
+		#[[201312,0],[201311,1],,,,[YYYYMM,count]]形式の返り値
+
+		months = []
+		dt = et
+		while dt > st
+			yyyymm = dt.strftime("%Y%m")
+			sql =	["SELECT DATE_FORMAT(published_at,'%Y%m') as YYYYMM, count(id) as count
+				FROM portal_article_docs
+				WHERE content_id = ?
+				GROUP BY YYYYMM
+				HAVING YYYYMM = ?", content_id, yyyymm]
+
+			r = PortalArticle::Doc.find_by_sql(sql)
+			if r.empty?
+				months << [yyyymm, 0] if show_zero
+			else
+				months << [r[0].attributes['YYYYMM'], r[0].attributes['count']]
+			end
+			dt = 1.month.ago(dt)
+		end
+		months.sort!{|x,y|  y[0] <=> x[0]}
+		
+		return months
+	end
+
+	
   def render_feed(docs)
     if ['rss', 'atom'].index(params[:format])
       @site_uri    = Page.site.full_uri

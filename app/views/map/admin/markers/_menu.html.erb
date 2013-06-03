@@ -1,0 +1,6 @@
+<%= render 'map/admin/shared/menu', index_path: map_markers_path(content: @content),
+                                           sub: "#{Map::Marker.model_name.human}#{case action_name.to_sym
+                                                                                  when :index; '一覧'
+                                                                                  when :new;   '登録'
+                                                                                  when :edit;  '編集'
+                                                                                  end}" %>

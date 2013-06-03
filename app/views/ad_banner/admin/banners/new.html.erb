@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => ad_banner_banners_path) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :create %>
+<% end %>

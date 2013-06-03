@@ -1,83 +1,18 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
-<head>
-<meta charset="UTF-8" />
-<title>ログイン</title>
+<%= render 'header', title: 'ログイン' %>
 
-<link href="/_common/themes/admin/login.css" media="screen" rel="stylesheet" type="text/css" />
+<%= form_tag do -%>
+  <%= hidden_field_tag :uri, @uri %>
+  <div class="box">
+    <%= render 'inner_box' %>
+    <div class="fields">
+      <%= text_field_tag :account, nil, placeholder: 'ユーザID', title: 'ユーザID' %><br />
+      <%= password_field_tag :password, nil, placeholder: 'パスワード', title: 'パスワード' %>
+    </div>
+    <div class="submitters">
+      <%= image_submit_tag '/_common/themes/admin/images/bt_login.gif', alt: 'ログイン', class: 'login' %>
+    </div>
+    <div class="password_reminder"><%= link_to '>>パスワード変更', new_admin_password_reminder_path %></div>
+  </div>
+<%- end -%>
 
-<!--[if lt IE 9]>
-<script src="/_common/js/html5.js"></script>
-<script src="/_common/js/selectivizr.js"></script>
-<![endif]-->
-</head>
-
-
-<body>
-
-<div id="container">
-
-<header id="header">
-<div id="headerContainer">
-
-  <h1><img src="/_common/themes/admin/images/header_logo.gif" alt="ZOMEKI"></h1
->
-<!-- /#headerContainer --></div>
-<!-- /#header --></header>
-
-<div id="main">
-<%= form_tag  do -%>
-<%= hidden_field_tag :uri, h(@uri) %>
-
-<div class="box">
-
-  <h2><img src="/_common/themes/admin/images/login_logo.gif" alt="ZOMEKI"></h2>
-  <p class="version">Ver.<%= Zomeki.version %></p>
-<%- request.flash.discard(:notice) -%>
-  <div class="notice"><%= flash[:notice] %></div>
-
-  <div class="fields">
-  <% if true %>
-  <%= text_field_tag 'account', '', placeholder: 'ユーザID', title: 'ユーザID' %><%= password_field_tag 'password', '', placeholder: 'パスワード', title: 'パスワード' %></div>
-  <% else %>
-  <%= text_field_tag 'account', '' %><%= password_field_tag 'password', '' %></div>
-  <% end %>
-
-  <div class="submitters">
-    <input class="login" type="image" src="/_common/themes/admin/images/bt_login.gif" alt="ログイン" name="commit" /></div>
-
-</div>
-
-<% end -%>
-
-<div class="copyright"><small>Copyright &copy; 2012 ZOMEKI All Rights Reserved. <img src="/_common/themes/admin/images/poweredby.gif" alt="Powered By ZOMEKI"></small></div>
-
-</div>
-
-
-
-</div>
-
-<% if true %>
-<!--[if lt IE 10]>
-<script src="/_common/js/jquery-1.6.2.min.js"></script>
-<script src="/_common/js/jquery.placeholder.min.js"></script>
-<script type="text/javascript">
-//<![CDATA[
-$(function(){
-  $('[placeholder]').placeholder().css('color','#999').focus(function(){
-    $(this).css('color','#000');
-  }).blur(function(){
-    if($(this).val()=="ユーザID" || $(this).val()=="パスワード"){
-      $(this).css("color","#999").focus(function(){
-        $(this).css('color','#000');
-      });
-    };
-  });
-});
-//]]>
-</script>
-<![endif]-->
-<% end %>
-</body>
-</html>
+<%= render 'footer' %>

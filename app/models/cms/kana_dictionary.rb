@@ -28,6 +28,8 @@ class Cms::KanaDictionary < ActiveRecord::Base
   end
   
   def search_category(str, type)
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     unless @sh
       require 'shell'
       @sh = Shell.cd("#{Rails.root}/ext")
@@ -40,10 +42,11 @@ class Cms::KanaDictionary < ActiveRecord::Base
       chasenrc = '../config/chasenrc_gtalk'
     end
     format   = '%P /'
-    command  = "echo \"#{str}\" | chasen -i w -r #{chasenrc} -F '#{format}'"
+    logger.info command = "echo \"#{str}\" | chasen -i w -r #{chasenrc} -F '#{format}'"
     
     res = nil
     @sh.transact { res = system("#{command}").to_s }
+    logger.info res
     return res.to_s.force_encoding('utf-8').gsub(/\/.*/, '').strip
   end
   
@@ -98,17 +101,19 @@ class Cms::KanaDictionary < ActiveRecord::Base
   end
   
   def self.make_dic_file
+    ENV['PATH'] = ENV['PATH'].split(':').concat(%w!/usr/local/sbin /usr/local/bin!).uniq.join(':')
+
     dic_data = {:ipadic => '', :unidic => ''}
     
     self.find(:all, :order => "id").each do |item|
       dic_data[:ipadic] += item.ipadic_body.gsub(/\r\n/, "\n") + "\n"
       dic_data[:unidic] += item.unidic_body.gsub(/\r\n/, "\n") + "\n"
     end
-    
-    if dic_data[:ipadic] == ''
+
+    if dic_data[:ipadic].blank?
       dic_data[:ipadic] = '(品詞 (記号 アルファベット)) ((見出し語 (ZOMEKI 500)) (読み ゾメキ) (発音 ゾメキ))'
     end
-    if dic_data[:unidic] == ''
+    if dic_data[:unidic].blank?
       dic_data[:unidic] = '(POS (記号 文字))' +
         ' ((LEX (ＺＯＭＥＫＩ 500)) (READING ゾメキ) (PRON ゾメキ)' +
         ' (INFO "lForm=\"ゾメキ\" lemma=\"ＺＯＭＥＫＩ\" orthBase=\"ＺＯＭＥＫＩ\"' +
@@ -126,7 +131,8 @@ class Cms::KanaDictionary < ActiveRecord::Base
     tmp.close
     
     sh = Shell.cd(dir)
-    sh.system("`chasen-config --mkchadic`/makeda -i w #{tmp.path}_dat #{tmp.path}").to_s
+    logger.info command = "`chasen-config --mkchadic`/makeda -i w #{tmp.path}_dat #{tmp.path}"
+    logger.info sh.system(command).to_s
     if success = FileTest.exist?(tmp.path + '_dat.da')
       FileUtils.mv(tmp.path + '_dat.da' , dir + '/cmsdic.da')
       FileUtils.mv(tmp.path + '_dat.dat', dir + '/cmsdic.dat')
@@ -147,7 +153,8 @@ class Cms::KanaDictionary < ActiveRecord::Base
     tmp.close
     
     sh = Shell.cd(dir)
-    sh.system("`chasen-config --mkchadic`/makeda -i w #{tmp.path}_dat #{tmp.path}").to_s
+    logger.info command = "`chasen-config --mkchadic`/makeda -i w #{tmp.path}_dat #{tmp.path}"
+    logger.info sh.system(command).to_s
     if success = FileTest.exist?(tmp.path + '_dat.da')
       FileUtils.mv(tmp.path + '_dat.da' , dir + '/cmsdic.da')
       FileUtils.mv(tmp.path + '_dat.dat', dir + '/cmsdic.dat')
@@ -161,6 +168,6 @@ class Cms::KanaDictionary < ActiveRecord::Base
     FileUtils.rm(tmp.path) if FileTest.exist?(tmp.path)
     errors << '辞書の作成に失敗しました（読み上げ）' unless success
     
-    return errors.size > 0 ? errors : true
+    return errors
   end
 end

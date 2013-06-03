@@ -1,7 +1,5 @@
 # encoding: utf-8
 class Bbs::Public::Node::ThreadsController < Cms::Controller::Public::Base
-  include SimpleCaptcha::ControllerHelpers
-  
   protect_from_forgery :except => [:delete]
   
   def pre_dispatch

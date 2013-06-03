@@ -1,0 +1,31 @@
+<table class="show" style="margin-top: 0;">
+  <% if @item.new_record? %>
+  <tr>
+    <th><%= f.label :file %></th>
+    <td><%#= f.file_field :file, size: 65 %><input id="item_file" name="item[file]" type="file" size="65" /></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th><%= f.label :name %><br />
+        <span class="required">※半角英数字のみ</span></th>
+    <td><%= f.text_field :name, class: 'string', size: 55 %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %><br />
+        <span class="required">※日本語でわかりやすく</span></th>
+    <td>
+      <%= f.text_field :title, class: 'string', size: 55 %>
+      <%= f.submit(submit_label) %>
+    </td>
+  </tr>
+</table>
+
+<%= javascript_tag do %>
+$(document).ready(function () {
+  $('#item_file').on('change', function (event) {
+    var name = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+    $('#item_name').val(name.replace(/[^0-9a-z\.\-_\\+@#]/ig, ''));
+    $('#item_title').val(name.replace(/(.*)\.[a-z]+$/i, '$1'));
+  });
+});
+<% end %>

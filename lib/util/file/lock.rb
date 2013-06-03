@@ -1,20 +1,59 @@
 class Util::File::Lock
-  @locked = {}
+  attr_accessor :locked
   
-  def self.lock_by_name(name)
-    dir  = "#{Rails.root}/tmp/lock"
-    FileUtils.mkdir(dir) unless ::File.exists?(dir)
-    return false unless f = ::File.open(dir + '/_' + name, 'w')
-    return false unless f.flock(File::LOCK_EX)
-    return @locked[name] = f
+  def initialize(names = [])
+    @dir    = Rails.root.join('tmp/lock')
+    @names  = names || []
+    @locked = {}
   end
   
-  def self.unlock_by_name(name)
+  def self.lock(name)
+    lock = self.new
+    lock.lock(name)
+    return lock
+  end
+  
+  def lock(name = nil)
+    if name
+      lock_by_name(name)
+    else
+      @names.each {|name| lock_by_name(name) }
+    end
+  end
+  
+  def lock_by_name(name)
+    return false if @names.index(name)
+    FileUtils.mkdir(@dir) unless ::File.exists?(@dir)
+    
+    fp = ::File.open("#{@dir}/_#{name}", 'w')
+    return false unless fp
+    return false unless fp.flock(File::LOCK_EX)
+    
+    @names << name
+    @locked[name] = fp
+    return self
+  end
+  
+  def unlock(name = nil)
+    if name
+      unlock_by_name(name)
+    else
+      @names.each {|name| unlock_by_name(name) }
+    end
+  end
+  
+  def unlock_by_name(name)
     @locked[name].flock(File::LOCK_UN)
     @locked[name].close
-    @locked.delete(name)
-    if FileTest.exist?("#{Rails.root}/tmp/lock/_#{name}")
-      ::File.unlink("#{Rails.root}/tmp/lock/_#{name}")
+    #::FileUtils.rm("#{@dir}/_#{name}")
+    
+    if rand(100) == 0
+      Dir::glob("#{@dir}/_" + "#{name}".gsub(/^(.*_).*/, '\\1*')).each do |path|
+        ::FileUtils.rm_f(path) if path != "#{@dir}/_#{name}"
+      end
     end
+    
+    @names.delete(name)
+    @locked.delete(name)
   end
 end

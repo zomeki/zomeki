@@ -15,23 +15,23 @@ centos() {
 
   cd /usr/local/src
   rm -rf darts-0.32.tar.gz darts-0.32
-  curl -L -O http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
+  wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
   tar zxf darts-0.32.tar.gz && cd darts-0.32 && ./configure && make && make install
 
   cd /usr/local/src
-  rm -rf lame-3.99.1.tar.gz lame-3.99.1
-  curl -L -O http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.1.tar.gz
-  tar zxf lame-3.99.1.tar.gz && cd lame-3.99.1 && ./configure && make && make install
+  rm -rf lame-3.99.5.tar.gz lame-3.99.5
+  wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+  tar zxf lame-3.99.5.tar.gz && cd lame-3.99.5 && ./configure && make && make install
 
   cd /usr/local/src
   rm -rf chasen-2.4.4.tar.gz chasen-2.4.4
-  curl -L -O http://jaist.dl.sourceforge.jp/chasen-legacy/32224/chasen-2.4.4.tar.gz
+  wget http://jaist.dl.sourceforge.jp/chasen-legacy/32224/chasen-2.4.4.tar.gz
   tar zxf chasen-2.4.4.tar.gz && cd chasen-2.4.4 && ./configure && make && make install
 
   yum install -y nkf
   cd /usr/local/src
   rm -rf ipadic-2.7.0.tar.gz ipadic-2.7.0
-  curl -L -O http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
+  wget http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
   tar zxf ipadic-2.7.0.tar.gz && cd ipadic-2.7.0 && ./configure
 cat <<'EOF' > to_utf8.sh
 #!/bin/bash

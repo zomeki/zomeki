@@ -39,7 +39,7 @@
 }
 #header .menu {
   float: right;
-  padding-top: 25px;
+  padding-top: 22px;
   text-align: right;
 }
 #header .menu * {
@@ -101,7 +101,6 @@
 #navi td.menu .mainMenu a {
   display: inline-block;
   width: 96px;
-  font-size: 12px;
   text-decoration: none;
   text-align: center;
   line-height: 31px;
@@ -155,7 +154,9 @@
   margin: 20px 12px 0px 12px;
 }
 #content h2 {
-  margin: 15px 0px 10px 5px;
+  margin: 15px 0px 15px 5px;
+  padding-left: 8px;
+  border-left: 3px solid #000;
   color: #000;
   font-size: 120%;
   font-weight: bold;

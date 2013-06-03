@@ -1,0 +1,27 @@
+<div class="contentGpCategoryCategoryType">
+  <%- unless @children.empty? -%>
+  <section class="categoryType categories">
+    <h2><%= @category.title %></h2>
+    <nav>
+      <ul>
+        <%- @children.each do |category| -%>
+        <li class="category<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+        <%- end -%>
+      </ul>
+    </nav>
+  </section>
+  <%- end -%>
+
+  <%- unless @docs.empty? -%>
+  <section class="categoryType docs">
+    <h2>記事一覧</h2>
+    <ul>
+      <%- @docs.each do |doc| -%>
+      <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+      <%- end -%>
+    </ul>
+  </section>
+  <%- end -%>
+
+  <%= paginate @docs %>
+</div>

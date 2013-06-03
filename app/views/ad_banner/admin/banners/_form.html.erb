@@ -1,0 +1,89 @@
+<span class="note">※は必須項目です。</span>
+
+<br /><p class="form">広告バナー</p>
+
+<table class="show">
+  <tr>
+    <th><%= AdBanner::Group.model_name.human %></th>
+    <td><%= f.select :group_id, @content.groups_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :file %> <span class="note">※</span></th>
+    <td>
+      <%- if @item.file_exist? -%>
+      <%= image_tag file_content_ad_banner_banner_path(content: @content, id: @item.id), width: 100 %><br />
+      <%- end -%>
+      <%= f.file_field :file, :style => 'width: 400px;' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <div class="note">※半角英数字のみ</div></th>
+    <td><%= f.text_field :name, :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <div class="note">※日本語でわかりやすく</div></th>
+    <td><%= f.text_field :title, :style => 'width: 400px;' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">詳細情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :published_at %></th>
+    <td><%= f.text_field :published_at, :value => value_for_datetimepicker(f.object_name, :published_at),
+                                        :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :closed_at %></th>
+    <td><%= f.text_field :closed_at, :value => value_for_datetimepicker(f.object_name, :closed_at),
+                                     :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :url %> <span class="note">※</span></th>
+    <td><%= f.text_field :url, :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>
+
+<br /><p class="form">業者情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :advertiser_name %> <span class="note">※</span></th>
+    <td><%= f.text_field :advertiser_name, :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :advertiser_phone %></th>
+    <td><%= f.text_field :advertiser_phone, :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :advertiser_email %></th>
+    <td><%= f.text_field :advertiser_email, :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :advertiser_contact %></th>
+    <td><%= f.text_field :advertiser_contact, :style => 'width: 400px;' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datetimepicker_script -%>
+
+  $('#item_file').on('change', function (event) {
+    var name = event.target.value.replace(/\\/g, '/').replace(/.*\//, '');
+    $('#item_name').val(name.replace(/[^0-9a-z_\.\-\\+@#]/ig, ''));
+    $('#item_title').val(name.replace(/(.*)\.[0-9a-z]+$/i, '$1'));
+  });
+});
+<%- end -%>

@@ -1,0 +1,8 @@
+<div class="mainMenu">
+  <%= render 'layouts/admin/cms/menu', :current => :content %>
+</div>
+
+<div class="contentMenu">
+  <%= link_to "#{AdBanner::Banner.model_name.human}一覧", ad_banner_banners_path, class: 'fixed' %>
+  <%= link_to "#{AdBanner::Group.model_name.human}設定", ad_banner_groups_path, class: 'fixed' %>
+</div>

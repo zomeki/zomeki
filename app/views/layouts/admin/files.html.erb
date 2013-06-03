@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>title</title>
+  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <%- request.flash.discard(:notice) -%>
+  <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+  <%- request.flash.discard(:alert) -%>
+  <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
+
+  <%= yield %>
+</body>
+</html>

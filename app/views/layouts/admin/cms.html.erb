@@ -1,86 +1,74 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title><%= Core.title %></title>
-<!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
-<%#= stylesheet_link_tag    'application' %>
-<%#= javascript_include_tag 'application' %>
-<%= javascript_include_tag '/_common/js/jquery.min.js' %>
-<%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
-<%= csrf_meta_tags %>
-<link href="/_common/themes/admin/style.css" media="all" rel="stylesheet" type="text/css" />
-<link href="/_common/css/jquery-ui/smoothness/jquery-ui-1.8.16.custom.css" media="all" rel="stylesheet" type="text/css" />
-<link href="/_common/css/jquery-ui/jquery.ui.datetime.css" media="all" rel="stylesheet" type="text/css" />
-<script src="/_common/js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
-<script src="/_common/js/jquery-ui/jquery.ui.datetime.min.js" type="text/javascript"></script>
-<script src="/_common/js/zomeki_admin/form.js" type="text/javascript"></script>
-<script src="/_common/js/zomeki_admin/navi.js" type="text/javascript"></script>
+  <meta charset="UTF-8" />
+  <title><%= Core.title %></title>
+  <!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
+  <%#= stylesheet_link_tag    'application' %>
+  <%#= javascript_include_tag 'application' %>
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+  <%= stylesheet_link_tag '/_common/css/jquery-ui-themes/smoothness/jquery-ui.min.css' %>
+  <%= javascript_include_tag '/_common/js/jquery-ui.min.js' %>
+  <%= stylesheet_link_tag '/_common/css/jquery-ui-timepicker-addon.css' %>
+  <%= javascript_include_tag '/_common/js/jquery-ui-timepicker-addon.js' %>
+  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
+  <%= javascript_include_tag '/_common/js/zomeki_admin/form.js' %>
+  <%= javascript_include_tag '/_common/js/zomeki_admin/navi.js' %>
+  <%= csrf_meta_tags %>
 </head>
 <body>
-
-<div id="container">
-
-<header id="header">
-<div id="headerContainer">
-
-  <h1><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>">ZOMEKI</a></h1>
-  <div class="menu">
-    <span class="user"><%= safe{Core.user_group.name} %>　<%= safe{Core.user.name_with_account} %></span>
-    <a class="web" href="<%= Core.site.full_uri %>" target="_blank">公開画面</a>
-    <a class="logout" href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>/logout">ログアウト</a>
-  </div>
-
-<!-- /#headerContainer --></div>
-<!-- /#header --></header>
-
-
-<nav id="navi">
-<div id="naviContainer">
-
-  <table><tr><td class="selector">
-    <%= link_to safe{h(Core.site ? Core.site.name : "")}, cms_navi_sites_path, :id => "currentNaviSite" %>
-    <%= link_to safe{h(Core.concept ? Core.concept.name : "")}, cms_navi_concepts_path, :id => "currentNaviConcept" %>
-  </td><td class="menu">
-    <%= render :partial => controller.controller_path + '/header' %></td>
-  </tr></table>
-
-<!-- /#naviContainer --></div>
-<!-- /#navi --></nav>
-
-<div id="main">
-
-<div id="content">
-<div id="contentContainer">
-
-<div id="contentHeader"><% dir = "#{Rails.root}/app/views/#{controller.controller_path}" %>
-  <% if FileTest.exist?("#{dir}/_menu.html.erb") %>
-  <%= render :partial => controller.controller_path + '/menu' %>
-  <% end %>
-</div>
-
-<div id="contentBody">
-<%- request.flash.discard(:notice) -%>
-<% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
-<%= yield  %>
-</div>
-
-<div id="contentFooter"></div>
-
-<!-- /#contentContainer --></div>
-<!-- /#content --></div>
-
-<!-- /#main --></div>
-
-<footer id="footer">
-<div id="footerContainer">
-
-<%#= :footer %>
-
-<!-- /#footerContainer --></div>
-<!-- /#footer --></footer>
-
-<!-- /#container --></div>
-
+  <div id="container">
+    <header id="header">
+      <div id="headerContainer">
+        <h1><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>">ZOMEKI</a></h1>
+        <div class="menu">
+          <span class="user"><%= safe{Core.user_group.name} %> <%= safe{Core.user.name_with_account} %></span>
+          <a class="web" href="<%= Core.site.full_uri %>" target="_blank">公開画面</a>
+          <a class="logout" href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>/logout">ログアウト</a>
+        </div>
+      <!-- /#headerContainer --></div>
+    <!-- /#header --></header>
+    <nav id="navi">
+      <div id="naviContainer">
+        <table>
+          <tr>
+            <td class="selector">
+              <%= link_to safe{h(Core.site ? Core.site.name : "")}, cms_navi_sites_path, :id => "currentNaviSite" %>
+              <%= link_to safe{h(Core.concept ? Core.concept.name : "")}, cms_navi_concepts_path, :id => "currentNaviConcept" %>
+            </td>
+            <td class="menu">
+              <%= render :partial => controller.controller_path + '/header' %>
+            </td>
+          </tr>
+        </table>
+      <!-- /#naviContainer --></div>
+    <!-- /#navi --></nav>
+    <div id="main">
+      <div id="content">
+        <div id="contentContainer">
+          <div id="contentHeader">
+            <% dir = "#{Rails.root}/app/views/#{controller.controller_path}" %>
+            <% if FileTest.exist?("#{dir}/_menu.html.erb") %>
+            <%= render :partial => controller.controller_path + '/menu' %>
+            <% end %>
+          </div>
+          <div id="contentBody">
+            <%- request.flash.discard(:notice) -%>
+            <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+            <%- request.flash.discard(:alert) -%>
+            <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
+            <%= yield %>
+          </div>
+          <div id="contentFooter"></div>
+        <!-- /#contentContainer --></div>
+      <!-- /#content --></div>
+    <!-- /#main --></div>
+    <footer id="footer">
+      <div id="footerContainer">
+        <%#= :footer %>
+      <!-- /#footerContainer --></div>
+    <!-- /#footer --></footer>
+  <!-- /#container --></div>
 </body>
 </html>

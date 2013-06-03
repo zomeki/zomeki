@@ -1,0 +1,75 @@
+<table class="show">
+  <tr>
+    <th><%= AdBanner::Click.model_name.human %></th>
+    <td><%= link_to @item.clicks.count, ad_banner_banner_clicks_path(content: @content, banner_id: @item.id) %></td>
+  </tr>
+</table>
+
+<br /><p class="form">広告バナー</p>
+
+<table class="show">
+  <tr>
+    <th><%= AdBanner::Group.model_name.human %></th>
+    <td><%= @item.group.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :file %></th>
+    <td><%= image_tag file_content_ad_banner_banner_path(content: @content, id: @item.id), width: 100 %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+</table>
+
+<br /><p class="form">詳細情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :published_at %></th>
+    <td><%=i18n_l @item.published_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :closed_at %></th>
+    <td><%=i18n_l @item.closed_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :url %></th>
+    <td><%= link_to @item.url, @item.url, target: '_blank' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>
+
+<br /><p class="form">業者情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :advertiser_name %></th>
+    <td><%= @item.advertiser_name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :advertiser_phone %></th>
+    <td><%= @item.advertiser_phone %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :advertiser_email %></th>
+    <td><%= mail_to @item.advertiser_email %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :advertiser_contact %></th>
+    <td><%= @item.advertiser_contact %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

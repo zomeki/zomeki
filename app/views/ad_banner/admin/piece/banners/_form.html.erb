@@ -1,0 +1,39 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_form f, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :group_id %></th>
+    <td><%= f.array_select 'in_settings[group_id]', @item.groups_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort %></th>
+    <td><%= f.array_radio_buttons 'in_settings[sort]', @item.class::SORT_OPTIONS %></td>
+  </tr>
+</table>
+
+<br />
+<p class="form">挿入テキスト</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :upper_text %></th>
+  </tr>
+  <tr>
+    <td><%= f.array_text_area 'in_settings[upper_text]', class: 'body' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :lower_text %></th>
+  </tr>
+  <tr>
+    <td><%= f.array_text_area 'in_settings[lower_text]', class: 'body' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

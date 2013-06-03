@@ -1,0 +1,9 @@
+<h2><%= @content.name %><%= sub ? " ： #{sub}" : '' %></h2>
+
+<div class="actionMenu">
+  <%= action_menu :new if Core.user.has_auth?(:designer) && Core.user.has_priv?(:create, item: Core.concept) %>
+  <%= action_menu :index, index_path %>
+  <%= action_menu :show %>
+  <%= action_menu :edit if @item.try(:editable?) %>
+  <%= action_menu :destroy if @item.try(:deletable?) %>
+</div>

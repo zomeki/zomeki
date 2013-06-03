@@ -1,0 +1,12 @@
+<div class="contentGpArticleDocs">
+  <div class="docs">
+    <% @items.each_with_index do |item, idx| %>
+    <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
+    <h2 class="date"><%= item[:date] %></h2><ul>
+    <%- end -%>
+    <li><%= render 'gp_article/public/shared/doc', doc: item[:doc], list_style: @content.list_style, date_style: @content.date_style %></li>
+    <%- end -%>
+    <%= '</ul>'.html_safe unless @items.empty? -%>
+  </div>
+  <%= paginate @docs %>
+</div>

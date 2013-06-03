@@ -1,0 +1,19 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="width: 200px;"><%= GpCategory::Piece::RecentTabXml.human_attribute_name(:name) %></th>
+    <th style="width: 200px;"><%= GpCategory::Piece::RecentTabXml.human_attribute_name(:title) %></th>
+    <th><%= GpCategory::Piece::RecentTabXml.human_attribute_name(:more) %></th>
+    <th style="text-align: center; width: 80px;"><%= GpCategory::Piece::RecentTabXml.human_attribute_name(:sort_no) %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_category_piece_recent_tab_tab_path(piece_recent_tab_id: @piece.id, id: item.name) %></td>
+    <td><%= item.name %></td>
+    <td><%= item.title %></td>
+    <td><%= item.more %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+  </tr>
+  <%- end -%>
+</table>

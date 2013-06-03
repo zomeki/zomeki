@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => gp_calendar_content_base_path, :html => {:method => :put}) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :update %>
+<% end %>

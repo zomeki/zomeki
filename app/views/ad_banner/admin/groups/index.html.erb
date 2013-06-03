@@ -1,0 +1,21 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= AdBanner::Group.human_attribute_name :name %></th>
+    <th><%= AdBanner::Group.human_attribute_name :title %></th>
+    <th><%= AdBanner::Group.human_attribute_name :sort_no %></th>
+    <th><%= AdBanner::Group.human_attribute_name :updated_at %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, ad_banner_group_path(content: @content, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.name %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: right; width: 100px;"><%= item.sort_no %></td>
+    <td style="text-align: left; width: 150px;"><%=i18n_l item.updated_at %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

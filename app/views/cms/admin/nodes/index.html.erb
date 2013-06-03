@@ -9,7 +9,7 @@
     <th style="width: ;">タイトル</th>
     <th style="width: 120px; text-align: center;">更新日時</th>
     <th style="width: 60px; text-align: center;">状態</th>
-    <th style="width: 60px; text-align: center;">プレビュー</th>
+    <th style="width: 65px; text-align: center;">プレビュー</th>
   </tr>
   
   <% @dirs.each do |item| %>
@@ -20,7 +20,9 @@
     <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
     <td style="text-align: center;"><%= safe{item.status.name} %></td>
     <td style="text-align: center;">
-      <%= link_to '表示', item.preview_uri, :target => '_blank' if !item.name.blank? %></td>
+      <%= link_to 'PC', item.preview_uri, target: '_blank' if item.name.present? %>
+      <%= link_to '携帯', item.preview_uri(mobile: true), target: '_blank' if item.name.present? %>
+    </td>
   </tr>
   <% end %>
   
@@ -32,7 +34,9 @@
     <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
     <td style="text-align: center;"><%= safe{item.status.name} %></td>
     <td style="text-align: center;">
-      <%= link_to '表示', item.preview_uri(:params => {:node_id => item.id}), :target => '_blank' if !item.name.blank? %></td>
+      <%= link_to 'PC', item.preview_uri(params: {node_id: item.id}), target: '_blank' if item.name.present? %>
+      <%= link_to '携帯', item.preview_uri(mobile: true, params: {node_id: item.id}), target: '_blank' if item.name.present? %>
+    </td>
   </tr>
   <% end %>
 

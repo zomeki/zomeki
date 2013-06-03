@@ -8,7 +8,7 @@ class Sys::Script::RunnerController < ApplicationController
     act = ::File.basename(params[:path])
       
     res = render_component :controller => ctl, :action => act, :params => params
-    render :text => "OK (#{res})"
+    logger.info "OK (#{res.body})"
   end
   
   def runn

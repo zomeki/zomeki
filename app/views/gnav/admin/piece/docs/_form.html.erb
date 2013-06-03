@@ -1,0 +1,47 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_form f, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :list_count %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[list_count]', class: 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :category_type_id %></th>
+    <td><%= f.array_select 'in_settings[category_type_id]', @item.category_types_for_option, include_blank: true %></td>
+    <th><%= @item.locale :category_id %></th>
+    <td><%= f.array_select 'in_settings[category_id]', @item.category_type.try(:categories_for_option) || [], include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :list_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> 日付：@date タイトル：@title 組織：@group カテゴリ：@category</td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_in_settings_category_type_id').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    if (isNaN(category_type_id)) {
+      $('#item_in_settings_category_id').html('<option value=""></option>');
+    } else {
+      $('#item_in_settings_category_id').html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @item.content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        $('#item_in_settings_category_id').html(data);
+      });
+    }
+  });
+});
+<%- end -%>

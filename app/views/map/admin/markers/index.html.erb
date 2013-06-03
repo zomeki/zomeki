@@ -1,0 +1,21 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= Map::Marker.human_attribute_name :title %></th>
+    <th><%= Map::Marker.human_attribute_name :latitude %></th>
+    <th><%= Map::Marker.human_attribute_name :longitude %></th>
+    <th style="text-align: center; width: 60px;"><%= Map::Marker.human_attribute_name :state %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, map_marker_path(content: @content, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: left;"><%= item.latitude %></td>
+    <td style="text-align: left;"><%= item.longitude %></td>
+    <td style="text-align: center;"><%= item.status.try(:name) %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

@@ -1,0 +1,8 @@
+<div class="contentGnavMenuItems">
+  <%- @menu_items.each do |menu_item| -%>
+  <section class="GnavMenu GnavMenu<%= menu_item.name.try(:camelize) %>">
+    <h2><%= link_to menu_item.title, menu_item.public_uri %></h2>
+  </section>
+  <%- end -%>
+  <%= paginate @menu_items %>
+</div>

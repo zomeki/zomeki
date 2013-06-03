@@ -1,0 +1,17 @@
+<%- unless @category_type.public_root_categories.empty? -%>
+<div class="level1">
+  <%- @category_type.public_root_categories.each do |category| -%>
+  <section class="category <%= category.name -%><%= cycle '', ' cycle' %>">
+    <h3><%= link_to category.title, "#{@category_type.public_uri}#{category.path_from_root_category}/" %></h3>
+
+    <%- unless category.public_children.empty? -%>
+    <ul class="level<%= category.level_no + 1 -%>">
+      <%- category.public_children.each do |child| -%>
+      <li class="<%= child.name -%>"><%= link_to child.title, "#{@category_type.public_uri}#{child.path_from_root_category}/" %></li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>
+<%- end -%>

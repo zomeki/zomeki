@@ -1,0 +1,6 @@
+<%= render 'menu' %>
+
+<%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true}) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', f: f, submit_label: 'アップロード' %>
+<% end %>

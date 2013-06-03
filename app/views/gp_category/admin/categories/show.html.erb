@@ -1,0 +1,39 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @category_type.title %>ID</th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @category_type.title %>名</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :description %></th>
+    <td><%= @item.description %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>記事数</th>
+    <td><%= @item.docs.count %></td>
+  </tr>
+</table>
+
+<br />
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_view @item, :container => :tr %>
+  <%= layout_view @item, :container => :tr %>
+</table>
+
+<%= creator_view @item %>

@@ -1,0 +1,11 @@
+ja:
+  activerecord:
+    models:
+      map/marker: マーカー
+    attributes:
+      map/marker:
+        title: タイトル
+        latitude: 緯度
+        longitude: 経度
+        window_text: 吹き出し
+        state: 状態

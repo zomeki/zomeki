@@ -1,0 +1,17 @@
+<h2><%= @content.name %><%= sub ? " ： #{sub}" : '' %></h2>
+
+<div class="actionMenu">
+  <%= action_menu :new %>
+  <%= action_menu :index, index_path %>
+  <%= action_menu :show %>
+  <%= action_menu :edit if @item.try(:editable?) %>
+  <%= action_menu :destroy if @item.try(:deletable?) %>
+
+  <%- if controller_name == 'banners' -%>
+  <span class="separator"></span>
+
+  <%= link_to '公開期間中', ad_banner_banners_path(content: @content, published: true), class: 'fixed' %>
+  <%= link_to '公開期間外', ad_banner_banners_path(content: @content, closed: true), class: 'fixed' %>
+  <%= link_to "#{AdBanner::Banner.model_name.human}一覧", ad_banner_banners_path(content: @content), class: 'fixed' %>
+  <%- end -%>
+</div>

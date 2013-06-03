@@ -1,0 +1,36 @@
+<span class="note">※は必須項目です。</span>
+
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name, "#{@category_type.title}ID" %> <span class="note">※</span></th>
+    <td><%= f.text_field :name, :class => 'id' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title, "#{@category_type.title}名" %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :description %></th>
+    <td><%= f.text_field :description, :size => 100 %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>
+
+<br />
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_and_layout_form f %>
+</table>
+
+<%= creator_form f %>

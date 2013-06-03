@@ -1,0 +1,14 @@
+<%- unless @links.empty? -%>
+<ul>
+  <%- @links.each do |year| -%>
+  <li>
+    <%= link_to year[:name], year[:uri], :class => year[:class] %>
+    <ul>
+      <%- year[:months].each do |month| -%>
+      <li><%= link_to month[:name], month[:uri], :class => month[:class] %></li>
+      <%- end -%>
+    </ul>
+  </li>
+  <%- end -%>
+</ul>
+<%- end -%>

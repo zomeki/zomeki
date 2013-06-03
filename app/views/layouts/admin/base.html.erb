@@ -1,24 +1,24 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title><%= Core.title %></title>
-<!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
-<%#= stylesheet_link_tag    'application' %>
-<%#= javascript_include_tag 'application' %>
-<%= javascript_include_tag '/_common/js/jquery.min.js' %>
-<%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
-<%= csrf_meta_tags %>
-<link href="/_common/themes/admin/style.css" media="all" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8" />
+  <title><%= Core.title %></title>
+  <!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
+  <%#= stylesheet_link_tag    'application' %>
+  <%#= javascript_include_tag 'application' %>
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
+  <%= csrf_meta_tags %>
 </head>
 <body>
-<div id="simpleContainer">
+  <div id="simpleContainer">
+    <%- request.flash.discard(:notice) -%>
+    <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+    <%- request.flash.discard(:alert) -%>
+    <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
 
-<%- request.flash.discard(:notice) -%>
-<% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
-
-<%= yield  %>
-
-</div>
+    <%= yield  %>
+  </div>
 </body>
 </html>

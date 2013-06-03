@@ -66,5 +66,5 @@ function moveSelectOptions(form, srcId, dstId, max) {
 <input type="button" value="追加 →" onClick="<%= e1_evt %>" /><br /><br />
 <input type="button" value="← 除外" onClick="<%= e2_evt %>" />
 </td><td>
-<div class="<%= 'fieldWithErrors' if @item.errors['ロール権限'].size > 0 %>"><%= e2_tag %></div>
+<div class="<%= 'field_with_errors' if @item.errors['ロール権限'].size > 0 %>"><%= e2_tag %></div>
 </td></tr></table>

@@ -10,7 +10,7 @@
   word-break: break-all;
 }
 .monospace {
-  font-family: "MS Gothic", "ＭＳ　ゴシック", "Courier New", sans-serif;
+  font-family:  Tahoma, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
 }
 
 /* Notice.
@@ -55,14 +55,20 @@
   text-align: right;
 }
 
+/* Alert.
+----------------------------------------------- */
+.alert {
+ margin: 10px 10px;
+ color: #f00;
+}
+
 /* Error.
 ----------------------------------------------- */
-.fieldWithErrors {
+.field_with_errors {
   margin: 1px;
   padding: 1px;
   border: 1px solid #f00;
-  display: inline-block;
-  /display: inline;
+  display: inline;
 }
 #errorExplanation {
   width: 600px;
@@ -203,56 +209,50 @@ form.search td.submitters input {
 /* Icon.
 ----------------------------------------------- */
 .iconFile, .iconDefault {
-  padding: 12px 5px 12px 42px;
+  padding: 2px 0px 2px 22px;
   background-repeat: no-repeat;
   background-image: url(/_common/images/icons/default.png);
   line-height: 3.3;
-  height: 40px;
 }
 .iconBmp {
   background-image: url(/_common/images/icons/bmp.png);
 }
-.iconCsv {
-  background-image: url(/_common/images/icons/csv.png); 
+.iconCsv,
+.iconTxt {
+  background-image: url(/_common/images/icons/default.png);
 }
 .iconDoc,
 .iconDocx {
-  background-image: url(/_common/images/icons/doc.png); 
+  background-image: url(/_common/images/icons/doc.png);
 }
 .iconGif {
-  background-image: url(/_common/images/icons/gif.png); 
+  background-image: url(/_common/images/icons/gif.png);
 }
-.iconJpg {
-  background-image: url(/_common/images/icons/jpg.png); 
-}
-.iconJpe {
-  background-image: url(/_common/images/icons/jpg.png); 
-}
+.iconJpg,
+.iconJpe,
 .iconJpeg {
-  background-image: url(/_common/images/icons/jpg.png); 
+  background-image: url(/_common/images/icons/jpg.png);
 }
 .iconJtd {
-  background-image: url(/_common/images/icons/jtd.png); 
+  background-image: url(/_common/images/icons/jtd.png);
 }
 .iconLzh {
-  background-image: url(/_common/images/icons/lzh.png); 
+  background-image: url(/_common/images/icons/lzh.png);
 }
 .iconPdf {
-  background-image: url(/_common/images/icons/pdf.png); 
+  background-image: url(/_common/images/icons/pdf.png);
 }
 .iconPng {
-  background-image: url(/_common/images/icons/png.png); 
+  background-image: url(/_common/images/icons/png.png);
 }
-.iconPpt {
-  background-image: url(/_common/images/icons/ppt.png); 
-}
-.iconTxt {
-  background-image: url(/_common/images/icons/txt.png); 
+.iconPpt,
+.iconPptx {
+  background-image: url(/_common/images/icons/ppt.png);
 }
 .iconXls,
 .iconXlsx {
   background-image: url(/_common/images/icons/xls.png);
 }
 .iconZip {
-  background-image: url(/_common/images/icons/zip.png); 
+  background-image: url(/_common/images/icons/zip.png);
 }

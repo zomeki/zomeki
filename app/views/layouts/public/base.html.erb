@@ -1,16 +1,16 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title><%= Page.window_title %></title>
-<!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
-<%= javascript_include_tag '/_common/js/jquery.min.js' %>
-<%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
-<%= csrf_meta_tags %>
-<%= Page.layout.head_tag(request) %></head>
+  <meta charset="UTF-8" />
+  <title><%= Page.window_title %></title>
+  <!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+  <%= csrf_meta_tags %>
+  <%= Page.layout.head_tag(request) %>
+</head>
 <body <%= Page.body_id %> <%= Page.body_class %>>
-
-<%= yield %>
-
+  <%= yield %>
 </body>
 </html>

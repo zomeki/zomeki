@@ -1,0 +1,23 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= GpCategory::CategoryType.human_attribute_name :name %></th>
+    <th><%= GpCategory::CategoryType.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 60px;"><%= GpCategory::CategoryType.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 120px;"><%= GpCategory::CategoryType.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 60px;"><%= GpCategory::CategoryType.human_attribute_name :state %></th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_category_category_type_path(content: @content, id: item.id) %></td>
+    <td><%= item.name %></td>
+    <td><%= link_to item.title, gp_category_category_type_categories_path(content: @content, category_type_id: item.id) %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M') %></td>
+    <td style="text-align: center;"><%= item.status.try(:name) %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>

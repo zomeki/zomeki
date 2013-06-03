@@ -23,7 +23,7 @@
   <% group[1].each do |c| %>
   <tr>
     <td style="text-align: right;"><%= c[0] %></td>
-    <td><%= c[1] %></td>
+    <td><%= link_to c[1], c[2] %></td>
   </tr>
   <% end %>
   <% if group[1].size == 0 %><tr><td style="text-align: right;">-</td><td>見つかりませんでした。</td></tr><% end %>

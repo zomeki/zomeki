@@ -1,0 +1,7 @@
+<%-
+  common_attrs = {id: nil}
+  common_attrs.merge!(disabled: true) unless available
+-%>
+<span style="<%= 'display: none;' unless available %>">
+  <%= select_tag 'item[in_editable_groups][]', options_for_select(groups_for_option, group.id), common_attrs.merge(include_blank: true) %>
+</span>

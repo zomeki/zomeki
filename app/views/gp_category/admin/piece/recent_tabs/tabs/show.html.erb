@@ -1,0 +1,37 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more %></th>
+    <td><%= @item.more %></td>
+  </tr>
+  <tr>
+    <th>条件</th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td><%= @item.locale :condition %></td>
+          <td><%= @item.condition_name %></td>
+          <td>&nbsp;</td>
+        </tr>
+        <%- @item.categories_with_layer.each do |category_with_layer| -%>
+        <tr>
+          <td><%= category_with_layer[:category].category_type.title -%></td>
+          <td><%= category_with_layer[:category].title %></td>
+          <td><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == category_with_layer[:layer] }.try(:first) %></td>
+        </tr>
+        <%- end -%>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>

@@ -1,0 +1,33 @@
+<br /><p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th><%= AdBanner::Banner.model_name.human %>一覧</th>
+    <td>
+      <%- unless @item.banners.empty? -%>
+      <table class="noDesign">
+        <%- @item.banners.each do |banner| -%>
+        <tr>
+          <td><%= link_to image_tag(file_content_ad_banner_banner_path(content: @content, id: banner.id), width: 100), ad_banner_banner_path(content: @content, id: banner.id) %></td>
+          <td><%= banner.sort_no %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

@@ -66,6 +66,10 @@ class Cms::Content < ActiveRecord::Base
     st ? st.value : nil
   end
 
+  def setting_extra_value(name)
+    settings.find_by_name(name).try(:extra_value)
+  end
+
 protected
   def save_settings
     in_settings.each do |name, value|

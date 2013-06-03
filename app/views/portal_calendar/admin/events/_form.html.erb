@@ -1,0 +1,36 @@
+<%= init_ckeditor %>
+
+<%= javascript_tag do %>
+$(function() {
+  $('.js-date').datepicker({ dateFormat: 'yy-mm-dd' });
+});
+<% end %>
+
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, [["公開","public"],["非公開","closed"]], :class => 'states' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_start_date) %> <span class="note">※</span></th>
+    <td><%= f.text_field :event_start_date, :class => 'js-date' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_end_date) %> <span class="note">※</span></th>
+    <td><%= f.text_field :event_end_date, :class => 'js-date' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:genre) %></th>
+    <td><%= f.collection_select :event_genre_id, @genres, :id, :title, {:include_blank => true},{:class => 'genre'} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:status) %></th>
+    <td><%= f.collection_select :event_status_id, @statuses, :id, :title, {:include_blank => true},{:class => 'statuses'} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_area :title, :style => "width: 80%; height: 2.5em;" %></td>
+  </tr><tr>
+    <th><%= @item.locale(:event_uri) %></th>
+    <td><%= f.text_field :event_uri, :class => 'url' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

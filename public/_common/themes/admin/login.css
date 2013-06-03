@@ -26,7 +26,6 @@ input {
 .form input {
   width: 150px;
 }
-
 #header {
   width: 100%;
   height: 60px;
@@ -44,20 +43,18 @@ input {
   margin: 150px auto;
   text-align: center;
 }
-
-
 .box {
-  background-color: #ffffff;
-  text-align: center;
   margin: 0px auto;
   -webkit-box-shadow: #999 0px 0px 5px;
   -moz-box-shadow: #999 0px 0px 5px;
   box-shadow: #999 0px 0px 5px;
   behavior: url(/_common/js/PIE.htc);
   position: relative;
+  background-color: #ffffff;
+  text-align: center;
   color: #888;
+  line-height: 1.5;
 }
-
 .box h2 {
   height: 119px;
   text-align: center;
@@ -69,9 +66,12 @@ input {
   font-weight: lighter;
   text-align: center;
 }
-
 .notice {
-  height: 0px;
+  color: #090;
+  font-weight: bold;
+}
+.alert {
+  margin-bottom: 10px;
   color: #f00;
   font-weight: bold;
 }
@@ -80,10 +80,11 @@ input {
   text-align: center;
   margin: 30px auto 0px auto;
   padding: 0px 0px 20px 0px;
-
 }
 #account,
-#password {
+#email,
+#password,
+#password_confirmation {
   width: 253px;
   padding: 8px 10px;
   border: 1px solid #bbb;
@@ -91,12 +92,9 @@ input {
   font-size: 120%;
   vertical-align: middle;
 }
-#account {
+.fields input:first-child {
   margin-bottom: 10px;
   ime-mode: disabled;
-}
-#password {
-
 }
 ::-webkit-input-placeholder {
     color: #999;
@@ -105,14 +103,20 @@ input {
     color: #999;
 }
 .submitters {
-  padding: 0px 0px 50px 0px;
+  padding: 0px 0px 40px 0px;
   text-align: center;
 }
 .submitters .login {
   width: 276px;
   height: 47px;
 }
-
+.password_reminder {
+  padding: 0px 20px 20px 20px;
+  text-align: right;
+}
+.password_reminder a {
+  color: #333333;
+}
 .copyright {
   padding: 20px 0px;
   text-align: center;

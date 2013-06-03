@@ -1,0 +1,36 @@
+ja:
+  activerecord:
+    models:
+      ad_banner/banner: 広告バナー
+      ad_banner/group: グループ
+      ad_banner/click: クリック履歴
+    attributes:
+      ad_banner/banner:
+        advertiser_name: 業者名
+        advertiser_phone: 電話番号
+        advertiser_email: メールアドレス
+        advertiser_contact: 担当者
+        published_at: 公開開始日時
+        closed_at: 公開終了日時
+        url: URL
+        sort_no: 表示順
+        created_at: 作成日時
+        state: 状態
+        file: ファイル
+        name: 保存ファイル名
+        title: 表示ファイル名
+      ad_banner/group:
+        name: グループID
+        title: グループ名
+        sort_no: 表示順
+        updated_at: 更新日時
+      ad_banner/click:
+        referer: バナーが貼られたURL
+        remote_addr: アクセス元
+        user_agent: ブラウザ
+        created_at: クリック日時
+      ad_banner/piece/banner:
+        group_id: グループ
+        sort: 表示形式
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト

@@ -5,18 +5,18 @@ module Cms::Controller::Layout
   def render_public_as_string(path, options = {})
     Core.publish = true unless options[:preview]
     mode = Core.set_mode('preview')
-    
+
     qp = {}
     if path =~ /\?/
       qp   = Rack::Utils.parse_query(path.gsub(/.*\?/, ''))
       path = path.gsub(/\?.*/, '')
     end
-  
+
     Page.initialize
     Page.site   = options[:site] || Core.site
     Page.uri    = path
     Page.mobile = options[:mobile]
-    
+
     begin
       node = Core.search_node(path)
       env  = {}
@@ -24,23 +24,23 @@ module Cms::Controller::Layout
       opt  = qp.merge(opt)
       ctl  = opt[:controller]
       act  = opt[:action]
-      
+
       opt[:authenticity_token] = params[:authenticity_token] if params[:authenticity_token]
       body = render_component_into_view :controller => ctl, :action => act, :params => opt
-      
-      errstr = "Action Controller: Exception caught"
-      raise(errstr) if body.index("<title>#{errstr}</title>")
+
+      error_log(body) if Page.error
     rescue => e
+      error_log(e.message)
       Page.error = 404
     end
-    
+
     error = Page.error
     Page.initialize
-    Page.site = options[:site] || Core.site ##
-    Page.uri  = path                        ##
-    
+    Page.site = options[:site] || Core.site
+    Page.uri  = path
+
     Core.set_mode(mode)
-    
+
     return error ? nil : body
   end
   
@@ -98,7 +98,7 @@ module Cms::Controller::Layout
           body.gsub!("[[piece/#{name}]]", piece_container_html(item, data))
         end
       rescue => e
-        #
+        error_log(e.message)
       end
     end
     
@@ -141,7 +141,7 @@ module Cms::Controller::Layout
           :body => body
         )
       rescue => e #InvalidStyleException
-        error_log(e)
+        error_log(e.message)
       end
       
       case request.mobile

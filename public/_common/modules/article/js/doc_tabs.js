@@ -6,35 +6,39 @@ function ArticleDocTabs(id) {
   
   this.initialize = function() {
     if (this.content) return true;
-    var children = document.getElementById(this.id).getElementsByTagName('div');
+    var children = $('#' + this.id).find('.tabs, .content, .links');
+    var child = null;
     for (var i = 0; i < children.length; i++) {
-      if (children[i].className == 'tabs') {
-        this.tabs = children[i];
-      } else if (children[i].className == 'content') {
-        this.content = children[i];
-      } else if (children[i].className == 'links') {
-        this.links = children[i];
+      child = children[i];
+      if (child.className.match(/(^| )tabs( |$)/)) {
+        this.tabs = child;
+      } else if (child.className.match(/(^| )content( |$)/)) {
+        this.content = child;
+      } else if (child.className.match(/(^| )links( |$)/)) {
+        this.links = child;
       }
     }
   }
   
   this.show = function(name) {
     this.initialize();
-    
+
     // select tab
-    var tabs = this.tabs.getElementsByTagName('a');
+    var tabs = $(this.tabs).find('li');
+    var tab = null;
     for (var i = 0; i < tabs.length; i++) {
-      if (tabs[i].className.match(new RegExp('(^| )' + name + '( |$)'))) {
-        if (!tabs[i].className.match(/current/)) {
-          tabs[i].className = name + ' current';
+      tab = tabs[i];
+      if (tab.className.match(new RegExp('(^| )' + name + '( |$)'))) {
+        if (!tab.className.match(/(^| )current(^| )/)) {
+          tab.className = name + ' current';
         }
       } else {
-        tabs[i].className = tabs[i].className.replace(' current', '');
+        tab.className = tab.className.replace(' current', '');
       }
     }
     
     // select list
-    var list = this.content.getElementsByTagName('ul');
+    var list = $(this.content).find('ul');
     for (var i = 0; i < list.length; i++) {
       if (list[i].className == name) {
         list[i].style.display = 'block';
@@ -42,9 +46,9 @@ function ArticleDocTabs(id) {
         list[i].style.display = 'none';
       }
     }
-    
+
     // select links
-    var body = this.links.getElementsByTagName('div');
+    var body = $(this.links).find('div');
     for (var i = 0; i < body.length; i++) {
       if (body[i].className == name) {
         body[i].style.display = 'block';
@@ -52,10 +56,10 @@ function ArticleDocTabs(id) {
         body[i].style.display = 'none';
       }
     }
-    
+
     return false;
   }
-  
+
   this.getTab = function(name) {
   }
 }

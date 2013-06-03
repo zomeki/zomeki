@@ -1,0 +1,44 @@
+<div class="portalCalendarLists">
+
+<h2><%= sprintf("%d年%d月", @year, @month) %></h2>
+<%= render :partial => "#{::File.dirname(params[:controller])}/_partial/search_cond" %>  
+
+<%= @pagination.to_links(:class => "pagination upperPagination") %>
+
+<table>
+  <% @calendar.days.each do |day| %>
+	<% next if day[:class] =~ /(next|prev)/ %>
+	<tr class="date" id="day<%= sprintf('%02d', day[:day]) %>">
+	  <th class="<%= day[:class] %>">
+		<%= day[:day] %>日（<%= day[:wday_label] %>）
+	  </th>
+	  <td>
+	  <% if @items[day[:date]].size > 0 || day[:holiday] %>
+      <%= content_tag(:ul, :class=>'events') do %>
+        <%= content_tag(:li, day[:holiday], :class=>"holiday") if day[:holiday] %>
+
+      	<% @items[day[:date]].each do |item| %>
+          <%= content_tag(:li, '', :class=>'event') do %>
+            <%= content_tag(:table) do %>
+              <%= content_tag(:tbody) do %>
+                <%= content_tag(:tr) do  %>
+                  <%= content_tag(:td, get_genre_title(item), :class=>'event_genre') if @genre_registered %>
+                  <%= content_tag(:td, link_to_if(item.event_uri.present?, item.title, item.event_uri, :target => "_blank"), :class=>'event_title') %>
+                  <%= content_tag(:td, get_status_title(item), :class=>'event_status') if @status_registered %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+	  <% else %>
+		&nbsp;
+	  <% end %>
+	  </td>
+	</tr>
+  <% end %>
+</table>
+
+<%= @pagination.to_links(:class => "pagination lowerPagination") %>
+
+<!-- end .calendarEvents --></div>

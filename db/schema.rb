@@ -11,7 +11,53 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120722005121) do
+ActiveRecord::Schema.define(:version => 20130524021106) do
+
+  create_table "ad_banner_banners", :force => true do |t|
+    t.string   "name"
+    t.string   "title"
+    t.string   "mime_type"
+    t.integer  "size"
+    t.integer  "image_is"
+    t.integer  "image_width"
+    t.integer  "image_height"
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.integer  "group_id"
+    t.string   "state"
+    t.string   "advertiser_name"
+    t.string   "advertiser_phone"
+    t.string   "advertiser_email"
+    t.string   "advertiser_contact"
+    t.datetime "published_at"
+    t.datetime "closed_at"
+    t.string   "url"
+    t.integer  "sort_no"
+    t.string   "token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ad_banner_banners", ["token"], :name => "index_ad_banner_banners_on_token", :unique => true
+
+  create_table "ad_banner_clicks", :force => true do |t|
+    t.integer  "banner_id"
+    t.string   "referer"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ad_banner_groups", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -144,12 +190,13 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
   add_index "cms_concepts", ["parent_id", "state", "sort_no"], :name => "parent_id"
 
   create_table "cms_content_settings", :force => true do |t|
-    t.integer  "content_id", :null => false
+    t.integer  "content_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.text     "value"
     t.integer  "sort_no"
+    t.text     "extra_value"
   end
 
   add_index "cms_content_settings", ["content_id"], :name => "content_id"
@@ -164,6 +211,7 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.string   "model"
     t.string   "name"
     t.text     "xml_properties", :limit => 2147483647
+    t.string   "note"
   end
 
   create_table "cms_data_file_nodes", :force => true do |t|
@@ -528,6 +576,110 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
 
   add_index "enquete_forms", ["content_id", "sort_no"], :name => "content_id"
 
+  create_table "gnav_category_sets", :force => true do |t|
+    t.integer "menu_item_id"
+    t.integer "category_id"
+    t.string  "layer"
+  end
+
+  add_index "gnav_category_sets", ["category_id"], :name => "index_gnav_category_sets_on_category_id"
+  add_index "gnav_category_sets", ["menu_item_id"], :name => "index_gnav_category_sets_on_menu_item_id"
+
+  create_table "gnav_menu_items", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.integer  "concept_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "layout_id"
+  end
+
+  add_index "gnav_menu_items", ["concept_id"], :name => "index_gnav_menu_items_on_concept_id"
+  add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
+  add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
+
+  create_table "gp_article_docs", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "content_id"
+    t.string   "title"
+    t.text     "body",                       :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "href"
+    t.string   "target"
+    t.text     "subtitle"
+    t.text     "summary"
+    t.string   "name"
+    t.datetime "published_at"
+    t.datetime "recognized_at"
+    t.string   "state"
+    t.string   "event_state"
+    t.date     "event_date"
+    t.text     "raw_tags"
+    t.string   "mobile_title"
+    t.text     "mobile_body"
+    t.boolean  "terminal_pc_or_smart_phone"
+    t.boolean  "terminal_mobile"
+    t.string   "rel_doc_ids"
+  end
+
+  add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
+  add_index "gp_article_docs", ["content_id"], :name => "index_gp_article_docs_on_content_id"
+
+  create_table "gp_article_docs_gp_category_categories", :id => false, :force => true do |t|
+    t.integer "doc_id"
+    t.integer "category_id"
+  end
+
+  create_table "gp_article_docs_tag_tags", :id => false, :force => true do |t|
+    t.integer "doc_id"
+    t.integer "tag_id"
+  end
+
+  create_table "gp_category_categories", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "layout_id"
+    t.integer  "category_type_id"
+    t.integer  "parent_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "level_no"
+    t.integer  "sort_no"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "group_code"
+  end
+
+  add_index "gp_category_categories", ["category_type_id"], :name => "index_gp_category_categories_on_category_type_id"
+  add_index "gp_category_categories", ["concept_id"], :name => "index_gp_category_categories_on_concept_id"
+  add_index "gp_category_categories", ["layout_id"], :name => "index_gp_category_categories_on_layout_id"
+  add_index "gp_category_categories", ["parent_id"], :name => "index_gp_category_categories_on_parent_id"
+
+  create_table "gp_category_category_types", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.integer  "concept_id"
+    t.integer  "layout_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.integer  "sort_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
+  add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
+  add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
+
   create_table "laby_docs", :force => true do |t|
     t.integer  "unid"
     t.integer  "content_id"
@@ -539,6 +691,18 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.text     "title"
     t.text     "head",         :limit => 2147483647
     t.text     "body",         :limit => 2147483647
+  end
+
+  create_table "map_markers", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.string   "latitude"
+    t.string   "longitude"
+    t.text     "window_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|
@@ -666,6 +830,43 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.datetime "updated_at"
     t.string   "name"
     t.text     "word"
+  end
+
+  create_table "portal_calendar_events", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state",            :limit => 15
+    t.date     "event_start_date"
+    t.date     "event_end_date"
+    t.string   "event_uri",                              :default => ""
+    t.string   "title"
+    t.text     "body",             :limit => 2147483647
+    t.integer  "event_genre_id",                         :default => 0
+    t.integer  "event_status_id",                        :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "portal_calendar_events", ["content_id", "event_start_date"], :name => "content_id"
+
+  create_table "portal_calendar_genres", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state",      :default => "public"
+    t.string   "title",      :default => ""
+    t.integer  "sort_no",    :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "portal_calendar_statuses", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state",      :default => "public"
+    t.string   "title",      :default => ""
+    t.integer  "sort_no",    :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "portal_categories", :force => true do |t|
@@ -824,6 +1025,7 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "group_ids"
+    t.boolean  "all"
   end
 
   create_table "sys_files", :force => true do |t|
@@ -953,7 +1155,7 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.integer  "value"
   end
 
-  add_index "sys_sequences", ["name", "version"], :name => "name"
+  add_index "sys_sequences", ["name", "version"], :name => "index_sys_sequences_on_name_and_version", :unique => true
 
   create_table "sys_tasks", :force => true do |t|
     t.integer  "unid"
@@ -980,12 +1182,12 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
   end
 
   create_table "sys_users", :force => true do |t|
-    t.string   "state",                     :limit => 15
+    t.string   "state",                           :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ldap",                                                       :null => false
+    t.integer  "ldap",                                                             :null => false
     t.string   "ldap_version"
-    t.integer  "auth_no",                                                    :null => false
+    t.integer  "auth_no",                                                          :null => false
     t.string   "name"
     t.string   "name_en"
     t.string   "account"
@@ -993,8 +1195,10 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
     t.string   "email"
     t.text     "remember_token"
     t.datetime "remember_token_expires_at"
-    t.boolean  "admin_creatable",                         :default => false
-    t.boolean  "site_creatable",                          :default => false
+    t.boolean  "admin_creatable",                               :default => false
+    t.boolean  "site_creatable",                                :default => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_token_expires_at"
   end
 
   create_table "sys_users_groups", :id => false, :force => true do |t|
@@ -1012,6 +1216,16 @@ ActiveRecord::Schema.define(:version => 20120722005121) do
   end
 
   add_index "sys_users_roles", ["user_id", "role_id"], :name => "user_id"
+
+  create_table "tag_tags", :force => true do |t|
+    t.integer  "content_id"
+    t.text     "word"
+    t.datetime "last_tagged_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
 
   create_table "tool_simple_captcha_data", :force => true do |t|
     t.string   "key",        :limit => 40

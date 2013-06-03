@@ -1,0 +1,17 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_view @item, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th>表示種別</th>
+    <td><%= @item.in_settings.map{|k, v| v ? @item.class::SETTING_NAMES[k] : nil }.compact.join(', ') %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

@@ -1,0 +1,43 @@
+<article class="contentGpArticleDoc">
+
+<p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
+
+<div class="body"><%=raw (unless Page.mobile?
+  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
+else
+  body_doc = Nokogiri::XML("<bory_root>#{@item.mobile_body.presence || @item.body}</bory_root>")
+  body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
+  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
+  body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
+end) %></div>
+
+<%- unless Page.mobile? -%>
+<%= render 'cms/public/_partial/maps/view', item: @item %>
+<%- end -%>
+
+<%- unless Page.mobile? -%>
+<%= render 'rel_docs', item: @item %>
+<%- else -%>
+<%= render 'rel_docs_mobile', item: @item %>
+<%- end -%>
+
+<%- unless Page.mobile? -%>
+<%- if (node = @item.content.tag_content_tag.try(:tag_node)) && !@item.tags.empty? -%>
+<div class="tags">
+  <h2>関連ワード</h2>
+  <ul>
+    <%- @item.tags.each do |tag| -%>
+    <li><%= link_to tag.word, tag.public_uri %></li>
+    <%- end -%>
+  </ul>
+</div>
+<%- end -%>
+<%- end -%>
+
+<%= render 'cms/public/_partial/inquiries/view', item: @item %>
+
+<%- unless Page.mobile? -%>
+<div class="back"><%= link_to_function '戻る', 'history.back();' %></div>
+<%- end -%>
+
+<!-- end .contentGpArticleDoc --></article>

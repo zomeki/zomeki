@@ -1,0 +1,9 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<section>
+<%= content_tag(:h3, "ジャンル")  %>
+<%= portal_calendar_link_tag_form(@calendar.current_month_uri, @genres) %>
+</section>
