@@ -1,7 +1,7 @@
 # encoding: utf-8
 module Zomeki
   def self.version
-    "1.0.5"
+    "1.1.0"
   end
   
   def self.default_config
