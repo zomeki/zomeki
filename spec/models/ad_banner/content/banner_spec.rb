@@ -6,8 +6,8 @@ describe AdBanner::Content::Banner do
     Core.user_group = Core.user.group
     [:cms_content_map_marker_1,
      :cms_content_ad_banner_banner_1,
-     :cms_content_ad_banner_banner_2].each do |id|
-      FactoryGirl.create(id)
+     :cms_content_ad_banner_banner_2].each do |fg_id|
+      fg_find_or_create(fg_id)
     end
   end
 
