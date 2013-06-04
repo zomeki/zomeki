@@ -19,6 +19,7 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
       
       item = Cms::Content.new
       item.and :model, 'LIKE', '%::Doc'
+      item.and :model, '!=', 'GpArticle::Doc'
       item.and :model, '!=', 'Newsletter::Doc'
       item.and :model, '!=', 'Laby::Doc'
       item.and :site_id, Core.site.id
