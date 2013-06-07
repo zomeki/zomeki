@@ -7,12 +7,12 @@
   <% end %>
   <tr>
     <th><%= f.label :name %><br />
-        <span class="required">※半角英数字のみ</span></th>
+        <span class="note">※半角英数字のみ</span></th>
     <td><%= f.text_field :name, class: 'string', size: 55 %></td>
   </tr>
   <tr>
     <th><%= f.label :title %><br />
-        <span class="required">※日本語でわかりやすく</span></th>
+        <span class="note">※日本語でわかりやすく</span></th>
     <td>
       <%= f.text_field :title, class: 'string', size: 55 %>
       <%= f.submit(submit_label) %>

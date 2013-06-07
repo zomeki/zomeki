@@ -155,11 +155,13 @@
 }
 #content h2 {
   margin: 15px 0px 15px 5px;
-  padding-left: 8px;
-  border-left: 3px solid #000;
   color: #000;
   font-size: 120%;
   font-weight: bold;
+}
+#contentHeader h2 {
+  padding-left: 8px;
+  border-left: 3px solid #000;
 }
 #content .noticeBox {
   margin: 15px 0px;
