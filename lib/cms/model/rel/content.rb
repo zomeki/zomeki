@@ -1,11 +1,14 @@
 # encoding: utf-8
 module Cms::Model::Rel::Content
   def self.included(mod)
-    mod.belongs_to :content,  :foreign_key => :content_id, :class_name => 'Cms::Content'
-  end
-  
-  def concept(reload = nil)
-    content.concept(reload)
+    if !mod.method_defined?(:concept)
+      mod.class_eval do
+        def concept(reload = nil)
+          content ? content.concept(reload) : nil
+        end
+      end
+    end
+    mod.belongs_to :content, :foreign_key => :content_id, :class_name => 'Cms::Content'
   end
   
   def content_name
