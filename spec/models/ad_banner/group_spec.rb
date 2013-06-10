@@ -28,10 +28,6 @@ describe AdBanner::Banner do
       @group = FactoryGirl.build(:ad_banner_group_1)
     end
 
-    it 'sets "public" as state' do
-      expect(@group.state).to eq 'public'
-    end
-
     it 'sets 10 as sort_no' do
       expect(@group.sort_no).to eq 10
     end
