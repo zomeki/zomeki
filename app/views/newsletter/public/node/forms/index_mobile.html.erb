@@ -13,12 +13,12 @@
 </div>
 
 <div class="column">
-  <div class="name">メールアドレス <span class="required">※</span></div>
+  <div class="name">メールアドレス <span class="note">※</span></div>
   <div class="field"><%= f.text_field :subscribe_email, :class => 'textField' %></div>
 </div>
 
 <div class="column">
-  <div class="name"><%= @item.locale(:letter_type) %> <span class="required">※</span></div>
+  <div class="name"><%= @item.locale(:letter_type) %> <span class="note">※</span></div>
   <div class="field"><div class="radioButton"><%= f.radio_buttons :letter_type, [["PC版(テキスト形式)","pc_text"],["携帯版(テキスト形式)","mobile_text"]], :class => 'element' %></div></div>
 </div>
 
