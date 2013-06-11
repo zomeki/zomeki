@@ -73,6 +73,9 @@ class GpArticle::Doc < ActiveRecord::Base
     arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
     arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
+    arel.where(docs[:title].matches("%#{criteria[:free_word]}%")
+           .or(docs[:body].matches("%#{criteria[:free_word]}%"))
+           .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
 
     arel.order(docs[:updated_at].desc)
 
@@ -187,6 +190,12 @@ class GpArticle::Doc < ActiveRecord::Base
         self.join :creator
         self.join "INNER JOIN #{Sys::User.table_name} ON #{Sys::User.table_name}.id = #{Sys::Creator.table_name}.user_id"
         self.and "#{Sys::User.table_name}.name", 'LIKE', "%#{value}%"
+      when 's_free_word'
+        self.and(Condition.new) do |c|
+          c.or 'title', 'LIKE', "%#{value}%"
+          c.or 'body', 'LIKE', "%#{value}%"
+          c.or 'name', 'LIKE', "%#{value}%"
+        end
       end
     end
 
