@@ -62,14 +62,17 @@ class GpArticle::Doc < ActiveRecord::Base
     docs = self.arel_table
     creators = Sys::Creator.arel_table
     groups = Sys::Group.arel_table
+    users = Sys::User.arel_table
 
     arel = docs.project(docs.columns).join(creators, Arel::Nodes::InnerJoin).on(docs[:unid].eq(creators[:id]))
                                      .join(groups, Arel::Nodes::InnerJoin).on(creators[:group_id].eq(groups[:id]))
+                                     .join(users, Arel::Nodes::InnerJoin).on(creators[:user_id].eq(users[:id]))
     arel.where(docs[:content_id].eq(content.id))
 
     arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
     arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
 
     arel.order(docs[:updated_at].desc)
 
@@ -171,15 +174,19 @@ class GpArticle::Doc < ActiveRecord::Base
     search_params.each do |key, value|
       next if value.blank?
 
-      case key
+      case key.to_s
       when 's_id'
         self.and "#{GpArticle::Doc.table_name}.id", value
       when 's_title'
         self.and_keywords value, :title
-      when 's_affiliation_name'
+      when 's_group'
         self.join :creator
         self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
         self.and "#{Sys::Group.table_name}.name", 'LIKE', "%#{value}%"
+      when 's_user'
+        self.join :creator
+        self.join "INNER JOIN #{Sys::User.table_name} ON #{Sys::User.table_name}.id = #{Sys::Creator.table_name}.user_id"
+        self.and "#{Sys::User.table_name}.name", 'LIKE', "%#{value}%"
       end
     end
 

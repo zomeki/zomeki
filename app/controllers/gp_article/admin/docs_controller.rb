@@ -38,7 +38,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       search_params = {}
       search_params[:s_id] = criteria[:id] if criteria[:id].present?
       search_params[:s_title] = criteria[:title] if criteria[:title].present?
-      search_params[:s_affiliation_name] = criteria[:group] if criteria[:group].present?
+      search_params[:s_group] = criteria[:group] if criteria[:group].present?
+      search_params[:s_user] = criteria[:user] if criteria[:user].present?
     end
 
     case params[:target]
