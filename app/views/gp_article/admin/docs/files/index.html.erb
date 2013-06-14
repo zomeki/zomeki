@@ -1,22 +1,12 @@
-<%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true}) do |f| %>
+<%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true, :id => 'file_form'}) do |f| %>
   <%= error_messages_for :item %>
   <%= render 'form', f: f, submit_label: 'アップロード' %>
 <% end %>
 
 <%= javascript_tag do %>
-  function ckeInsertContent(value) {
-    parent.CKEDITOR.instances['item_body'].insertHtml(value);
-  }
-  function selectAction() {
-    var filesForm = document.filesForm;
-    var selectFile;
-    for (var i=0; i < filesForm.elements.s_item.length; i++) {
-      if (filesForm.elements.s_item[i].checked) {
-        var element = document.getElementById("link_attach" + filesForm.elements.s_item[i].value);
-        alert(element.getAttribute('onclick'));
-      }
-    }
-  }
+function ckeInsertContent(value) {
+  parent.CKEDITOR.instances['item_body'].insertHtml(value);
+}
 <% end %>
 
 <table class="index">
@@ -54,7 +44,7 @@
           %Q(ckeInsertContent('<img src="#{file_content_path}" alt="#{item.alt}" title="#{item.alt}" />')), id: "link_image#{item.id}" %>
       <% end %>
     </td>
-    <td><%= item.name %></td>
+    <td><span class="item_name" item_name="<%= item.name %>"><%= item.name %></span></td>
     <td style="text-align: center;"><%= item.eng_unit %><br /><%= item.image_size %></td>
   </tr>
   <% end %>
