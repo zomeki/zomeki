@@ -81,10 +81,15 @@ class GpArticle::Content::Doc < Cms::Content
     Sys::User.where(id: ids)
   end
 
+  def display_dates(key)
+    YAML.load(setting_value(:display_dates).presence || '[]').include?(key.to_s)
+  end
+
   private
 
   def set_default_settings
     in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
+    in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
   end
 end

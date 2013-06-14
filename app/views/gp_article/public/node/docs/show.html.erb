@@ -1,6 +1,11 @@
 <article class="contentGpArticleDoc">
 
-<p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
+<%- if @content.display_dates(:published_at) -%>
+<p class="publishedAt">公開日 <%=l @item.published_at.to_date, :format => :long %></p>
+<%- end -%>
+<%- if @content.display_dates(:updated_at) -%>
+<p class="updatedAt">最終更新日 <%=l @item.updated_at.to_date, :format => :long %></p>
+<%- end -%>
 
 <div class="body"><%=raw (unless Page.mobile?
   @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))

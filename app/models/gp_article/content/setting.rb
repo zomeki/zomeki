@@ -24,6 +24,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :form_type => :check_boxes
   set_config :map_content_marker_id, :name => 'マップ',
     :options => lambda { Map::Content::Marker.all.map {|m| [m.name, m.id] } }
+  set_config :display_dates, :name => '記事日付表示',
+    :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
+    :form_type => :check_boxes
 
   def upper_text
   end
