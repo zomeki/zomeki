@@ -27,5 +27,14 @@ $(document).ready(function () {
     $('#item_name').val(name.replace(/[^0-9a-z\.\-_\\+@#]/ig, ''));
     $('#item_title').val(name.replace(/(.*)\.[a-z]+$/i, '$1'));
   });
+
+  $('#file_form').on('submit', function (event) {
+    var item_name = $('#item_name').val();
+    if ($('.item_name[item_name="' + item_name + '"]').length > 0) {
+      if (!confirm("この保存ファイル名は既に存在しています。\n上書きしてもよろしいですか？")) {
+        return false;
+      }
+    }
+  });
 });
 <% end %>

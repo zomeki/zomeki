@@ -21,18 +21,17 @@ class Sys::File < ActiveRecord::Base
     conditions = ["parent_unid IS NULL AND tmp_id = ?", tmp_id]
     update_all(updates, conditions)
   end
-  
+
+  def duplicated
+    c_tmp_id, c_parent_unid = (tmp_id ? [tmp_id, nil] : [nil, parent_unid])
+
+    files = self.class.arel_table
+
+    self.class.where(name: name).where(files[:id].not_eq(id).and(files[:tmp_id].eq(c_tmp_id))
+                                                            .and(files[:parent_unid].eq(c_parent_unid))).first
+  end
+
   def duplicated?
-    file = self.class.new
-    file.and :id, "!=", id if id
-    file.and :name, name
-    if tmp_id
-      file.and :tmp_id, tmp_id
-      file.and :parent_unid, 'IS', nil
-    else
-      file.and :tmp_id, 'IS', nil
-      file.and :parent_unid, parent_unid
-    end
-    return file.find(:first)
+    !!duplicated
   end
 end
