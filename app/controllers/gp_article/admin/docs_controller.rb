@@ -225,20 +225,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def set_categories
-    if params[:categories].is_a?(Hash)
-      category_ids = params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+    category_ids = if params[:categories].is_a?(Hash)
+                     params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+                   else
+                     []
+                   end
 
-      if @category_types.include?(@content.group_category_type)
-        if (group_category = @content.group_category_type.categories.find_by_group_code(@item.creator.group.code))
-          category_ids |= [group_category.id]
-        end
+    if @category_types.include?(@content.group_category_type)
+      if (group_category = @content.group_category_type.categories.find_by_group_code(@item.creator.group.code))
+        category_ids |= [group_category.id]
       end
-
-      if @content.default_category && @category_types.include?(@content.default_category_type)
-        category_ids |= [@content.default_category.id]
-      end
-
-      @item.category_ids = category_ids
     end
+
+    if @content.default_category && @category_types.include?(@content.default_category_type)
+      category_ids |= [@content.default_category.id]
+    end
+
+    @item.category_ids = category_ids
   end
 end
