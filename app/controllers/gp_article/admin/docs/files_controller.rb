@@ -30,6 +30,12 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
     @item = Sys::File.new(params[:item])
     @item.tmp_id = @tmp_unid
     @item.parent_unid = @doc.try(:unid)
+
+    if (duplicated = @item.duplicated)
+      @item = duplicated
+      @item.attributes = params[:item]
+    end
+
     @item.allowed_type = @content.setting_value(:allowed_attachment_type)
     _create @item
   end
