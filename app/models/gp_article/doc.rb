@@ -37,7 +37,6 @@ class GpArticle::Doc < ActiveRecord::Base
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { ['content_id = ?', self.content.tag_content_tag.try(:id)] }
 
-  before_save :set_name
   before_save :make_file_contents_path_relative
 
   validates :title, :presence => true, :length => {maximum: 200}
@@ -45,6 +44,7 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :body, :length => {maximum: 300000}
   validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
+  validates :name, :presence => true, :uniqueness => true, :format => {with: /^[\-\w]+$/ }
 
   validate :validate_inquiry
   validate :validate_recognizers, :if => :state_recognize?
@@ -310,6 +310,8 @@ class GpArticle::Doc < ActiveRecord::Base
     self.event_state ||= 'hidden'                  if self.has_attribute?(:event_state)
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
+
+    set_name
   end
 
   def node_existence
