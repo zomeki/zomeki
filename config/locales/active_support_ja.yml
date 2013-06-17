@@ -5,9 +5,11 @@ ja:
       # When no format has been given, it uses default.
       # You can provide other formats here if you like!
       default: "%Y-%m-%d"
+      default_ja: "%Y年%m月%d日"
       short: "%y-%m-%d"
-      long: "%Y年%m月%d日"
-      long_with_dow: "%Y年%m月%d日%A"
+      short_ja: "%y年%m月%d日"
+      long: "%Y-%m-%d %a"
+      long_ja: "%Y年%m月%d日（%a）"
       
     day_names: [日曜日, 月曜日, 火曜日, 水曜日, 木曜日, 金曜日, 土曜日]
     abbr_day_names: [日, 月, 火, 水, 木, 金, 土]
@@ -24,9 +26,11 @@ ja:
   time:
     formats:
       default: "%Y-%m-%d %H:%M"
-      short: "%y-%m-%d %H:%M"
+      default_ja: "%Y年%m月%d日 %H時%M分"
+      short: "%H:%M"
+      short_ja: "%H時%M分"
       long: "%Y-%m-%d %H:%M:%S"
-      long_ja: "%Y年%m月%d日%A %H時%M分%S秒%Z"
+      long_ja: "%Y年%m月%d日 %H時%M分%S秒"
     am: "午前"
     pm: "午後"
       
