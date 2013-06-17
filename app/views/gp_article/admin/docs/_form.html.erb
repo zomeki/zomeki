@@ -4,6 +4,10 @@
 
 <table class="show">
   <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td colspan="3"><%= f.text_field :name, :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
     <th><%= f.label :title %> <span class="note">※</span></th>
     <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
     <th><%= f.label :title %>設定</th>
@@ -13,10 +17,6 @@
 
 <div id="title_settings" style="display: none;">
   <table class="show">
-    <tr>
-      <th><%= f.label :name %> <span class="note">※</span></th>
-      <td colspan="2"><%= f.text_field :name, :style => 'width: 200px;' %></td>
-    </tr>
     <tr>
       <th><%= f.label :href %></th>
       <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
