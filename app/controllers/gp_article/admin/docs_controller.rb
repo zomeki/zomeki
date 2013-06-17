@@ -7,6 +7,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Recognition
   include Sys::Controller::Scaffold::Publication
 
+  before_filter :check_locking, :only => [ :edit, :update ]
+  before_filter :lock_document, :only => [ :edit ]
+  after_filter :unlock_document, :only => [ :update ]
+
   def pre_dispatch
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
@@ -112,8 +116,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
   end
 
+  def edit
+    @item.recognition.try(:change_type, @recognition_type)
+    _show @item
+  end
+
   def update
-    @item = @content.docs.find(params[:id])
     @item.attributes = params[:item]
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
@@ -242,5 +250,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     @item.category_ids = category_ids
+  end
+
+  def check_locking
+    @item = @content.docs.find(params[:id])
+    if (lock = @item.lock)
+      in_editing_from = (lock.updated_at.today? ? I18n.l(lock.updated_at, :format => :short_ja) : I18n.l(lock.updated_at, :format => :default_ja))
+      redirect_to gp_article_doc_path(content: @content, id: @item.id), :alert => "#{lock.user.name}さんが#{in_editing_from}から編集中です。" unless lock.user == Core.user
+    end
+  end
+
+  def lock_document
+    unlock_document
+    @item.create_lock(user: Core.user)
+  end
+
+  def unlock_document
+    @item.lock.try(:destroy)
   end
 end
