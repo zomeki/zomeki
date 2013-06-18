@@ -1,17 +1,18 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8" />
   <title><%= Core.title %></title>
   <!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
-  <%#= stylesheet_link_tag    'application' %>
-  <%#= javascript_include_tag 'application' %>
   <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
   <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+
   <%= stylesheet_link_tag '/_common/css/jquery-ui-themes/smoothness/jquery-ui.min.css' %>
   <%= javascript_include_tag '/_common/js/jquery-ui.min.js' %>
   <%= stylesheet_link_tag '/_common/css/jquery-ui-timepicker-addon.css' %>
   <%= javascript_include_tag '/_common/js/jquery-ui-timepicker-addon.js' %>
+
   <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
   <%= javascript_include_tag '/_common/js/zomeki_admin/form.js' %>
   <%= javascript_include_tag '/_common/js/zomeki_admin/navi.js' %>
