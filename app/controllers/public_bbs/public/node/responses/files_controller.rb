@@ -2,7 +2,7 @@
 class PublicBbs::Public::Node::Responses::FilesController < Cms::Controller::Public::Base
   include Cms::Lib::OAuth
 
-  layout 'public/shared/files'
+  layout 'public/files'
 
   skip_filter :render_public_layout
 

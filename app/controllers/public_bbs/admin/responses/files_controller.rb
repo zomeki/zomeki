@@ -1,6 +1,6 @@
 # encoding: utf-8
 class PublicBbs::Admin::Responses::FilesController < Cms::Controller::Admin::Base
-  layout 'public/shared/files'
+  layout 'public/files'
 
   helper_method :public_files_uri,
                 :public_file_contents_uri
