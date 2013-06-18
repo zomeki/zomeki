@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>title</title>
-  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
+  <!--[if lt IE 9]><script src="/_common/js/html5.js"></script><![endif]-->
   <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
   <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+
+  <%= stylesheet_link_tag '/_common/themes/admin/style.css' %>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -14,6 +17,6 @@
   <%- request.flash.discard(:alert) -%>
   <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
 
-  <%= yield  %>
+  <%= yield %>
 </body>
 </html>
