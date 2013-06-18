@@ -37,6 +37,7 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
     end
 
     @item.allowed_type = @content.setting_value(:allowed_attachment_type)
+    @item.image_resize = params[:image_resize]
     _create @item
   end
 
@@ -44,6 +45,7 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
     @item = Sys::File.find(params[:id])
     @item.attributes = params[:item]
     @item.allowed_type = @content.setting_value(:allowed_attachment_type)
+    @item.image_resize = params[:image_resize]
     @item.skip_upload
     _update @item
   end
