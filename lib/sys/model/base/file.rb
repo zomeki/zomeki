@@ -1,5 +1,10 @@
 # encoding: utf-8
+
+require 'RMagick'
+
 module Sys::Model::Base::File
+  IMAGE_RESIZE_OPTIONS = [['640px', '640'], ['800px', '800'], ['1280px', '1280'], ['1600px', '1600'], ['1920px', '1920']]
+
   def self.included(mod)
     mod.validates_presence_of :file, :if => "@_skip_upload != true"
     mod.validates_presence_of :name, :title
@@ -12,7 +17,7 @@ module Sys::Model::Base::File
   
   @@_maxsize = 50# MegaBytes
   
-  attr_accessor :file, :allowed_type
+  attr_accessor :file, :allowed_type, :image_resize
   
   def skip_upload(bool = true)
     @_skip_upload = bool
@@ -77,8 +82,8 @@ module Sys::Model::Base::File
     
     if name =~ /\.(bmp|gif|jpg|jpeg|png)$/i
       begin
-        require 'RMagick'
         image = Magick::Image.from_blob(@_file_data).shift
+        image.resize_to_fit!(image_resize.to_i) if image_resize.present?
         if image.format =~ /(GIF|JPEG|PNG)/
           self.image_is = 1
           self.image_width  = image.columns
@@ -224,7 +229,6 @@ module Sys::Model::Base::File
     return nil if image_width <= 300 && image_height <= 400
     
     begin
-      require 'RMagick'
       #info = Magick::Image::Info.new
       size = reduced_size(:width => 300, :height => 400)
       img  = Magick::Image.read(params[:path]).first
