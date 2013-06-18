@@ -9,7 +9,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   before_filter :check_locking, :only => [ :edit, :update ]
   before_filter :lock_document, :only => [ :edit ]
-  after_filter :unlock_document, :only => [ :update ]
+  after_filter :unlock_document, :only => [ :update, :destroy ]
 
   def pre_dispatch
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
@@ -19,6 +19,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @category_types = @content.category_types
     @visible_category_types = @content.visible_category_types
     @recognition_type = @content.setting_value(:recognition_type)
+    @item = @content.docs.find(params[:id]) if params[:id].present?
   end
 
   def index
@@ -91,7 +92,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def show
-    @item = @content.docs.find(params[:id])
     @item.recognition.try(:change_type, @recognition_type)
     _show @item
   end
@@ -136,7 +136,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def destroy
-    @item = @content.docs.find(params[:id])
     _destroy @item
   end
 
@@ -253,7 +252,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def check_locking
-    @item = @content.docs.find(params[:id])
     if (lock = @item.lock)
       in_editing_from = (lock.updated_at.today? ? I18n.l(lock.updated_at, :format => :short_ja) : I18n.l(lock.updated_at, :format => :default_ja))
       redirect_to gp_article_doc_path(content: @content, id: @item.id), :alert => "#{lock.user.name}さんが#{in_editing_from}から編集中です。" unless lock.user == Core.user
