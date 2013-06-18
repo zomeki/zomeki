@@ -77,14 +77,15 @@ module Sys::Model::Base::File
     self.image_is     = 2
     self.image_width  = nil
     self.image_height = nil
-    
-    @_file_data = file.read
-    
-    if name =~ /\.(bmp|gif|jpg|jpeg|png)$/i
+
+    if file.content_type =~ %r<^image/>i
       begin
-        image = Magick::Image.from_blob(@_file_data).shift
-        image.resize_to_fit!(image_resize.to_i) if image_resize.present?
-        if image.format =~ /(GIF|JPEG|PNG)/
+        image = Magick::Image.read(file.path).first
+        if image_resize.present?
+          image.resize_to_fit!(image_resize.to_i)
+          image.write(file.path)
+        end
+        if %w!GIF JPEG PNG!.include?(image.format)
           self.image_is = 1
           self.image_width  = image.columns
           self.image_height = image.rows
@@ -257,9 +258,7 @@ module Sys::Model::Base::File
 private
   ## filter/aftar_save
   def upload_internal_file
-    if @_file_data != nil
-      Util::File.put(upload_path, :data => @_file_data, :mkdir => true)
-    end
+    Util::File.put(upload_path, :data => file.read, :mkdir => true)
     return true
   end
   
