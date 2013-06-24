@@ -1,10 +1,10 @@
 <article class="contentGpArticleDoc">
 
 <%- if @content.display_dates(:published_at) -%>
-<p class="publishedAt">公開日 <%= @item.published_at.try(:strftime, @content.date_style) %></p>
+<p class="publishedAt">公開日 <%= @item.formated_public_published_at %></p>
 <%- end -%>
 <%- if @content.display_dates(:updated_at) -%>
-<p class="updatedAt">最終更新日 <%= @item.updated_at.try(:strftime, @content.date_style) %></p>
+<p class="updatedAt">最終更新日 <%= @item.formated_public_updated_at %></p>
 <%- end -%>
 
 <div class="body"><%=raw (unless Page.mobile?

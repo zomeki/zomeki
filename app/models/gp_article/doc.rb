@@ -39,6 +39,7 @@ class GpArticle::Doc < ActiveRecord::Base
   has_one :lock, :as => :lockable
 
   before_save :make_file_contents_path_relative
+  before_save :clear_display_dates
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
@@ -293,6 +294,22 @@ class GpArticle::Doc < ActiveRecord::Base
     return editable_group.all?
   end
 
+  def public_published_at
+    display_published_at || published_at
+  end
+
+  def public_updated_at
+    display_updated_at || updated_at
+  end
+
+  def formated_public_published_at
+    public_published_at.try(:strftime, content.date_style)
+  end
+
+  def formated_public_updated_at
+    public_updated_at.try(:strftime, content.date_style)
+  end
+
   private
 
   def set_name
@@ -351,5 +368,10 @@ class GpArticle::Doc < ActiveRecord::Base
   def make_file_contents_path_relative
     self.body = self.body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.body.present?
     self.mobile_body = self.mobile_body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.mobile_body.present?
+  end
+
+  def clear_display_dates
+    self.display_published_at = nil unless content.display_dates(:published_at)
+    self.display_updated_at = nil unless content.display_dates(:updated_at)
   end
 end
