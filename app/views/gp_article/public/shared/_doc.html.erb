@@ -24,7 +24,7 @@ doc_title = if link_to_options
             end
 
 title = %Q!<span class="title">#{doc_title}</span>!
-date = %Q!<span class="date">#{h (doc.published_at || Time.now).strftime(date_style)}</span>! # In preview mode, published_at is nil
+date = %Q!<span class="date">#{h doc.formated_public_published_at}</span>!
 group = %Q!<span class="group">#{h doc.creator.group.name}</span>!
 category = %Q!<span class="category">#{h doc.categories.map(&:title).join(', ')}</span>!
 

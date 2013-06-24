@@ -147,7 +147,41 @@
 
 <%= google_map_form f %>
 <%= inquiry_form f %>
-<%= task_form f %>
+
+<%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
+<br /><p class="form">表示日時設定</p>
+
+<table class="show">
+  <%- if @content.display_dates(:published_at) -%>
+  <tr>
+    <th>公開日時</th>
+    <td><%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
+                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <%- end -%>
+  <%- if @content.display_dates(:updated_at) -%>
+  <tr>
+    <th>最終更新日時</th>
+    <td><%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
+                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<br /><p class="form">公開日時設定</p>
+
+<table class="show">
+  <tr>
+    <th>公開開始日時</th>
+    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <tr>
+    <th>公開終了日時</th>
+    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+</table>
+
 <%= recognizer_form f %>
 
 <br /><p class="form">編集権限</p>
@@ -186,6 +220,7 @@ function set_click_event_handler(category_type_id) {
 $(document).ready(function () {
   <%= disable_enter_script -%>
   <%= enable_datepicker_script -%>
+  <%= enable_datetimepicker_script -%>
 
   $('#item_event_date').on('change', function (event) {
     if (event.target.value == '') {
