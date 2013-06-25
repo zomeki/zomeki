@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -54,15 +54,13 @@ CKEDITOR.editorConfig = function( config )
   config.templates_replaceContent = false;
 };
 
-  // スタイルの設定
-CKEDITOR.addStylesSet( 'myStyles', [
+// スタイルの設定
+CKEDITOR.addStylesSet('myStyles', [
   // Block Styles
   { name : '枠線', element : 'p', styles : { 'border' : '1px solid #999' , 'padding' : '10px' } },
   // Inline Styles
   { name : '強調（赤文字）' , element : 'span', styles : { 'color' : '#e00' } },
 ]);
 CKEDITOR.config.stylesCombo_stylesSet = 'myStyles';
-
-CKEDITOR.config.coreStyles_strike = { element : 'del', };
-
-CKEDITOR.config.coreStyles_underline = { element : 'ins', };
+CKEDITOR.config.coreStyles_strike = { element : 'del' };
+CKEDITOR.config.coreStyles_underline = { element : 'ins' };
