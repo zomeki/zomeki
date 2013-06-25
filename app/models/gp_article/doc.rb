@@ -74,6 +74,7 @@ class GpArticle::Doc < ActiveRecord::Base
     arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
     arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    arel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
     arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
     arel.where(docs[:title].matches("%#{criteria[:free_word]}%")
            .or(docs[:body].matches("%#{criteria[:free_word]}%"))
@@ -181,13 +182,17 @@ class GpArticle::Doc < ActiveRecord::Base
 
       case key.to_s
       when 's_id'
-        self.and "#{GpArticle::Doc.table_name}.id", value
+        self.and "#{GpArticle::Doc.table_name}.id", value.to_i
       when 's_title'
         self.and_keywords value, :title
       when 's_group'
         self.join :creator
         self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
         self.and "#{Sys::Group.table_name}.name", 'LIKE', "%#{value}%"
+      when 's_group_id'
+        self.join :creator
+        self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
+        self.and "#{Sys::Group.table_name}.id", value.to_i
       when 's_user'
         self.join :creator
         self.join "INNER JOIN #{Sys::User.table_name} ON #{Sys::User.table_name}.id = #{Sys::Creator.table_name}.user_id"
