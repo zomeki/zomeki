@@ -110,13 +110,13 @@
   <%- if @content.display_dates(:published_at) -%>
   <tr>
     <th>公開日時</th>
-    <td><%=l @item.display_published_at %></td>
+    <td><%=l @item.display_published_at rescue '' %></td>
   </tr>
   <%- end -%>
   <%- if @content.display_dates(:updated_at) -%>
   <tr>
     <th>最終更新日時</th>
-    <td><%=l @item.display_updated_at %></td>
+    <td><%=l @item.display_updated_at rescue '' %></td>
   </tr>
   <%- end -%>
 </table>
