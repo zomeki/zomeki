@@ -86,6 +86,36 @@ class GpArticle::Doc < ActiveRecord::Base
     self.find_by_sql(arel.to_sql)
   end
 
+  def self.editables_with_content_and_criteria(content, criteria, options={})
+    docs = self.arel_table
+    editable_groups = Sys::EditableGroup.arel_table
+    creators = Sys::Creator.arel_table
+
+    arel = docs.project(docs.columns).join(editable_groups, Arel::Nodes::InnerJoin).on(editable_groups[:id].eq(docs[:unid]))
+                                     .join(creators, Arel::Nodes::InnerJoin).on(creators[:id].eq(docs[:unid]))
+    arel.where(docs[:content_id].eq(content.id))
+
+    unless Core.user.has_auth?(:manager)
+      arel.where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
+             .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
+             .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
+             .or(creators[:group_id].eq(Core.user_group.id)))))
+    end
+
+    arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
+    arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
+    arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    arel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
+    arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
+    arel.where(docs[:title].matches("%#{criteria[:free_word]}%")
+           .or(docs[:body].matches("%#{criteria[:free_word]}%"))
+           .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+
+    arel.order(docs[:updated_at].desc)
+
+    self.find_by_sql(arel.to_sql)
+  end
+
   def state=(new_state)
     self.published_at ||= Core.now if new_state == 'public'
     super
