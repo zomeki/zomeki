@@ -39,7 +39,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     criteria = params[:criteria] || {}
 
-    if %w!editable recognizable publishable!.include?(params[:target])
+    if %w!recognizable publishable!.include?(params[:target])
       search_params = {}
       search_params[:s_id] = criteria[:id] if criteria[:id].present?
       search_params[:s_title] = criteria[:title] if criteria[:title].present?
@@ -51,12 +51,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     case params[:target]
     when 'editable'
-      item = GpArticle::Doc.new.editable
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
+      @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
       item = GpArticle::Doc.new
       if @content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
