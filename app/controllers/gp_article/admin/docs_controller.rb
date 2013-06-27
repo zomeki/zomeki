@@ -50,6 +50,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     case params[:target]
+    when 'group'
+      criteria[:group_id] = Core.user.group.id
+      @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'editable'
       @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
