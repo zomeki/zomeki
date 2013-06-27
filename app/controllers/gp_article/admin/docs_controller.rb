@@ -4,8 +4,8 @@ require 'will_paginate/array'
 
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
-  include Sys::Controller::Scaffold::Recognition
   include Sys::Controller::Scaffold::Publication
+  include Sys::Controller::Scaffold::Recognition
 
   before_filter :check_locking, :only => [ :edit, :update ]
   before_filter :lock_document, :only => [ :edit ]
