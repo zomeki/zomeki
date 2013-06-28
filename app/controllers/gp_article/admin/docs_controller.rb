@@ -54,6 +54,14 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       criteria[:state] = 'draft'
       criteria[:touched_user_id] = Core.user.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+    when 'public'
+      criteria[:state] = 'public'
+      criteria[:touched_user_id] = Core.user.id
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+    when 'closed'
+      criteria[:state] = 'closed'
+      criteria[:touched_user_id] = Core.user.id
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'editable'
       @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
