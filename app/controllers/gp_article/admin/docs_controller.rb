@@ -36,7 +36,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     criteria = params[:criteria] || {}
 
-    if %w!recognizable publishable!.include?(params[:target])
+    if %w!recognizable!.include?(params[:target])
       search_params = {}
       search_params[:s_id] = criteria[:id] if criteria[:id].present?
       search_params[:s_title] = criteria[:title] if criteria[:title].present?
@@ -63,7 +63,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       criteria[:touched_user_id] = Core.user.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'editable'
-      @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      criteria[:editable] = true
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
       item = GpArticle::Doc.new
       if @content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
@@ -86,12 +87,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       item.order params[:sort], 'updated_at DESC'
       @items = item.find(:all)
     when 'publishable'
-      item = GpArticle::Doc.new.publishable
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
+      criteria[:editable] = true
+      criteria[:state] = 'recognized'
+      criteria[:touched_user_id] = Core.user.id
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     else
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     end
