@@ -24,6 +24,8 @@ class GpArticle::Doc < ActiveRecord::Base
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
+  default_scope order('updated_at DESC')
+
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
   validates_presence_of :content_id
@@ -61,59 +63,53 @@ class GpArticle::Doc < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
 
-  def self.find_with_content_and_criteria(content, criteria)
+  def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
-    creators = Sys::Creator.arel_table
     groups = Sys::Group.arel_table
     users = Sys::User.arel_table
 
-    arel = docs.project(docs.columns).join(creators, Arel::Nodes::InnerJoin).on(docs[:unid].eq(creators[:id]))
-                                     .join(groups, Arel::Nodes::InnerJoin).on(creators[:group_id].eq(groups[:id]))
-                                     .join(users, Arel::Nodes::InnerJoin).on(creators[:user_id].eq(users[:id]))
-    arel.where(docs[:content_id].eq(content.id))
+    rel = self.joins(:creator => [:group, :user])
+              .where(docs[:content_id].eq(content.id))
 
-    arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
-    arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
-    arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
-    arel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
-    arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
-    arel.where(docs[:title].matches("%#{criteria[:free_word]}%")
-           .or(docs[:body].matches("%#{criteria[:free_word]}%"))
-           .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
-
-    arel.order(docs[:updated_at].desc)
-
-    self.find_by_sql(arel.to_sql)
+    rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
+    rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
+    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
+    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
+    rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
+                .or(docs[:body].matches("%#{criteria[:free_word]}%"))
+                .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+    return rel
   end
 
   def self.editables_with_content_and_criteria(content, criteria, options={})
     docs = self.arel_table
+    groups = Sys::Group.arel_table
+    users = Sys::User.arel_table
     editable_groups = Sys::EditableGroup.arel_table
     creators = Sys::Creator.arel_table
 
-    arel = docs.project(docs.columns).join(editable_groups, Arel::Nodes::InnerJoin).on(editable_groups[:id].eq(docs[:unid]))
-                                     .join(creators, Arel::Nodes::InnerJoin).on(creators[:id].eq(docs[:unid]))
-    arel.where(docs[:content_id].eq(content.id))
+    rel = self.joins(:editable_group, :creator => [:group, :user])
+              .where(docs[:content_id].eq(content.id))
 
-    unless Core.user.has_auth?(:manager)
-      arel.where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
-             .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
-             .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
-             .or(creators[:group_id].eq(Core.user_group.id)))))
-    end
+    rel = unless Core.user.has_auth?(:manager)
+            rel.where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
+                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
+                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
+                  .or(creators[:group_id].eq(Core.user_group.id)))))
+          else
+            rel
+          end
 
-    arel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
-    arel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
-    arel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
-    arel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
-    arel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
-    arel.where(docs[:title].matches("%#{criteria[:free_word]}%")
-           .or(docs[:body].matches("%#{criteria[:free_word]}%"))
-           .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
-
-    arel.order(docs[:updated_at].desc)
-
-    self.find_by_sql(arel.to_sql)
+    rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
+    rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
+    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
+    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
+    rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
+                .or(docs[:body].matches("%#{criteria[:free_word]}%"))
+                .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+    return rel
   end
 
   def state=(new_state)

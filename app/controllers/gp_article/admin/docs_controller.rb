@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'will_paginate/array'
-
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Publication
@@ -52,7 +50,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     case params[:target]
     when 'group'
       criteria[:group_id] = Core.user.group.id
-      @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'editable'
       @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
@@ -84,7 +82,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       item.order params[:sort], 'updated_at DESC'
       @items = item.find(:all)
     else
-      @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     end
 
     _index @items
