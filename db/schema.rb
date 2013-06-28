@@ -1130,8 +1130,8 @@ ActiveRecord::Schema.define(:version => 20130627070954) do
   add_index "sys_object_privileges", ["item_unid", "action"], :name => "item_unid"
 
   create_table "sys_operation_logs", :force => true do |t|
-    t.string   "loggable_type"
     t.integer  "loggable_id"
+    t.string   "loggable_type"
     t.integer  "user_id"
     t.string   "operation"
     t.datetime "created_at",    :null => false
