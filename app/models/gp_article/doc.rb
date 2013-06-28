@@ -24,7 +24,7 @@ class GpArticle::Doc < ActiveRecord::Base
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
-  default_scope order('updated_at DESC')
+  default_scope order("#{self.table_name}.updated_at DESC")
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
@@ -72,6 +72,7 @@ class GpArticle::Doc < ActiveRecord::Base
               .where(docs[:content_id].eq(content.id))
 
     rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
+    rel = rel.where(docs[:state].eq(criteria[:state])) if criteria[:state].present?
     rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
     rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
@@ -79,6 +80,15 @@ class GpArticle::Doc < ActiveRecord::Base
     rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
                 .or(docs[:body].matches("%#{criteria[:free_word]}%"))
                 .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+
+    if criteria[:touched_user_id].present?
+      operation_logs = Sys::OperationLog.arel_table
+      creators = Sys::Creator.arel_table
+
+      rel = rel.includes(:operation_logs).where(operation_logs[:user_id].eq(criteria[:touched_user_id])
+                                            .or(creators[:user_id].eq(criteria[:touched_user_id])))
+    end
+
     return rel
   end
 

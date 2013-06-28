@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Publication
@@ -50,6 +49,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     case params[:target]
     when 'own_group'
       criteria[:group_id] = Core.user.group.id
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+    when 'draft'
+      criteria[:state] = 'draft'
+      criteria[:touched_user_id] = Core.user.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'editable'
       @items = GpArticle::Doc.editables_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
