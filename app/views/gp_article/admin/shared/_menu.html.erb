@@ -32,6 +32,8 @@ end
   <%= link_to '下書き', gp_article_docs_path(target: 'draft'), class: 'fixed' %>
   <%= link_to '承認待ち', gp_article_docs_path(target: 'recognizable'), class: 'fixed' %>
   <%= link_to '公開待ち', gp_article_docs_path(target: 'publishable'), class: 'fixed' %>
+  <%= link_to '公開中', gp_article_docs_path(target: 'public'), class: 'fixed' %>
+  <%= link_to '非公開', gp_article_docs_path(target: 'closed'), class: 'fixed' %>
 
   <span class="separator"></span>
 
