@@ -74,12 +74,12 @@ class GpArticle::Doc < ActiveRecord::Base
     rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
     rel = rel.where(docs[:state].eq(criteria[:state])) if criteria[:state].present?
     rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
-    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
-    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
-    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
     rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
                 .or(docs[:body].matches("%#{criteria[:free_word]}%"))
                 .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
+    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
@@ -89,36 +89,20 @@ class GpArticle::Doc < ActiveRecord::Base
                                             .or(creators[:user_id].eq(criteria[:touched_user_id])))
     end
 
-    return rel
-  end
+    if criteria[:editable].present?
+      editable_groups = Sys::EditableGroup.arel_table
+      creators = Sys::Creator.arel_table
 
-  def self.editables_with_content_and_criteria(content, criteria, options={})
-    docs = self.arel_table
-    groups = Sys::Group.arel_table
-    users = Sys::User.arel_table
-    editable_groups = Sys::EditableGroup.arel_table
-    creators = Sys::Creator.arel_table
+      rel = unless Core.user.has_auth?(:manager)
+              rel.includes(:editable_group).where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
+                                              .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
+                                              .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
+                                              .or(creators[:group_id].eq(Core.user_group.id)))))
+            else
+              rel
+            end
+    end
 
-    rel = self.joins(:editable_group, :creator => [:group, :user])
-              .where(docs[:content_id].eq(content.id))
-
-    rel = unless Core.user.has_auth?(:manager)
-            rel.where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
-                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
-                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
-                  .or(creators[:group_id].eq(Core.user_group.id)))))
-          else
-            rel
-          end
-
-    rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
-    rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
-    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
-    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
-    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
-    rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
-                .or(docs[:body].matches("%#{criteria[:free_word]}%"))
-                .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
     return rel
   end
 
