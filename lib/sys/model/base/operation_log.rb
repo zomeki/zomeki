@@ -4,7 +4,7 @@ module Sys::Model::Base::OperationLog
 
     base.after_create :log_create
     base.after_update :log_update
-    base.after_destroy :log_destroy
+    base.before_destroy :log_destroy
   end
 
   def log_create
