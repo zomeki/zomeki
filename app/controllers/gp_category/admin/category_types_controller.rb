@@ -4,7 +4,6 @@ class GpCategory::Admin::CategoryTypesController < Cms::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless @content = GpCategory::Content::CategoryType.find_by_id(params[:content])
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

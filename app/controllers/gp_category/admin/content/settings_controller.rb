@@ -6,7 +6,6 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
     return error_auth unless Core.user.has_auth?(:designer)
     return error_auth unless @content = GpCategory::Content::CategoryType.find(params[:content])
     return error_auth unless @content.editable?
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

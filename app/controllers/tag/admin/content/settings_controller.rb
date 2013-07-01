@@ -6,7 +6,6 @@ class Tag::Admin::Content::SettingsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_auth?(:designer)
     return error_auth unless @content = Tag::Content::Tag.find(params[:content])
     return error_auth unless @content.editable?
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

@@ -11,7 +11,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def pre_dispatch
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     @category_types = @content.category_types
     @visible_category_types = @content.visible_category_types
