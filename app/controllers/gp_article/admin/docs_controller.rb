@@ -246,7 +246,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def check_intercepted
     unless @item.holds.detect{|h| h.user == Core.user }
-      flash[:alert] = '他の方に更新されたため保存できません。'
+      user = @item.operation_logs.first.user
+      flash[:alert] = "#{user.group.name}#{user.name}さんが記事を編集したため、編集内容を反映できません。"
       render :action => :edit
     end
   end
