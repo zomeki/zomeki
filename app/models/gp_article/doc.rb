@@ -103,6 +103,25 @@ class GpArticle::Doc < ActiveRecord::Base
             end
     end
 
+    if criteria[:recognizable].present?
+      recognitions = Sys::Recognition.arel_table
+
+      rel = if content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
+              rel.joins(:recognition).where(docs[:state].eq('recognize')
+                                            .and(recognitions[:user_id].eq(Core.user.id)
+                                                 .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
+                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
+                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}")
+                                                 .or(recognitions[:info_xml].matches("%<admin/>%")))))))
+            else
+              rel.joins(:recognition).where(docs[:state].eq('recognize')
+                                            .and(recognitions[:user_id].eq(Core.user.id)
+                                                 .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
+                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
+                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}"))))))
+            end
+    end
+
     return rel
   end
 
