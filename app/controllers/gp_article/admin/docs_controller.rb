@@ -36,16 +36,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     criteria = params[:criteria] || {}
 
-    if %w!recognizable!.include?(params[:target])
-      search_params = {}
-      search_params[:s_id] = criteria[:id] if criteria[:id].present?
-      search_params[:s_title] = criteria[:title] if criteria[:title].present?
-      search_params[:s_group] = criteria[:group] if criteria[:group].present?
-      search_params[:s_group_id] = criteria[:group_id] if criteria[:group_id].present?
-      search_params[:s_user] = criteria[:user] if criteria[:user].present?
-      search_params[:s_free_word] = criteria[:free_word] if criteria[:free_word].present?
-    end
-
     case params[:target]
     when 'own_group'
       criteria[:group_id] = Core.user.group.id
@@ -66,26 +56,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       criteria[:editable] = true
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
-      item = GpArticle::Doc.new
-      if @content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
-        item.join_creator
-        item.join_recognition
-        cond = Condition.new do |c|
-          c.or 'sys_recognitions.user_id', Core.user.id
-          c.or 'sys_recognitions.recognizer_ids', 'REGEXP', "(^| )#{Core.user.id}( |$)"
-          c.or 'sys_recognitions.info_xml', 'LIKE', '%<admin/>%'
-        end
-        item.and cond
-        item.and "#{item.class.table_name}.state", 'recognize'
-      else
-        item.recognizable
-      end
-
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
+      criteria[:recognizable] = true
+      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'publishable'
       criteria[:editable] = true
       criteria[:state] = 'recognized'
