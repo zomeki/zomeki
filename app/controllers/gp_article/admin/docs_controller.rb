@@ -237,7 +237,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       holds = holds.each{|h| h.destroy if h.user == Core.user }.reject(&:destroyed?)
       alerts = holds.map do |hold|
           in_editing_from = (hold.updated_at.today? ? I18n.l(hold.updated_at, :format => :short_ja) : I18n.l(hold.updated_at, :format => :default_ja))
-          "#{hold.user.name}さんが#{in_editing_from}から編集中です。"
+          "#{hold.user.group.name}#{hold.user.name}さんが#{in_editing_from}から編集中です。"
         end
       flash[:alert] = "<ul><li>#{alerts.join('</li><li>')}</li></ul>".html_safe
     end
