@@ -75,8 +75,8 @@ class GpArticle::Doc < ActiveRecord::Base
     rel = rel.where(docs[:state].eq(criteria[:state])) if criteria[:state].present?
     rel = rel.where(docs[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
-                .or(docs[:body].matches("%#{criteria[:free_word]}%"))
-                .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
+                    .or(docs[:body].matches("%#{criteria[:free_word]}%"))
+                    .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
     rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
     rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
     rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
@@ -86,7 +86,7 @@ class GpArticle::Doc < ActiveRecord::Base
       creators = Sys::Creator.arel_table
 
       rel = rel.includes(:operation_logs).where(operation_logs[:user_id].eq(criteria[:touched_user_id])
-                                            .or(creators[:user_id].eq(criteria[:touched_user_id])))
+                                                .or(creators[:user_id].eq(criteria[:touched_user_id])))
     end
 
     if criteria[:editable].present?
@@ -95,9 +95,9 @@ class GpArticle::Doc < ActiveRecord::Base
 
       rel = unless Core.user.has_auth?(:manager)
               rel.includes(:editable_group).where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
-                                              .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
-                                              .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
-                                              .or(creators[:group_id].eq(Core.user_group.id)))))
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
+                                                  .or(creators[:group_id].eq(Core.user_group.id)))))
             else
               rel
             end
