@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130627070954) do
+ActiveRecord::Schema.define(:version => 20130701011042) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -643,9 +643,9 @@ ActiveRecord::Schema.define(:version => 20130627070954) do
     t.integer "tag_id"
   end
 
-  create_table "gp_article_locks", :force => true do |t|
-    t.string   "lockable_type"
-    t.integer  "lockable_id"
+  create_table "gp_article_holds", :force => true do |t|
+    t.integer  "holdable_id"
+    t.string   "holdable_type"
     t.integer  "user_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
@@ -1130,8 +1130,8 @@ ActiveRecord::Schema.define(:version => 20130627070954) do
   add_index "sys_object_privileges", ["item_unid", "action"], :name => "item_unid"
 
   create_table "sys_operation_logs", :force => true do |t|
-    t.integer  "loggable_id"
     t.string   "loggable_type"
+    t.integer  "loggable_id"
     t.integer  "user_id"
     t.string   "operation"
     t.datetime "created_at",    :null => false
