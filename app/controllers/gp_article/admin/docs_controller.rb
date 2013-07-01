@@ -4,9 +4,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Publication
   include Sys::Controller::Scaffold::Recognition
 
-  before_filter :check_locking, :only => [ :edit, :update ]
-  before_filter :lock_document, :only => [ :edit ]
-  after_filter :unlock_document, :only => [ :update, :destroy ]
+  before_filter :hold_document, :only => [ :edit ]
+  before_filter :check_intercepted, :only => [ :update ]
+  after_filter :release_document, :only => [ :update ]
 
   def pre_dispatch
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
@@ -232,19 +232,26 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.category_ids = category_ids
   end
 
-  def check_locking
-    if (lock = @item.lock)
-      in_editing_from = (lock.updated_at.today? ? I18n.l(lock.updated_at, :format => :short_ja) : I18n.l(lock.updated_at, :format => :default_ja))
-      redirect_to gp_article_doc_path(content: @content, id: @item.id), :alert => "#{lock.user.name}さんが#{in_editing_from}から編集中です。" unless lock.user == Core.user
+  def hold_document
+    unless (holds = @item.holds).empty?
+      holds = holds.each{|h| h.destroy if h.user == Core.user }.reject(&:destroyed?)
+      alerts = holds.map do |hold|
+          in_editing_from = (hold.updated_at.today? ? I18n.l(hold.updated_at, :format => :short_ja) : I18n.l(hold.updated_at, :format => :default_ja))
+          "#{hold.user.name}さんが#{in_editing_from}から編集中です。"
+        end
+      flash[:alert] = "<ul><li>#{alerts.join('</li><li>')}</li></ul>".html_safe
+    end
+    @item.holds.create(user: Core.user)
+  end
+
+  def check_intercepted
+    unless @item.holds.detect{|h| h.user == Core.user }
+      flash[:alert] = '他の方に更新されたため保存できません。'
+      render :action => :edit
     end
   end
 
-  def lock_document
-    unlock_document
-    @item.create_lock(user: Core.user)
-  end
-
-  def unlock_document
-    @item.lock.try(:destroy)
+  def release_document
+    @item.holds.destroy_all
   end
 end
