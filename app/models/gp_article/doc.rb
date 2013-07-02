@@ -38,7 +38,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
-                          :conditions => proc { self.content ? ['content_id = ?', self.content.tag_content_tag.try(:id)] : 'FALSE' }
+                          :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
 
   before_save :make_file_contents_path_relative
