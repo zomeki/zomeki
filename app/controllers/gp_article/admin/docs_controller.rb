@@ -36,8 +36,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     criteria = params[:criteria] || {}
 
     case params[:target]
-    when 'own_group'
-      criteria[:group_id] = Core.user.group.id
+    when 'all'
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'draft'
       criteria[:state] = 'draft'
@@ -65,6 +64,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       criteria[:touched_user_id] = Core.user.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     else
+      criteria[:group_id] = Core.user.group.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     end
 
