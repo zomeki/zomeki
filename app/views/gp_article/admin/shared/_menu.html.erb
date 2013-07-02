@@ -12,7 +12,7 @@ end
   <%- if params[:action] == 'index' -%>
   <%= link_to '新規作成', new_gp_article_doc_path %>
   <span class="separator"></span>
-  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path(target: 'own_group') %>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <%= link_to '編集可能', gp_article_docs_path(target: 'editable') %>
   <span class="separator"></span>
   <%= link_to '下書き', gp_article_docs_path(target: 'draft'), (params[:target] == 'draft' ? {class: 'current'} : {}) %>
@@ -21,15 +21,15 @@ end
   <%= link_to '公開中', gp_article_docs_path(target: 'public'), (params[:target] == 'public' ? {class: 'current'} : {}) %>
   <%= link_to '非公開', gp_article_docs_path(target: 'closed'), (params[:target] == 'closed' ? {class: 'current'} : {}) %>
   <span class="separator"></span>
-  <%= link_to "全#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
+  <%= link_to "全#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path(target: 'all') %>
   <%- end -%>
 
   <%- if params[:action] == 'new' -%>
-  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path(target: 'own_group') %>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <%- end -%>
 
   <%- if params[:action] == 'show' -%>
-  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path(target: 'own_group') %>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) %>
   <%= link_to '削除', gp_article_doc_path, :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
@@ -40,7 +40,7 @@ end
   <%- end -%>
 
   <%- if params[:action] == 'edit' -%>
-  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path(target: 'own_group') %>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
   <%- end -%>
