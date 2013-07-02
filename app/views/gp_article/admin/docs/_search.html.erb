@@ -5,10 +5,12 @@
     <th><%= GpArticle::Doc.human_attribute_name :title %>・<%= GpArticle::Doc.human_attribute_name :body %></th>
     <td><%= text_field_tag 'criteria[free_word]', params[:criteria].try('[]', :free_word), :style => 'width: 400px;' %></td>
     <th>所属</th>
-    <td><%= select_tag 'criteria[group_id]',
-                       options_for_select(Core.site.groups.find_by_parent_id(0).children.inject([]){|r, c| r.concat(c.descendants_for_option) },
-                       params[:criteria].try('[]', :group_id)),
-                       include_blank: true %></td>
+    <td><%-
+          top = Core.site.groups.find_by_parent_id(0)
+          options = top ? top.children.inject([]){|r, c| r.concat(c.descendants_for_option) } : []
+        -%>
+        <%= select_tag 'criteria[group_id]',
+                       options_for_select(options, params[:criteria].try('[]', :group_id)), include_blank: true %></td>
     <th>作成者</th>
     <td><%= text_field_tag 'criteria[user]', params[:criteria].try('[]', :user), :style => 'width: 150px;' %></td>
     <td class="submitters">
