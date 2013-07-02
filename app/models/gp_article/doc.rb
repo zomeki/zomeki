@@ -113,7 +113,7 @@ class GpArticle::Doc < ActiveRecord::Base
                                             .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
                                             .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
                                             .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}")
-                                            .or(recognitions[:info_xml].matches("%<admin/>%")))))))
+                                            .or(recognitions[:info_xml].matches("%<admin %")))))))
             else
               rel.joins(:recognition).where(creators[:user_id].eq(Core.user.id)
                                             .or(recognitions[:user_id].eq(Core.user.id))
