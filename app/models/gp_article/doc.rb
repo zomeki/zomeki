@@ -65,6 +65,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
+    creators = Sys::Creator.arel_table
     groups = Sys::Group.arel_table
     users = Sys::User.arel_table
 
@@ -83,7 +84,6 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
-      creators = Sys::Creator.arel_table
 
       rel = rel.includes(:operation_logs).where(operation_logs[:user_id].eq(criteria[:touched_user_id])
                                                 .or(creators[:user_id].eq(criteria[:touched_user_id])))
@@ -91,13 +91,13 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if criteria[:editable].present?
       editable_groups = Sys::EditableGroup.arel_table
-      creators = Sys::Creator.arel_table
 
       rel = unless Core.user.has_auth?(:manager)
-              rel.includes(:editable_group).where(editable_groups[:group_ids].matches("#{Core.user_group.id} %")
-                                                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id} %")
-                                                  .or(editable_groups[:group_ids].matches("% #{Core.user_group.id}")
-                                                  .or(creators[:group_id].eq(Core.user_group.id)))))
+              rel.includes(:editable_group).where(creators[:group_id].eq(Core.user.group.id)
+                                                  .or(editable_groups[:group_ids].eq(Core.user.group.id.to_s)
+                                                  .or(editable_groups[:group_ids].matches("#{Core.user.group.id} %")
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id} %")
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id}"))))))
             else
               rel
             end
@@ -107,18 +107,20 @@ class GpArticle::Doc < ActiveRecord::Base
       recognitions = Sys::Recognition.arel_table
 
       rel = if content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
-              rel.joins(:recognition).where(docs[:state].eq('recognize')
-                                            .and(recognitions[:user_id].eq(Core.user.id)
-                                                 .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
-                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
-                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}")
-                                                 .or(recognitions[:info_xml].matches("%<admin/>%")))))))
+              rel.joins(:recognition).where(creators[:user_id].eq(Core.user.id)
+                                            .or(recognitions[:user_id].eq(Core.user.id))
+                                            .or(recognitions[:recognizer_ids].eq(Core.user.id.to_s)
+                                            .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
+                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
+                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}")
+                                            .or(recognitions[:info_xml].matches("%<admin/>%")))))))
             else
-              rel.joins(:recognition).where(docs[:state].eq('recognize')
-                                            .and(recognitions[:user_id].eq(Core.user.id)
-                                                 .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
-                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
-                                                 .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}"))))))
+              rel.joins(:recognition).where(creators[:user_id].eq(Core.user.id)
+                                            .or(recognitions[:user_id].eq(Core.user.id))
+                                            .or(recognitions[:recognizer_ids].eq(Core.user.id.to_s)
+                                            .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
+                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
+                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}"))))))
             end
     end
 
