@@ -55,12 +55,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
       criteria[:recognizable] = true
-      criteria[:touched_user_id] = Core.user.id
+      criteria[:state] = 'recognize'
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'publishable'
-      criteria[:editable] = true
+      criteria[:recognizable] = true
       criteria[:state] = 'recognized'
-      criteria[:touched_user_id] = Core.user.id
       @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     else
       criteria[:group_id] = Core.user.group.id
