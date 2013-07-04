@@ -25,7 +25,9 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.events.build(params[:item])
-    _create @item
+    _create(@item) do
+      @item.fix_tmp_files(params[:_tmp])
+    end
   end
 
   def update

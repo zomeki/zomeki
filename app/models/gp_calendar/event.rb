@@ -1,7 +1,9 @@
 # encoding: utf-8
 class GpCalendar::Event < ActiveRecord::Base
   include Sys::Model::Base
+  include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::File
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
