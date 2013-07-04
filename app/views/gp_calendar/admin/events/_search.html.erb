@@ -1,0 +1,23 @@
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+<table>
+  <tr>
+    <th>イベント日</th>
+    <td><%= text_field_tag 'criteria[date]', params[:criteria].try('[]', :date), :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <th><%= GpCalendar::Event.human_attribute_name :name %></th>
+    <td><%= text_field_tag 'criteria[name]', params[:criteria].try('[]', :name), :style => 'width: 400px;' %></td>
+    <th>並び順</th>
+    <td><%= select_tag 'criteria[order]', options_for_select(GpCalendar::Event::ORDER_OPTIONS,
+                                                             params[:criteria].try('[]', :order)), include_blank: true %></td>
+    <td class="submitters">
+      <%= submit_tag '検索' %>
+      <%= submit_tag 'リセット', :name => 'reset_criteria' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datepicker_script -%>
+});
+<%- end -%>

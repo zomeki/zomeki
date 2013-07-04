@@ -1,0 +1,39 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td colspan="2"><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :started_on %> <span class="note">※</span></th>
+    <td colspan="2"><%= f.text_field :started_on, :value => value_for_datepicker(f.object_name, :started_on),
+                                                  :style => 'width: 150px;', :class => 'datepicker' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :ended_on %> <span class="note">※</span></th>
+    <td colspan="2"><%= f.text_field :ended_on, :value => value_for_datepicker(f.object_name, :ended_on),
+                                                :style => 'width: 150px;', :class => 'datepicker' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td colspan="2"><%= f.text_field :name, :style => 'width: 700px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :href %></th>
+    <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
+    <td><%= f.radio_buttons :target, @item.class::TARGET_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :description %></th>
+    <td colspan="2"><%= f.text_area :description, :size => '100x3', :style => 'width: 700px;' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datepicker_script -%>
+});
+<%- end -%>

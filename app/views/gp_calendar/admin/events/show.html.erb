@@ -1,0 +1,31 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :started_on %></th>
+    <td><%=i18n_l @item.started_on %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :ended_on %></th>
+    <td><%=i18n_l @item.ended_on %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :href %></th>
+    <td>
+      <%= link_to @item.href, @item.href, target: '_blank' %>
+      <span style="<%= 'margin-left: 10px;' if @item.href.present? %>"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :description %></th>
+    <td><%=simple_format @item.description %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
