@@ -1,3 +1,5 @@
+<%- inline_id = @item.id || params[:_tmp].presence || Util::Sequencer.next_id(:tmp, md5: true) -%>
+
 <span class="note">※は必須項目です。</span>
 
 <table class="show">
@@ -30,9 +32,23 @@
   </tr>
 </table>
 
+<table class="show">
+  <tr>
+    <th>添付ファイル</th>
+    <td><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></td>
+  </tr>
+</table>
+
+<div id="inline_files" style="display: none;">
+  <%= hidden_field_tag :_tmp, inline_id %>
+  <iframe src="<%= gp_calendar_event_files_path(@content, inline_id) %>" style="width: 100%; height: 400px;"></iframe>
+</div>
+
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
+<%= toggle_form_function -%>
+
 $(document).ready(function () {
   <%= enable_datepicker_script -%>
 });

@@ -1,0 +1,6 @@
+<%= render 'menu' %>
+
+<%= form_for(:item, :url => gp_calendar_event_files_path(@content, event_id: @event_id), :html => {:multipart => true}) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', f: f, submit_label: 'アップロード' %>
+<% end %>

@@ -7,9 +7,13 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/content/base'
 
     ## contents
-    resources :events,
+    resources(:events,
       :controller => 'admin/events',
-      :path       => ':content/events'
+      :path       => ':content/events') do
+      match 'file_contents/:basename.:extname' => 'admin/events/files#content'
+      resources :files,
+        :controller => 'admin/events/files'
+    end
 
     ## nodes
     resources :node_events,
