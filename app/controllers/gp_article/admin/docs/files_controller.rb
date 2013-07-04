@@ -5,13 +5,13 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   layout 'admin/files'
 
   def pre_dispatch
+    return http_error(404) unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
+
     if (@doc_id = params[:doc_id]) =~ /^[0-9a-z]{32}$/
       @tmp_unid = @doc_id
     else
-      @doc = GpArticle::Doc.find(@doc_id)
+      @doc = @content.docs.find(@doc_id)
     end
-
-    return http_error(404) unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
   end
 
   def index
