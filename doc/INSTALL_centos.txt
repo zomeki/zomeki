@@ -1,32 +1,30 @@
-## ZOMEKI v1.0.5    インストールマニュアル
+## ZOMEKI v1.1.0 インストールマニュアル
 
 **********************************************************************
  1 想定環境
 **********************************************************************
 
 [システム]
-OS         : CentOS 6.3
+OS         : CentOS 6.4
 Webサーバ  : Apache 2.2
 DBシステム : MySQL 5.1
 Ruby       : 1.9.3
-Rails      : 3.1.10
+Rails      : 3.1
 
 [設定]
 ドメイン   : zomeki.example.com
 
 **********************************************************************
- 2 CentOS のインストール
+ 2 作業ユーザの変更
 **********************************************************************
-
-CentOSをインストールします。
 
 rootユーザに変更します。
 
   $ su -
 
-======================================================================
- 2.1 SELinux の無効化
-======================================================================
+**********************************************************************
+ 3 SELinux の無効化
+**********************************************************************
 
 SELinuxを無効にします。
 
@@ -36,286 +34,188 @@ SELinuxを無効にします。
 
   # vi /etc/sysconfig/selinux
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  SELINUX=disabled    #変更
+  SELINUX=disabled    # 変更
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   ※セキュリティ設定は環境に応じて適切に設定してください。
 
 **********************************************************************
- 3 事前準備
+ 4 事前準備
 **********************************************************************
 
 yumリポジトリにEPELを追加します。
 
-  # rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm
+  # rpm -ivh http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm
 
 必要なパッケージをインストールします。
 
-  # yum -y install \
-  > wget make gcc-c++ \
-  > libxslt libxslt-devel libxml2-devel libyaml-devel readline-devel \
-  > libjpeg-devel libpng-devel \
-  > librsvg2-devel ghostscript-devel \
-  > ImageMagick ImageMagick-devel \
-  > curl-devel nkf openldap-devel \
-  > shared-mime-info \
-  > httpd httpd-devel \
-  > mysql-server mysql-devel
+  # yum -y install wget
 
-必要なパッケージをダウンロードします。
+**********************************************************************
+ 5 Ruby のインストール
+**********************************************************************
+
+Rubyをインストールします。
+
+  # yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   # cd /usr/local/src
-  # wget https://github.com/zomeki/zomeki/tarball/v1.0.5 -O zomeki-1.0.5.tar.gz
-  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p374.tar.gz
-  # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
-  # wget "http://sourceforge.jp/frs/redir.php?m=jaist&f=%2Fchasen-legacy%2F32224%2Fchasen-2.4.4.tar.gz"
-  # wget "http://sourceforge.jp/frs/redir.php?m=iij&f=%2Fipadic%2F24435%2Fipadic-2.7.0.tar.gz"
-  # wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.1.tar.gz
+  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz
+  # tar zxf ruby-1.9.3-p448.tar.gz && cd ruby-1.9.3-448 && ./configure && make && make install
 
-zomekiユーザを作成します。
+**********************************************************************
+ 6 ZOMEKI のインストール
+**********************************************************************
+
+専用ユーザを作成します。
 
   # useradd -m zomeki
-  # passwd zomeki
 
-ZOMEKIソースコードを設置します。
+ZOMEKIをインストールします。
 
-  # mkdir /var/share
-  # tar xvzf zomeki-1.0.5.tar.gz -C /var/share
-  # mv /var/share/zomeki-zomeki-* /var/share/zomeki
-  # chown -R zomeki:zomeki /var/share/zomeki
+  # yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
-ログローテーションを設定します。
-  # ln -s /var/share/zomeki/script/logrotation/zomeki /etc/logrotate.d/
+  # cd /usr/local/src
+  # wget https://github.com/zomeki/zomeki/archive/v1.1.0.tar.gz -O zomeki-1.1.0.tar.gz
+  # mkdir -p /var/share
+  # tar zxf zomeki-1.1.0.tar.gz && mv zomeki-1.1.0 /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
+  # cd /var/share/zomeki && gem install bundler && bundle install --without development test
+
+  # cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.
 
 **********************************************************************
- 4 Apache の設定
+ 7 Apache のインストール
 **********************************************************************
 
-設定ファイルを編集します。
+Apacheをインストールします。
+
+  # yum install -y httpd-devel shared-mime-info
+
+設定ファイルを変更します。
 
   # vi /etc/httpd/conf/httpd.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ServerName zomeki.example.com    #変更
+  ServerName zomeki.example.com    # 変更
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-設定ファイルにエラーがないことを確認し、Apacheを起動します。
+Phusion Passengerをインストールします。
 
-  # /sbin/service httpd configtest
-  # /sbin/service httpd start
+  # yum install -y curl-devel
 
-自動起動に設定します。
+  # gem install passenger -v 4.0.5
+  # passenger-install-apache2-module
+  # cp /var/share/zomeki/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
-  # /sbin/chkconfig httpd on
+  # vi /etc/httpd/conf.d/passenger.conf
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ※「PASSENGER_VERSION」をすべて「4.0.5」に書き換えます。
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************
- 5 MySQL の設定
+ 8 MySQL のインストール
 **********************************************************************
 
-文字エンコーディングの標準を UTF-8 に設定します。
+MySQLをインストールします
+
+  # yum install -y mysql-server
+
+設定ファイルを変更します。
 
   # vi /etc/my.cnf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   [mysqld]
-  character-set-server=utf8    #追加
-
-  [client]                      #追加（末尾に追加）
-  default-character-set=utf8    #追加
+  character-set-server=utf8   # 追記
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-MySQLを起動します。
-
-  # /usr/bin/mysql_install_db --user=mysql
-  # /sbin/service mysqld start
-
-自動起動に設定します。
-
-  # /sbin/chkconfig mysqld on
-
-rootユーザのパスワードを設定します。
-  # /usr/bin/mysqladmin -u root password "pass"
-
-  ※パスワードは環境に応じて適切に設定してください。
-
-zomekiユーザを作成します。
-  # /usr/bin/mysql -u root -ppass \
-  > -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'pass'"
-
-  ※パスワードは環境に応じて適切に設定してください。
-
-**********************************************************************
- 6 Ruby on Rails のインストール
-**********************************************************************
-
-======================================================================
- 6.1 Ruby のインストール
-======================================================================
-
-Rubyをインストールします。
-
-  # cd /usr/local/src
-  # tar xvzf ruby-1.9.3-p374.tar.gz
-  # cd ruby-1.9.3-p374
-  # ./configure
-  # make && make install
-
-======================================================================
- 6.2 gemライブラリ のインストール
-======================================================================
-
-必要ライブラリをインストールします。
-
-  # cd /var/share/zomeki
-  # gem install bundler
-  # bundle install --without test development
-
-======================================================================
- 6.3 Phusion Passenger のインストール
-======================================================================
-
-Phusion Passengerをインストールします。
-
-  # gem install passenger -v 3.0.19
-  # passenger-install-apache2-module
-
-  ( 画面の内容を確認して Enterキーを押してください。 )
-
-Phusion Passengerの設定ファイルを変更します。
-
-  ※PASSENGER_VERSION を 3.0.19 に変更
-
-  # vi /var/share/zomeki/config/samples/passenger.conf
-
-Apacheに設定を追加します。
-
-  # cp /var/share/zomeki/config/samples/passenger.conf \
-  > /etc/httpd/conf.d/
-
-**********************************************************************
-  7 ZOMEKI のインストール
-**********************************************************************
-
-zomekiユーザに変更します。
-
-  # su - zomeki
-  $ cd /var/share/zomeki
-
-======================================================================
- 7.1 設定ファイル
-======================================================================
-
-環境に応じて設定ファイルを編集します。
-
-ZOMEKI基本設定
-
-  $ vi config/core.yml
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  production:
-    title: ZOMEKI
-    uri: http://zomeki.example.com/
-    proxy: ※プロキシ
+  [client]                    # 末尾に追記
+  default-character-set=utf8  # 末尾に追記
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  ※production部を編集してください。
+初期設定をします。
 
-  ※プロキシ
-  プロキシサーバが導入されている場合は
-  http://example:8080/ の様に記述してください。
-
-DB接続情報
-
-  $ vi config/database.yml
-
-  ※production部を編集してください。
-
-VirtualHost設定
-
-  $ vi config/virtual-hosts/zomeki.conf
-
-======================================================================
- 7.2 データベースの作成
-======================================================================
-
-データベースとテーブルを作成し、初期データを登録します。
-
-  $ bundle exec rake db:setup RAILS_ENV=production
-
-======================================================================
- 7.3 VirtualHost の反映
-======================================================================
-
-Apacheに設定を追加します。
-  $ su -
-  # ln -s /var/share/zomeki/config/virtual-hosts/zomeki.conf \
-  > /etc/httpd/conf.d/
-
-Apache を再起動します。
-  # /sbin/service httpd configtest
-  # /sbin/service httpd restart
-
-ここまでの手順で ZOMEKI にアクセスすることができます。
-
-  公開画面 : http://zomeki.example.com/
-
-  管理画面 : http://zomeki.example.com/_system
-
-次のユーザが登録されています。
-
-    管理者（システム管理者）
-      ユーザID   : zomeki
-      パスワード : zomeki
+  # mysql_install_db --user=mysql
+  # service mysqld start
+  # mysqladmin -u root password 'rootpass'
+  # mysql -u root -prootpass -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'zomekipass'"
+  # service mysqld stop
 
 **********************************************************************
- 8 ZOMEKI のインストール (ふりがな・読み上げ機能)
+ 9 ZOMEKI の設定
 **********************************************************************
 
-LAMEをインストールします。
+設定ファイルのサンプルをコピーして変更します。
 
-  # cd /usr/local/src
-  # tar xvzf lame-3.99.1.tar.gz
-  # cd lame-3.99.1
-  # ./configure --prefix=/usr
-  # make && make install
+  # cp /var/share/zomeki/config/core.yml.sample /var/share/zomeki/config/core.yml
+  # vi /var/share/zomeki/config/core.yml
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  uri: http://zomeki.example.com/    # すべて変更
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+設定ファイルのサンプルをコピーします。
+
+  # cp /var/share/zomeki/config/virtual-hosts/sites.conf.sample /var/share/zomeki/config/virtual-hosts/sites.conf
+
+設定ファイルのサンプルをコピーして変更します。
+
+  # cp /var/share/zomeki/config/virtual-hosts/zomeki.conf.sample /var/share/zomeki/config/virtual-hosts/zomeki.conf
+  # vi /var/share/zomeki/config/virtual-hosts/zomeki.conf
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ServerName zomeki.example.com    # 変更
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # ln -s /var/share/zomeki/config/virtual-hosts/zomeki.conf /etc/httpd/conf.d/zomeki.conf
+
+必要なデータベースを作ります。
+
+  # service mysqld start
+  # su - zomeki -c 'cd /var/share/zomeki && bundle exec rake db:setup RAILS_ENV=production'
+  # service mysqld stop
+
+**********************************************************************
+ 10 ふりがな・読み上げ機能 のインストール
+**********************************************************************
 
 Dartsをインストールします。
 
   # cd /usr/local/src
-  # tar xvzf darts-0.32.tar.gz
-  # cd darts-0.32
-  # ./configure --prefix=/usr
-  # make && make install
+  # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
+  # tar zxf darts-0.32.tar.gz && cd darts-0.32 && ./configure && make && make install
+
+LAMEをインストールします。
+
+  # cd /usr/local/src
+  # wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+  # tar zxf lame-3.99.5.tar.gz && cd lame-3.99.5 && ./configure && make && make install
 
 ChaSenをインストールします。
 
   # cd /usr/local/src
-  # tar xvzf chasen-2.4.4.tar.gz
-  # cd chasen-2.4.4
-  # ./configure --prefix=/usr
-  # make && make install
+  # wget http://jaist.dl.sourceforge.jp/chasen-legacy/32224/chasen-2.4.4.tar.gz
+  # tar zxf chasen-2.4.4.tar.gz && cd chasen-2.4.4 && ./configure && make && make install
 
 IPAdicをインストールします。
 
+  # yum install -y nkf
   # cd /usr/local/src
-  # tar xvzf ipadic-2.7.0.tar.gz
-  # cd ipadic-2.7.0
-  # ./configure --prefix=/usr
+  # wget http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
+  # tar zxf ipadic-2.7.0.tar.gz && cd ipadic-2.7.0 && ./configure
 
-  辞書をUTF8に変換します。
+  辞書をUTF-8に変換します。
 
-  # vi to_utf8.sh    #新規作成
+  # vi to_utf8.sh
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #!/bin/sh
+  #!/bin/bash
   for file in *.dic *.cha chasenrc
   do
   if [ -f $file ]; then
-      nkf --utf8 $file > tmpfile
-      mv tmpfile $file
+    nkf --utf8 $file > tmpfile
+    mv tmpfile $file
   fi
   done
   exit
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  # chmod 744 to_utf8.sh
+  # chmod 755 to_utf8.sh
   # ./to_utf8.sh
+
   # ldconfig
   # `chasen-config --mkchadic`/makemat -i w
   # `chasen-config --mkchadic`/makeda -i w chadic *.dic
@@ -323,25 +223,32 @@ IPAdicをインストールします。
 
 ChaOneをインストールします。
 
+  # yum install -y libxslt-devel
   # cd /var/share/zomeki/ext/morph/chaone
   # chmod 775 configure
-  # ./configure
-  # make && make install
+  # ./configure && make && make install
 
 GalateaTalkをインストールします。
 
   # cd /var/share/zomeki/ext/gtalk
   # chmod 775 configure
-  # ./configure
-  # make
-  # chmod 747 /var/share/zomeki/ext/gtalk_filter.rb
+  # ./configure && make
+  # chmod 755 /var/share/zomeki/ext/gtalk_filter.rb
 
 **********************************************************************
- 9 定期実行設定
+ 11 Apache/MySQL の起動
 **********************************************************************
 
-  # su - zomeki
-  $ crontab -e
+  # service httpd configtest && service httpd start && chkconfig httpd on
+  # service mysqld start && chkconfig mysqld on
+
+**********************************************************************
+ 12 定期実行処理 の設定
+**********************************************************************
+
+ユーザzomekiのcronに処理を追加します。
+
+  # crontab -u zomeki -e
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # 記事の公開/非公開処理を行います。
   10,25,40,55 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
@@ -357,3 +264,22 @@ GalateaTalkをインストールします。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************
+ 13 動作確認
+**********************************************************************
+
+インストールが完了しました。
+
+  公開画面 : http://zomeki.example.com/
+
+  管理画面 : http://zomeki.example.com/_system
+
+    管理者（システム管理者）
+      ユーザID   : zomeki
+      パスワード : zomeki
+
+１．MySQL の root ユーザはパスワードが rootpass に設定されています。適宜変更してください。
+    # mysqladmin -u root -prootpass password 'newpass'
+２．MySQL の zomeki ユーザはパスワードが zomekipass に設定されています。適宜変更してください。
+    mysql> SET PASSWORD FOR zomeki@localhost = PASSWORD('newpass');
+    また、変更時には /var/share/zomeki/config/database.yml も合わせて変更してください。
+    # vi /var/share/zomeki/config/database.yml
