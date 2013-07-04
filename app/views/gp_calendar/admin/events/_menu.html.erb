@@ -1,1 +1,6 @@
-<h2><%= @content.name %></h2>
+<%= render 'gp_calendar/admin/shared/menu', index_path: gp_calendar_events_path(content: @content),
+                                                   sub: "#{GpCalendar::Event.model_name.human}#{case action_name.to_sym
+                                                                                                when :index; '一覧'
+                                                                                                when :new;   '登録'
+                                                                                                when :edit;  '編集'
+                                                                                                end}" %>

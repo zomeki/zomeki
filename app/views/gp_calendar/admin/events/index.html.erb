@@ -1,0 +1,27 @@
+<%= render 'search' %>
+
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: center; width: 60px;"><%= GpCalendar::Event.human_attribute_name :id %></th>
+    <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :started_on %></th>
+    <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :ended_on %></th>
+    <th style="text-align: center;"><%= GpCalendar::Event.human_attribute_name :name %></th>
+    <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :created_at %></th>
+    <th style="text-align: center; width: 60px;"><%= GpCalendar::Event.human_attribute_name :state %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_calendar_event_path(content: @content, id: item.id) %></td>
+    <td style="text-align: center;"><%= item.id %></td>
+    <td style="text-align: center;"><%=i18n_l item.started_on %></td>
+    <td style="text-align: center;"><%=i18n_l item.ended_on %></td>
+    <td style="text-align: left;"><%= item.name %></td>
+    <td style="text-align: center;"><%=i18n_l item.created_at %></td>
+    <td style="text-align: center;"><%= item.status.name %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>
