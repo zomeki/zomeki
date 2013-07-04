@@ -43,8 +43,10 @@ echo "
   公開画面: `ruby -ryaml -e "puts YAML.load_file('/var/share/zomeki/config/core.yml')['production']['uri']"`
 
   管理画面: `ruby -ryaml -e "puts YAML.load_file('/var/share/zomeki/config/core.yml')['production']['uri']"`_system
-    ユーザID: zomeki
-    パスワード: zomeki
+
+    管理者（システム管理者）
+    ユーザID   : zomeki
+    パスワード : zomeki
 
 １．MySQL の root ユーザはパスワードが rootpass に設定されています。適宜変更してください。
     # mysqladmin -u root -prootpass password 'newpass'
