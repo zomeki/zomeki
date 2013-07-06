@@ -36,7 +36,7 @@ class GpCalendar::Admin::Events::FilesController < Cms::Controller::Admin::Base
       @item.attributes = params[:item]
     end
 
-    @item.allowed_type = @content.setting_value(:allowed_attachment_type)
+    @item.allowed_type = 'gif,jpg,png'
     @item.image_resize = params[:image_resize]
     _create @item
   end
@@ -44,7 +44,7 @@ class GpCalendar::Admin::Events::FilesController < Cms::Controller::Admin::Base
   def update
     @item = Sys::File.find(params[:id])
     @item.attributes = params[:item]
-    @item.allowed_type = @content.setting_value(:allowed_attachment_type)
+    @item.allowed_type = 'gif,jpg,png'
     @item.image_resize = params[:image_resize]
     @item.skip_upload
     _update @item
