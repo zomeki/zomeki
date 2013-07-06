@@ -83,8 +83,12 @@ module ApplicationHelper
     return ruby == true ? Cms::Lib::Navi::Ruby.convert(str) : str
   end
 
-  def i18n_l(value)
+  def i18n_l(value, format=nil)
     return value if value.nil?
-    I18n.l value
+    if format.nil?
+      I18n.l value
+    else
+      I18n.l value, format: format
+    end
   end
 end
