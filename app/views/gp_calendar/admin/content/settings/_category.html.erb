@@ -4,7 +4,7 @@
   if category
     category_types_for_option = category.content.category_types_for_option
     category_type_id = category.category_type.id
-    categories_for_option = category.category_type.categories_for_option
+    categories_for_option = category.category_type.root_categories_for_option
     category_id = category.id
   else
     common_attrs.merge!(disabled: true)

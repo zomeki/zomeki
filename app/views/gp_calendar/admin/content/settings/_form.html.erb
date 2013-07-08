@@ -59,7 +59,7 @@ $(document).ready(function () {
         category_select.html('<option value=""></option>');
       } else {
         category_select.html('<option value="">更新中...</option>');
-        $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'
+        $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true&root_only=true'
               .replace('CONTENT_ID', content_id).replace('CATEGORY_TYPE_ID', category_type_id),
               function (data) { category_select.html(data); });
       }

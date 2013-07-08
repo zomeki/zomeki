@@ -37,6 +37,10 @@ class GpCategory::CategoryType < ActiveRecord::Base
     categories.where(parent_id: nil)
   end
 
+  def root_categories_for_option
+    root_categories.map {|c| [c.title, c.id] }
+  end
+
   def public_root_categories
     root_categories.public
   end
