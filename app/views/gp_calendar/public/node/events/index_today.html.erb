@@ -1,0 +1,30 @@
+<div class="calendarEvents calendarTodayEvents">
+  <h2><%=i18n_l @today, :default_ja %></h2>
+
+  <table>
+    <%- @events.each do |event| -%>
+    <tr>
+      <td>
+        <%- if event.files.empty? -%>
+          No Photo
+        <%- else -%>
+          <%- event.files.each do |file| next unless file.image_file? -%>
+          <%= image_tag "#{@node.public_uri}#{url_encode event.name}/file_contents/#{file.escaped_name}", width: 300 %><br />
+          <%- end -%>
+        <%- end -%>
+      </td>
+      <td>
+        <%- if event.started_on == event.ended_on -%>
+          <%=i18n_l event.started_on, :long_ja %>
+        <%- else -%>
+          <%=i18n_l event.started_on, :long_ja %> ～ <%=i18n_l event.ended_on, :long_ja %>
+        <%- end -%>
+      </td>
+      <td>
+        <h3><%= link_to_if event.href.present?, event.name, event.href, target: event.target %></h3>
+        <p><%=simple_format event.description %></p>
+      </td>
+    </tr>
+    <%- end -%>
+  </table>
+<!-- end .calendarEvents --></div>

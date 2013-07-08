@@ -1,5 +1,7 @@
 # encoding: utf-8
 class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
+  skip_filter :render_public_layout, :only => [:file_content]
+
   def pre_dispatch
     @node = Page.current_node
     @content = GpCalendar::Content::Event.find_by_id(@node.content.id)
@@ -7,7 +9,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
 
     @today = Date.today
     @min_date = @today.beginning_of_month
-    @max_date = @min_date.since(11.months).to_date
+    @max_date = 11.months.since(@min_date)
 
     return http_error(404) unless validate_date
   end
@@ -20,7 +22,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   def index_monthly
     sdate = Date.new(@year, @month, 1)
     return http_error(404) unless sdate.between?(@min_date, @max_date)
-    edate = sdate.since(1.month).to_date
+    edate = 1.month.since(sdate)
 
     @calendar = Util::Date::Calendar.new(@year, @month)
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
@@ -44,7 +46,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   def index_yearly
     return http_error(404) unless @year.between?(@min_date.year, @max_date.year)
     sdate = Date.new(@year, 1, 1)
-    edate = sdate.since(1.year).to_date
+    edate = 1.year.since(sdate)
 
     @days  = []
     @items = {}
@@ -74,6 +76,25 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @pagination.next_label = '次の年'
     @pagination.prev_uri = "#{@node.public_uri}#{@year - 1}/" if (@year - 1) >= @min_date.year
     @pagination.next_uri = "#{@node.public_uri}#{@year + 1}/" if (@year + 1) <= @max_date.year
+  end
+
+  def index_today
+    criteria = {date: @today}
+    @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
+  end
+
+  def file_content
+    @event = @content.events.find_by_name(params[:name])
+    return http_error(404) unless @event
+
+    if (file = @event.files.find_by_name("#{params[:basename]}.#{params[:extname]}"))
+      mt = Rack::Mime.mime_type(".#{params[:extname]}")
+      type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
+      disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
+      send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
+    else
+      http_error(404)
+    end
   end
 
   private
