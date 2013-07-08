@@ -1,0 +1,94 @@
+<%-
+value_form = case @item.form_type
+             when :select
+               f.select(:value, @item.config_options, include_blank: true)
+             when :text
+               f.text_area(:value, style: 'width: 600px; height: 120px;')
+             else
+               f.text_field(:value, style: 'width: 400px;')
+             end
+%><%= f.hidden_field :content_id -%>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr>
+  <tr>
+    <th>設定値</th>
+    <td>
+      <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+      <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+      <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+    </td>
+  </tr>
+</table>
+
+<%- if @item.name == 'gp_category_content_category_type_id' -%>
+<table class="show" id="categories">
+  <tbody>
+    <%= render 'category', category: nil, index: nil -%>
+    <%- @item.categories.each_with_index do |category, index| -%>
+    <%= render 'category', category: category, index: index -%>
+    <%- end -%>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+      <td style="text-align: right;"><%= button_tag '追加', type: 'button', id: 'add_categories_line' %></td>
+    </tr>
+  </tbody>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    $('#categories > tbody > tr.category').remove();
+    $('#add_categories_line').trigger('click');
+  });
+
+  $('#categories > tbody > tr > td.category_type > select').on('change', function (event) {
+    var content_id = parseInt($('#item_value').val());
+    var category_type_select = $(event.target);
+    var category_type_id = parseInt(category_type_select.val());
+    var category_select = category_type_select.closest('tr').find('td.category > select');
+
+    if (isNaN(content_id)) {
+      category_type_select.html('<option value=""></option>');
+      category_select.html('<option value=""></option>');
+    } else {
+      if (isNaN(category_type_id)) {
+        category_select.html('<option value=""></option>');
+      } else {
+        category_select.html('<option value="">更新中...</option>');
+        $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'
+              .replace('CONTENT_ID', content_id).replace('CATEGORY_TYPE_ID', category_type_id),
+              function (data) { category_select.html(data); });
+      }
+    }
+  });
+
+  $('#add_categories_line').on('click', function () {
+    var categories_tbody = $('#categories > tbody');
+    var next_index = categories_tbody.find('tr').length - 2; <%# コピー元(1tr) + 追加ボタン(1tr) = 2tr %>
+
+    var category_tr = categories_tbody.find('tr:first-child').clone(true).addClass('category');
+    var category_select = category_tr.find('td.category > select');
+    category_select.attr('name', category_select.attr('name').replace('N', next_index));
+    category_tr.find(':disabled').removeAttr('disabled');
+    category_tr.insertBefore(categories_tbody.find('tr:last-child')).show();
+
+    var content_id = parseInt($('#item_value').val());
+    var category_type_select = category_tr.find('td.category_type > select');
+    if (isNaN(content_id)) {
+      category_type_select.html('<option value=""></option>');
+      category_select.html('<option value=""></option>');
+    } else {
+      category_type_select.html('<option value="">更新中...</option>');
+      category_select.html('<option value=""></option>');
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?options=true'
+            .replace('CONTENT_ID', content_id),
+            function (data) { category_type_select.html(data); });
+    }
+  }).trigger('click');
+});
+<%- end -%>
+<%- end -%>
