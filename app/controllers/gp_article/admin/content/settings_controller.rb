@@ -34,7 +34,6 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-
     if @item.name == 'gp_category_content_category_type_id'
       extra_values = @item.extra_values
 
