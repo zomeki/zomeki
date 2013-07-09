@@ -60,7 +60,7 @@ Rubyをインストールします。
 
   # cd /usr/local/src
   # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz
-  # tar zxf ruby-1.9.3-p448.tar.gz && cd ruby-1.9.3-448 && ./configure && make && make install
+  # tar zxf ruby-1.9.3-p448.tar.gz && cd ruby-1.9.3-p448 && ./configure && make && make install
 
 **********************************************************************
  6 ZOMEKI のインストール
@@ -101,13 +101,13 @@ Phusion Passengerをインストールします。
 
   # yum install -y curl-devel
 
-  # gem install passenger -v 4.0.5
+  # gem install passenger -v 4.0.7
   # passenger-install-apache2-module
   # cp /var/share/zomeki/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
   # vi /etc/httpd/conf.d/passenger.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ※「PASSENGER_VERSION」をすべて「4.0.5」に書き換えます。
+  ※「PASSENGER_VERSION」をすべて「4.0.7」に書き換えます。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************
@@ -135,8 +135,21 @@ MySQLをインストールします
 
   # mysql_install_db --user=mysql
   # service mysqld start
-  # mysqladmin -u root password 'rootpass'
-  # mysql -u root -prootpass -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'zomekipass'"
+  # mysql_secure_installation
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Enter current password for root (enter for none): # そのままEnter
+  Set root password? [Y/n]                          # そのままEnter
+  New password:                                     # rootのパスワードを*決めて*入力
+  Re-enter new password:                            # 同じパスワードを再度入力
+  Remove anonymous users? [Y/n]                     # そのままEnter
+  Disallow root login remotely? [Y/n]               # そのままEnter
+  Remove test database and access to it? [Y/n]      # そのままEnter
+  Reload privilege tables now? [Y/n]                # そのままEnter
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # mysql -u root -p -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'zomekipass'"
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Enter password:                                   # rootのパスワードを入力
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # service mysqld stop
 
 **********************************************************************
@@ -145,7 +158,7 @@ MySQLをインストールします
 
 設定ファイルのサンプルをコピーして変更します。
 
-  # cp /var/share/zomeki/config/core.yml.sample /var/share/zomeki/config/core.yml
+  # cp -p /var/share/zomeki/config/core.yml.sample /var/share/zomeki/config/core.yml
   # vi /var/share/zomeki/config/core.yml
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   uri: http://zomeki.example.com/    # すべて変更
@@ -153,11 +166,11 @@ MySQLをインストールします
 
 設定ファイルのサンプルをコピーします。
 
-  # cp /var/share/zomeki/config/virtual-hosts/sites.conf.sample /var/share/zomeki/config/virtual-hosts/sites.conf
+  # cp -p /var/share/zomeki/config/virtual-hosts/sites.conf.sample /var/share/zomeki/config/virtual-hosts/sites.conf
 
 設定ファイルのサンプルをコピーして変更します。
 
-  # cp /var/share/zomeki/config/virtual-hosts/zomeki.conf.sample /var/share/zomeki/config/virtual-hosts/zomeki.conf
+  # cp -p /var/share/zomeki/config/virtual-hosts/zomeki.conf.sample /var/share/zomeki/config/virtual-hosts/zomeki.conf
   # vi /var/share/zomeki/config/virtual-hosts/zomeki.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ServerName zomeki.example.com    # 変更
@@ -277,9 +290,7 @@ GalateaTalkをインストールします。
       ユーザID   : zomeki
       パスワード : zomeki
 
-１．MySQL の root ユーザはパスワードが rootpass に設定されています。適宜変更してください。
-    # mysqladmin -u root -prootpass password 'newpass'
-２．MySQL の zomeki ユーザはパスワードが zomekipass に設定されています。適宜変更してください。
+１．MySQL の zomeki ユーザはパスワードが zomekipass に設定されています。適宜変更してください。
     mysql> SET PASSWORD FOR zomeki@localhost = PASSWORD('newpass');
     また、変更時には /var/share/zomeki/config/database.yml も合わせて変更してください。
     # vi /var/share/zomeki/config/database.yml
