@@ -9,7 +9,7 @@
           No Photo
         <%- else -%>
           <%- event.files.each do |file| next unless file.image_file? -%>
-          <%= image_tag "#{@node.public_uri}#{url_encode event.name}/file_contents/#{file.escaped_name}", width: 300 %><br />
+          <%= image_tag "#{@node.public_uri}#{event.id}_#{url_encode event.name}/file_contents/#{file.escaped_name}", width: 200 %><br />
           <%- end -%>
         <%- end -%>
       </td>
