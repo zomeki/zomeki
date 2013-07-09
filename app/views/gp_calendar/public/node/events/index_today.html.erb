@@ -21,10 +21,18 @@
         <%- end -%>
       </td>
       <td>
-        <h3><%= link_to_if event.href.present?, event.name, event.href, target: event.target %></h3>
+        <h3><%= link_to_if event.href.present?, event.name, event.href, target: event.target %> <%= event.categories.map(&:title).join(', ') %></h3>
         <p><%=simple_format event.description %></p>
       </td>
     </tr>
     <%- end -%>
   </table>
+
+  <%- unless @content.categories.empty? -%>
+  <div class="categories">
+    <%- @content.categories.each do |category| -%>
+    <span><%= link_to category.title, "?c=#{category.id}" %></span>
+    <%- end -%>
+  </div>
+  <%- end -%>
 <!-- end .calendarEvents --></div>
