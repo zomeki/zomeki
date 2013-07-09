@@ -43,13 +43,14 @@ class GpArticle::Doc < ActiveRecord::Base
 
   before_save :make_file_contents_path_relative
   before_save :clear_display_dates
+  before_save :set_name
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
   validates :body, :length => {maximum: 300000}
   validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
-  validates :name, :presence => true, :uniqueness => true, :format => {with: /^[\-\w]+$/ }
+  validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
 
   validate :validate_inquiry
   validate :validate_recognizers, :if => :state_recognize?
@@ -375,8 +376,6 @@ class GpArticle::Doc < ActiveRecord::Base
     self.event_state ||= 'hidden'                  if self.has_attribute?(:event_state)
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
-
-    set_name
   end
 
   def node_existence

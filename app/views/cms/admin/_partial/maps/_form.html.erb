@@ -110,7 +110,6 @@ addEvent(window, 'load', function() {
   // hidden
   google.maps.event.addListener(map, 'tilesloaded', function() {
     google.maps.event.clearListeners(map, 'tilesloaded');
-    document.getElementById("mapForm").style.display = "none";
   });
 });
 
@@ -119,8 +118,6 @@ addEvent(window, 'load', function() {
 
 <br />
 <p class="form">地図</p>
-
-<div style="margin: 10px;"><%= link_to_function '開く▼', "toggle_form(this, '#mapForm')" %></div>
 
 <div id="mapForm" class="articleMapForm">
 
