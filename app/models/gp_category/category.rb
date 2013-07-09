@@ -27,6 +27,7 @@ class GpCategory::Category < ActiveRecord::Base
   validates :title, :presence => true
 
   has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_category_categories', :order => 'published_at, updated_at'
+  has_and_belongs_to_many :events, :class_name => 'GpCalendar::Event', :join_table => 'gp_calendar_events_gp_category_categories', :order => 'started_on, ended_on'
 
   belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'
 

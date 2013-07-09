@@ -26,6 +26,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def create
     @item = @content.events.build(params[:item])
     _create(@item) do
+      set_categories
       @item.fix_tmp_files(params[:_tmp])
     end
   end
@@ -33,11 +34,20 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def update
     @item = @content.events.find(params[:id])
     @item.attributes = params[:item]
-    _update @item
+    _update(@item) do
+      set_categories
+    end
   end
 
   def destroy
     @item = @content.events.find(params[:id])
     _destroy @item
+  end
+
+  private
+
+  def set_categories
+    category_ids = (params[:categories] || []).map{|id| id.to_i if id.present? }.compact.uniq
+    @item.category_ids = category_ids
   end
 end
