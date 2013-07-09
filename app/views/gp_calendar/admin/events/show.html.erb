@@ -19,7 +19,9 @@
     <th><%= @item.class.human_attribute_name :href %></th>
     <td>
       <%= link_to @item.href, @item.href, target: '_blank' %>
-      <span style="<%= 'margin-left: 10px;' if @item.href.present? %>"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+      <%- if @item.href.present? -%>
+      <span style="margin-left: 10px;"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+      <%- end -%>
     </td>
   </tr>
   <tr>
