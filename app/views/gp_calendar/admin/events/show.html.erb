@@ -28,6 +28,15 @@
   </tr>
 </table>
 
+<%- unless @item.categories.empty? -%>
+<table class="show">
+  <tr>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= @item.categories.map(&:title).join(', ') %></td>
+  </tr>
+</table>
+<%- end -%>
+
 <%- unless @item.files.empty? -%>
 <table class="show">
   <tr>

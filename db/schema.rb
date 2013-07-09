@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130704060755) do
+ActiveRecord::Schema.define(:version => 20130709083114) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -663,6 +663,11 @@ ActiveRecord::Schema.define(:version => 20130704060755) do
     t.text     "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
+    t.integer "event_id"
+    t.integer "category_id"
   end
 
   create_table "gp_category_categories", :force => true do |t|

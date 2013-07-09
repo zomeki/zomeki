@@ -18,6 +18,8 @@ class GpCalendar::Event < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
   validates_presence_of :state
 
+  has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_calendar_events_gp_category_categories'
+
   validates_presence_of :started_on, :ended_on, :name
 
   after_initialize :set_defaults

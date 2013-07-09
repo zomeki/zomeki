@@ -34,6 +34,21 @@
 
 <table class="show">
   <tr>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td>
+      <div id="categories">
+        <%= render 'category', category: nil, categories_for_option: @content.categories_for_option %>
+        <%- @item.categories.each do |category| -%>
+        <%= render 'category', category: category, categories_for_option: @content.categories_for_option %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: 'add_category' %></span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
     <th>添付ファイル</th>
     <td><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></td>
   </tr>
@@ -51,5 +66,12 @@
 
 $(document).ready(function () {
   <%= enable_datepicker_script -%>
+
+  $('#add_category').on('click', function () {
+    var categories_wrapper = $('#categories');
+    var new_category = categories_wrapper.children(':first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
+  }).trigger('click');
 });
 <%- end -%>
