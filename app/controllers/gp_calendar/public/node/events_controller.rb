@@ -81,6 +81,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   def index_today
     criteria = {date: @today}
     @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
+    @events.select! {|e| e.category_ids.include?(params[:c].to_i) } if params[:c].present?
   end
 
   def file_content
