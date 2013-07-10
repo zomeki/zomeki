@@ -20,9 +20,11 @@ class GpCalendar::Event < ActiveRecord::Base
 
   has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_calendar_events_gp_category_categories'
 
-  validates_presence_of :started_on, :ended_on, :name
-
   after_initialize :set_defaults
+  before_save :set_name
+
+  validates_presence_of :started_on, :ended_on, :title
+  validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
 
   def self.all_with_content_and_criteria(content, criteria)
     events = self.arel_table
@@ -48,5 +50,16 @@ class GpCalendar::Event < ActiveRecord::Base
   def set_defaults
     self.state ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
     self.target ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
+  end
+
+  def set_name
+    return if self.name.present?
+    date = if created_at
+             created_at.strftime('%Y%m%d')
+           else
+             Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
+           end
+    seq = Util::Sequencer.next_id('gp_calendar_events', :version => date)
+    self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
   end
 end

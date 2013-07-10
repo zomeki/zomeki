@@ -85,7 +85,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
   end
 
   def file_content
-    @event = @content.events.find_by_id(params[:name].split('_', 2).first)
+    @event = @content.events.find_by_name(params[:name])
     return http_error(404) unless @event
 
     if (file = @event.files.find_by_name("#{params[:basename]}.#{params[:extname]}"))

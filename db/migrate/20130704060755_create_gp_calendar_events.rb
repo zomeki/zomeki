@@ -8,6 +8,7 @@ class CreateGpCalendarEvents < ActiveRecord::Migration
       t.date       :started_on
       t.date       :ended_on
       t.string     :name
+      t.string     :title
       t.string     :href
       t.string     :target
       t.text       :description

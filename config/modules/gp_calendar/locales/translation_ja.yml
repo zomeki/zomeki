@@ -8,7 +8,7 @@ ja:
         state: 状態
         started_on: 開始日
         ended_on: 終了日
-        name: イベント名
+        title: イベント名
         href: イベントURL
         description: 概要
         created_at: 作成日時
