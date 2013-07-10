@@ -1,17 +1,17 @@
 <%- inline_id = @item.id || params[:_tmp].presence || Util::Sequencer.next_id(:tmp, md5: true) -%>
 
-<ul id="simple_tabs">
-  <li>記事投稿</li>
-  <li>携帯向け</li>
-  <li>地図</li>
-  <li>連絡先</li>
-  <li>オプション設定</li>
-</ul>
-
 <span class="note">※は必須項目です。</span>
 
-<div id="simple_tab_contents">
-  <div>
+<div class="tabs">
+  <ul>
+    <li><a href="#tab5">オプション設定</a></li>
+    <li><a href="#tab4">連絡先</a></li>
+    <li><a href="#tab3">地図</a></li>
+    <li><a href="#tab2">携帯向け</a></li>
+    <li><a href="#tab1">記事投稿</a></li>
+  </ul>
+
+  <div id="tab1">
     <table class="show">
       <tr>
         <th><%= f.label :title %> <span class="note">※</span></th>
@@ -191,7 +191,7 @@
 
     <%= creator_form f %>
   </div>
-  <div>
+  <div id="tab2">
     <table class="show">
       <tr>
         <th>表示端末</th>
@@ -215,13 +215,13 @@
       </tr>
     </table>
   </div>
-  <div>
+  <div id="tab3">
     <%= google_map_form f %>
   </div>
-  <div>
+  <div id="tab4">
     <%= inquiry_form f %>
   </div>
-  <div>
+  <div id="tab5">
     <br /><p class="form">基本設定</p>
 
     <table class="show">
@@ -313,6 +313,11 @@ $(document).ready(function () {
     rel_doc.val('');
   });
 
-  enable_simple_tabs();
+  $('.tabs').tabs({
+    select: function (event, ui) {
+        if (me) { google.maps.event.trigger(me.map, 'resize'); }
+      }
+  });
+  $('.tabs .ui-tabs-nav > li').css('float', 'right');
 });
 <%- end -%>
