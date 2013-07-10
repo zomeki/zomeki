@@ -658,6 +658,7 @@ ActiveRecord::Schema.define(:version => 20130709083114) do
     t.date     "started_on"
     t.date     "ended_on"
     t.string   "name"
+    t.string   "title"
     t.string   "href"
     t.string   "target"
     t.text     "description"

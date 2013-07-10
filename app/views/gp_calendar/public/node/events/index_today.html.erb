@@ -9,7 +9,7 @@
           No Photo
         <%- else -%>
           <%- event.files.each do |file| next unless file.image_file? -%>
-          <%= image_tag "#{@node.public_uri}#{event.id}_#{url_encode event.name}/file_contents/#{file.escaped_name}", width: 200 %><br />
+          <%= image_tag "#{@node.public_uri}#{event.name}/file_contents/#{url_encode file.name}", width: 200 %><br />
           <%- end -%>
         <%- end -%>
       </td>
@@ -21,7 +21,7 @@
         <%- end -%>
       </td>
       <td>
-        <h3><%= link_to_if event.href.present?, event.name, event.href, target: event.target %> <%= event.categories.map(&:title).join(', ') %></h3>
+        <h3><%= link_to_if event.href.present?, event.title, event.href, target: event.target %> <%= event.categories.map(&:title).join(', ') %></h3>
         <p><%=simple_format event.description %></p>
       </td>
     </tr>
