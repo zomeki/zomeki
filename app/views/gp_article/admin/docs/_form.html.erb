@@ -1,6 +1,6 @@
 <%- inline_id = @item.id || params[:_tmp].presence || Util::Sequencer.next_id(:tmp, md5: true) -%>
 
-<ul id="tabs">
+<ul id="simple_tabs">
   <li>記事投稿</li>
   <li>携帯向け</li>
   <li>地図</li>
@@ -10,7 +10,7 @@
 
 <span class="note">※は必須項目です。</span>
 
-<div id="tab_contents">
+<div id="simple_tab_contents">
   <div>
     <table class="show">
       <tr>
@@ -313,6 +313,6 @@ $(document).ready(function () {
     rel_doc.val('');
   });
 
-  enable_tabs();
+  enable_simple_tabs();
 });
 <%- end -%>

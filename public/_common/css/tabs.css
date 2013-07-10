@@ -1,17 +1,17 @@
-#tabs {
+#simple_tabs {
   float: right;
 }
-#tabs > li {
+#simple_tabs > li {
   background-color: #fff;
   border: 1px solid #ccc;
   cursor: pointer;
   display: inline;
   padding: 0 20px 0 20px;
 }
-#tabs > li.current {
+#simple_tabs > li.current {
   background-color: #fce1de;
 }
 
-#tab_contents > div {
+#simple_tab_contents > div {
   display: none;
 }
