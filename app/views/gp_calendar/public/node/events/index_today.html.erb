@@ -31,7 +31,7 @@
   <%- unless @content.categories.empty? -%>
   <div class="categories">
     <%- @content.categories.each do |category| -%>
-    <span><%= link_to category.title, "?c=#{category.id}" %></span>
+    <span><%= link_to category.title, "?category=#{category.path_from_root_category}" %></span>
     <%- end -%>
   </div>
   <%- end -%>
