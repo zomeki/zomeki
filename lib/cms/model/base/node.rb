@@ -23,9 +23,16 @@ module Cms::Model::Base::Node
   end
   
   def model_name(option = nil)
-    name = Cms::Lib::Modules.model_name(:node, model)
-    return name.to_s.gsub(/^.*?\//, '') if option == :short
-    name
+    name = Cms::Lib::Modules.model_name(:node, model).to_s
+    case option
+    when :short, :wo_content
+      name.gsub(/^.*?\//, '')
+    when :wo_type
+      names = name.split('/')
+      "#{names.first}/#{names.last}"
+    else
+      name
+    end
   end
   
   def model_type
