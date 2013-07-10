@@ -314,7 +314,7 @@ $(document).ready(function () {
   });
 
   $('.tabs').tabs({
-    select: function (event, ui) {
+    show: function (event, ui) {
         if (me) { google.maps.event.trigger(me.map, 'resize'); }
       }
   });
