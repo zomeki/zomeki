@@ -81,7 +81,8 @@ class GpArticle::Doc < ActiveRecord::Base
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
     rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
     rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
-    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")) if criteria[:user].present?
+    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
+                    .or(users[:name_en].matches("%#{criteria[:user]}%"))) if criteria[:user].present?
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
