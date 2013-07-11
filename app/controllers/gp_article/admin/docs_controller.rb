@@ -21,15 +21,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def index
     if params[:options]
-      if params[:category_id]
-        if (category = GpCategory::Category.find_by_id(params[:category_id]))
-          @items = category.docs
-        else
-          @items = []
-        end
-      else
-        @items = @content.docs
-      end
+      @items = if params[:category_id]
+                 if (category = GpCategory::Category.find_by_id(params[:category_id]))
+                   category.docs
+                 else
+                   []
+                 end
+               else
+                 @content.docs
+               end
       render 'index_options', :layout => false
       return
     end
@@ -38,36 +38,27 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     case params[:target]
     when 'all'
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      # No criteria
     when 'draft'
       criteria[:state] = 'draft'
       criteria[:touched_user_id] = Core.user.id
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'public'
       criteria[:state] = 'public'
       criteria[:touched_user_id] = Core.user.id
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'closed'
       criteria[:state] = 'closed'
       criteria[:touched_user_id] = Core.user.id
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
-    when 'editable'
-      criteria[:editable] = true
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'recognizable'
       criteria[:recognizable] = true
       criteria[:state] = 'recognize'
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     when 'publishable'
       criteria[:recognizable] = true
       criteria[:state] = 'recognized'
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
     else
-      criteria[:group_id] = Core.user.group.id
-      @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      criteria[:editable] = true
     end
 
-    _index @items
+    _index (@items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30))
   end
 
   def show
