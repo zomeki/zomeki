@@ -64,6 +64,12 @@
 <%= javascript_tag do -%>
 <%= toggle_form_function -%>
 
+function set_copy_date(from, to) {
+  $(from).on('change', function () {
+    if ($(to).val() === '') { $(to).val($(from).val()); }
+  });
+}
+
 $(document).ready(function () {
   <%= enable_datepicker_script -%>
 
@@ -73,5 +79,8 @@ $(document).ready(function () {
     new_category.find(':disabled').removeAttr('disabled');
     new_category.insertBefore(categories_wrapper.children(':last-child')).show();
   }).trigger('click');
+
+  set_copy_date('#item_started_on', '#item_ended_on');
+  set_copy_date('#item_ended_on', '#item_started_on');
 });
 <%- end -%>
