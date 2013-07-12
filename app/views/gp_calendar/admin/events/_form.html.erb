@@ -32,20 +32,26 @@
   </tr>
 </table>
 
+<%- unless @content.category_types.empty? -%>
 <table class="show">
+  <%- @content.category_types.each do |category_type| -%>
   <tr>
-    <th><%= GpCategory::Category.model_name.human %></th>
+    <th><%= category_type.title %></th>
     <td>
-      <div id="categories">
-        <%= render 'category', category: nil, categories_for_option: @content.categories_for_option %>
-        <%- @item.categories.each do |category| -%>
-        <%= render 'category', category: category, categories_for_option: @content.categories_for_option %>
+      <div id="category_type_<%= category_type.id %>_categories">
+        <%= render 'category', category_type: category_type, category: nil,
+                               categories_for_option: @content.category_type_categories_for_option(category_type) %>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: @content.category_type_categories_for_option(category_type) %>
         <%- end -%>
-        <span><%= button_tag '追加', type: 'button', id: 'add_category' %></span>
+        <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
       </div>
     </td>
   </tr>
+  <%- end -%>
 </table>
+<%- end -%>
 
 <table class="show">
   <tr>
@@ -62,7 +68,7 @@
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
-<%= toggle_form_function -%>
+<%= toggle_form_function %>
 
 function set_copy_date(from, to) {
   $(from).on('change', function () {
@@ -70,17 +76,23 @@ function set_copy_date(from, to) {
   });
 }
 
-$(document).ready(function () {
-  <%= enable_datepicker_script -%>
-
-  $('#add_category').on('click', function () {
-    var categories_wrapper = $('#categories');
+function set_click_event_handler(category_type_id) {
+  $('#add_category_type_' + category_type_id + '_category').on('click', function () {
+    var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
     var new_category = categories_wrapper.children(':first-child').clone(true);
     new_category.find(':disabled').removeAttr('disabled');
     new_category.insertBefore(categories_wrapper.children(':last-child')).show();
   }).trigger('click');
+}
+
+$(document).ready(function () {
+  <%= enable_datepicker_script %>
 
   set_copy_date('#item_started_on', '#item_ended_on');
   set_copy_date('#item_ended_on', '#item_started_on');
+
+  <%- @content.category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
 });
 <%- end -%>

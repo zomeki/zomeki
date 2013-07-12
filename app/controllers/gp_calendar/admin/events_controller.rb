@@ -47,7 +47,11 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   private
 
   def set_categories
-    category_ids = (params[:categories] || []).map{|id| id.to_i if id.present? }.compact.uniq
+    category_ids = if params[:categories].kind_of?(Hash)
+                     params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+                   else
+                     []
+                   end
     @item.category_ids = category_ids
   end
 end
