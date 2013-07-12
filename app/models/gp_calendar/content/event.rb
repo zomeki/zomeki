@@ -21,8 +21,12 @@ class GpCalendar::Content::Event < Cms::Content
     categories.map {|c| [c.title, c.id] }
   end
 
+  def public_categories
+    categories.public
+  end
+
   def category_types
-    GpCategory::CategoryType.find(categories.map {|c| c.category_type_id })
+    GpCategory::CategoryType.where(id: categories.map(&:category_type_id))
   end
 
   def category_type_categories(category_type)
