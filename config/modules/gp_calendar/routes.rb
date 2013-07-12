@@ -23,6 +23,9 @@ ZomekiCMS::Application.routes.draw do
     resources :node_events,
       :controller => 'admin/node/events',
       :path       => ':parent/node_events'
+    resources :node_todays_events,
+      :controller => 'admin/node/todays_events',
+      :path       => ':parent/node_todays_events'
 
     ## pieces
     resources :piece_daily_links,
@@ -33,10 +36,10 @@ ZomekiCMS::Application.routes.draw do
 
   ## public
   scope "_public/#{mod}", :module => mod, :as => '' do
-    match 'node_events/today' => 'public/node/events#index_today'
     match 'node_events/:year/:month(/index)' => 'public/node/events#index_monthly'
     match 'node_events/:year(/index)' => 'public/node/events#index_yearly'
     match 'node_events(/index)' => 'public/node/events#index'
     match 'node_events/:name/file_contents/:basename.:extname' => 'public/node/events#file_content', :format => false
+    match 'node_todays_events(/index)' => 'public/node/todays_events#index'
   end
 end
