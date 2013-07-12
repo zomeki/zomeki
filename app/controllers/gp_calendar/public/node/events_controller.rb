@@ -78,15 +78,6 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @pagination.next_uri = "#{@node.public_uri}#{@year + 1}/" if (@year + 1) <= @max_date.year
   end
 
-  def index_today
-    criteria = {date: @today}
-    @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
-    if params[:category].present? &&
-      (category = @content.categories.detect {|c| c.path_from_root_category == params[:category] })
-      @events.select! {|e| e.category_ids.include?(category.id) }
-    end
-  end
-
   def file_content
     @event = @content.events.find_by_name(params[:name])
     return http_error(404) unless @event
