@@ -30,6 +30,6 @@ class GpCalendar::Content::Setting < Cms::ContentSetting
   end
 
   def categories
-    GpCategory::Category.find(category_ids)
+    GpCategory::Category.where(id: category_ids)
   end
 end
