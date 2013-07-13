@@ -10,9 +10,18 @@ class GpCalendar::Public::Node::TodaysEventsController < Cms::Controller::Public
     @today = Date.today
     criteria = {date: @today}
     @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
-    if params[:category].present? &&
-      (category = @content.categories.detect {|c| c.path_from_root_category == params[:category] })
+    if (category = find_category_by_specified_path(params[:category]))
       @events.select! {|e| e.category_ids.include?(category.id) }
     end
+  end
+
+  private
+
+  def find_category_by_specified_path(path)
+    return nil unless path.kind_of?(String)
+    category_type_name, category_path = path.split('/', 2)
+    category_type = @content.category_types.find_by_name(category_type_name)
+    return nil unless category_type
+    category_type.find_category_by_path_from_root_category(category_path)
   end
 end
