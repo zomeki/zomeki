@@ -238,13 +238,13 @@ ChaOneをインストールします。
 
   # yum install -y libxslt-devel
   # cd /var/share/zomeki/ext/morph/chaone
-  # chmod 775 configure
+  # chmod 755 configure
   # ./configure && make && make install
 
 GalateaTalkをインストールします。
 
   # cd /var/share/zomeki/ext/gtalk
-  # chmod 775 configure
+  # chmod 755 configure
   # ./configure && make
   # chmod 755 /var/share/zomeki/ext/gtalk_filter.rb
 
