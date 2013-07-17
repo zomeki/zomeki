@@ -12,6 +12,11 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @max_date = 11.months.since(@min_date)
 
     return http_error(404) unless validate_date
+
+    params[:gp_calendar_event_year]     = @year
+    params[:gp_calendar_event_month]    = @month
+    params[:gp_calendar_event_min_date] = @min_date
+    params[:gp_calendar_event_max_date] = @max_date
   end
 
   def index
@@ -101,12 +106,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
 
     @year = params[:year].to_i
     @year = @today.year if @year.zero?
-    return false unless @year.between?(1000, 9999)
-
-    params[:gp_calendar_event_year]     = @year
-    params[:gp_calendar_event_month]    = @month
-    params[:gp_calendar_event_min_date] = @min_date
-    params[:gp_calendar_event_max_date] = @max_date
+    return false unless @year.between?(1900, 2100)
 
     return true
   end
