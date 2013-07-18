@@ -9,7 +9,7 @@ class GpCalendar::Public::Node::TodaysEventsController < Cms::Controller::Public
   def index
     @today = Date.today
     criteria = {date: @today}
-    @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
+    @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria)
     if (category = find_category_by_specified_path(params[:category]))
       @events.select! {|e| e.category_ids.include?(category.id) }
     end
