@@ -38,7 +38,6 @@ class GpCalendar::Public::Node::CalendarStyledEventsController < Cms::Controller
     return false unless @year.between?(1900, 2100)
 
     @date = Date.new(@year, @month, 1)
-
-    return true
+    return @date.between?(@min_date, @max_date)
   end
 end
