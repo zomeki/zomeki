@@ -22,7 +22,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
 
   def index
     criteria = {month: @date.strftime('%Y%m')}
-    @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria).order(:started_on)
+    @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
   end
 
   def index_monthly

@@ -26,6 +26,8 @@ class GpCalendar::Event < ActiveRecord::Base
   validates_presence_of :started_on, :ended_on, :title
   validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
 
+  scope :public, where(state: 'public')
+
   def self.all_with_content_and_criteria(content, criteria)
     events = self.arel_table
 
