@@ -12,4 +12,5 @@ Cms::Lib::Modules::ModuleSet.draw :gp_calendar, '汎用カレンダー' do |mod|
   mod.piece :monthly_links, '月別リンク'
   mod.piece :daily_links, '日別リンク'
   mod.piece :category_types, '汎用カテゴリ一覧'
+  mod.piece :near_future_events, '本日と明日のイベント'
 end
