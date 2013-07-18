@@ -1,0 +1,78 @@
+<div class="calendarEvents calendarMonthlyEvents">
+  <h2><%= @date.year %>年<%= @date.month %>月</h2>
+
+  <div class="pagination upperPagination">
+    <%- if @date.prev_month < @min_date -%>
+    <span class="disabled prev_page">前の月</span>
+    <%- else -%>
+    <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
+    <%- end -%>
+    <span class="separator">|</span>
+    <%- if @date.next_month > @max_date -%>
+    <span class="disabled next_page">次の月</span>
+    <%- else -%>
+    <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
+    <%- end -%>
+  </div>
+
+  <%- unless @events.empty? -%>
+  <table border="1">
+    <thead>
+      <tr>
+        <th class="image">イメージ</th>
+        <th class="date">開催日</th>
+        <th class="event">イベント</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- @events.each do |event| -%>
+      <tr>
+        <td class="image">
+          <%- if event.files.empty? -%>
+            No Photo
+          <%- else -%>
+            <%- event.files.each do |file| next unless file.image_file? -%>
+            <p class="thumb"><%= image_tag "#{@content.event_node.public_uri}#{event.name}/file_contents/#{url_encode file.name}" %></p>
+            <%- end -%>
+          <%- end -%>
+        </td>
+        <td class="date">
+          <%- if event.started_on == event.ended_on -%>
+            <span class="startDate closeDate"><%=i18n_l event.started_on, :long_ja %></span>
+          <%- else -%>
+            <span class="startDate"><%=i18n_l event.started_on, :long_ja %></span>
+            <span class="from">～</span>
+            <span class="closeDate"><%=i18n_l event.ended_on, :long_ja %></span>
+          <%- end -%>
+        </td>
+        <td class="event">
+          <p class="title"><%= link_to_if event.href.present?, event.title, event.href, target: event.target %></p>
+          <%- unless event.categories.empty? -%>
+          <p class="category">
+            <%- event.categories.each do |category| -%>
+            <span class="category<%= category.name.capitalize %>"><%= category.title %></span>
+            <%- end -%>
+          </p>
+          <%- end -%>
+          <p class="summary"><%=simple_format event.description %></p>
+        </td>
+      </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+  <%- end -%>
+
+  <div class="pagination lowerPagination">
+    <%- if @date.prev_month < @min_date -%>
+    <span class="disabled prev_page">前の月</span>
+    <%- else -%>
+    <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
+    <%- end -%>
+    <span class="separator">|</span>
+    <%- if @date.next_month > @max_date -%>
+    <span class="disabled next_page">次の月</span>
+    <%- else -%>
+    <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
+    <%- end -%>
+  </div>
+<!-- end .calendarEvents --></div>

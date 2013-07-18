@@ -13,15 +13,16 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
 
     return http_error(404) unless validate_date
 
-    params[:gp_calendar_event_year]     = @year
-    params[:gp_calendar_event_month]    = @month
+    # These params are used in pieces
+    params[:gp_calendar_event_year]     = @date.year
+    params[:gp_calendar_event_month]    = @date.month
     params[:gp_calendar_event_min_date] = @min_date
     params[:gp_calendar_event_max_date] = @max_date
   end
 
   def index
-    index_monthly
-    render :index_monthly unless Page.mobile?
+    criteria = {month: @date.strftime('%Y%m')}
+    @events = GpCalendar::Event.all_with_content_and_criteria(@content, criteria).order(:started_on)
   end
 
   def index_monthly
@@ -107,6 +108,8 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @year = params[:year].to_i
     @year = @today.year if @year.zero?
     return false unless @year.between?(1900, 2100)
+
+    @date = Date.new(@year, @month, 1)
 
     return true
   end
