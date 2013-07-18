@@ -6,12 +6,8 @@ function enable_simple_tabs() {
   simple_tabs.on('click', function () {
     if (index != simple_tabs.index(this)) {
       index = simple_tabs.index(this);
-      simple_tab_panels.hide().eq(index).fadeIn('fast');
+      simple_tab_panels.hide().eq(index).show();
       simple_tabs.removeClass('current').eq(index).addClass('current');
-
-      if (me) {
-        google.maps.event.trigger(me.map, 'resize');
-      }
     }
   });
 
