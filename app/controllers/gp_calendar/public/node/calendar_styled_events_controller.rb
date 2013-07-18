@@ -19,11 +19,11 @@ class GpCalendar::Public::Node::CalendarStyledEventsController < Cms::Controller
     start_date = @date.beginning_of_month.beginning_of_week(:sunday)
     end_date = @date.end_of_month.end_of_week(:sunday)
 
-    @weeks = []
-    (start_date..end_date).each do |day|
-      @weeks.push([]) if @weeks.empty? || day.wday.zero?
-      @weeks.last.push(day)
-    end
+    @weeks = (start_date..end_date).inject([]) do |weeks, day|
+        weeks.push([]) if weeks.empty? || day.wday.zero?
+        weeks.last.push(day)
+        next weeks
+      end
   end
 
   private
