@@ -1,0 +1,25 @@
+<%- unless @content.public_categories.empty? -%>
+<div class="level1">
+  <%- @content.public_categories.each do |category| -%>
+  <section class="category <%= category.name -%><%= cycle '', ' cycle' %>">
+  <h3><%= link_to category.title, "?category=#{category.category_type.name}/#{category.path_from_root_category}" %></h3>
+
+    <%- unless category.public_children.empty? -%>
+    <ul class="level<%= category.level_no + 1 -%>">
+      <%- category.public_children.each do |child| -%>
+      <li class="<%= child.name -%>"><%= link_to child.title, "?category=#{category.category_type.name}/#{child.path_from_root_category}" %></li>
+
+        <%- unless child.public_children.empty? -%>
+        <ul class="level<%= child.level_no + 1 -%>">
+          <%- child.public_children.each do |grandchild| -%>
+          <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, "?category=#{category.category_type.name}/#{grandchild.path_from_root_category}" %></li>
+          <%- end -%>
+        </ul>
+        <%- end -%>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>
+<%- end -%>
