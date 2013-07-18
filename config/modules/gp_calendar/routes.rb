@@ -36,8 +36,8 @@ ZomekiCMS::Application.routes.draw do
 
   ## public
   scope "_public/#{mod}", :module => mod, :as => '' do
-    match 'node_events/:year/:month(/index)' => 'public/node/events#index_monthly'
-    match 'node_events/:year(/index)' => 'public/node/events#index_yearly'
+    match 'node_events/:year/:month(/index)' => 'public/node/events#index'
+    match 'node_events/:year(/index)' => 'public/node/events#index'
     match 'node_events(/index)' => 'public/node/events#index'
     match 'node_events/:name/file_contents/:basename.:extname' => 'public/node/events#file_content', :format => false
     match 'node_todays_events(/index)' => 'public/node/todays_events#index'
