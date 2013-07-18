@@ -35,6 +35,8 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/piece/daily_links'
     resources :piece_monthly_links,
       :controller => 'admin/piece/monthly_links'
+    resources :piece_category_types,
+      :controller => 'admin/piece/category_types'
   end
 
   ## public
