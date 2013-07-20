@@ -14,6 +14,10 @@ class GpArticle::Content::Doc < Cms::Content
     docs.mobile(::Page.mobile?).public
   end
 
+  def public_node
+    Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
+  end
+
   def doc_node
     return @doc_node if @doc_node
     @doc_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
