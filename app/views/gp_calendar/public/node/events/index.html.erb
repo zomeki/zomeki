@@ -31,8 +31,9 @@
           <%- if event.files.empty? -%>
             No Photo
           <%- else -%>
-            <%- event.files.each do |file| next unless file.image_file? -%>
-            <p class="thumb"><%= image_tag "#{@content.event_node.public_uri}#{event.name}/file_contents/#{url_encode file.name}" %></p>
+            <%- event.files.each do |file| next unless file.image_file?
+                  parent = file.parent -%>
+            <p class="thumb"><%= image_tag "#{parent.content.public_node.public_uri}#{parent.name}/file_contents/#{url_encode file.name}" %></p>
             <%- end -%>
           <%- end -%>
         </td>
