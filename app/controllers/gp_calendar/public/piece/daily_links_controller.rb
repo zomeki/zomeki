@@ -29,10 +29,18 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
     @calendar.day_uri   = "#{@node.public_uri}:year/:month/#day:day"
 
-    @calendar.day_link = event_docs(sdate, edate).inject([]) do |dates, event|
-                           dates << event.event_date
-                           next dates
-                         end
+    days = event_docs(sdate, edate).inject([]) do |dates, event|
+             dates << event.event_date
+             next dates
+           end
+
+    (min_date..min_date.end_of_month).each do |date|
+      unless GpCalendar::Event.public.all_with_content_and_criteria(@piece.content, {date: date}).empty?
+        days << date unless days.include?(date)
+      end
+    end
+
+    @calendar.day_link = days.sort!
 
     if min_date && max_date
       @pagination = Util::Html::SimplePagination.new
