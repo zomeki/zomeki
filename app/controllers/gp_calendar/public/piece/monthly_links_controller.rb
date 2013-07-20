@@ -7,8 +7,9 @@ class GpCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Publi
     @node = @piece.content.event_node
     return render(:text => '') unless @node
 
-    @year     = params[:gp_calendar_event_year]
-    @month    = params[:gp_calendar_event_month]
+    date      = params[:gp_calendar_event_date]
+    @year     = date.year
+    @month    = date.month
     @min_date = params[:gp_calendar_event_min_date]
     @max_date = params[:gp_calendar_event_max_date]
     return render(:text => '') unless @min_date
@@ -22,7 +23,7 @@ class GpCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Publi
     date = @min_date
     while date <= @max_date
       month = date.month
-      if year != date.year
+      unless year == date.year
         year = date.year
         css_class = "year year#{year}"
         css_class.concat(' current') if @year == date.year && @month.nil?

@@ -14,8 +14,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     return http_error(404) unless validate_date
 
     # These params are used in pieces
-    params[:gp_calendar_event_year]     = @date.year
-    params[:gp_calendar_event_month]    = @date.month
+    params[:gp_calendar_event_date]     = @date
     params[:gp_calendar_event_min_date] = @min_date
     params[:gp_calendar_event_max_date] = @max_date
   end

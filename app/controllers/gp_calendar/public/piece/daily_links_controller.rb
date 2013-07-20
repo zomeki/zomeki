@@ -8,23 +8,20 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
   end
 
   def index
-    year     = params[:gp_calendar_event_year]
-    month    = params[:gp_calendar_event_month]
+    date     = params[:gp_calendar_event_date]
     min_date = params[:gp_calendar_event_min_date]
     max_date = params[:gp_calendar_event_max_date]
 
-    unless year && month
-      today = Date.today
-      year = today.year
-      month = today.month
-      min_date = today.beginning_of_month
-      max_date = min_date.since(11.months).to_date
+    unless date
+      date = Date.today
+      min_date = date.beginning_of_month
+      max_date = 11.months.since(min_date)
     end
 
-    sdate = Date.new(year, month, 1)
-    edate = sdate.since(1.month).to_date
+    sdate = date.beginning_of_month
+    edate = sdate.next_month
 
-    @calendar = Util::Date::Calendar.new(year, month)
+    @calendar = Util::Date::Calendar.new(date.year, date.month)
 
     return unless (@node = @piece.content.event_node)
 
@@ -32,11 +29,10 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
     @calendar.day_uri   = "#{@node.public_uri}:year/:month/#day:day"
 
-    dates = []
-    event_docs(sdate, edate).each do |event|
-      dates << event.event_date
-    end
-    @calendar.day_link = dates
+    @calendar.day_link = event_docs(sdate, edate).inject([]) do |dates, event|
+                           dates << event.event_date
+                           next dates
+                         end
 
     if min_date && max_date
       @pagination = Util::Html::SimplePagination.new
@@ -52,7 +48,7 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
 
   def event_docs(sdate, edate)
     doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @piece.content.id).map(&:content)
-    doc_contents.reject! {|dc| dc.site != Page.site }
+    doc_contents.select! {|dc| dc.site == Page.site }
     return [] if doc_contents.empty?
 
     doc_contents.map {|dc|
