@@ -34,4 +34,9 @@ class Sys::File < ActiveRecord::Base
   def duplicated?
     !!duplicated
   end
+
+  def parent
+    unid = Sys::Unid.find(self.parent_unid)
+    unid.model.constantize.find(unid.item_id)
+  end
 end
