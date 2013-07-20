@@ -25,6 +25,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
   end
 
+  # OBSOLETED
   def index_monthly
     sdate = Date.new(@year, @month, 1)
     return http_error(404) unless sdate.between?(@min_date, @max_date)
@@ -49,6 +50,7 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     render :index_monthly_mobile if Page.mobile?
   end
 
+  # OBSOLETED
   def index_yearly
     return http_error(404) unless @year.between?(@min_date.year, @max_date.year)
     sdate = Date.new(@year, 1, 1)
