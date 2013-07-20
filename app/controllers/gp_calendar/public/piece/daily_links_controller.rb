@@ -18,8 +18,8 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       max_date = 11.months.since(min_date)
     end
 
-    sdate = date.beginning_of_month
-    edate = sdate.next_month
+    start_date = date.beginning_of_month
+    end_date = start_date.end_of_month
 
     @calendar = Util::Date::Calendar.new(date.year, date.month)
 
@@ -29,7 +29,7 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
     @calendar.day_uri   = "#{@node.public_uri}:year/:month/#day:day"
 
-    days = event_docs(sdate, edate).inject([]) do |dates, event|
+    days = event_docs(start_date, end_date).inject([]) do |dates, event|
              dates << event.event_date
              next dates
            end
@@ -54,7 +54,7 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
 
   private
 
-  def event_docs(sdate, edate)
+  def event_docs(start_date, end_date)
     doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @piece.content.id).map(&:content)
     doc_contents.select! {|dc| dc.site == Page.site }
     return [] if doc_contents.empty?
@@ -64,7 +64,7 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       when 'GpArticle::Doc'
         dc = GpArticle::Content::Doc.find(dc.id)
         docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(sdate).and(docs[:event_date].lt(edate)))
+        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(start_date).and(docs[:event_date].lteq(end_date)))
       else
         []
       end
