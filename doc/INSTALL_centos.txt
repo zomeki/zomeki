@@ -101,13 +101,13 @@ Phusion Passengerをインストールします。
 
   # yum install -y curl-devel
 
-  # gem install passenger -v 4.0.8
+  # gem install passenger -v 4.0.10
   # passenger-install-apache2-module
   # cp /var/share/zomeki/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
   # vi /etc/httpd/conf.d/passenger.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ※「PASSENGER_VERSION」をすべて「4.0.8」に書き換えます。
+  ※「PASSENGER_VERSION」をすべて「4.0.10」に書き換えます。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************
