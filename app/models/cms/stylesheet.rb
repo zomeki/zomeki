@@ -102,8 +102,9 @@ class Cms::Stylesheet < Sys::Model::ValidationModel::Base
   end
   
   def read_body
-    self.body = NKF.nkf('-w', ::File.new(@full_path).read.to_s) if textfile?
-  rescue Exception
+    self.body = File.read(@full_path).encode(Encoding::UTF_8) if textfile?
+  rescue Exception => e
+    warn_log(e.message)
     self.body = "#読み込みに失敗しました。"
   end
   
