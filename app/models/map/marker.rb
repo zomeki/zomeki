@@ -13,6 +13,9 @@ class Map::Marker < ActiveRecord::Base
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
+  has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
+  has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations
+
   validates :title, :presence => true
   validates :latitude, :presence => true, :numericality => true
   validates :longitude, :presence => true, :numericality => true

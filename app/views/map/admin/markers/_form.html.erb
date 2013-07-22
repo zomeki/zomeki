@@ -9,6 +9,30 @@
     <th><%= f.label :title %> <span class="note">※</span></th>
     <td><%= f.text_field :title, :class => 'name' %></td>
   </tr>
+</table>
+
+<%- unless @content.category_types.empty? -%>
+<table class="show">
+  <%- @content.category_types.each do |category_type| -%>
+  <tr>
+    <th><%= category_type.title %></th>
+    <td>
+      <div id="category_type_<%= category_type.id %>_categories">
+        <%= render 'category', category_type: category_type, category: nil,
+                               categories_for_option: @content.category_type_categories_for_option(category_type) %>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: @content.category_type_categories_for_option(category_type) %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
+      </div>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<table class="show">
   <tr>
     <th><%= f.label :latitude %> <span class="note">※</span></th>
     <td><%= f.text_field :latitude %> （例：35.7026137299332）</td>
@@ -22,3 +46,20 @@
     <td><%= f.text_area :window_text, :size => '130x10' %></td>
   </tr>
 </table>
+
+<%= javascript_tag do -%>
+function set_click_event_handler(category_type_id) {
+  $('#add_category_type_' + category_type_id + '_category').on('click', function () {
+    var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
+    var new_category = categories_wrapper.children(':first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
+  }).trigger('click');
+}
+
+$(document).ready(function () {
+  <%- @content.category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+});
+<%- end -%>

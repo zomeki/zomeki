@@ -7,6 +7,18 @@
     <th><%= @item.class.human_attribute_name :title %></th>
     <td><%= @item.title %></td>
   </tr>
+</table>
+
+<%- unless @item.categories.empty? -%>
+<table class="show">
+  <tr>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= @item.categories.map(&:title).join(', ') %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<table class="show">
   <tr>
     <th><%= @item.class.human_attribute_name :latitude %></th>
     <td><%= @item.latitude %></td>
