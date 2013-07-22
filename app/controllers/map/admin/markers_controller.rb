@@ -23,17 +23,32 @@ class Map::Admin::MarkersController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.markers.build(params[:item])
-    _create @item
+    _create(@item) do
+      set_categories
+    end
   end
 
   def update
     @item = @content.markers.find(params[:id])
     @item.attributes = params[:item]
-    _update @item
+    _update(@item) do
+      set_categories
+    end
   end
 
   def destroy
     @item = @content.markers.find(params[:id])
     _destroy @item
+  end
+
+  private
+
+  def set_categories
+    category_ids = if params[:categories].kind_of?(Hash)
+                     params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+                   else
+                     []
+                   end
+    @item.category_ids = category_ids
   end
 end

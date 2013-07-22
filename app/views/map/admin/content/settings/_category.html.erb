@@ -1,0 +1,22 @@
+<%-
+  common_attrs = {id: nil}
+
+  if category
+    category_types_for_option = category.content.category_types_for_option
+    category_type_id = category.category_type.id
+    categories_for_option = category.category_type.root_categories_for_option
+    category_id = category.id
+  else
+    common_attrs.merge!(disabled: true)
+    category_types_for_option = []
+    category_type_id = nil
+    categories_for_option = []
+    category_id = nil
+  end
+-%>
+<tr style="<%= 'display: none;' if common_attrs[:disabled] %>" class="<%= 'category' if category %>">
+  <th><%= GpCategory::CategoryType.model_name.human %></th>
+  <td class="category_type"><%= select_tag nil, options_for_select(category_types_for_option, category_type_id), common_attrs.merge(include_blank: true) %></td>
+  <th><%= GpCategory::Category.model_name.human %></th>
+  <td class="category"><%= select_tag "categories[#{index || 'N'}]", options_for_select(categories_for_option, category_id), common_attrs.merge(include_blank: true) %></td>
+</tr>

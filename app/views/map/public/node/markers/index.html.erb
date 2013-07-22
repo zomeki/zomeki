@@ -6,7 +6,7 @@
   <%= javascript_tag do -%>
   var map;
   google.maps.event.addDomListener(window, 'load', function (event) {
-    map = new Map('map_canvas', <%= @markers.first.try(:latitude) || 0 %>, <%= @markers.first.try(:longitude) || 0 %>);
+    map = new Map('map_canvas', <%= default_latitude %>, <%= default_longitude %>);
     <%- @markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
                      '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>');
