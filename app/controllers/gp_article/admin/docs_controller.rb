@@ -6,7 +6,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   before_filter :hold_document, :only => [ :edit ]
   before_filter :check_intercepted, :only => [ :update ]
-  after_filter :release_document, :only => [ :update ]
 
   def pre_dispatch
     return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
@@ -102,6 +101,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
       @item.close unless @item.public? # Don't use "state_public?" here
+
+      release_document
     end
   end
 
