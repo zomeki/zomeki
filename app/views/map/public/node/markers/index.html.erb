@@ -14,11 +14,6 @@
   });
   <%- end -%>
 
-  <div class="searchForm"><span>カテゴリ：</span><%= form_tag '', :method => 'get', :class => 'search' do -%>
-    <%= select_tag 'c', options_from_collection_for_select(@categories, :id, :title, params[:c]), :prompt => '----- すべて -----',
-                   :onchange => 'this.form.submit()' %>
-  <%- end -%></div>
-
   <%- unless @markers.empty? -%>
   <table>
     <tr>
@@ -33,7 +28,7 @@
         <%- unless marker.files.empty? -%>
         <%= image_tag "#{@content.public_node.public_uri}#{marker.name}/file_contents/#{url_encode marker.files.first.name}" %>
         <%- else -%>
-        なし
+        No Photo
         <%- end -%>
       </td>
       <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
