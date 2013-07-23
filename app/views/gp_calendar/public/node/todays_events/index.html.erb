@@ -17,10 +17,11 @@
           <%- if event.files.empty? -%>
             No Photo
           <%- else -%>
-            <%- event.files.each do |file| next unless file.image_file?
-                  parent = file.parent -%>
-            <p class="thumb"><%= image_tag "#{parent.content.public_node.public_uri}#{parent.name}/file_contents/#{url_encode file.name}" %></p>
-            <%- end -%>
+            <p class="thumb">
+              <%- event.files.each do |file| next unless file.image_file? -%>
+              <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+              <%- end -%>
+            </p>
           <%- end -%>
         </td>
         <td class="date">
@@ -41,7 +42,7 @@
             <%- end -%>
           </p>
           <%- end -%>
-          <p class="summary"><%=simple_format event.description %></p>
+          <%=simple_format event.description, class: 'summary' if event.description.present? %>
         </td>
       </tr>
       <%- end -%>
