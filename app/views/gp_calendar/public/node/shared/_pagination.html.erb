@@ -1,0 +1,13 @@
+<div class="pagination<%= " #{extra_css}" if extra_css.present? %>">
+  <%- if @date.prev_month < @min_date -%>
+  <span class="disabled prev_page">前の月</span>
+  <%- else -%>
+  <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
+  <%- end -%>
+  <span class="separator">|</span>
+  <%- if @date.next_month > @max_date -%>
+  <span class="disabled next_page">次の月</span>
+  <%- else -%>
+  <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
+  <%- end -%>
+</div>

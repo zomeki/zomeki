@@ -1,28 +1,28 @@
 # encoding: utf-8
-class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
+class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::BaseController
   skip_filter :render_public_layout, :only => [:file_content]
-
-  def pre_dispatch
-    @node = Page.current_node
-    @content = GpCalendar::Content::Event.find_by_id(@node.content.id)
-    return http_error(404) unless @content
-
-    @today = Date.today
-    @min_date = @today.beginning_of_month
-    @max_date = 11.months.since(@min_date)
-
-    return http_error(404) unless validate_date
-
-    # These params are used in pieces
-    params[:gp_calendar_event_date]     = @date
-    params[:gp_calendar_event_min_date] = @min_date
-    params[:gp_calendar_event_max_date] = @max_date
-  end
 
   def index
     criteria = {month: @date.strftime('%Y%m')}
     @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
+
     merge_docs_into_events(event_docs(@date.beginning_of_month, @date.end_of_month), @events)
+
+    if (category = find_category_by_specified_path(params[:category]))
+      @events.select! {|e| e.category_ids.include?(category.id) }
+    end
+  end
+
+  def file_content
+    @event = @content.events.find_by_name(params[:name])
+    return http_error(404) unless @event
+    file = @event.files.find_by_name("#{params[:basename]}.#{params[:extname]}")
+    return http_error(404) unless file
+
+    mt = file.mime_type.presence || Rack::Mime.mime_type(File.extname(file.name))
+    type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
+    disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
+    send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
   end
 
   # OBSOLETED
@@ -84,59 +84,5 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @pagination.next_label = '次の年'
     @pagination.prev_uri = "#{@node.public_uri}#{@year - 1}/" if (@year - 1) >= @min_date.year
     @pagination.next_uri = "#{@node.public_uri}#{@year + 1}/" if (@year + 1) <= @max_date.year
-  end
-
-  def file_content
-    @event = @content.events.find_by_name(params[:name])
-    return http_error(404) unless @event
-    file = @event.files.find_by_name("#{params[:basename]}.#{params[:extname]}")
-    return http_error(404) unless file
-
-    mt = file.mime_type.presence || Rack::Mime.mime_type(File.extname(file.name))
-    type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
-    disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
-    send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
-  end
-
-  private
-
-  def validate_date
-    @month = params[:month].to_i
-    @month = @today.month if @month.zero?
-    return false unless @month.between?(1, 12)
-
-    @year = params[:year].to_i
-    @year = @today.year if @year.zero?
-    return false unless @year.between?(1900, 2100)
-
-    @date = Date.new(@year, @month, 1)
-    return @date.between?(@min_date, @max_date)
-  end
-
-  def event_docs(start_date, end_date)
-    doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @content.id).map(&:content)
-    doc_contents.select! {|dc| dc.site == Page.site }
-    return [] if doc_contents.empty?
-
-    doc_contents.map {|dc|
-      case dc.model
-      when 'GpArticle::Doc'
-        dc = GpArticle::Content::Doc.find(dc.id)
-        docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(start_date).and(docs[:event_date].lteq(end_date)))
-      else
-        []
-      end
-    }.flatten
-  end
-
-  def merge_docs_into_events(docs, events)
-    docs.each do |doc|
-      event = GpCalendar::Event.new(title: doc.title, href: doc.public_uri, target: '_self',
-                                    started_on: doc.event_date, ended_on: doc.event_date, description: doc.summary)
-      event.files = doc.files
-      events << event
-    end
-    events.sort! {|a, b| a.started_on <=> b.started_on }
   end
 end
