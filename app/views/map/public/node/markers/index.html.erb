@@ -25,8 +25,9 @@
     <tr>
       <td class="markerCategories"><%= marker.categories.map(&:title).join(', ') %></td>
       <td class="markerImage">
-        <%- unless marker.files.empty? -%>
-        <%= image_tag "#{@content.public_node.public_uri}#{marker.name}/file_contents/#{url_encode marker.files.first.name}" %>
+        <%- unless marker.files.empty?
+              file = marker.files.first -%>
+        <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
         <%- else -%>
         No Photo
         <%- end -%>

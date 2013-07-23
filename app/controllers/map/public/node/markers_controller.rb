@@ -61,6 +61,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
                                    window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>),
                                    doc: d)
           marker.categories = d.categories
+          marker.files = d.files
           markers << marker
         end
       end
