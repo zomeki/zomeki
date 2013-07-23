@@ -8,4 +8,5 @@ ja:
         latitude: 緯度
         longitude: 経度
         window_text: 吹き出し
+        file: 画像
         state: 状態

@@ -11,9 +11,13 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':content/content_settings'
 
     ## contents
-    resources :markers,
+    resources(:markers,
       :controller => 'admin/markers',
-      :path       => ':content/markers'
+      :path       => ':content/markers') do
+      member do
+        get :file_content
+      end
+   end
 
     ## nodes
     resources :node_markers,
