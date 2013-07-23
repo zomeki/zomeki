@@ -2,7 +2,8 @@
 class Map::Marker < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Rel::Unid
-  include Sys::Model::Auth::Free
+  include Sys::Model::Rel::File
+  include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
 
@@ -21,6 +22,7 @@ class Map::Marker < ActiveRecord::Base
   validates :longitude, :presence => true, :numericality => true
 
   after_initialize :set_defaults
+  before_save :set_name
 
   scope :public, where(state: 'public')
 
@@ -30,5 +32,16 @@ class Map::Marker < ActiveRecord::Base
 
   def set_defaults
     self.state ||= 'public' if self.has_attribute?(:state)
+  end
+
+  def set_name
+    return if self.name.present?
+    date = if created_at
+             created_at.strftime('%Y%m%d')
+           else
+             Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
+           end
+    seq = Util::Sequencer.next_id('map_markers', :version => date)
+    self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
   end
 end

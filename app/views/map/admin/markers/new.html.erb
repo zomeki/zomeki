@@ -1,4 +1,4 @@
-<%= form_for(:item, :url => map_markers_path) do |f| %>
+<%= form_for(:item, :url => map_markers_path, :html => { multipart: true }) do |f| %>
   <%= error_messages_for :item %>
   <%= render 'form', :f => f %>
   <%= submit :create %>
