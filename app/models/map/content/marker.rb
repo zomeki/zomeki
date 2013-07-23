@@ -8,6 +8,7 @@ class Map::Content::Marker < Cms::Content
     Cms::Node.where(state: 'public', content_id: id, model: 'Map::Marker').order(:id).first
   end
 
+#TODO: DEPRECATED
   def marker_node
     return @marker_node if @marker_node
     @marker_node = Cms::Node.where(state: 'public', content_id: id, model: 'Map::Marker').order(:id).first
@@ -33,6 +34,10 @@ class Map::Content::Marker < Cms::Content
     setting = Map::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     return [] unless setting
     setting.categories
+  end
+
+  def public_categories
+    categories.public
   end
 
   def category_types

@@ -23,6 +23,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_markers,
       :controller => 'admin/node/markers',
       :path       => ':parent/node_markers'
+
+    ## pieces
+    resources :piece_category_types,
+      :controller => 'admin/piece/category_types'
   end
 
   ## public
