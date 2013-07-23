@@ -25,7 +25,7 @@
           <ul>
             <%- events.each do |event| -%>
             <li>
-              <p class="title"><%= link_to_if event.href.present?, event.title, event.href, target: event.target %></p>
+              <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
               <%- unless event.categories.empty? -%>
               <p class="category">
                 <%- event.categories.each do |category| -%>

@@ -3,9 +3,9 @@ class GpCalendar::Content::Setting < Cms::ContentSetting
   set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
     :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
   set_config :list_style, :name => '表示形式',
-    :comment => '日付：@date タイトル：@title 組織：@group カテゴリ：@category'
+    :comment => 'タイトル：@title'
   set_config :date_style, :name => '日付形式',
-    :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
+    :comment => '年：%Y 月：%m 日：%d 曜日：%A 曜日（省略）：%a'
 
   def upper_text
   end
