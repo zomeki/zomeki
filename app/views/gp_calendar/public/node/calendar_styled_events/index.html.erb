@@ -1,19 +1,7 @@
 <div class="calendarEvents calendarCalendarEvents">
   <h2><%= @date.year %>年<%= @date.month %>月</h2>
 
-  <div class="pagination upperPagination">
-    <%- if @date.prev_month < @min_date -%>
-    <span class="disabled prev_page">前の月</span>
-    <%- else -%>
-    <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
-    <%- end -%>
-    <span class="separator">|</span>
-    <%- if @date.next_month > @max_date -%>
-    <span class="disabled next_page">次の月</span>
-    <%- else -%>
-    <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
-    <%- end -%>
-  </div>
+  <%= render 'gp_calendar/public/node/shared/pagination', extra_css: 'upperPagination' %>
 
   <table border="1">
     <thead class="wdays">
@@ -56,17 +44,5 @@
     </tbody>
   </table>
 
-  <div class="pagination lowerPagination">
-    <%- if @date.prev_month < @min_date -%>
-    <span class="disabled prev_page">前の月</span>
-    <%- else -%>
-    <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
-    <%- end -%>
-    <span class="separator">|</span>
-    <%- if @date.next_month > @max_date -%>
-    <span class="disabled next_page">次の月</span>
-    <%- else -%>
-    <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
-    <%- end -%>
-  </div>
+  <%= render 'gp_calendar/public/node/shared/pagination', extra_css: 'lowerPagination' %>
 <!-- end .calendarEvents --></div>
