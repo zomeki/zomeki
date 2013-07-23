@@ -4,6 +4,10 @@ class Map::Content::Marker < Cms::Content
 
   has_many :markers, :foreign_key => :content_id, :class_name => 'Map::Marker', :dependent => :destroy
 
+  def public_node
+    Cms::Node.where(state: 'public', content_id: id, model: 'Map::Marker').order(:id).first
+  end
+
   def marker_node
     return @marker_node if @marker_node
     @marker_node = Cms::Node.where(state: 'public', content_id: id, model: 'Map::Marker').order(:id).first

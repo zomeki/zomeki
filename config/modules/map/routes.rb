@@ -27,6 +27,7 @@ ZomekiCMS::Application.routes.draw do
 
   ## public
   scope "_public/#{mod}", :module => mod, :as => '' do
-    match 'node_markers(/index.:format)' => 'public/node/markers#index'
+    match 'node_markers(/index)' => 'public/node/markers#index'
+    match 'node_markers/:name/file_contents/:basename.:extname' => 'public/node/markers#file_content', :format => false
   end
 end
