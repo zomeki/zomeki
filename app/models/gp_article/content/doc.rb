@@ -18,6 +18,7 @@ class GpArticle::Content::Doc < Cms::Content
     Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
   end
 
+#TODO: DEPRECATED
   def doc_node
     return @doc_node if @doc_node
     @doc_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first

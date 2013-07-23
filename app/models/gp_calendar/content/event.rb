@@ -10,6 +10,7 @@ class GpCalendar::Content::Event < Cms::Content
     Cms::Node.where(state: 'public', content_id: id, model: 'GpCalendar::Event').order(:id).first
   end
 
+#TODO: DEPRECATED
   def event_node
     return @event_node if @event_node
     @event_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCalendar::Event').order(:id).first
