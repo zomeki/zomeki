@@ -1,0 +1,10 @@
+<li>
+  <div><%= link_to category.title, "?category=#{category.category_type.name}/#{category.path_from_root_category}" %></div>
+  <%- unless category.public_children.empty? -%>
+  <ul class="level<%= category.level_no + 1 -%>">
+    <%- category.public_children.each do |child| -%>
+    <%= render 'category', category: child %>
+    <%- end -%>
+  </ul>
+  <%- end -%>
+</li>

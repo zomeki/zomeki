@@ -8,5 +8,6 @@ class GpCalendar::Public::Piece::CategoryTypesController < Sys::Controller::Publ
   end
 
   def index
+    @top_categories = @piece.content.public_categories
   end
 end
