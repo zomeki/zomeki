@@ -1,0 +1,13 @@
+<%-
+  s_style = localize_wday(date_style, event.started_on.wday)
+  e_style = localize_wday(date_style, event.ended_on.wday)
+  started_on = event.started_on.strftime(s_style)
+  ended_on = event.ended_on.strftime(e_style)
+-%>
+<%- if event.started_on == event.ended_on -%>
+  <span class="startDate closeDate"><%= started_on %></span>
+<%- else -%>
+  <span class="startDate"><%= started_on %></span>
+  <span class="from">～</span>
+  <span class="closeDate"><%= ended_on %></span>
+<%- end -%>
