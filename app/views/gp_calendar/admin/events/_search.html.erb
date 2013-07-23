@@ -2,16 +2,18 @@
 <table>
   <tr>
     <th>イベント日</th>
-    <td><%= text_field_tag 'criteria[date]', params[:criteria].try('[]', :date), :style => 'width: 100px;', :class => 'datepicker' %></td>
     <th><%= GpCalendar::Event.human_attribute_name :title %></th>
-    <td><%= text_field_tag 'criteria[title]', params[:criteria].try('[]', :title), :style => 'width: 400px;' %></td>
     <th>並び順</th>
-    <td><%= select_tag 'criteria[order]', options_for_select(GpCalendar::Event::ORDER_OPTIONS,
-                                                             params[:criteria].try('[]', :order)), include_blank: true %></td>
-    <td class="submitters">
+    <td rowspan="2" class="submitters">
       <%= submit_tag '検索' %>
       <%= submit_tag 'リセット', :name => 'reset_criteria' %>
     </td>
+  </tr>
+  <tr>
+    <td><%= text_field_tag 'criteria[date]', params[:criteria].try('[]', :date), :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <td><%= text_field_tag 'criteria[title]', params[:criteria].try('[]', :title), :style => 'width: 400px;' %></td>
+    <td><%= select_tag 'criteria[order]', options_for_select(GpCalendar::Event::ORDER_OPTIONS,
+                                                             params[:criteria].try('[]', :order)), include_blank: true %></td>
   </tr>
 </table>
 <%- end -%>
