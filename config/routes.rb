@@ -54,27 +54,27 @@ ZomekiCMS::Application.routes.draw do
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
+  # match ':controller(/:action(/:id))(.:format)'
 
-  ## OmniAuth
+  # OmniAuth
   match "/_auth/facebook"           => "cms/public/o_auth#dummy",   :as => :o_auth_facebook
   match "/_auth/:provider/callback" => "cms/public/o_auth#callback" # Used only by OmniAuth
   match "/_auth/failure"            => "cms/public/o_auth#failure"  # Used only by OmniAuth
 
-  ## Tool
+  # Tool
   match "/_tools/captcha/:action" => "simple_captcha",
     :as => "simple_captcha"
 
-  ## Files
+  # Files
   match "_files/*path"           => "cms/public/files#down"
 
-  ## Talking
+  # Talking
   match "*path.html.mp3"         => "cms/public/talk#down_mp3"
   match "*path.html.m3u"         => "cms/public/talk#down_m3u"
   match "*path.html.r.mp3"       => "cms/public/talk#down_mp3"
   match "*path.html.r.m3u"       => "cms/public/talk#down_m3u"
 
-  ## Admin
+  # Admin
   match "#{ZomekiCMS::ADMIN_URL_PREFIX}"         => 'sys/admin/front#index'
   match "#{ZomekiCMS::ADMIN_URL_PREFIX}/login"   => 'sys/admin/account#login',  :as => :admin_login
   match "#{ZomekiCMS::ADMIN_URL_PREFIX}/logout"  => 'sys/admin/account#logout', :as => :admin_logout
@@ -85,14 +85,14 @@ ZomekiCMS::Application.routes.draw do
   get  "#{ZomekiCMS::ADMIN_URL_PREFIX}/password/edit"          => 'sys/admin/account#edit_password',            :as => :edit_admin_password
   put  "#{ZomekiCMS::ADMIN_URL_PREFIX}/password"               => 'sys/admin/account#update_password',          :as => :admin_password
 
-  ## Modules
+  # Modules
   Dir::entries("#{Rails.root}/config/modules").each do |mod|
     next if mod =~ /^\./
     file = "#{Rails.root}/config/modules/#{mod}/routes.rb"
     load(file) if FileTest.exist?(file)
   end
 
-  ## Exception
+  # Exception
   match "404.:format" => "exception#index"
   match "*path"       => "exception#index"
 end
