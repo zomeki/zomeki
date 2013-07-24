@@ -39,6 +39,7 @@ class GpCategory::Category < ActiveRecord::Base
   before_validation :set_attributes_from_parent
 
   scope :public, where(state: 'public')
+  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
 
   def content
     category_type.content
