@@ -1,8 +1,7 @@
 class Cms::Admin::Piece::SnsPartsController < Cms::Admin::Piece::BaseController
   def pre_dispatch_piece
-    result = super
     @piece = Cms::Piece::SnsPart.find(@piece)
-    result
+    super
   end
 
   def update
