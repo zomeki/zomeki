@@ -2,13 +2,13 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   
   before_filter :pre_dispatch_piece
-  
+
   def pre_dispatch_piece
     return error_auth unless Core.user.has_auth?(:designer)
-    return error_auth unless @piece = find_piece
+    return error_auth unless @piece = model.find(params[:id])
     #default_url_options[:piece] = @piece
   end
-  
+
   def model
     return @model_class if @model_class
     mclass = self.class.to_s.gsub(/^(\w+)::Admin/, '\1').gsub(/Controller$/, '').singularize
