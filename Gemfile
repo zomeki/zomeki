@@ -55,4 +55,5 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 4.2.1'
   gem 'email_spec', '~> 1.4.0'
   gem 'spring', '~> 0.0.8'
+  gem 'rails_best_practices'
 end
