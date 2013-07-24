@@ -44,6 +44,10 @@ class Map::Content::Marker < Cms::Content
     GpCategory::CategoryType.where(id: categories.map(&:category_type_id))
   end
 
+  def category_types_for_option
+    category_types.map {|ct| [ct.title, ct.id] }
+  end
+
   def category_type_categories(category_type)
     category_type_id = (category_type.kind_of?(GpCategory::CategoryType) ? category_type.id : category_type.to_i )
     categories.select {|c| c.category_type_id == category_type_id }

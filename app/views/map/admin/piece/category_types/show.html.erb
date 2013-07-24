@@ -1,1 +1,11 @@
-<%= render 'map/admin/piece/shared/show' %>
+<%= render(layout: 'map/admin/piece/shared/show') do -%>
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= @item.visible_category_types.map(&:title).join(', ') %></td>
+  </tr>
+</table>
+<%- end -%>

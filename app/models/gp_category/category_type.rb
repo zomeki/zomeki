@@ -28,6 +28,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   after_initialize :set_defaults
 
   scope :public, where(state: 'public')
+  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
 
   def public_categories
     categories.public
