@@ -8,6 +8,6 @@ class Map::Public::Piece::CategoryTypesController < Sys::Controller::Public::Bas
   end
 
   def index
-    @top_categories = @piece.content.public_categories
+    @top_categories = @piece.content.public_categories.where(category_type_id: @piece.visible_category_type_ids)
   end
 end
