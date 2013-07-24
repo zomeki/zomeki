@@ -10,6 +10,6 @@ class Cms::Admin::Piece::SnsPartsController < Cms::Admin::Piece::BaseController
   private
 
   def find_piece
-    Cms::Piece::SnsPart.find(params[:id])
+    model.new.readable.find(params[:id])
   end
 end
