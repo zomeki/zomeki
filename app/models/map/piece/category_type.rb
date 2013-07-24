@@ -14,9 +14,13 @@ class Map::Piece::CategoryType < Cms::Piece
     category_types.map {|ct| [ct.title, ct.id] }
   end
 
-  def visible_category_types
-    return category_types.none unless setting_value(:category_type_ids).is_a?(String)
+  def visible_category_type_ids
+    return [] unless setting_value(:category_type_ids).is_a?(String)
     category_type_ids = YAML.load(setting_value(:category_type_ids))
-    category_types.where(id: category_type_ids)
+    category_type_ids.is_a?(Array) ? category_type_ids : []
+  end
+
+  def visible_category_types
+    category_types.where(id: visible_category_type_ids)
   end
 end
