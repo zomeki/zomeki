@@ -6,4 +6,10 @@ class Cms::Admin::Piece::SnsPartsController < Cms::Admin::Piece::BaseController
     params[:item][:in_settings] = in_settings
     super
   end
+
+  private
+
+  def find_piece
+    Cms::Piece::SnsPart.find(params[:id])
+  end
 end
