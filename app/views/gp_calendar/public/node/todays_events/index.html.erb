@@ -7,9 +7,14 @@
       <tbody>
         <%- @events.each do |event| next unless event.categories.include?(category) -%>
         <tr>
+          <%- if @content.show_images? -%>
           <td class="image">
             <%- if event.files.empty? -%>
-              No Photo
+              <%- if @content.default_image.blank? -%>
+                画像がありません。
+              <%- else -%>
+                <%= image_tag @content.default_image %>
+              <%- end -%>
             <%- else -%>
               <p class="thumb">
                 <%- event.files.each do |file| next unless file.image_file? -%>
@@ -18,6 +23,7 @@
               </p>
             <%- end -%>
           </td>
+          <%- end -%>
           <td class="date">
             <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
           </td>
