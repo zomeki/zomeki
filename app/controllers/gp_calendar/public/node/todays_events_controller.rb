@@ -9,5 +9,8 @@ class GpCalendar::Public::Node::TodaysEventsController < GpCalendar::Public::Nod
     if (category = find_category_by_specified_path(params[:category]))
       @events.select! {|e| e.category_ids.include?(category.id) }
     end
+
+    category_ids = @events.inject([]) {|i, e| i.concat(e.category_ids) }
+    @event_categories = GpCategory::Category.where(id: category_ids)
   end
 end

@@ -1,46 +1,43 @@
 <div class="calendarEvents calendarTodayEvents">
-  <h2><%=i18n_l @today, :default_ja %></h2>
-
   <%- unless @events.empty? -%>
-  <table border="1">
-    <thead>
-      <tr>
-        <th class="image">イメージ</th>
-        <th class="date">開催日</th>
-        <th class="event">イベント</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%- @events.each do |event| -%>
-      <tr>
-        <td class="image">
-          <%- if event.files.empty? -%>
-            No Photo
-          <%- else -%>
-            <p class="thumb">
-              <%- event.files.each do |file| next unless file.image_file? -%>
-              <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+    <%- @event_categories.each do |category| -%>
+    <h2>■<%= category.title %></h2>
+
+    <table border="1">
+      <tbody>
+        <%- @events.each do |event| next unless event.categories.include?(category) -%>
+        <tr>
+          <td class="image">
+            <%- if event.files.empty? -%>
+              No Photo
+            <%- else -%>
+              <p class="thumb">
+                <%- event.files.each do |file| next unless file.image_file? -%>
+                <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+                <%- end -%>
+              </p>
+            <%- end -%>
+          </td>
+          <td class="date">
+            <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
+          </td>
+          <td class="event">
+            <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
+            <%- unless event.categories.empty? -%>
+            <p class="category">
+              <%- event.categories.each do |category| -%>
+              <span class="category<%= category.name.capitalize %>"><%= category.title %></span>
               <%- end -%>
             </p>
-          <%- end -%>
-        </td>
-        <td class="date">
-          <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
-        </td>
-        <td class="event">
-          <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
-          <%- unless event.categories.empty? -%>
-          <p class="category">
-            <%- event.categories.each do |category| -%>
-            <span class="category<%= category.name.capitalize %>"><%= category.title %></span>
             <%- end -%>
-          </p>
-          <%- end -%>
-          <%=simple_format event.description, class: 'summary' if event.description.present? %>
-        </td>
-      </tr>
-      <%- end -%>
-    </tbody>
-  </table>
+            <%=simple_format event.description, class: 'summary' if event.description.present? %>
+          </td>
+        </tr>
+        <%- end -%>
+      </tbody>
+    </table>
+    <%- end -%>
+  <%- else -%>
+    本日のイベントはありません。
   <%- end -%>
 <!-- end .calendarEvents --></div>
