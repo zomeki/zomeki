@@ -14,8 +14,8 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
 
     unless date
       date = Date.today
-      min_date = date.beginning_of_month
-      max_date = 11.months.since(min_date)
+      min_date = 1.year.ago(date.beginning_of_month)
+      max_date = 11.months.since(date.beginning_of_month)
     end
 
     start_date = date.beginning_of_month
