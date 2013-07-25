@@ -19,13 +19,7 @@
       <tr>
         <th><%= f.label :title %> <span class="note">※</span></th>
         <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
-      </tr>
-    </table>
-
-    <br /><p class="form">タイトル設定</p>
-
-    <table class="show">
-      <tr>
+        <th>タイトル設定</th>
         <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
       </tr>
     </table>
@@ -48,8 +42,6 @@
       </table>
     </div>
 
-    <br /><p class="form">本文</p>
-
     <table class="show">
       <tr>
         <th><%= f.label :body %></th>
@@ -62,7 +54,7 @@
       </tr>
     </table>
 
-    <br /><p class="form">添付ファイル</p>
+    <p class="form">添付ファイル</p>
 
     <table class="show">
       <tr>
@@ -75,7 +67,7 @@
       <iframe src="<%= gp_article_doc_files_path(@content, inline_id) %>" style="width: 100%; height: 400px;"></iframe>
     </div>
 
-    <br /><p class="form">記事設定</p>
+    <p class="form">記事設定</p>
 
     <table class="show">
       <%- @visible_category_types.each do |category_type| -%>
@@ -122,23 +114,10 @@
       </tr>
     </table>
 
-    <br /><p class="form">イベント設定</p>
-
-    <table class="show">
-      <tr>
-        <th><%= f.label :event_state %></th>
-        <td>
-          <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
-          <span style="margin-left: 10px;">
-            <%= f.label :event_date %> ： <%= f.text_field :event_date, :value => value_for_datepicker(f.object_name, :event_date),
-                                                                        :style => 'width: 100px;', :class => 'datepicker' %>
-          </span>
-        </td>
-      </tr>
-    </table>
-
+  </div>
+  <div id="tab2">
     <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
-    <br /><p class="form">表示日時設定</p>
+    <p class="form" style="margin-top: 0;">表示日時設定</p>
 
     <table class="show">
       <%- if @content.display_dates(:published_at) -%>
@@ -158,7 +137,7 @@
     </table>
     <%- end -%>
 
-    <br /><p class="form">公開日時設定</p>
+    <p class="form">公開日時設定</p>
 
     <table class="show">
       <tr>
@@ -170,10 +149,65 @@
         <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
       </tr>
     </table>
-
+  </div>
+  <div id="tab3">
+    <%= inquiry_form f %>
+  </div>
+  <div id="tab4">
     <%= recognizer_form f %>
+  </div>
+  <div id="tab5">
+    <table class="show">
+      <tr>
+        <th><%= f.label :event_state %></th>
+        <td>
+          <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
+          <span style="margin-left: 10px;">
+            <%= f.label :event_date %> ： <%= f.text_field :event_date, :value => value_for_datepicker(f.object_name, :event_date),
+                                                                        :style => 'width: 100px;', :class => 'datepicker' %>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="tab6">
+    <%= google_map_form f %>
+  </div>
+  <div id="tab7">
+    <table class="show">
+      <tr>
+        <th><%= f.label :mobile_title %></th>
+        <td><%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %></td>
+      </tr>
+      <tr>
+        <th colspan="2"><%= f.label :mobile_body %></th>
+      </tr>
+      <tr>
+        <td colspan="2" class="cke_editor_wrapper">
+          <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+          <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="tab8">
+    <p class="form" style="margin-top: 0;">基本設定</p>
 
-    <br /><p class="form">編集権限</p>
+    <table class="show">
+      <tr>
+        <th><%= f.label :name %></th>
+        <td colspan="3"><%= f.text_field :name, :style => 'width: 200px;' %></td>
+      </tr>
+      <tr>
+        <th>表示端末</th>
+        <td>
+          <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
+          <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
+        </td>
+      </tr>
+    </table>
+
+    <p class="form">編集権限</p>
 
     <%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
     <table class="show">
@@ -193,46 +227,6 @@
     </table>
 
     <%= creator_form f %>
-  </div>
-  <div id="tab3">
-    <%= inquiry_form f %>
-  </div>
-  <div id="tab6">
-    <%= google_map_form f %>
-  </div>
-  <div id="tab7">
-    <table class="show">
-      <tr>
-        <th>表示端末</th>
-        <td>
-          <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
-          <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
-        </td>
-      </tr>
-      <tr>
-        <th><%= f.label :mobile_title %></th>
-        <td><%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %></td>
-      </tr>
-      <tr>
-        <th colspan="2"><%= f.label :mobile_body %></th>
-      </tr>
-      <tr>
-        <td colspan="2" class="cke_editor_wrapper">
-          <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
-          <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div id="tab8">
-    <br /><p class="form">基本設定</p>
-
-    <table class="show">
-      <tr>
-        <th><%= f.label :name %></th>
-        <td colspan="3"><%= f.text_field :name, :style => 'width: 200px;' %></td>
-      </tr>
-    </table>
   </div>
 </div>
 
