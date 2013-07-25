@@ -1,5 +1,4 @@
-<%
-
+<%-
 map     = item.maps.find(:first)
 markers = map ? map.markers : []
 
@@ -10,8 +9,8 @@ map_zoom = (map && map.map_zoom != '') ? map.map_zoom : 14
 
 in_size = safe(0){params[:item][:in_maps]['0'][:markers].size}
 markers_size = [3, markers.size, in_size].max
-
-%><script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
+-%>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
 <script type="text/javascript" src="/_common/modules/cms/js/map.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -185,9 +184,8 @@ addEvent(window, 'load', function() {
     <% end %>
     </tbody>
   </table>
-  
+
   <div class="addMarkerForm">
     <a href="#" onclick="return addMakerForm();">入力フォームを追加する</a>
   </div>
-  
 </div>

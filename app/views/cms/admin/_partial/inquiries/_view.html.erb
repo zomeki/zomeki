@@ -7,6 +7,10 @@ return nil unless item.inquiry.visible?
 
 <table class="show">
   <tr>
+    <th>連絡先表示</th>
+    <td><%= item.inquiry.state == 'visible' ? '表示' : '非表示' %></td>
+  </tr>
+  <tr>
     <th>課</th>
     <td><%= safe{item.inquiry.group.full_name} %></td>
   </tr><tr>

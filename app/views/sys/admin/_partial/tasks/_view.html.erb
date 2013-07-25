@@ -1,22 +1,21 @@
-<%
+<%-
+return '' if item.tasks.empty?
 
-return '' if item.tasks.size == 0
+published_at = item.find_task_by_name('publish')
+closed_at = item.find_task_by_name('close')
+-%>
 
-_publish = item.find_task_by_name('publish')
-_close   = item.find_task_by_name('close')
-
-%><br />
-
+<%- if published_at || closed_at -%>
 <p class="form">公開日時設定</p>
 
 <table class="show">
-  
   <tr>
     <th>公開開始日時</th>
-    <td><%= _publish.strftime("%Y-%m-%d %H:%M:%S") if _publish %></td>
-  </tr><tr>
-    <th>公開終了日時</th>
-    <td><%= _close.strftime("%Y-%m-%d %H:%M:%S") if _close %></td>
+    <td><%=l published_at if published_at %></td>
   </tr>
-
+  <tr>
+    <th>公開終了日時</th>
+    <td><%=l closed_at if closed_at %></td>
+  </tr>
 </table>
+<%- end -%>
