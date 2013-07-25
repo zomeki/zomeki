@@ -15,6 +15,14 @@
     <th><%= @item.locale(:route_id) %></th>
     <td><%= f.select(:route_id, @item.candidate_routes, :include_blank => true) %></td>
   </tr>
+  <tr>
+    <th><%= f.label :sitemap_state %></th>
+    <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sitemap_sort_no %></th>
+    <td><%= f.text_field :sitemap_sort_no, :class => 'number' %></td>
+  </tr>
 </table>
 
 <%= observe_field :item_concept_id, :url => {:action => :content_options},

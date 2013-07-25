@@ -112,6 +112,7 @@ table.show input.title {
   width: 600px;
 }
 table.show input.number {
+  text-align: right;
   width: 100px;
   ime-mode: disabled;
 }
