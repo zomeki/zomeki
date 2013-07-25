@@ -44,6 +44,8 @@
   </tr>
 </table>
 
+<p class="form">記事設定</p>
+
 <%- unless @category_types.empty? -%>
 <table class="show">
   <%- @category_types.each do |category_type| -%>
@@ -57,15 +59,6 @@
 
 <table class="show">
   <tr>
-    <th><%= @item.locale :event_state %></th>
-    <td>
-      <%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %>
-      <%- if @item.event_state == 'visible' -%>
-      <span style="margin-left: 10px;"><%= @item.locale :event_date %> ： <%= @item.event_date %></span>
-      <%- end -%>
-    </td>
-  </tr>
-  <tr>
     <th><%= @item.locale :raw_tags %></th>
     <td><%= @item.raw_tags %></td>
   </tr>
@@ -77,34 +70,8 @@
   </tr>
 </table>
 
-<br />
-<p class="form">携帯向け</p>
-
-<table class="show">
-  <tr>
-    <th>表示端末</th>
-    <td>
-      <%= @item.locale :terminal_pc_or_smart_phone if @item.terminal_pc_or_smart_phone %>
-      <%= @item.locale :terminal_mobile if @item.terminal_mobile %>
-    </td>
-  </tr>
-  <tr>
-    <th><%= @item.locale :mobile_title %></th>
-    <td><%= @item.mobile_title %></td>
-  </tr>
-  <tr>
-    <th colspan="2"><%= @item.locale :mobile_body %></th>
-  </tr>
-  <tr>
-    <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
-  </tr>
-</table>
-
-<%= google_map_view @item %>
-<%= inquiry_view @item %>
-
 <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
-<br /><p class="form">表示日時設定</p>
+<p class="form">表示日時設定</p>
 
 <table class="show">
   <%- if @content.display_dates(:published_at) -%>
@@ -123,6 +90,59 @@
 <%- end -%>
 
 <%= task_view @item %>
+
+<p class="form">連絡先</p>
+
+<%= inquiry_view @item %>
+
+<p class="form">承認</p>
+
 <%= recognizer_view @item %>
+
+<p class="form">イベント</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :event_state %></th>
+    <td>
+      <%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %>
+      <%- if @item.event_state == 'visible' -%>
+      <span style="margin-left: 10px;"><%= @item.locale :event_date %> ： <%= @item.event_date %></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<p class="form">地図</p>
+
+<%= google_map_view @item %>
+
+<p class="form">携帯向け</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :mobile_title %></th>
+    <td><%= @item.mobile_title %></td>
+  </tr>
+  <tr>
+    <th colspan="2"><%= @item.locale :mobile_body %></th>
+  </tr>
+  <tr>
+    <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+  </tr>
+</table>
+
+<p class="form">基本設定</p>
+
+<table class="show">
+  <tr>
+    <th>表示端末</th>
+    <td>
+      <%= @item.locale :terminal_pc_or_smart_phone if @item.terminal_pc_or_smart_phone %>
+      <%= @item.locale :terminal_mobile if @item.terminal_mobile %>
+    </td>
+  </tr>
+</table>
+
 <%= editable_group_view @item %>
 <%= creator_view @item %>
