@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130722023752) do
+ActiveRecord::Schema.define(:version => 20130722071310) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -741,6 +741,7 @@ ActiveRecord::Schema.define(:version => 20130722023752) do
     t.text     "window_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|
