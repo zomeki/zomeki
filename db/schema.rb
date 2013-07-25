@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130722071310) do
+ActiveRecord::Schema.define(:version => 20130725150514) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -384,7 +384,7 @@ ActiveRecord::Schema.define(:version => 20130722071310) do
     t.integer  "unid"
     t.integer  "concept_id"
     t.integer  "site_id"
-    t.string   "state",         :limit => 15
+    t.string   "state",           :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "recognized_at"
@@ -397,9 +397,11 @@ ActiveRecord::Schema.define(:version => 20130722071310) do
     t.integer  "layout_id"
     t.string   "name"
     t.text     "title"
-    t.text     "body",          :limit => 2147483647
+    t.text     "body",            :limit => 2147483647
     t.text     "mobile_title"
-    t.text     "mobile_body",   :limit => 2147483647
+    t.text     "mobile_body",     :limit => 2147483647
+    t.string   "sitemap_state"
+    t.integer  "sitemap_sort_no"
   end
 
   add_index "cms_nodes", ["parent_id", "name"], :name => "parent_id"

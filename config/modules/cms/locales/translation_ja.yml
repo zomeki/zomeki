@@ -100,6 +100,8 @@ ja:
         body: "本文"
         mobile_title: "携帯タイトル"
         mobile_body: "携帯本文"
+        sitemap_state: "サイトマップ"
+        sitemap_sort_no: "並び順"
 
       cms/kana_dictionary:
         name: "名称"
