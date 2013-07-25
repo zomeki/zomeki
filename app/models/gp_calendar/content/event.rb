@@ -10,12 +10,6 @@ class GpCalendar::Content::Event < Cms::Content
     Cms::Node.where(state: 'public', content_id: id, model: 'GpCalendar::Event').order(:id).first
   end
 
-#TODO: DEPRECATED
-  def event_node
-    return @event_node if @event_node
-    @event_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCalendar::Event').order(:id).first
-  end
-
   def categories
     setting = GpCalendar::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     return [] unless setting
