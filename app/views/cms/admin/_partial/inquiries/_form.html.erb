@@ -7,15 +7,13 @@ end
 groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no)
 group  = Sys::Group.find_by_id(item.in_inquiry['group_id']) || Core.user_group
 
-%><br />
-
-<p class="form">連絡先</p>
-
-<div style="margin: 10px;">
-<%= f.radio_buttons "in_inquiry[state]", [['表示','visible'],['非表示','hidden']], :class => 'status' %>
-</div>
+%>
 
 <table class="show">
+<tr>
+  <th>連絡先表示</th>
+  <td><%= f.radio_buttons "in_inquiry[state]", [['表示','visible'],['非表示','hidden']], :class => 'status' %></td>
+</tr>
 <tr>
   <th>課 <% if @item.inquiry_presence?(:group_id) %><span class="note">※</span><% end %></th>
   <td><span <%= error?('連絡先（課）') %>>
