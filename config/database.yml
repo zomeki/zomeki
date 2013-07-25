@@ -11,11 +11,8 @@ development:
 test:
   adapter: mysql2
   encoding: utf8
-  reconnect: false
   database: zomeki_test
-  pool: 5
-  username: zomeki
-  password: zomekipass
+  username: travis
   host: 127.0.0.1
 
 production:
