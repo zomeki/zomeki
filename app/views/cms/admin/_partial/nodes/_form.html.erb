@@ -28,6 +28,16 @@
     <th><%= item.locale(:title) %></th>
     <td><%= f.text_field :title, :class => 'title' %></td>
   </tr>
+  <%- unless @item.is_a?(Cms::Node::Sitemap) -%>
+  <tr>
+    <th><%= f.label :sitemap_state %></th>
+    <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sitemap_sort_no %></th>
+    <td><%= f.text_field :sitemap_sort_no, :class => 'number' %></td>
+  </tr>
+  <%- end -%>
 <% if defined?(container) && container != :tr %>
 </table>
 <% end %>
