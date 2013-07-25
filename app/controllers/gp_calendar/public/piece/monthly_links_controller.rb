@@ -8,10 +8,18 @@ class GpCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Publi
     return render(:text => '') unless @node
 
     date      = params[:gp_calendar_event_date]
-    @year     = date.year
-    @month    = date.month
     @min_date = params[:gp_calendar_event_min_date]
     @max_date = params[:gp_calendar_event_max_date]
+
+    unless date
+      date = Date.today
+      @min_date = 1.year.ago(date.beginning_of_month)
+      @max_date = 11.months.since(date.beginning_of_month)
+    end
+
+    @year     = date.year
+    @month    = date.month
+
     return render(:text => '') unless @min_date
 
     @item = Page.current_item
