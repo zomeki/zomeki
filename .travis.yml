@@ -6,9 +6,7 @@ env:
   - DB=mysql
 bundler_args: '--without development'
 before_script:
-  - 'RAILS_ENV=test bundle exec rake db:create'
-script:
-  - 'bundle exec rake db:test:prepare'
-  - 'bundle exec rake spec'
+  - 'RAILS_ENV=test bundle exec rake db:create db:migrate'
+script: true
 notifications:
   email: false
