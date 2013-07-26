@@ -16,7 +16,7 @@ Rails:: 3.2
 
 == 自動スクリプト
 
-  # export LANG=ja_JP.UTF-8; curl -L http://install.zomeki.jp | bash
+  # export LANG=ja_JP.UTF-8; curl -L http://install-development.zomeki.jp | bash
 
 == 手動マニュアル
 
