@@ -4,9 +4,11 @@ rvm:
   - 2.0.0
 env:
   - DB=mysql
-bundler_args: '--without development'
+bundler_args: --without development
 before_script:
-  - 'RAILS_ENV=test bundle exec rake db:create db:migrate'
-script: true
+  - cp config/database.yml.travis config/database.yml
+script:
+  - bundle exec rake db:setup RAILS_ENV=test
+  - bundle exec rake spec
 notifications:
   email: false
