@@ -1,9 +1,6 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-ZOMEKI_VERSION='1.1.0'
-ZOMEKI_VERSION_TAG="v$ZOMEKI_VERSION"
-
 echo '#### Install ZOMEKI ####'
 if [ -f $DONE_FLAG ]; then exit; fi
 echo '-- PRESS ENTER KEY --'
@@ -17,18 +14,16 @@ centos() {
   echo "It's CentOS!"
 
   if [ -d /var/share/zomeki ]; then
-    echo 'ZOMEKI is already exist.'
+    echo 'ZOMEKI is already installed.'
     exit
   fi
 
   id zomeki || useradd -m zomeki
 
   yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
-  cd /usr/local/src
-  rm -rf zomeki-$ZOMEKI_VERSION.tar.gz zomeki-$ZOMEKI_VERSION
-  wget https://github.com/zomeki/zomeki/archive/$ZOMEKI_VERSION_TAG.tar.gz -O zomeki-$ZOMEKI_VERSION.tar.gz
-  mkdir -p /var/share
-  tar zxf zomeki-$ZOMEKI_VERSION.tar.gz && mv zomeki-$ZOMEKI_VERSION /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
+
+  git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
+  chown -R zomeki:zomeki /var/share/zomeki
   cd /var/share/zomeki && gem install bundler && bundle install --without development test
 
   cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.

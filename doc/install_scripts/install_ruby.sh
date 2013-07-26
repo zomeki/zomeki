@@ -17,6 +17,7 @@ centos() {
   echo "It's CentOS!"
 
   yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
+
   cd /usr/local/src
   rm -rf $RUBY_VERSION.tar.gz $RUBY_VERSION
   wget $RUBY_SOURCE_URL

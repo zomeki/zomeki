@@ -1,4 +1,4 @@
-## ZOMEKI v1.1.0 インストールマニュアル
+## ZOMEKI development インストールマニュアル
 
 **********************************************************************
  1 想定環境
@@ -48,7 +48,7 @@ yumリポジトリにEPELを追加します。
 
 必要なパッケージをインストールします。
 
-  # yum -y install wget
+  # yum -y install wget git
 
 **********************************************************************
  5 Ruby のインストール
@@ -74,10 +74,8 @@ ZOMEKIをインストールします。
 
   # yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
-  # cd /usr/local/src
-  # wget https://github.com/zomeki/zomeki/archive/v1.1.0.tar.gz -O zomeki-1.1.0.tar.gz
-  # mkdir -p /var/share
-  # tar zxf zomeki-1.1.0.tar.gz && mv zomeki-1.1.0 /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
+  # git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
+  # chown -R zomeki:zomeki /var/share/zomeki
   # cd /var/share/zomeki && gem install bundler && bundle install --without development test
 
   # cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.
