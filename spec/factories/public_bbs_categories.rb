@@ -2,7 +2,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :valid_category, :class => PublicBbs::Category do
+  factory :valid_category, :class => 'PublicBbs::Category' do
     unid 1
     state 'closed'
     concept_id 1
