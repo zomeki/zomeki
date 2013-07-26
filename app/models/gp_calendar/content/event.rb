@@ -33,8 +33,7 @@ class GpCalendar::Content::Event < Cms::Content
     categories.select {|c| c.category_type_id == category_type_id }
   end
 
-  def category_type_categories_for_option(category_type, opts={})
-    include_descendants = opts[:include_descendants].nil? || opts[:include_descendants]
+  def category_type_categories_for_option(category_type, include_descendants: true)
     if include_descendants
       category_type_categories(category_type).map{|c| c.descendants_for_option }.flatten(1)
     else
