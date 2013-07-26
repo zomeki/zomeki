@@ -8,8 +8,8 @@
 OS         : CentOS 6.4
 Webサーバ  : Apache 2.2
 DBシステム : MySQL 5.1
-Ruby       : 1.9.3
-Rails      : 3.1
+Ruby       : 2.0
+Rails      : 3.2
 
 [設定]
 ドメイン   : zomeki.example.com
@@ -59,8 +59,8 @@ Rubyをインストールします。
   # yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   # cd /usr/local/src
-  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz
-  # tar zxf ruby-1.9.3-p448.tar.gz && cd ruby-1.9.3-p448 && ./configure && make && make install
+  # wget ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz
+  # tar zxf ruby-2.0.0-p247.tar.gz && cd ruby-2.0.0-p247 && ./configure && make && make install
 
 **********************************************************************
  6 ZOMEKI のインストール

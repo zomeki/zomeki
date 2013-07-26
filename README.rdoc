@@ -11,8 +11,8 @@ See COPYING
 OS:: CentOS 6.4 / Ubuntu 12.04
 Webサーバ:: Apache 2.2
 DBシステム:: MySQL 5.1
-Ruby:: 1.9.3
-Rails:: 3.1
+Ruby:: 2.0
+Rails:: 3.2
 
 == 自動スクリプト
 

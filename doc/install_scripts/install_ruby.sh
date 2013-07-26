@@ -1,8 +1,8 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_VERSION='ruby-1.9.3-p448'
-RUBY_SOURCE_URL="ftp://ftp.ruby-lang.org/pub/ruby/1.9/$RUBY_VERSION.tar.gz"
+RUBY_VERSION='ruby-2.0.0-p247'
+RUBY_SOURCE_URL="ftp://ftp.ruby-lang.org/pub/ruby/2.0/$RUBY_VERSION.tar.gz"
 
 echo "#### Install $RUBY_VERSION ####"
 if [ -f $DONE_FLAG ]; then exit; fi
