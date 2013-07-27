@@ -4,7 +4,7 @@
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
     <th><%= GpArticle::Doc.human_attribute_name :title %></th>
-    <th style="text-align: center; width: 120px">記事URL</th>
+    <th style="text-align: center; width: 120px"><%= GpArticle::Doc.human_attribute_name :name %></th>
     <th style="text-align: center; width: 150px">所属</th>
     <th style="text-align: center; width: 150px">作成者</th>
     <th style="text-align: center; width: 120px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
