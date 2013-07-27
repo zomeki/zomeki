@@ -17,6 +17,8 @@ ja:
         updated_at: 更新日時
         state: 状態
         description: 説明
+      gp_category/categorization:
+        sort_no: 並び順
       gp_category/piece/doc:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ

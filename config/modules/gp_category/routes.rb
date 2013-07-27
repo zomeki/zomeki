@@ -19,6 +19,8 @@ ZomekiCMS::Application.routes.draw do
         :controller => 'admin/categories') do
         resources :categories,
           :controller => 'admin/categories'
+        resources :docs, :only => [:index, :show, :edit, :update],
+          :controller => 'admin/docs'
       end
     end
 

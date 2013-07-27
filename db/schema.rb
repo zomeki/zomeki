@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130725150514) do
+ActiveRecord::Schema.define(:version => 20130727155620) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -701,6 +701,7 @@ ActiveRecord::Schema.define(:version => 20130725150514) do
     t.integer  "category_id"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.integer  "sort_no"
   end
 
   create_table "gp_category_category_types", :force => true do |t|
