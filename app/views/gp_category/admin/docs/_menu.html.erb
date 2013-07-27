@@ -1,0 +1,25 @@
+<h2><%= @content.name %> ： <%= @category_type.title %> ： <%= @category.title %> ： <%= GpArticle::Doc.model_name.human %>一覧</h2>
+
+<div class="actionMenu">
+  <%- if params[:action] == 'show' -%>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_category_category_type_category_docs_path(content: @content,
+                                                                                                     category_type_id: @category_type.id,
+                                                                                                     category_id: @category.id) %>
+  <span class="separator"></span>
+  <%= link_to '編集', edit_gp_category_category_type_category_doc_path(content: @content,
+                                                                       category_type_id: @category_type.id,
+                                                                       category_id: @category.id,
+                                                                       id: @item.id) if @item.try(:editable?) %>
+  <%- end -%>
+
+  <%- if params[:action] == 'edit' -%>
+  <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_category_category_type_category_docs_path(content: @content,
+                                                                                                     category_type_id: @category_type.id,
+                                                                                                     category_id: @category.id) %>
+  <span class="separator"></span>
+  <%= link_to '詳細', gp_category_category_type_category_doc_path(content: @content,
+                                                                  category_type_id: @category_type.id,
+                                                                  category_id: @category.id,
+                                                                  id: @item.id) %>
+  <%- end -%>
+</div>

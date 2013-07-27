@@ -1,0 +1,24 @@
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+<%= hidden_field_tag 'target', params[:target] if params[:target].present? %>
+<table>
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :title %>・<%= GpArticle::Doc.human_attribute_name :body %></th>
+    <th>所属</th>
+    <th>作成者</th>
+    <td rowspan="2" class="submitters">
+      <%= submit_tag '検索' %>
+      <%= submit_tag 'リセット', :name => 'reset_criteria' %>
+    </td>
+  </tr>
+  <tr>
+    <td><%= text_field_tag 'criteria[free_word]', params[:criteria].try('[]', :free_word), :style => 'width: 400px;' %></td>
+    <td><%-
+          top = Core.site.groups.find_by_parent_id(0)
+          options = top ? top.children.inject([]){|r, c| r.concat(c.descendants_for_option) } : []
+        -%>
+        <%= select_tag 'criteria[group_id]',
+                       options_for_select(options, params[:criteria].try('[]', :group_id)), include_blank: true %></td>
+    <td><%= text_field_tag 'criteria[user]', params[:criteria].try('[]', :user), :style => 'width: 150px;' %></td>
+  </tr>
+</table>
+<%- end -%>

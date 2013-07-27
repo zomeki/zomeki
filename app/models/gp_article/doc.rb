@@ -36,7 +36,8 @@ class GpArticle::Doc < ActiveRecord::Base
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
-  has_and_belongs_to_many :categories, :class_name => 'GpCategory::Category', :join_table => 'gp_article_docs_gp_category_categories'
+  has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
+  has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
@@ -66,12 +67,14 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
+
     creators = Sys::Creator.arel_table
     groups = Sys::Group.arel_table
     users = Sys::User.arel_table
 
     rel = self.joins(:creator => [:group, :user])
-              .where(docs[:content_id].eq(content.id))
+
+    rel = rel.where(docs[:content_id].eq(content.id)) if content.is_a?(GpArticle::Content::Doc)
 
     rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
     rel = rel.where(docs[:state].eq(criteria[:state])) if criteria[:state].present?
@@ -124,6 +127,11 @@ class GpArticle::Doc < ActiveRecord::Base
                                             .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
                                             .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}"))))))
             end
+    end
+
+    if criteria[:category_id].present?
+      categories = GpCategory::Category.arel_table
+      rel = rel.joins(:categories).where(categories[:id].eq(criteria[:category_id]))
     end
 
     return rel
