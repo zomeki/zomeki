@@ -43,7 +43,7 @@ class GpCategory::Admin::DocsController < Cms::Controller::Admin::Base
     criteria = params[:criteria] || {}
     criteria[:category_id] = @category.id
     categorizations = GpCategory::Categorization.arel_table
-    GpArticle::Doc.all_with_content_and_criteria(nil, criteria).reorder(categorizations[:sort_no].asc)
+    GpArticle::Doc.all_with_content_and_criteria(nil, criteria).reorder(categorizations[:sort_no].eq(nil), categorizations[:sort_no].asc)
   end
 
   def find_doc
