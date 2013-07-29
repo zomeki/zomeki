@@ -7,7 +7,7 @@ class GpCategory::Category < ActiveRecord::Base
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
 
-  default_scope order(:category_type_id, :level_no, :parent_id, :sort_no)
+  default_scope order(:category_type_id, :parent_id, :level_no, :sort_no)
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
@@ -26,10 +26,10 @@ class GpCategory::Category < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :parent_id]}
   validates :title, :presence => true
 
-  has_and_belongs_to_many :docs, :class_name => 'GpArticle::Doc', :join_table => 'gp_article_docs_gp_category_categories', :order => 'published_at, updated_at'
   has_and_belongs_to_many :events, :class_name => 'GpCalendar::Event', :join_table => 'gp_calendar_events_gp_category_categories', :order => 'started_on, ended_on'
 
   has_many :categorizations, :dependent => :destroy
+  has_many :docs, :through => :categorizations, :source => :categorizable, :source_type => 'GpArticle::Doc'
   has_many :markers, :through => :categorizations, :source => :categorizable, :source_type => 'Map::Marker'
 
   belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'

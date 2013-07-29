@@ -24,8 +24,6 @@ class GpArticle::Doc < ActiveRecord::Base
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
-  default_scope order("#{self.table_name}.updated_at DESC")
-
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
   validates_presence_of :content_id
@@ -131,7 +129,14 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if criteria[:category_id].present?
       categories = GpCategory::Category.arel_table
-      rel = rel.joins(:categories).where(categories[:id].eq(criteria[:category_id]))
+
+      conditions = if criteria[:category_id].is_a?(Array)
+                     categories[:id].in(criteria[:category_id])
+                   else
+                     categories[:id].eq(criteria[:category_id])
+                   end
+
+      rel = rel.joins(:categories).where(conditions)
     end
 
     return rel
