@@ -128,15 +128,15 @@ class GpArticle::Doc < ActiveRecord::Base
     end
 
     if criteria[:category_id].present?
-      categories = GpCategory::Category.arel_table
+      cats = GpCategory::Categorization.arel_table
 
       conditions = if criteria[:category_id].is_a?(Array)
-                     categories[:id].in(criteria[:category_id])
+                     cats[:category_id].in(criteria[:category_id])
                    else
-                     categories[:id].eq(criteria[:category_id])
+                     cats[:category_id].eq(criteria[:category_id])
                    end
 
-      rel = rel.joins(:categories).where(conditions)
+      rel = rel.joins(:categorizations).where(conditions).order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
     end
 
     return rel
