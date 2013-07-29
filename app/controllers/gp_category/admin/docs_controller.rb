@@ -12,7 +12,7 @@ class GpCategory::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def index
-    _index (@items = @category.docs.paginate(page: params[:page], per_page: 30))
+    _index (@items = find_docs.paginate(page: params[:page], per_page: 30))
   end
 
   def show
@@ -39,7 +39,13 @@ class GpCategory::Admin::DocsController < Cms::Controller::Admin::Base
 
   private
 
+  def find_docs
+    criteria = params[:criteria] || {}
+    criteria[:category_id] = @category.id
+    GpArticle::Doc.all_with_content_and_criteria(nil, criteria)
+  end
+
   def find_doc
-    @item = @category.docs.find(params[:id])
+    @item = find_docs.find(params[:id])
   end
 end
