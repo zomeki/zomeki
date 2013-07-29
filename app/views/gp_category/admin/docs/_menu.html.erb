@@ -1,5 +1,19 @@
 <h2><%= @content.name %> ： <%= @category_type.title %> ： <%= @category.title %> ： <%= GpArticle::Doc.model_name.human %>一覧</h2>
 
+<div class="navi">
+  <%= link_to "#{GpCategory::CategoryType.model_name.human}一覧", gp_category_category_types_path %>
+  <span class="separator">&gt;</span>
+  <%= link_to @category_type.title, gp_category_category_type_categories_path(content: @content, category_type_id: @category_type.id) %>
+  <%- if @category.parent -%>
+    <%- @category.parent.parents_tree.each do |c| -%>
+    <span class="separator">&gt;</span>
+    <%= link_to c.title, gp_category_category_type_category_categories_path(content: @content,
+                                                                            category_type_id: @category_type.id,
+                                                                            category_id: c.id) %>
+    <%- end -%>
+  <%- end -%>
+</div>
+
 <div class="actionMenu">
   <%- if params[:action] == 'show' -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_category_category_type_category_docs_path(content: @content,
