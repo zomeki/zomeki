@@ -14,4 +14,12 @@ module Cms::Model::Rel::Content
   def content_name
     content ? content.name : Cms::Lib::Modules.module_name(:cms)
   end
+
+  def content
+    s = super
+    content_class = s.model.split('::', 2).insert(1, 'Content').join('::').constantize
+    content_class.find(s.id)
+  rescue NameError
+    super
+  end
 end
