@@ -7,7 +7,7 @@ class GpCategory::Category < ActiveRecord::Base
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
 
-  default_scope order(:category_type_id, :parent_id, :level_no, :sort_no)
+  default_scope order(:category_type_id, :parent_id, :level_no, :sort_no, :name)
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
@@ -21,7 +21,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   belongs_to :parent, :foreign_key => :parent_id, :class_name => self.name
   has_many :children, :foreign_key => :parent_id, :class_name => self.name,
-                      :order => [:level_no, :sort_no], :dependent => :destroy
+                      :order => [:level_no, :sort_no, :name], :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :parent_id]}
   validates :title, :presence => true
