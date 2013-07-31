@@ -6,7 +6,9 @@ class GpCategory::CategoryType < ActiveRecord::Base
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
 
-  default_scope order(:sort_no)
+  SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+
+  default_scope order(:sort_no, :name)
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCategory::Content::CategoryType'
@@ -119,7 +121,8 @@ class GpCategory::CategoryType < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state   ||= 'public' if self.has_attribute?(:state)
-    self.sort_no ||= 10       if self.has_attribute?(:sort_no)
+    self.state         ||= 'public'                         if self.has_attribute?(:state)
+    self.sort_no       ||= 10                               if self.has_attribute?(:sort_no)
+    self.sitemap_state ||= SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state)
   end
 end
