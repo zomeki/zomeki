@@ -1,0 +1,13 @@
+<%-
+  return '' unless category_type.sitemap_visible?
+  css_class = "#{css_class + '-' if css_class.present?}#{File.basename(category_type.name, '.*').camelize(:lower)}"
+-%>
+<li class="level<%= level %> <%= css_class %>">
+  <%= link_to category_type.title, category_type.public_uri, class: "level#{level}" %>
+
+  <%- unless category_type.public_root_categories.empty? -%>
+  <ul class="level<%= level + 1 %> <%= css_class %>">
+    <%= render partial: 'category', collection: category_type.public_root_categories, locals: {level: level + 1, css_class: css_class} %>
+  </ul>
+  <%- end -%>
+</li>

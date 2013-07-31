@@ -216,6 +216,10 @@ class Cms::Node < ActiveRecord::Base
 
     return self
   end
+
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
   
 protected
   def remove_file

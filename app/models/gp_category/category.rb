@@ -121,6 +121,14 @@ class GpCategory::Category < ActiveRecord::Base
     children.public
   end
 
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
+  def public_uri
+    "#{category_type.public_uri}#{path_from_root_category}/"
+  end
+
   private
 
   def set_defaults
