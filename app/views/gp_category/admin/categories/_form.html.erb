@@ -20,6 +20,10 @@
     <td><%= f.text_field :description, :size => 100 %></td>
   </tr>
   <tr>
+    <th><%= f.label :sitemap_state %></th>
+    <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
