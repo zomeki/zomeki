@@ -5,7 +5,7 @@
     <nav>
       <ul>
         <%- @children.each do |category| -%>
-        <li class="category<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+        <li class="category<%= category.name.try(:camelize) %>"><%= link_to category.title, category.public_uri %></li>
         <%- end -%>
       </ul>
     </nav>

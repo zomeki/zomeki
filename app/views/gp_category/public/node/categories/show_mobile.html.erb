@@ -2,7 +2,7 @@
   <%- unless @children.empty? -%>
     <div class="h2"><%= @category.title %></div>
     <%- @children.each do |category| -%>
-    <div class="category<%= category.name.try(:camelize) %>">・<%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></div>
+    <div class="category<%= category.name.try(:camelize) %>">・<%= link_to category.title, category.public_uri %></div>
     <%- end -%>
   <%- end -%>
 

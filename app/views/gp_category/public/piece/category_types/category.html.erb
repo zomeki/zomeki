@@ -16,7 +16,7 @@
 <div class="level<%= @category.level_no + 1 -%>">
   <%- @category.public_children.each do |child| -%>
   <section class="category <%= child.name -%><%= cycle '', ' cycle' %>">
-    <h3><%= link_to child.title, "#{@category.category_type.public_uri}#{child.path_from_root_category}/" %></h3>
+    <h3><%= link_to child.title, child.public_uri %></h3>
 
     <%- unless @piece.categorize_docs(child.public_docs).empty? -%>
     <ul class="docs">
@@ -31,7 +31,7 @@
     <%- unless child.public_children.empty? -%>
     <ul class="level<%= child.level_no + 1 -%>">
       <%- child.public_children.each do |grandchild| -%>
-      <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, "#{@category.category_type.public_uri}#{grandchild.path_from_root_category}/" %></li>
+      <li class="<%= grandchild.name -%>"><%= link_to grandchild.title, grandchild.public_uri %></li>
       <%- end -%>
     </ul>
     <%- end -%>
