@@ -1,9 +1,19 @@
 <%-
-  return '' unless node.sitemap_state == 'visible'
+  return '' unless node.sitemap_visible?
   css_class = "#{css_class + '-' if css_class.present?}#{File.basename(node.name, '.*').camelize(:lower)}"
 -%>
 <li class="level<%= level %> <%= css_class %>">
   <%= link_to node.title, node.public_uri, class: "level#{level}" %>
+
+  <%- case node.model -%>
+  <%- when 'GpCategory::CategoryType' -%>
+    <%- unless node.content.public_category_types.empty? -%>
+    <ul class="level<%= level + 1 %> <%= css_class %>">
+      <%= render partial: 'category_type', collection: node.content.public_category_types, locals: {level: level + 1, css_class: css_class} %>
+    </ul>
+    <%- end -%>
+  <%- end -%>
+
   <%- unless node.children.empty? -%>
   <ul class="level<%= level + 1 %> <%= css_class %>">
     <%= render partial: 'node', collection: node.children, locals: {level: level + 1, css_class: css_class} %>

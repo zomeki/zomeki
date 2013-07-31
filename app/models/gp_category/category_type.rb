@@ -118,6 +118,10 @@ class GpCategory::CategoryType < ActiveRecord::Base
     end
   end
 
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
   private
 
   def set_defaults
