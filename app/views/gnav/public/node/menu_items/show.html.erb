@@ -11,7 +11,7 @@
   <%- end -%>
   <%- if category.level_no == @least_level_no -%>
   <section class="categoryType categoryType<%= category.name.try(:camelize) %>">
-    <h2><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></h2>
+    <h2><%= link_to category.title, category.public_uri %></h2>
     <%- last_level_no = category.level_no -%>
   <%- else -%>
     <%- if last_level_no == @least_level_no -%>
@@ -19,7 +19,7 @@
       <ul>
     <%- end -%>
         <%- if last_level_no -%>
-        <li class="categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, "#{category.category_type.public_uri}#{category.path_from_root_category}/" %></li>
+        <li class="categoryType<%= category.name.try(:camelize) %>"><%= link_to category.title, category.public_uri %></li>
         <%- last_level_no = category.level_no -%>
         <%- end -%>
   <%- end -%>
