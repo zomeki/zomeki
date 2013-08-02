@@ -4,5 +4,6 @@
 
 <div class="contentMenu">
   <%= link_to "#{Map::Marker.model_name.human}一覧", map_markers_path, class: 'fixed' %>
+  <%= link_to "#{Map::Marker.model_name.human}設定", map_category_types_path, class: 'fixed' %>
   <%= link_to 'マップ設定', map_content_settings_path, class: 'fixed' %>
 </div>

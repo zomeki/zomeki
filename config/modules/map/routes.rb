@@ -10,6 +10,16 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/content/settings',
       :path       => ':content/content_settings'
 
+    resources(:category_types, :only => [:index, :edit, :update],
+      :controller => 'admin/category_types',
+      :path       => ':content/category_types') do
+      resources(:categories, :only => [:index, :edit, :update],
+        :controller => 'admin/categories') do
+        resources :categories, :only => [:index, :edit, :update],
+          :controller => 'admin/categories'
+      end
+    end
+
     ## contents
     resources(:markers,
       :controller => 'admin/markers',
@@ -17,7 +27,7 @@ ZomekiCMS::Application.routes.draw do
       member do
         get :file_content
       end
-   end
+    end
 
     ## nodes
     resources :node_markers,

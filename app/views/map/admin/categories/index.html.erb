@@ -1,0 +1,22 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">編集</th>
+    <th><%= @category_type.title %>ID</th>
+    <th><%= @category_type.title %>名</th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :edit, edit_map_category_type_category_category_path(content: @content,
+                                                                                                     category_type_id: @category_type.id,
+                                                                                                     category_id: @parent_category.try(:id).to_i,
+                                                                                                     id: item.id) %></td>
+    <td><%= item.name %></td>
+    <td><%= link_to item.title, map_category_type_category_categories_path(content: @content,
+                                                                           category_type_id: @category_type.id,
+                                                                           category_id: item.id) %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items %>
