@@ -11,14 +11,14 @@ class Cms::Public::Node::SitemapsController < Cms::Controller::Public::Base
     item.and :directory, 1
     item.and :name, 'IS NOT', nil
     item.and :sitemap_state, 'visible'
-    @items = item.find(:all, :order => 'sitemap_sort_no, name')
+    @items = item.find(:all, :order => 'sitemap_sort_no IS NULL, sitemap_sort_no, name')
 
     @children = lambda do |node|
       item = Cms::Node.new.public
       item.and :route_id, node.id
       item.and :name, 'IS NOT', nil
       item.and :sitemap_state, 'visible'
-      item.find(:all, :order => 'directory, sitemap_sort_no, name')
+      item.find(:all, :order => 'directory, sitemap_sort_no IS NULL, sitemap_sort_no, name')
     end
   end
 end
