@@ -16,7 +16,7 @@
     <td><%= link_to item.title, map_category_type_category_categories_path(content: @content,
                                                                            category_type_id: @category_type.id,
                                                                            category_id: item.id) %></td>
-    <td><%= @content.setting_value("#{item.class.name} #{item.id} icon_image") %></td>
+    <td><%= @content.icon_image(item) %></td>
   </tr>
   <%- end -%>
 </table>

@@ -9,7 +9,8 @@
     map = new Map('map_canvas', <%= default_latitude %>, <%= default_longitude %>);
     <%- @markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
-                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>');
+                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
+                     '<%= @content.icon_image(marker.categories.first, true) %>');
     <%- end -%>
   });
   <%- end -%>
@@ -23,7 +24,11 @@
     </tr>
     <%- @markers.each do |marker| -%>
     <tr>
-      <td class="markerCategories"><%= marker.categories.map(&:title).join(', ') %></td>
+      <td class="markerCategories">
+        <%- marker.categories.each do |category| -%>
+        <%= @content.icon_image(category, true).present? ? image_tag(@content.icon_image(category, true), alt: category.title) : category.title %>
+        <%- end -%>
+      </td>
       <td class="markerImage">
         <%- unless marker.files.empty?
               file = marker.files.first -%>

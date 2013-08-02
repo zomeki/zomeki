@@ -60,4 +60,20 @@ class Map::Content::Marker < Cms::Content
       category_type_categories(category_type).map {|c| [c.title, c.id] }
     end
   end
+
+  def icon_image(item, goup=false)
+    case item
+    when GpCategory::CategoryType
+      setting_value("#{item.class.name} #{item.id} icon_image").to_s
+    when GpCategory::Category
+      image = setting_value("#{item.class.name} #{item.id} icon_image").to_s
+      if image.blank? && goup
+        icon_image(item.parent || item.category_type, goup)
+      else
+        image
+      end
+    else
+      ''
+    end
+  end
 end
