@@ -3,6 +3,7 @@
     <th style="text-align: center; width: 60px;">編集</th>
     <th><%= @category_type.title %>ID</th>
     <th><%= @category_type.title %>名</th>
+    <th>アイコン画像</th>
   </tr>
 
   <%- @items.each do |item| -%>
@@ -15,6 +16,7 @@
     <td><%= link_to item.title, map_category_type_category_categories_path(content: @content,
                                                                            category_type_id: @category_type.id,
                                                                            category_id: item.id) %></td>
+    <td><%= @content.setting_value("#{item.class.name} #{item.id} icon_image") %></td>
   </tr>
   <%- end -%>
 </table>
