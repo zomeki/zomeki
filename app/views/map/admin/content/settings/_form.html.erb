@@ -4,6 +4,8 @@ value_form = case @item.form_type
                f.select(:value, @item.config_options, include_blank: true)
              when :text
                f.text_area(:value, style: 'width: 600px; height: 120px;')
+             when :radio_buttons
+               f.radio_buttons(:value, @item.config_options)
              else
                f.text_field(:value, style: 'width: 400px;')
              end

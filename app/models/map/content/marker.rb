@@ -76,4 +76,12 @@ class Map::Content::Marker < Cms::Content
       ''
     end
   end
+
+  def show_images?
+    setting_value(:show_images) == 'visible'
+  end
+
+  def default_image
+    setting_value(:default_image).to_s
+  end
 end
