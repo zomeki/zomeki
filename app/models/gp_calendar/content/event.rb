@@ -42,11 +42,11 @@ class GpCalendar::Content::Event < Cms::Content
   end
 
   def list_style
-    setting_value(:list_style) || ''
+    setting_value(:list_style).to_s
   end
 
   def date_style
-    setting_value(:date_style) || ''
+    setting_value(:date_style).to_s
   end
 
   def show_images?
@@ -54,7 +54,7 @@ class GpCalendar::Content::Event < Cms::Content
   end
 
   def default_image
-    setting_value(:default_image) || ''
+    setting_value(:default_image).to_s
   end
 
   private
