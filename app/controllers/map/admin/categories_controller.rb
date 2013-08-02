@@ -2,6 +2,8 @@
 class Map::Admin::CategoriesController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
+  before_filter :get_item_and_setting, :only => [ :edit, :update ]
+
   def pre_dispatch
     return error_auth unless @content = Map::Content::Marker.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
@@ -19,12 +21,18 @@ class Map::Admin::CategoriesController < Cms::Controller::Admin::Base
   end
 
   def edit
-    @item = @category_type.categories.find(params[:id])
+    @icon_image = @setting.value
   end
 
   def update
+    @setting.value = params[:icon_image]
+    _update @setting
+  end
+
+  private
+
+  def get_item_and_setting
     @item = @category_type.categories.find(params[:id])
-    @item.attributes = params[:item]
-    _update @item
+    @setting = Map::Content::Setting.config(@content, "#{@item.class.name} #{@item.id} icon_image")
   end
 end
