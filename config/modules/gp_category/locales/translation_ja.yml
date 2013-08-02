@@ -11,6 +11,7 @@ ja:
         updated_at: 更新日時
         state: 状態
         sitemap_state: サイトマップ
+        docs_order: 記事表示順
       gp_category/category:
         name: カテゴリID
         title: カテゴリ名
@@ -19,6 +20,7 @@ ja:
         state: 状態
         description: 説明
         sitemap_state: サイトマップ
+        docs_order: 記事表示順
       gp_category/categorization:
         sort_no: 並び順
       gp_category/piece/doc:

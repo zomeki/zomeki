@@ -7,6 +7,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   include Cms::Model::Base::Page::Publisher
 
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  DOCS_ORDER_OPTIONS = [['公開日降順', 'published_at DESC'], ['公開日昇順', 'published_at ASC']]
 
   default_scope order(:sort_no, :name)
 
