@@ -38,7 +38,6 @@
     <th><%= @item.locale(:title) %></th>
     <td><%= safe{@item.title} %></td>
   </tr>
-  <%- unless @item.is_a?(Cms::Node::Sitemap) -%>
   <tr>
     <th><%= @item.locale(:sitemap_state) %></th>
     <td><%= @item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == @item.sitemap_state }.try(:first) %></td>
@@ -47,7 +46,6 @@
     <th><%= @item.locale(:sitemap_sort_no) %></th>
     <td><%= @item.sitemap_sort_no %></td>
   </tr>
-  <%- end -%>
 <% if defined?(container) && container != :tr %>
 </table>
 <% end %>

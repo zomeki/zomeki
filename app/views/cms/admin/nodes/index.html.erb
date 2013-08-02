@@ -38,8 +38,8 @@
     <td class="name"><%= truncate(item.name, :length => 20) %></td>
     <td><%= truncate(item.title, :length => 36) %><%= " （更新用）" if item.replace_page? %></td>
     <td><%= item.model_name(:wo_type) %></td>
-    <td><%= item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == item.sitemap_state }.try(:first) unless item.model == 'Cms::Sitemap' %></td>
-    <td><%= item.sitemap_sort_no unless item.model == 'Cms::Sitemap' %></td>
+    <td><%= item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == item.sitemap_state }.try(:first) %></td>
+    <td><%= item.sitemap_sort_no %></td>
     <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
     <td style="text-align: center;"><%= safe{item.status.name} %></td>
     <td style="text-align: center;">
