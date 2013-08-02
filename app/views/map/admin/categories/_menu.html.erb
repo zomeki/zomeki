@@ -1,0 +1,15 @@
+<h2><%= @content.name %> ： <%= "#{Map::Marker.model_name.human}設定" %></h2>
+
+<div class="navi">
+  <%= link_to "#{GpCategory::CategoryType.model_name.human}一覧", map_category_types_path %>
+  <span class="separator">&gt;</span>
+  <%= link_to @category_type.title, map_category_type_categories_path(content: @content, category_type_id: @category_type.id) %>
+  <%- if @parent_category -%>
+    <%- @parent_category.parents_tree.each do |c| -%>
+    <span class="separator">&gt;</span>
+    <%= link_to c.title, map_category_type_category_categories_path(content: @content,
+                                                                    category_type_id: @category_type.id,
+                                                                    category_id: c.id) %>
+    <%- end -%>
+  <%- end -%>
+</div>
