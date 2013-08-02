@@ -6,6 +6,7 @@ class Map::Marker < ActiveRecord::Base
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+  IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'Map::Content::Marker'
@@ -31,7 +32,8 @@ class Map::Marker < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state ||= 'public' if self.has_attribute?(:state)
+    self.state ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
+    self.target ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
   end
 
   def set_name

@@ -19,6 +19,9 @@
   <table>
     <tr>
       <th>カテゴリ</th>
+      <%- if @content.show_images? -%>
+      <th>画像</th>
+      <%- end -%>
       <th>名称</th>
       <th>地図</th>
     </tr>
@@ -29,14 +32,20 @@
         <%= @content.icon_image(category, true).present? ? image_tag(@content.icon_image(category, true), alt: category.title) : category.title %>
         <%- end -%>
       </td>
+      <%- if @content.show_images? -%>
       <td class="markerImage">
-        <%- unless marker.files.empty?
-              file = marker.files.first -%>
-        <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+        <%- if marker.files.empty? -%>
+          <%- if @content.default_image.blank? -%>
+            画像がありません。
+          <%- else -%>
+            <%= image_tag @content.default_image %>
+          <%- end -%>
         <%- else -%>
-        No Photo
+        <%- file = marker.files.first -%>
+        <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
         <%- end -%>
       </td>
+      <%- end -%>
       <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
       <td class="marker"><%= link_to_function '表示', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
     </tr>
