@@ -57,7 +57,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       criteria[:editable] = true
     end
 
-    _index (@items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30))
+    _index (@items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).order('updated_at DESC').paginate(page: params[:page], per_page: 30))
   end
 
   def show
