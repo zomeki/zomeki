@@ -9,7 +9,7 @@ class GpCategory::Category < ActiveRecord::Base
 
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
-  default_scope order(:category_type_id, :parent_id, :level_no, :sort_no, :name)
+  default_scope order("#{self.table_name}.category_type_id, #{self.table_name}.parent_id, #{self.table_name}.level_no, #{self.table_name}.sort_no, #{self.table_name}.name")
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
@@ -22,8 +22,7 @@ class GpCategory::Category < ActiveRecord::Base
   validates_presence_of :category_type_id
 
   belongs_to :parent, :foreign_key => :parent_id, :class_name => self.name
-  has_many :children, :foreign_key => :parent_id, :class_name => self.name,
-                      :order => [:level_no, :sort_no, :name], :dependent => :destroy
+  has_many :children, :foreign_key => :parent_id, :class_name => self.name, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :parent_id]}
   validates :title, :presence => true
