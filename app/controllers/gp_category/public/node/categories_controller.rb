@@ -1,7 +1,4 @@
 # encoding: utf-8
-
-require 'will_paginate/array'
-
 class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::Base
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
