@@ -41,7 +41,6 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :holds, :as => :holdable, :dependent => :destroy
 
   before_save :make_file_contents_path_relative
-  before_save :clear_display_dates
   before_save :set_name
 
   validates :title, :presence => true, :length => {maximum: 200}
@@ -428,10 +427,5 @@ class GpArticle::Doc < ActiveRecord::Base
   def make_file_contents_path_relative
     self.body = self.body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.body.present?
     self.mobile_body = self.mobile_body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.mobile_body.present?
-  end
-
-  def clear_display_dates
-    self.display_published_at = nil unless content.display_dates(:published_at)
-    self.display_updated_at = nil unless content.display_dates(:updated_at)
   end
 end

@@ -8,7 +8,7 @@ class GpCategory::Category < ActiveRecord::Base
   include Cms::Model::Base::Page
 
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  DOCS_ORDER_OPTIONS = [['公開日降順', 'published_at DESC'], ['公開日昇順', 'published_at ASC']]
+  DOCS_ORDER_OPTIONS = [['公開日降順', 'display_published_at DESC, published_at DESC'], ['公開日昇順', 'display_published_at ASC, published_at ASC']]
 
   default_scope order("#{self.table_name}.category_type_id, #{self.table_name}.parent_id, #{self.table_name}.level_no, #{self.table_name}.sort_no, #{self.table_name}.name")
 
@@ -99,7 +99,7 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def public_docs
-    docs.mobile(::Page.mobile?).public
+    docs.order(inherited_docs_order).mobile(::Page.mobile?).public
   end
 
   def copy_from_group(group)
@@ -127,6 +127,12 @@ class GpCategory::Category < ActiveRecord::Base
 
   def public_uri
     "#{category_type.public_uri}#{path_from_root_category}/"
+  end
+
+  def inherited_docs_order
+    return self.docs_order if self.docs_order.present?
+    return parent.inherited_docs_order if parent
+    category_type.docs_order
   end
 
   private
