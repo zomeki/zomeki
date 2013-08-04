@@ -29,7 +29,7 @@
     <tr>
       <td class="markerCategories">
         <%- marker.categories.each do |category| -%>
-        <%= @content.icon_image(category, true).present? ? image_tag(@content.icon_image(category, true), alt: category.title) : category.title %>
+        <div class="<%= category.name -%>"><%= category.title %></div>
         <%- end -%>
       </td>
       <%- if @content.show_images? -%>
