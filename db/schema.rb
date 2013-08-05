@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802125250) do
+ActiveRecord::Schema.define(:version => 20130805072917) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -621,7 +621,6 @@ ActiveRecord::Schema.define(:version => 20130802125250) do
     t.datetime "recognized_at"
     t.string   "state"
     t.string   "event_state"
-    t.date     "event_date"
     t.text     "raw_tags"
     t.string   "mobile_title"
     t.text     "mobile_body"
@@ -630,6 +629,8 @@ ActiveRecord::Schema.define(:version => 20130802125250) do
     t.string   "rel_doc_ids"
     t.datetime "display_published_at"
     t.datetime "display_updated_at"
+    t.date     "event_started_on"
+    t.date     "event_ended_on"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
