@@ -4,8 +4,12 @@ class Map::Content::Marker < Cms::Content
 
   has_many :markers, :foreign_key => :content_id, :class_name => 'Map::Marker', :dependent => :destroy
 
+  def public_nodes
+    nodes.public
+  end
+
   def public_node
-    Cms::Node.where(state: 'public', content_id: id, model: 'Map::Marker').order(:id).first
+    public_nodes.order(:id).first
   end
 
 #TODO: DEPRECATED

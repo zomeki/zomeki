@@ -32,6 +32,8 @@ class Cms::Node < ActiveRecord::Base
   after_initialize :set_defaults
   after_destroy :remove_file
 
+  scope :public, where(state: 'public')
+
   def validate
     errors.add :parent_id, :invalid if id != nil && id == parent_id
     errors.add :route_id, :invalid if id != nil && id == route_id
