@@ -27,6 +27,8 @@ class GpCalendar::Event < ActiveRecord::Base
   validates_presence_of :started_on, :ended_on, :title
   validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
 
+  validate :dates_range
+
   scope :public, where(state: 'public')
 
   def self.all_with_content_and_criteria(content, criteria)
@@ -75,5 +77,12 @@ class GpCalendar::Event < ActiveRecord::Base
            end
     seq = Util::Sequencer.next_id('gp_calendar_events', :version => date)
     self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
+  end
+
+  def dates_range
+    return if self.started_on.blank? && self.ended_on.blank?
+    self.started_on = self.ended_on if self.started_on.blank?
+    self.ended_on = self.started_on if self.ended_on.blank?
+    errors.add(:ended_on, "が#{self.class.human_attribute_name :started_on}を過ぎています。") if self.ended_on < self.started_on
   end
 end
