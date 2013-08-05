@@ -55,6 +55,7 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :validate_platform_dependent_characters
 
   validate :node_existence
+  validate :event_dates_range
 
   after_initialize :set_defaults
   after_save :set_tags
@@ -433,5 +434,12 @@ class GpArticle::Doc < ActiveRecord::Base
   def make_file_contents_path_relative
     self.body = self.body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.body.present?
     self.mobile_body = self.mobile_body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.mobile_body.present?
+  end
+
+  def event_dates_range
+    return if self.event_started_on.blank? && self.event_ended_on.blank?
+    self.event_started_on = self.event_ended_on if self.event_started_on.blank?
+    self.event_ended_on = self.event_started_on if self.event_ended_on.blank?
+    errors.add(:event_ended_on, "が#{self.class.human_attribute_name :event_started_on}を過ぎています。") if self.event_ended_on < self.event_started_on
   end
 end
