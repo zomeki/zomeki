@@ -17,7 +17,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     markers = if @specified_category
                 categorizations = GpCategory::Categorization.arel_table
                 @content.public_markers.joins(:categorizations)
-                                       .where(categorizations[:category_id].eq(@specified_category.id))
+                                       .where(categorizations[:category_id].in(@specified_category.public_descendants.map(&:id)))
               else
                 @content.public_markers
               end
@@ -54,7 +54,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     doc_contents.each do |dc|
       dc.public_docs.includes(:maps).each do |d|
         next if d.maps.empty? || d.maps.first.markers.empty?
-        next if @specified_category && !d.category_ids.include?(@specified_category.id)
+        next if @specified_category && (d.category_ids & @specified_category.public_descendants.map(&:id)).empty?
 
         d.maps.first.markers.each do |m|
           marker = Map::Marker.new(title: d.title, latitude: m.lat, longitude: m.lng,
