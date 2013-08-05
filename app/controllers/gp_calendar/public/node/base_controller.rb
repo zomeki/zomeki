@@ -42,7 +42,7 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
       when 'GpArticle::Doc'
         dc = GpArticle::Content::Doc.find(dc.id)
         docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(start_date).and(docs[:event_date].lteq(end_date)))
+        dc.public_docs.where(event_state: 'visible').where(docs[:event_ended_on].gteq(start_date).and(docs[:event_started_on].lteq(end_date)))
       else
         []
       end
@@ -52,7 +52,7 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
   def merge_docs_into_events(docs, events)
     docs.each do |doc|
       event = GpCalendar::Event.new(title: doc.title, href: doc.public_uri, target: '_self',
-                                    started_on: doc.event_date, ended_on: doc.event_date, description: doc.summary)
+                                    started_on: doc.event_started_on, ended_on: doc.event_ended_on, description: doc.summary)
       event.categories = doc.categories
       event.files = doc.files
       events << event

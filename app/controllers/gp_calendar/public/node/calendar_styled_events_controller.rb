@@ -7,6 +7,8 @@ class GpCalendar::Public::Node::CalendarStyledEventsController < GpCalendar::Pub
     start_date = @date.beginning_of_month.beginning_of_week(:sunday)
     end_date = @date.end_of_month.end_of_week(:sunday)
 
+    merge_docs_into_events(event_docs(start_date, end_date), @events)
+
     @weeks = (start_date..end_date).inject([]) do |weeks, day|
         weeks.push([]) if weeks.empty? || day.wday.zero?
         weeks.last.push(day)

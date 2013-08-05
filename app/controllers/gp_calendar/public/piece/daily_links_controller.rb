@@ -1,5 +1,5 @@
 # encoding: utf-8
-class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public::Base
+class GpCalendar::Public::Piece::DailyLinksController < GpCalendar::Public::Piece::BaseController
   def pre_dispatch
     @piece = GpCalendar::Piece::DailyLink.find_by_id(Page.current_piece.id)
     return render(:text => '') unless @piece
@@ -18,8 +18,8 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       max_date = 11.months.since(date.beginning_of_month)
     end
 
-    start_date = date.beginning_of_month
-    end_date = start_date.end_of_month
+    start_date = date.beginning_of_month.beginning_of_week(:sunday)
+    end_date = date.end_of_month.end_of_week(:sunday)
 
     @calendar = Util::Date::Calendar.new(date.year, date.month)
 
@@ -29,9 +29,8 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
     @calendar.day_uri   = "#{@node.public_uri}:year/:month/#day:day"
 
-    days = event_docs(start_date, end_date).inject([]) do |dates, event|
-             dates << event.event_date
-             next dates
+    days = event_docs(start_date, end_date).inject([]) do |dates, doc|
+             dates | (doc.event_started_on..doc.event_ended_on).to_a
            end
 
     (min_date..min_date.end_of_month).each do |date|
@@ -50,24 +49,5 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= min_date
       @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= max_date
     end
-  end
-
-  private
-
-  def event_docs(start_date, end_date)
-    doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @piece.content.id).map(&:content)
-    doc_contents.select! {|dc| dc.site == Page.site }
-    return [] if doc_contents.empty?
-
-    doc_contents.map {|dc|
-      case dc.model
-      when 'GpArticle::Doc'
-        dc = GpArticle::Content::Doc.find(dc.id)
-        docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(start_date).and(docs[:event_date].lteq(end_date)))
-      else
-        []
-      end
-    }.flatten
   end
 end
