@@ -84,10 +84,12 @@
         </td>
       </tr>
       <%- end -%>
+      <%- if @content.setting_value('tag_content_tag_id').present? -%>
       <tr>
         <th><%= f.label :raw_tags %></th>
         <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>
       </tr>
+      <%- end -%>
       <tr>
         <th><%= f.label :in_rel_doc_ids %></th>
         <td>
