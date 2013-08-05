@@ -1,5 +1,5 @@
 # encoding: utf-8
-class GpCalendar::Public::Piece::CategoryTypesController < Sys::Controller::Public::Base
+class GpCalendar::Public::Piece::CategoryTypesController < GpCalendar::Public::Piece::BaseController
   def pre_dispatch
     @piece = GpCalendar::Piece::CategoryType.find_by_id(Page.current_piece.id)
     return render(:text => '') unless @piece
