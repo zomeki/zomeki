@@ -23,4 +23,8 @@ class Map::Piece::CategoryType < Cms::Piece
   def visible_category_types
     category_types.where(id: visible_category_type_ids)
   end
+
+  def target_node
+    content.public_nodes.find_by_id(setting_value(:target_node_id))
+  end
 end

@@ -17,7 +17,14 @@
       </div>
     </td>
   </tr>
+  <tr>
+    <th>リンク先</th>
+    <td>
+      <%= select_tag 'target_node', options_for_select(@item.content.public_nodes.map {|n| ["#{n.title}（#{n.name}）", n.id]}, @item.target_node.try(:id)) %>
+    </td>
+  </tr>
 </table>
+
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#add_category_type').on('click', function () {
