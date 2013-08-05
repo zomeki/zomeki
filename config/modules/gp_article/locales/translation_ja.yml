@@ -18,7 +18,8 @@ ja:
         summary: 概要
         state: 状態
         event_state: イベントカレンダー表示
-        event_date: イベント日付
+        event_started_on: イベント開始日
+        event_ended_on: イベント終了日
         raw_tags: 関連ワード
         mobile_title: タイトル
         mobile_body: 内容

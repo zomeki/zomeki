@@ -7,7 +7,9 @@
     <li><a href="#tab8">オプション</a></li>
     <li><a href="#tab7">携帯</a></li>
     <li><a href="#tab6">地図</a></li>
+    <%- if @content.setting_value('gp_calendar_content_event_id').present? -%>
     <li><a href="#tab5">イベント</a></li>
+    <%- end -%>
     <li><a href="#tab4">承認</a></li>
     <li><a href="#tab3">連絡先</a></li>
     <li><a href="#tab2">公開日</a></li>
@@ -162,13 +164,17 @@
     <table class="show">
       <tr>
         <th><%= f.label :event_state %></th>
-        <td>
-          <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
-          <span style="margin-left: 10px;">
-            <%= f.label :event_date %> ： <%= f.text_field :event_date, :value => value_for_datepicker(f.object_name, :event_date),
-                                                                        :style => 'width: 100px;', :class => 'datepicker' %>
-          </span>
-        </td>
+        <td><%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :event_started_on %></th>
+        <td><%= f.text_field :event_started_on, :value => value_for_datepicker(f.object_name, :event_started_on),
+                                                :style => 'width: 150px;', :class => 'datepicker' %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :event_ended_on %></th>
+        <td><%= f.text_field :event_ended_on, :value => value_for_datepicker(f.object_name, :event_ended_on),
+                                              :style => 'width: 150px;', :class => 'datepicker' %></td>
       </tr>
     </table>
   </div>
@@ -244,18 +250,16 @@ function set_click_event_handler(category_type_id) {
   }).trigger('click');
 }
 
+function set_copy_date(from, to) {
+  $(from).on('change', function () {
+    if ($(to).val() === '') { $(to).val($(from).val()); }
+  });
+}
+
 $(document).ready(function () {
   <%= disable_enter_script -%>
   <%= enable_datepicker_script -%>
   <%= enable_datetimepicker_script -%>
-
-  $('#item_event_date').on('change', function (event) {
-    if (event.target.value == '') {
-      $('#item_event_state_hidden').attr('checked', true);
-    } else {
-      $('#item_event_state_visible').attr('checked', true);
-    }
-  });
 
   <%- @visible_category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
@@ -319,5 +323,8 @@ $(document).ready(function () {
       }
   });
   $('.tabs .ui-tabs-nav > li').css('float', 'right');
+
+  set_copy_date('#item_event_started_on', '#item_event_ended_on');
+  set_copy_date('#item_event_ended_on', '#item_event_started_on');
 });
 <%- end -%>

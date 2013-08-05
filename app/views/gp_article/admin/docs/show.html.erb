@@ -104,12 +104,15 @@
 <table class="show">
   <tr>
     <th><%= @item.locale :event_state %></th>
-    <td>
-      <%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %>
-      <%- if @item.event_state == 'visible' -%>
-      <span style="margin-left: 10px;"><%= @item.locale :event_date %> ： <%= @item.event_date %></span>
-      <%- end -%>
-    </td>
+    <td><%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :event_started_on %></th>
+    <td><%= @item.event_started_on %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :event_ended_on %></th>
+    <td><%= @item.event_ended_on %></td>
   </tr>
 </table>
 
