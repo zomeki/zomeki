@@ -63,6 +63,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
+  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
 
   def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
