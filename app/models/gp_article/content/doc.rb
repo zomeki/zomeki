@@ -66,11 +66,11 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def list_style
-    setting_value(:list_style) || ''
+    setting_value(:list_style).to_s
   end
 
   def date_style
-    setting_value(:date_style) || ''
+    setting_value(:date_style).to_s
   end
 
   def tag_content_tag

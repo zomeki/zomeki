@@ -21,7 +21,7 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
   validates_presence_of :name, :title, :sort_no
 
   def condition_name
-    CONDITION_OPTIONS.detect{|o| o.last == condition }.try(:first) || ''
+    CONDITION_OPTIONS.detect{|o| o.last == condition }.try(:first).to_s
   end
 
   def categories_with_layer
