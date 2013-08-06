@@ -33,7 +33,7 @@ class GpArticle::Content::Doc < Cms::Content
     if (cts = gp_category_content_category_type.try(:category_types))
       cts.where(id: setting.try(:category_type_ids))
     else
-      []
+      GpCategory::CategoryType.none
     end
   end
 
@@ -46,7 +46,7 @@ class GpArticle::Content::Doc < Cms::Content
     if (cts = gp_category_content_category_type.try(:category_types))
       cts.where(id: setting.try(:visible_category_type_ids))
     else
-      []
+      GpCategory::CategoryType.none
     end
   end
 
@@ -88,6 +88,19 @@ class GpArticle::Content::Doc < Cms::Content
 
   def display_dates(key)
     YAML.load(setting_value(:display_dates).presence || '[]').include?(key.to_s)
+  end
+
+  def gp_calendar_content_event
+    GpCalendar::Content::Event.find_by_id(setting_value(:gp_calendar_content_event_id))
+  end
+
+  def event_category_types
+    gp_calendar_content_event.try(:category_types) || GpCategory::CategoryType.none
+  end
+
+  def event_category_type_categories_for_option(category_type, include_descendants: true)
+    gp_calendar_content_event.try(:category_type_categories_for_option,
+                                  category_type, include_descendants: include_descendants) || []
   end
 
   private

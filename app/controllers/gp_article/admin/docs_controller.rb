@@ -15,6 +15,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @category_types = @content.category_types
     @visible_category_types = @content.visible_category_types
     @recognition_type = @content.setting_value(:recognition_type)
+    @event_category_types = @content.event_category_types
     @item = @content.docs.find(params[:id]) if params[:id].present?
   end
 
@@ -207,7 +208,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def set_categories
     category_ids = if params[:categories].is_a?(Hash)
-                     params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+                     params[:categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
                    else
                      []
                    end
