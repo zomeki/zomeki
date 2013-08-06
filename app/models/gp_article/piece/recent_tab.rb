@@ -17,15 +17,15 @@ class GpArticle::Piece::RecentTab < Cms::Piece
   end
 
   def list_style
-    setting_value(:list_style) || ''
+    setting_value(:list_style).to_s
   end
 
   def date_style
-    setting_value(:date_style) || ''
+    setting_value(:date_style).to_s
   end
 
   def more_label
-    setting_value(:more_label) || ''
+    setting_value(:more_label).to_s
   end
 
   def content
