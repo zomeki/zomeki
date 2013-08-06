@@ -77,11 +77,13 @@
         <th><%= category_type.title %></th>
         <td>
           <div id="category_type_<%= category_type.id %>_categories">
-            <%= render 'category', category_type: category_type, category: category_type.categories.build, available: false -%>
+            <%= render 'category', category_type: category_type, category: nil,
+                                   categories_for_option: category_type.categories_for_option %>
             <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
-            <%= render 'category', category_type: category_type, category: category, available: true %>
+            <%= render 'category', category_type: category_type, category: category,
+                                   categories_for_option: category_type.categories_for_option %>
             <%- end -%>
-            <span><%= button_tag '追加', type: 'button', id: "add_category_type_#{category_type.id}_category" %></span>
+            <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
           </div>
         </td>
       </tr>
@@ -176,6 +178,24 @@
         <td><%= f.text_field :event_ended_on, :value => value_for_datepicker(f.object_name, :event_ended_on),
                                               :style => 'width: 150px;', :class => 'datepicker' %></td>
       </tr>
+      <%- @event_category_types.each do |category_type| -%>
+      <tr>
+        <th><%= category_type.title %></th>
+        <td>
+          <div id="event_category_type_<%= category_type.id %>_categories">
+            <%= render 'category', category_type: category_type, category: nil,
+                                   categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                   prefix: 'event_' %>
+            <%#- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
+            <%#= render 'category', category_type: category_type, category: category,
+                                   categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                   prefix: 'event_' %>
+            <%#- end -%>
+            <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+          </div>
+        </td>
+      </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab6">
@@ -241,9 +261,10 @@
 <%= javascript_tag do -%>
 <%= toggle_form_function -%>
 
-function set_click_event_handler(category_type_id) {
-  $('#add_category_type_' + category_type_id + '_category').on('click', function () {
-    var categories_wrapper = $('#category_type_' + category_type_id + '_categories');
+function set_click_event_handler(category_type_id, prefix) {
+  if (prefix === undefined) { prefix = ''; }
+  var categories_wrapper = $('#' + prefix + 'category_type_' + category_type_id + '_categories');
+  categories_wrapper.find('.add_category').on('click', function () {
     var new_category = categories_wrapper.children(':first-child').clone(true);
     new_category.find(':disabled').removeAttr('disabled');
     new_category.insertBefore(categories_wrapper.children(':last-child')).show();
@@ -263,6 +284,10 @@ $(document).ready(function () {
 
   <%- @visible_category_types.each do |category_type| -%>
   set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+
+  <%- @event_category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>', 'event_');
   <%- end -%>
 
   $('#add_editable_group').on('click', function () {
