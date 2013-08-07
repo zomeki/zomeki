@@ -35,7 +35,12 @@ class GpArticle::Doc < ActiveRecord::Base
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
-  has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations
+  has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations,
+           :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", self.name],
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, d.class.name) }
+  has_many :event_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
+           :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'GpCalendar::Event'],
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, 'GpCalendar::Event') }
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
