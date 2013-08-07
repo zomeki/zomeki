@@ -82,6 +82,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     _create(@item) do
       set_categories
+      set_event_categories
 
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state_recognize?
@@ -101,6 +102,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     _update(@item) do
       set_categories
+      set_event_categories
 
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
@@ -224,6 +226,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     @item.category_ids = category_ids
+  end
+
+  def set_event_categories
+    event_category_ids = if params[:event_categories].is_a?(Hash)
+                           params[:event_categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
+                         else
+                           []
+                         end
+    @item.event_category_ids = event_category_ids
   end
 
   def hold_document
