@@ -23,7 +23,7 @@ class GpCalendar::Public::Piece::BaseController < Sys::Controller::Public::Base
     docs.each do |doc|
       event = GpCalendar::Event.new(title: doc.title, href: doc.public_uri, target: '_self',
                                     started_on: doc.event_started_on, ended_on: doc.event_ended_on, description: doc.summary)
-      event.categories = doc.categories
+      event.categories = doc.event_categories
       event.files = doc.files
       events << event
     end
