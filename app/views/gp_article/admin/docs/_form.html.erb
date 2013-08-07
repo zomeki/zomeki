@@ -186,11 +186,11 @@
             <%= render 'category', category_type: category_type, category: nil,
                                    categories_for_option: @content.event_category_type_categories_for_option(category_type),
                                    prefix: 'event_' %>
-            <%#- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
-            <%#= render 'category', category_type: category_type, category: category,
+            <%- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
+            <%= render 'category', category_type: category_type, category: category,
                                    categories_for_option: @content.event_category_type_categories_for_option(category_type),
                                    prefix: 'event_' %>
-            <%#- end -%>
+            <%- end -%>
             <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
           </div>
         </td>
