@@ -34,21 +34,21 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-    if @item.name == 'gp_category_content_category_type_id'
+    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation'].include?(@item.name)
       extra_values = @item.extra_values
 
-      extra_values[:category_type_ids] = (params[:category_types] || []).map {|ct| ct.to_i }
-      extra_values[:visible_category_type_ids] = (params[:visible_category_types] || []).map {|ct| ct.to_i }
-      extra_values[:default_category_type_id] = params[:default_category_type].to_i
-      extra_values[:default_category_id] = params[:default_category].to_i
-
-      @item.extra_values = extra_values
-    end
-
-    if @item.name == 'calendar_relation'
-      extra_values = @item.extra_values
-
-      extra_values[:calendar_content_id] = params[:calendar_content_id].to_i
+      case @item.name
+      when 'gp_category_content_category_type_id'
+        extra_values[:category_type_ids] = (params[:category_types] || []).map {|ct| ct.to_i }
+        extra_values[:visible_category_type_ids] = (params[:visible_category_types] || []).map {|ct| ct.to_i }
+        extra_values[:default_category_type_id] = params[:default_category_type].to_i
+        extra_values[:default_category_id] = params[:default_category].to_i
+      when 'calendar_relation'
+        extra_values[:calendar_content_id] = params[:calendar_content_id].to_i
+      when 'map_relation'
+        extra_values[:map_content_id] = params[:map_content_id].to_i
+        extra_values[:lat_lng] = params[:lat_lng]
+      end
 
       @item.extra_values = extra_values
     end

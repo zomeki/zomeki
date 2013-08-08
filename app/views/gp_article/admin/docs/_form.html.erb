@@ -6,7 +6,9 @@
   <ul>
     <li><a href="#tab8">オプション</a></li>
     <li><a href="#tab7">携帯</a></li>
+    <%- if @content.map_related? -%>
     <li><a href="#tab6">地図</a></li>
+    <%- end -%>
     <%- if @content.calendar_related? -%>
     <li><a href="#tab5">イベント</a></li>
     <%- end -%>

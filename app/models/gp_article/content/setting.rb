@@ -23,8 +23,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },
 #    :options => GpArticle::Doc::STATE_OPTIONS,
     :form_type => :check_boxes
-  set_config :map_content_marker_id, :name => 'マップ',
-    :options => lambda { Map::Content::Marker.all.map {|m| [m.name, m.id] } }
+  set_config :map_relation, :name => 'マップ',
+    :options => GpArticle::Content::Doc::MAP_RELATION_OPTIONS,
+    :form_type => :radio_buttons
   set_config :display_dates, :name => '記事日付表示',
     :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
     :form_type => :check_boxes

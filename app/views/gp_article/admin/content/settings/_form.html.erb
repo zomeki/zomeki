@@ -154,3 +154,17 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'map_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'map_content_id',
+                       options_from_collection_for_select(Map::Content::Marker.all, :id, :name, @item.extra_values[:map_content_id]), include_blank: true %></td>
+  </tr>
+  <tr>
+    <th>デフォルト座標</th>
+    <td><%= text_field_tag 'lat_lng', @item.extra_values[:lat_lng], style: 'width: 400px;' %>（緯度,経度）</td>
+  </tr>
+</table>
+<%- end -%>

@@ -1,6 +1,7 @@
 # encoding: utf-8
 class GpArticle::Content::Doc < Cms::Content
   CALENDAR_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  MAP_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -109,6 +110,10 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value('calendar_relation') == 'enabled'
   end
 
+  def map_related?
+    setting_value('map_relation') == 'enabled'
+  end
+
   private
 
   def set_default_settings
@@ -116,5 +121,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
     in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
     in_settings[:calendar_relation] = CALENDAR_RELATION_OPTIONS.first.last unless setting_value(:calendar_relation)
+    in_settings[:map_relation] = MAP_RELATION_OPTIONS.first.last unless setting_value(:map_relation)
   end
 end
