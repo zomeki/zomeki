@@ -9,7 +9,6 @@ class GpCalendar::Event < ActiveRecord::Base
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
   ORDER_OPTIONS = [['作成日時（降順）', 'created_at_desc'], ['作成日時（昇順）', 'created_at_asc']]
-  IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCalendar::Content::Event'
