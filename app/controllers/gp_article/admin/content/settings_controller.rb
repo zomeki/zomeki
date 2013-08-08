@@ -45,6 +45,14 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       @item.extra_values = extra_values
     end
 
+    if @item.name == 'calendar_relation'
+      extra_values = @item.extra_values
+
+      extra_values[:calendar_content_id] = params[:calendar_content_id].to_i
+
+      @item.extra_values = extra_values
+    end
+
     _update @item
   end
 end

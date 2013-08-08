@@ -1,17 +1,4 @@
-<%-
-value_form = case @item.form_type
-             when :select
-               f.select(:value, @item.config_options, include_blank: true)
-             when :text
-               f.text_area(:value, style: 'width: 600px; height: 120px;')
-             when :check_boxes
-               f.check_boxes(:value, @item.config_options)
-             when :multiple_select
-               select_tag 'item[value]', options_from_collection_for_select(@item.config_options.where(id: @item.value), :id, :name), multiple: true, style: 'height: 150px; width: 250px;'
-             else
-               f.text_field(:value, style: 'width: 400px;')
-             end
-%><%= f.hidden_field :content_id -%>
+<%= f.hidden_field :content_id -%>
 
 <table class="show">
   <tr>
@@ -28,7 +15,7 @@ value_form = case @item.form_type
           <div><%= button_to_function '追加 →', "move_option('user_candidates', 'item_value')" %></div>
           <div style="margin-top: 20px;"><%= button_to_function '← 除外', "move_option('item_value', 'user_candidates')" %></div>
         </div>
-        <div style="float: left;"><%= value_form %></div>
+        <div style="float: left;"><%= value_form(f) %></div>
         <%= javascript_tag do %>
         function move_option(from, to) {
           var selected_ids = $('#' + to + ' > option').map(function (index, item) { return parseInt($(item).val()); });
@@ -60,7 +47,7 @@ value_form = case @item.form_type
         <% end %>
       <%- else -%>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
-        <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+        <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
       <%- end -%>
     </td>
@@ -156,4 +143,14 @@ $(document).ready(function () {
   });
 });
 <%- end -%>
+<%- end -%>
+
+<%- if @item.name == 'calendar_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'calendar_content_id',
+                       options_from_collection_for_select(GpCalendar::Content::Event.all, :id, :name, @item.extra_values[:calendar_content_id]), include_blank: true %></td>
+  </tr>
+</table>
 <%- end -%>
