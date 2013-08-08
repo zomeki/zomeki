@@ -7,7 +7,7 @@ class GpCalendar::Public::Node::TodaysEventsController < GpCalendar::Public::Nod
     merge_docs_into_events(event_docs(@today, @today), @events)
 
     if (category = find_category_by_specified_path(params[:category]))
-      @events.select! {|e| e.category_ids.include?(category.id) }
+      @events.reject! {|e| (e.category_ids & category.public_descendants.map(&:id)).empty? }
     end
 
     category_ids = @events.inject([]) {|i, e| i.concat(e.category_ids) }
