@@ -1,5 +1,8 @@
 # encoding: utf-8
 class Map::Content::Marker < Cms::Content
+  IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  MARKER_ORDER_OPTIONS = [['投稿日昇順', 'time_asc'], ['投稿日降順', 'time_desc'], ['カテゴリ順', 'category'], ['アイウエオ順', 'syllabary']]
+
   default_scope where(model: 'Map::Marker')
 
   has_many :markers, :foreign_key => :content_id, :class_name => 'Map::Marker', :dependent => :destroy
@@ -87,5 +90,31 @@ class Map::Content::Marker < Cms::Content
 
   def default_image
     setting_value(:default_image).to_s
+  end
+
+  def sort_markers(markers)
+    case setting_value(:marker_order)
+    when 'time_asc'
+      markers.sort {|a, b| a.created_at <=> b.created_at }
+    when 'time_desc'
+      markers.sort {|a, b| b.created_at <=> a.created_at }
+    when 'category'
+      markers.sort do |a, b|
+        case
+        when a.categories.empty? && b.categories.empty?
+          0
+        when a.categories.empty?
+          -1
+        when b.categories.empty?
+          1
+        else
+          a.categories.first.try(:title) <=> b.categories.first.try(:title)
+        end
+      end
+    when 'syllabary'
+      markers.sort {|a, b| a.title <=> b.title }
+    else
+      markers
+    end
   end
 end

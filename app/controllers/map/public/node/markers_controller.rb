@@ -22,7 +22,9 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
                 @content.public_markers
               end
 
-    @markers = markers.to_a.concat(doc_markers).paginate(page: params[:page], per_page: 30)
+    markers = @content.sort_markers(markers.to_a.concat(doc_markers))
+
+    @markers = markers.paginate(page: params[:page], per_page: 30)
   end
 
   def file_content
@@ -60,7 +62,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
         d.maps.first.markers.each do |m|
           marker = Map::Marker.new(title: d.title, latitude: m.lat, longitude: m.lng,
                                    window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>),
-                                   doc: d)
+                                   doc: d, created_at: d.display_published_at, updated_at: d.display_published_at)
           marker.categories = d.categories
           marker.files = d.files
           markers << marker
