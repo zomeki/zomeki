@@ -13,8 +13,6 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '日付：@date タイトル：@title 組織：@group カテゴリ：@category'
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
     :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
-  set_config :gp_calendar_content_event_id, :name => '汎用カレンダー',
-    :options => lambda { GpCalendar::Content::Event.all.map {|e| [e.name, e.id] } }
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons
