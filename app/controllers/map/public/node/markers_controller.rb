@@ -46,8 +46,9 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
 
     doc_contents = GpArticle::Content::Doc.joins(:settings)
                                           .where(contents[:site_id].eq(Page.site.id)
-                                                 .and(content_settings[:name].eq('map_content_marker_id')
-                                                 .and(content_settings[:value].eq(@content.id))))
+                                                 .and(content_settings[:name].eq('map_relation')
+                                                 .and(content_settings[:value].eq('enabled'))))
+                                          .select {|d| d.setting_extra_value(:map_relation, :map_content_id) == @content.id }
 
     return markers if doc_contents.empty?
 
