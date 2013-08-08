@@ -346,7 +346,15 @@ $(document).ready(function () {
   $('.tabs').tabs({
     active: ($('.tabs > ul > li').length - 1),
     show: function (event, ui) {
-        if (me) { google.maps.event.trigger(me.map, 'resize'); }
+        if (me) {
+          var lat = $('#centerDispLat').val();
+          var lng = $('#centerDispLng').val();
+          if (lat === undefined) { lat = 0; }
+          if (lng === undefined) { lng = 0; }
+
+          google.maps.event.trigger(me.map, 'resize');
+          me.map.panTo(new google.maps.LatLng(lat, lng));
+        }
       }
   });
   $('.tabs .ui-tabs-nav > li').css('float', 'right');

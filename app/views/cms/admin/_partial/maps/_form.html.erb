@@ -73,7 +73,7 @@ var me = null;
 addEvent(window, 'load', function() {
   // map
   var mapOptions = {
-    center: new google.maps.LatLng(<%= map_lat %>, <%= map_lng %>),
+    center: new google.maps.LatLng(<%= map_lat.to_f %>, <%= map_lng.to_f %>),
     zoom: <%= map_zoom %>,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     scaleControl: true,
