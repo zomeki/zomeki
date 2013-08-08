@@ -7,7 +7,7 @@ class GpCalendar::Content::Setting < Cms::ContentSetting
   set_config :date_style, :name => '日付形式',
     :comment => '年：%Y 月：%m 日：%d 曜日：%A 曜日（省略）：%a'
   set_config :show_images, :name => '画像表示',
-    :options => GpCalendar::Event::IMAGE_STATE_OPTIONS,
+    :options => GpCalendar::Content::Event::IMAGE_STATE_OPTIONS,
     :form_type => :radio_buttons
   set_config :default_image, :name => '初期画像',
     :comment => '（例 /images/sample.jpg ）'
