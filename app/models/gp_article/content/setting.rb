@@ -15,6 +15,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
   set_config :gp_calendar_content_event_id, :name => '汎用カレンダー',
     :options => lambda { GpCalendar::Content::Event.all.map {|e| [e.name, e.id] } }
+  set_config :calendar_relation, :name => '汎用カレンダー',
+    :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
+    :form_type => :radio_buttons
   set_config :tag_content_tag_id, :name => '関連ワード',
     :options => lambda { Tag::Content::Tag.all.map {|t| [t.name, t.id] } }
   set_config :save_button_states, :name => '保存ボタン',
@@ -32,18 +35,6 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   end
 
   def lower_text
-  end
-
-  def extra_values=(ev)
-    self.extra_value = YAML.dump(ev) if ev.is_a?(Hash)
-    return ev
-  end
-
-  def extra_values
-    return {}.with_indifferent_access unless self.extra_value.is_a?(String)
-    ev = YAML.load(self.extra_value)
-    return {}.with_indifferent_access unless ev.is_a?(Hash)
-    return ev.with_indifferent_access
   end
 
   def category_type_ids

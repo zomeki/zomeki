@@ -79,5 +79,16 @@ class Cms::ContentSetting < ActiveRecord::Base
     return config[:form_type] if config[:form_type]
     config_options ? :select : :string
   end
-  
+
+  def extra_values=(ev)
+    self.extra_value = YAML.dump(ev) if ev.is_a?(Hash)
+    return ev
+  end
+
+  def extra_values
+    return {}.with_indifferent_access unless self.extra_value.is_a?(String)
+    ev = YAML.load(self.extra_value)
+    return {}.with_indifferent_access unless ev.is_a?(Hash)
+    return ev.with_indifferent_access
+  end
 end
