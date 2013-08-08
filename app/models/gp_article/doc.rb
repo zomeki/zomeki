@@ -379,6 +379,10 @@ class GpArticle::Doc < ActiveRecord::Base
     public_updated_at.try(:strftime, content.date_style)
   end
 
+  def default_map_position
+    content.setting_extra_value(:map_relation, :lat_lng).presence || super
+  end
+
   private
 
   def set_name
