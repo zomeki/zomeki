@@ -33,7 +33,8 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
   end
 
   def event_docs(start_date, end_date)
-    doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @content.id).map(&:content)
+    doc_contents = Cms::ContentSetting.where(name: 'calendar_relation', value: 'enabled')
+                                      .map{|cs| cs.content if cs.extra_values[:calendar_content_id] == @content.id }.compact
     doc_contents.select! {|dc| dc.site == Page.site }
     return [] if doc_contents.empty?
 

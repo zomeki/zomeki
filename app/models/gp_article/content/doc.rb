@@ -1,5 +1,7 @@
 # encoding: utf-8
 class GpArticle::Content::Doc < Cms::Content
+  CALENDAR_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+
   default_scope where(model: 'GpArticle::Doc')
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :order => 'published_at DESC, updated_at DESC', :dependent => :destroy
@@ -91,7 +93,7 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def gp_calendar_content_event
-    GpCalendar::Content::Event.find_by_id(setting_value(:gp_calendar_content_event_id))
+    GpCalendar::Content::Event.find_by_id(setting_extra_value(:calendar_relation, :calendar_content_id))
   end
 
   def event_category_types
@@ -103,11 +105,16 @@ class GpArticle::Content::Doc < Cms::Content
                                   category_type, include_descendants: include_descendants) || []
   end
 
+  def calendar_related?
+    setting_value('calendar_relation') == 'enabled'
+  end
+
   private
 
   def set_default_settings
     in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
     in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
+    in_settings[:calendar_relation] = CALENDAR_RELATION_OPTIONS.first.last unless setting_value(:calendar_relation)
   end
 end

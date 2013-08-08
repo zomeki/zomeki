@@ -7,7 +7,7 @@
     <li><a href="#tab8">オプション</a></li>
     <li><a href="#tab7">携帯</a></li>
     <li><a href="#tab6">地図</a></li>
-    <%- if @content.setting_value('gp_calendar_content_event_id').present? -%>
+    <%- if @content.calendar_related? -%>
     <li><a href="#tab5">イベント</a></li>
     <%- end -%>
     <li><a href="#tab4">承認</a></li>
