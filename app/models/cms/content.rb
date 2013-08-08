@@ -69,10 +69,6 @@ class Cms::Content < ActiveRecord::Base
     return st.value.blank? ? default_value : st.value
   end
 
-  def setting_extra_value(name)
-    settings.find_by_name(name).try(:extra_value)
-  end
-
   def search(params)
     params.each do |n, v|
       next if v.to_s == ''
