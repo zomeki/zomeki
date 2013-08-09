@@ -6,12 +6,8 @@
   <ul>
     <li><a href="#tab8">オプション</a></li>
     <li><a href="#tab7">携帯</a></li>
-    <%- if @content.map_related? -%>
-    <li><a href="#tab6">地図</a></li>
-    <%- end -%>
-    <%- if @content.calendar_related? -%>
-    <li><a href="#tab5">イベント</a></li>
-    <%- end -%>
+    <li style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
+    <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
     <li><a href="#tab4">承認</a></li>
     <li><a href="#tab3">連絡先</a></li>
     <li><a href="#tab2">公開日</a></li>
