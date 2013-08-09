@@ -23,7 +23,7 @@ class GpCalendar::Public::Piece::DailyLinksController < GpCalendar::Public::Piec
 
     @calendar = Util::Date::Calendar.new(date.year, date.month)
 
-    return unless (@node = @piece.content.public_node)
+    return unless (@node = @piece.target_node)
 
     @calendar.year_uri  = "#{@node.public_uri}:year/"
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
