@@ -5,6 +5,11 @@ module GpCalendar::GpCalendarHelper
   end
 
   def nodes_for_daily_links(nodes)
-    nodes.select {|n| %w!GpCalendar::Event GpCalendar::CalendarStyledEvent!.include?(n.model) }
+    nodes.select {|n| %w!GpCalendar::Event
+                         GpCalendar::CalendarStyledEvent!.include?(n.model) }
+  end
+
+  def nodes_for_monthly_links(nodes)
+    nodes_for_daily_links(nodes)
   end
 end

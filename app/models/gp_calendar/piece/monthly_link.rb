@@ -5,4 +5,8 @@ class GpCalendar::Piece::MonthlyLink < Cms::Piece
   def content
     GpCalendar::Content::Event.find(super)
   end
+
+  def target_node
+    content.public_nodes.find_by_id(setting_value(:target_node_id))
+  end
 end
