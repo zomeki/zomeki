@@ -4,7 +4,7 @@ class GpCalendar::Public::Piece::MonthlyLinksController < GpCalendar::Public::Pi
     @piece = GpCalendar::Piece::MonthlyLink.find_by_id(Page.current_piece.id)
     return render(:text => '') unless @piece
 
-    @node = @piece.content.public_node
+    @node = @piece.target_node
     return render(:text => '') unless @node
 
     date      = params[:gp_calendar_event_date]
