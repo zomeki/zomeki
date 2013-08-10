@@ -8,6 +8,14 @@ class GpCalendar::Public::Piece::CategoryTypesController < GpCalendar::Public::P
   end
 
   def index
+    @target_node_public_uri = @piece.target_node.try(:public_uri).to_s
+
+    if @target_node_public_uri.blank?
+      return render(:text => '') unless %w!GpCalendar::Event
+                                           GpCalendar::TodaysEvent
+                                           GpCalendar::CalendarStyledEvent!.include?(@item.model)
+    end
+
     @top_categories = @piece.content.public_categories
   end
 end
