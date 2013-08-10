@@ -68,4 +68,10 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
     return nil unless category_type
     category_type.find_category_by_path_from_root_category(category_path)
   end
+
+  def filter_events_by_specified_category(events)
+    if (category = find_category_by_specified_path(params[:category]))
+      @events.reject! {|e| (e.category_ids & category.public_descendants.map(&:id)).empty? }
+    end
+  end
 end

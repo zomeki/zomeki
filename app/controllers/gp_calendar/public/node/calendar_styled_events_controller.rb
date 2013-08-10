@@ -9,6 +9,8 @@ class GpCalendar::Public::Node::CalendarStyledEventsController < GpCalendar::Pub
 
     merge_docs_into_events(event_docs(start_date, end_date), @events)
 
+    filter_events_by_specified_category(@events)
+
     @weeks = (start_date..end_date).inject([]) do |weeks, day|
         weeks.push([]) if weeks.empty? || day.wday.zero?
         weeks.last.push(day)
