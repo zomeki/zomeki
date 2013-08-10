@@ -1,5 +1,5 @@
 <li>
-  <%= link_to category.title, "?category=#{category.category_type.name}/#{category.path_from_root_category}" %>
+  <%= link_to category.title, "#{@target_node_public_uri}?category=#{category.category_type.name}/#{category.path_from_root_category}" %>
   <%- unless category.public_children.empty? -%>
   <ul>
     <%- category.public_children.each do |child| -%>
