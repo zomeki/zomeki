@@ -8,9 +8,7 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
 
     merge_docs_into_events(event_docs(@date.beginning_of_month, @date.end_of_month), @events)
 
-    if (category = find_category_by_specified_path(params[:category]))
-      @events.reject! {|e| (e.category_ids & category.public_descendants.map(&:id)).empty? }
-    end
+    filter_events_by_specified_category(@events)
   end
 
   def file_content
