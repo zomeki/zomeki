@@ -55,15 +55,15 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     return markers if doc_contents.empty?
 
     doc_contents.each do |dc|
-      dc.public_docs.includes(:maps).each do |d|
+      dc.public_docs.where(marker_state: 'visible').includes(:maps).each do |d|
         next if d.maps.empty? || d.maps.first.markers.empty?
-        next if @specified_category && (d.category_ids & @specified_category.public_descendants.map(&:id)).empty?
+        next if @specified_category && (d.marker_category_ids & @specified_category.public_descendants.map(&:id)).empty?
 
         d.maps.first.markers.each do |m|
           marker = Map::Marker.new(title: d.title, latitude: m.lat, longitude: m.lng,
                                    window_text: %Q(<p>#{m.name}</p><p><a href="#{d.public_uri}">詳細</a></p>),
                                    doc: d, created_at: d.display_published_at, updated_at: d.display_published_at)
-          marker.categories = d.categories
+          marker.categories = d.marker_categories
           marker.files = d.files
           markers << marker
         end
