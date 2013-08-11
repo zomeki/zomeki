@@ -110,6 +110,19 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value('calendar_relation') == 'enabled'
   end
 
+  def map_content_marker
+    Map::Content::Marker.find_by_id(setting_extra_value(:map_relation, :map_content_id))
+  end
+
+  def marker_category_types
+    map_content_marker.try(:category_types) || GpCategory::CategoryType.none
+  end
+
+  def marker_category_type_categories_for_option(category_type, include_descendants: true)
+    map_content_marker.try(:category_type_categories_for_option,
+                           category_type, include_descendants: include_descendants) || []
+  end
+
   def map_related?
     setting_value('map_relation') == 'enabled'
   end

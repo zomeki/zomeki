@@ -16,6 +16,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @visible_category_types = @content.visible_category_types
     @recognition_type = @content.setting_value(:recognition_type)
     @event_category_types = @content.event_category_types
+    @marker_category_types = @content.marker_category_types
     @item = @content.docs.find(params[:id]) if params[:id].present?
   end
 
@@ -83,6 +84,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     _create(@item) do
       set_categories
       set_event_categories
+      set_marker_categories
 
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state_recognize?
@@ -103,6 +105,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     _update(@item) do
       set_categories
       set_event_categories
+      set_marker_categories
 
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
@@ -235,6 +238,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                            []
                          end
     @item.event_category_ids = event_category_ids
+  end
+
+  def set_marker_categories
+    marker_category_ids = if params[:marker_categories].is_a?(Hash)
+                            params[:marker_categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
+                          else
+                            []
+                          end
+    @item.marker_category_ids = marker_category_ids
   end
 
   def hold_document

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130807014257) do
+ActiveRecord::Schema.define(:version => 20130811144855) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -631,6 +631,7 @@ ActiveRecord::Schema.define(:version => 20130807014257) do
     t.datetime "display_updated_at"
     t.date     "event_started_on"
     t.date     "event_ended_on"
+    t.string   "marker_state"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
