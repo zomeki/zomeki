@@ -23,6 +23,7 @@ class GpArticle::Doc < ActiveRecord::Base
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
@@ -41,6 +42,9 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :event_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'GpCalendar::Event'],
            :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, 'GpCalendar::Event') }
+  has_many :marker_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
+           :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'Map::Marker'],
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, 'Map::Marker') }
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
@@ -397,8 +401,9 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def set_defaults
-    self.target      ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
-    self.event_state ||= 'hidden'                  if self.has_attribute?(:event_state)
+    self.target       ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
+    self.event_state  ||= 'hidden'                  if self.has_attribute?(:event_state)
+    self.marker_state ||= 'hidden'                  if self.has_attribute?(:marker_state)
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
   end

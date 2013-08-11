@@ -27,6 +27,7 @@ ja:
         terminal_mobile: 携帯
         in_editable_groups: 編集可能グループ
         in_rel_doc_ids: 関連記事
+        marker_state: マップ表示
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
