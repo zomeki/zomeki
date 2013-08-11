@@ -7,9 +7,9 @@
 /* map form */
 .articleMapForm .mapCanvas {
   float: left;
-  width: 600px;
-  height: 400px;
-  margin: 0px 10px 10px 0px;
+  width: 800px;
+  height: 450px;
+  margin: 10px 0;
   border: 1px solid #666;
 }
 .articleMapForm table.mapInfo caption,
