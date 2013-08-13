@@ -5,7 +5,7 @@
   <tr>
     <th>リンク先</th>
     <td>
-      <%= select_tag 'target_node', options_for_select(@item.content.public_nodes
+      <%= select_tag 'target_node', options_for_select(nodes_for_category_types(@item.content.public_nodes)
                                                        .map {|n| ["#{n.title}（#{n.name}）", n.id]}, @item.target_node.try(:id)), include_blank: true %>
   </tr>
 </table>
