@@ -25,6 +25,20 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
   def update
     @item = GpCategory::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
+
+    if ['category_type_style', 'category_style'].include?(@item.name)
+      extra_values = @item.extra_values
+
+      case @item.name
+      when 'category_type_style'
+        extra_values[:category_type_style] = params[:category_type_style]
+      when 'category_style'
+        extra_values[:category_style] = params[:category_style]
+      end
+
+      @item.extra_values = extra_values
+    end
+
     _update @item
   end
 
