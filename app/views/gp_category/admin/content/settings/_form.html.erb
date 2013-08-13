@@ -1,13 +1,4 @@
-<%-
-value_form = case @item.form_type
-             when :select
-               f.select(:value, @item.config_options, include_blank: true)
-             when :text
-               f.text_area(:value, style: 'width: 600px; height: 120px;')
-             else
-               f.text_field(:value, style: 'width: 400px;')
-             end
-%><%= f.hidden_field :content_id -%>
+<%= f.hidden_field :content_id -%>
 
 <table class="show">
   <tr>
@@ -18,8 +9,34 @@ value_form = case @item.form_type
     <th>設定値</th>
     <td>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
-      <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+      <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
     </td>
   </tr>
 </table>
+
+<%- if @item.name == 'category_type_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <p>タイトル：@title サブタイトル：@sub_title 公開日時：@publish_date 更新日時：@update_date<br />
+      概要：@summary 組織：@group カテゴリ：@category 添付画像：@image</p>
+      <%= text_area_tag :category_type_style, @item.extra_values[:category_type_style], size: '100x10' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'category_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <p>タイトル：@title サブタイトル：@sub_title 公開日時：@publish_date 更新日時：@update_date<br />
+      概要：@summary 組織：@group カテゴリ：@category 添付画像：@image</p>
+      <%= text_area_tag :category_style, @item.extra_values[:category_style], size: '100x10' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
