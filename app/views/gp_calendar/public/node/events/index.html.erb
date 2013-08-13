@@ -25,7 +25,7 @@
           <%- end -%>
         </td>
         <%- end -%>
-        <td class="date">
+        <td id="<%= 'day%02d' % event.started_on.day if event.started_on.month == @date.month %>" class="date">
           <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
         </td>
         <td class="event">

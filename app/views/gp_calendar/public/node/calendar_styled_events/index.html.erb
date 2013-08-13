@@ -19,7 +19,7 @@
       <%- @weeks.each do |week| -%>
       <tr class="week">
         <%- week.each do |day| -%>
-        <td class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= ' prevMonth' if day < @date.beginning_of_month %><%= ' nextMonth' if day > @date.end_of_month %>">
+        <td id="<%= 'day%02d' % day.day if day.month == @date.month %>" class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= ' prevMonth' if day < @date.beginning_of_month %><%= ' nextMonth' if day > @date.end_of_month %>">
           <p class="date"><%= day.day %></p>
           <%- unless (events = @events.select{|e| day.between?(e.started_on, e.ended_on) }).empty? -%>
           <ul>
