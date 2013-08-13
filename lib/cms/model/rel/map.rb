@@ -23,7 +23,7 @@ module Cms::Model::Rel::Map
   end
   
   def default_map_position
-    "35.702708,139.560831" # mitaka
+    '35.702708,139.560831' # Mitaka
   end
   
   def find_map_by_name(name)

@@ -27,13 +27,13 @@ class Map::Content::Marker < Cms::Content
 
   def latitude
     lat_lng = setting_value(:lat_lng).to_s.split(',')
-    return '' unless lat_lng.size == 2
+    return '35.702708' unless lat_lng.size == 2 # Mitaka
     lat_lng.first.strip
   end
 
   def longitude
     lat_lng = setting_value(:lat_lng).to_s.split(',')
-    return '' unless lat_lng.size == 2
+    return '139.560831' unless lat_lng.size == 2 # Mitaka
     lat_lng.last.strip
   end
 
