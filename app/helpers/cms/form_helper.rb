@@ -90,4 +90,23 @@ module Cms::FormHelper
     locals = {:item => item}
     render :partial => 'cms/admin/_partial/maps/view', :locals => locals
   end
+
+  def value_form(f)
+    object = f.object || instance_variable_get("@#{f.object_name}")
+    case object.form_type
+    when :select
+      f.select(:value, object.config_options, include_blank: true)
+    when :text
+      f.text_area(:value, style: 'width: 600px; height: 120px;')
+    when :check_boxes
+      f.check_boxes(:value, object.config_options)
+    when :radio_buttons
+      f.radio_buttons(:value, object.config_options)
+    when :multiple_select
+      select_tag 'item[value]', options_from_collection_for_select(object.config_options.where(id: object.value), :id, :name),
+                                multiple: true, style: 'height: 150px; width: 250px;'
+    else
+      f.text_field(:value, style: 'width: 400px;')
+    end
+  end
 end
