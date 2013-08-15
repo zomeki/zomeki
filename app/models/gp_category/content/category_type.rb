@@ -42,6 +42,10 @@ class GpCategory::Content::CategoryType < Cms::Content
     setting_value(:category_type_style).to_s
   end
 
+  def category_type_doc_style
+    setting_extra_value(:category_type_style, :category_type_doc_style).to_s
+  end
+
   private
 
   def set_default_settings

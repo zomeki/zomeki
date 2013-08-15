@@ -1,0 +1,5 @@
+<%- @category_type.public_categories.each do |category| -%>
+  <%- category.public_docs.each do |doc| -%>
+    <%= render 'all_docs_doc', doc: doc %>
+  <%- end -%>
+<%- end -%>

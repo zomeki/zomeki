@@ -45,4 +45,8 @@ module Sys::Model::Rel::File
     FileUtils.rm_r(dir) if FileTest.exist?(dir)
     return true
   end
+
+  def image_files
+    files.select {|f| f.image_file? }
+  end
 end
