@@ -1,6 +1,6 @@
 <%- @category_type.public_root_categories.each do |category| -%>
-<h2><%= category.title %></h2>
-<%- GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category.descendants.map(&:id)).public.each do |doc| -%>
+<h2><%= link_to category.title, category.public_uri %></h2>
+<%- category.public_docs.each do |doc| -%>
 <%= render 'doc', doc: doc %>
 <%- end -%>
 <%- end -%>
