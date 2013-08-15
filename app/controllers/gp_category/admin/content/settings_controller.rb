@@ -33,7 +33,7 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
       when 'category_type_style'
         extra_values[:category_type_doc_style] = params[:category_type_doc_style]
       when 'category_style'
-        extra_values[:category_style] = params[:category_style]
+        extra_values[:category_doc_style] = params[:category_doc_style]
       end
 
       @item.extra_values = extra_values

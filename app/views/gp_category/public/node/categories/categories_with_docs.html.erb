@@ -1,0 +1,34 @@
+<div class="contentGpCategoryCategoryType">
+  <%- unless @docs.empty? -%>
+  <section class="categoryType docs">
+    <ul>
+      <%- @docs.each do |doc| -%>
+      <li><%= render 'doc', doc: doc %></li>
+      <%- end -%>
+    </ul>
+  </section>
+  <%- end -%>
+
+  <%- unless @category.public_children.empty? -%>
+  <section class="categoryType categories">
+    <nav>
+      <ul>
+        <%- @category.public_children.each do |child| -%>
+        <li class="category<%= child.name.try(:camelize) %>">
+          <%= link_to child.title, child.public_uri %>
+          <%- unless child.public_docs.empty? -%>
+          <ul>
+            <%- child.public_docs.each do |doc| -%>
+            <li><%= render 'doc', doc: doc %></li>
+            <%- end -%>
+          </ul>
+          <%- end -%>
+        </li>
+        <%- end -%>
+      </ul>
+    </nav>
+  </section>
+  <%- end -%>
+
+  <%= paginate @docs %>
+</div>
