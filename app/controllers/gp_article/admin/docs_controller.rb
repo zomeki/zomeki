@@ -81,7 +81,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    _create(@item) do
+    location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
+
+    _create(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
@@ -102,7 +104,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
-    _update(@item) do
+    location = url_for(action: 'edit') if @item.state_draft?
+
+    _update(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
