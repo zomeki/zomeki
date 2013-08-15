@@ -1,5 +1,5 @@
 <%- @category_type.public_root_categories.each do |category| -%>
-<h2><%= category.title %></h2>
+<h2><%= link_to category.title, category.public_uri %></h2>
 <%- unless category.public_children.empty? -%>
 <ul>
   <%- category.public_children.each do |child| -%>
