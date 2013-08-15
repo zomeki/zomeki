@@ -22,6 +22,12 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
     Page.current_item = @category_type
     Page.title = @category_type.title
 
-    render :show_mobile if Page.mobile?
+    if Page.mobile?
+      render :show_mobile
+    else
+      if (style = @content.category_type_style).present?
+        render style
+      end
+    end
   end
 end

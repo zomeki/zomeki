@@ -38,6 +38,10 @@ class GpCategory::Content::CategoryType < Cms::Content
     setting_value(:date_style).to_s
   end
 
+  def category_type_style
+    setting_value(:category_type_style).to_s
+  end
+
   private
 
   def set_default_settings
