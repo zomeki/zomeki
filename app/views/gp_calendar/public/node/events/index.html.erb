@@ -10,7 +10,7 @@
       <tr>
         <%- if @content.show_images? -%>
         <td class="image">
-          <%- if event.files.empty? -%>
+          <%- if event.image_files.empty? -%>
             <%- if @content.default_image.blank? -%>
               画像がありません。
             <%- else -%>
@@ -18,7 +18,7 @@
             <%- end -%>
           <%- else -%>
             <p class="thumb">
-              <%- event.files.each do |file| next unless file.image_file? -%>
+              <%- event.image_files.each do |file| -%>
               <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
               <%- end -%>
             </p>
