@@ -25,7 +25,7 @@ protected
       item.reload if item.respond_to?(:reload) rescue nil
       status         = params[:_created_status] || :created
       location       = options[:location] || url_for(:action => :index)
-      flash[:notice] = options[:notice] || '登録処理が完了しました。'
+      flash[:notice] = options[:notice] || "登録処理が完了しました。（#{I18n.l Time.now}）"
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
@@ -44,7 +44,7 @@ protected
     if item.editable? && item.save
       item.reload if item.respond_to?(:reload) rescue nil
       location       = options[:location] || url_for(:action => :index)
-      flash[:notice] = '更新処理が完了しました。'
+      flash[:notice] = "更新処理が完了しました。（#{I18n.l Time.now}）"
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
@@ -62,7 +62,7 @@ protected
   def _destroy(item, options = {}, &block)
     if item.deletable? && item.destroy
       location       = options[:location] || url_for(:action => :index)
-      flash[:notice] = options[:notice] || '削除処理が完了しました。'
+      flash[:notice] = options[:notice] || "削除処理が完了しました。（#{I18n.l Time.now}）"
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
