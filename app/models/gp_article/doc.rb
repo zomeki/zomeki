@@ -367,20 +367,12 @@ class GpArticle::Doc < ActiveRecord::Base
     return editable_group.all?
   end
 
-  def public_published_at
-    display_published_at || published_at
+  def formated_display_published_at
+    display_published_at.try(:strftime, content.date_style)
   end
 
-  def public_updated_at
-    display_updated_at || updated_at
-  end
-
-  def formated_public_published_at
-    public_published_at.try(:strftime, content.date_style)
-  end
-
-  def formated_public_updated_at
-    public_updated_at.try(:strftime, content.date_style)
+  def formated_display_updated_at
+    display_updated_at.try(:strftime, content.date_style)
   end
 
   def default_map_position
