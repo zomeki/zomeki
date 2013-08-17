@@ -33,7 +33,7 @@
 <p class="form">カテゴリ選択</p>
 
 <table class="show">
-  <%- @item.category_sets.each_with_index do |category_set, index| -%>
+  <%- @item.category_sets.each do |category_set| -%>
   <tr>
     <th><%= GpCategory::CategoryType.model_name.human %></th>
     <td><%= category_set.category.category_type.title %></td>
@@ -42,7 +42,7 @@
   </tr>
   <tr>
     <th><%= GpCategory::Category.model_name.human %>階層</th>
-    <td colspan="4"><%= category_set.layer_text %></td>
+    <td colspan="3"><%= category_set.layer_text %></td>
   </tr>
   <%- end -%>
 </table>
