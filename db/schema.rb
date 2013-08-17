@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130811144855) do
+ActiveRecord::Schema.define(:version => 20130817091606) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -432,12 +432,13 @@ ActiveRecord::Schema.define(:version => 20130811144855) do
   add_index "cms_piece_link_items", ["piece_id"], :name => "piece_id"
 
   create_table "cms_piece_settings", :force => true do |t|
-    t.integer  "piece_id",   :null => false
+    t.integer  "piece_id",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.text     "value"
     t.integer  "sort_no"
+    t.text     "extra_value"
   end
 
   add_index "cms_piece_settings", ["piece_id"], :name => "piece_id"
