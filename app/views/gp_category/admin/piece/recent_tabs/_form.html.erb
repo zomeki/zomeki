@@ -1,10 +1,4 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_form f, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'gp_category/admin/piece/shared/form', locals: {f: f}) do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
@@ -25,5 +19,4 @@
     <td><%= f.array_text_field 'in_settings[more_label]', class: 'name' %></td>
   </tr>
 </table>
-
-<%= creator_form f %>
+<%- end -%>
