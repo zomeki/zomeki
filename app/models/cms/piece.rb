@@ -85,6 +85,14 @@ class Cms::Piece < ActiveRecord::Base
     st ? st.value : nil
   end
 
+  def setting_extra_values(name)
+    settings.find_by_name(name).try(:extra_values) || {}.with_indifferent_access
+  end
+
+  def setting_extra_value(name, extra_name)
+    setting_extra_values(name)[extra_name]
+  end
+
 protected
   def save_settings
     in_settings.each do |name, value|
