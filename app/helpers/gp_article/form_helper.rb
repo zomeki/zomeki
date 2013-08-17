@@ -81,24 +81,6 @@ $('.datetimepicker').datetimepicker({
     s.html_safe
   end
 
-  def toggle_form_function
-    f = <<-EOS
-function toggle_form(link, target, open_label, close_label) {
-  if (open_label === undefined) open_label = '開く▼';
-  if (close_label === undefined) close_label = '閉じる▲';
-  var l = jQuery(link);
-  var t = jQuery(target);
-  if (t.is(':hidden')) {
-    l.html(close_label);
-  } else {
-    l.html(open_label);
-  }
-  t.slideToggle();
-}
-    EOS
-    f.html_safe
-  end
-
   def disable_enter_script
     s = <<-EOS
 $('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
