@@ -74,6 +74,15 @@ class GpCategory::Piece::Doc < Cms::Piece
     end
   end
 
+  def category_sets
+    value = YAML.load(setting_value(:category_sets).to_s)
+    return [] unless value.is_a?(Array)
+    value.map{|v|
+      v[:category] = GpCategory::Category.find_by_id(v[:category_id])
+      v[:category] ? v : nil
+    }.compact
+  end
+
   private
 
   def set_default_settings

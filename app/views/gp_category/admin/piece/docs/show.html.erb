@@ -24,5 +24,26 @@
     <th><%= @item.locale :date_style %></th>
     <td colspan="3"><%= @item.setting_value(:date_style) %></td>
   </tr>
+  <tr>
+    <th>表示カテゴリ</th>
+    <td colspan="3">
+      <table class="show">
+        <tbody>
+          <%- @item.category_sets.each do |category_set| -%>
+          <tr>
+            <th><%= GpCategory::CategoryType.model_name.human %></th>
+            <td><%= category_set[:category].category_type.title %></td>
+            <th><%= GpCategory::Category.model_name.human %></th>
+            <td><%= category_set[:category].title %></td>
+          </tr>
+          <tr>
+            <th><%= GpCategory::Category.model_name.human %>階層</th>
+            <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|o| o.last == category_set[:layer] }.try(:first) %></td>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </td>
+  </tr>
 </table>
 <%- end -%>

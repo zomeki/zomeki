@@ -24,9 +24,32 @@
     <th><%= @item.locale :date_style %></th>
     <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
   </tr>
+  <tr>
+    <th>表示カテゴリ</th>
+    <td colspan="3">
+      <table class="show" id="categories">
+        <tbody>
+          <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
+                                     index: nil, category_set: {category: nil, layer: @item.class::LAYER_OPTIONS.first.last} -%>
+          <%- @item.category_sets.each_with_index do |category_set, index| -%>
+          <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
+                                     index: index, category_set: category_set -%>
+          <%- end -%>
+          <tr>
+            <td colspan="4">&nbsp;</td>
+            <td style="text-align: right;"><%= button_tag '追加', type: 'button', class: 'add_categories_line' %></td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
 </table>
 
+
+
 <%= javascript_tag do -%>
+<%= toggle_form_function %>
+
 $(document).ready(function () {
   $('#item_in_settings_category_type_id').on('change', function (event) {
     var category_type_id = parseInt(event.target.value);
@@ -39,6 +62,35 @@ $(document).ready(function () {
       });
     }
   });
+
+  var categories_wrapper = $('#categories > tbody');
+  categories_wrapper.find('> tr > td.category_type > select').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $(event.target).closest('tr').find('td.category > select');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @item.content, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+  categories_wrapper.find('.add_categories_line').on('click', function () {
+    var next_index = (categories_wrapper.find('tr').length - 3) / 2; <%# クローン元(2) + 追加ボタン(1) => 3tr, 単位 => 2tr %>
+
+    var categories_tr = categories_wrapper.children(':first-child').clone(true);
+    var categories = categories_tr.find('select[name="categories[N]"]');
+    categories.attr('name', categories.attr('name').replace('N', next_index));
+    categories_tr.find(':disabled').removeAttr('disabled');
+    categories_tr.insertBefore(categories_wrapper.children(':last-child')).show();
+
+    var layers_tr = categories_wrapper.children(':first-child + tr').clone(true);
+    var layers = layers_tr.find('input[name="layers[N]"]');
+    layers.attr('name', layers.attr('name').replace('N', next_index));
+    layers_tr.find(':disabled').removeAttr('disabled');
+    layers_tr.insertBefore(categories_wrapper.children(':last-child'));
+  }).trigger('click');
 });
 <%- end -%>
 <%- end -%>
