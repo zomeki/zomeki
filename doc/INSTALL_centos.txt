@@ -132,13 +132,13 @@ MySQLを起動します。
   # /sbin/chkconfig mysqld on
 
 rootユーザのパスワードを設定します。
-  # /usr/bin/mysqladmin -u root password "pass"
+  # /usr/bin/mysqladmin -u root password "rootpass"
 
   ※パスワードは環境に応じて適切に設定してください。
 
 zomekiユーザを作成します。
-  # /usr/bin/mysql -u root -ppass \
-  > -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'pass'"
+  # /usr/bin/mysql -u root -prootpass \
+  > -e "GRANT ALL ON zomeki_production.* TO zomeki@localhost IDENTIFIED BY 'zomekipass'"
 
   ※パスワードは環境に応じて適切に設定してください。
 
@@ -178,6 +178,10 @@ Phusion Passengerをインストールします。
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )
+
+  自動的に判断させる場合は、-a オプションを使用する。
+
+  # passenger-install-apache2-module -a 
 
 Phusion Passengerの設定ファイルを変更します。
 
