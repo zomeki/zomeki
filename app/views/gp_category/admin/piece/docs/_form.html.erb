@@ -30,7 +30,7 @@
       <table class="show" id="categories">
         <tbody>
           <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
-                                     index: nil, category_set: {category: nil, layer: @item.class::LAYER_OPTIONS.first.last} -%>
+                                     index: nil, category_set: @item.new_category_set -%>
           <%- @item.category_sets.each_with_index do |category_set, index| -%>
           <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
                                      index: index, category_set: category_set -%>

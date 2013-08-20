@@ -83,6 +83,10 @@ class GpCategory::Piece::Doc < Cms::Piece
     }.compact
   end
 
+  def new_category_set
+    {category: nil, layer: LAYER_OPTIONS.first.last}
+  end
+
   private
 
   def set_default_settings
