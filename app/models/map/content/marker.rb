@@ -108,20 +108,7 @@ class Map::Content::Marker < Cms::Content
         when b.categories.empty?
           1
         else
-          ac = a.categories.first
-          bc = b.categories.first
-          case
-          when ac.category_type_id != bc.category_type_id
-            ac.category_type_id <=> bc.category_type_id
-          when ac.parent_id != bc.parent_id
-            ac.parent_id <=> bc.parent_id
-          when ac.level_no != bc.level_no
-            ac.level_no <=> bc.level_no
-          when ac.sort_no != bc.sort_no
-            ac.sort_no <=> bc.sort_no
-          else
-            ac.name <=> bc.name
-          end
+          a.categories.first.unique_sort_key <=> b.categories.first.unique_sort_key
         end
       end
     else
