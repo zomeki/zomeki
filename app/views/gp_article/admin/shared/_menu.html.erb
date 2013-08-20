@@ -41,7 +41,10 @@ end
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
-  <%= link_to 'プレビュー', @item.preview_uri(params: {doc_id: @item.id}),
+  <span class="separator"></span>
+  <%= link_to 'プレビュー(PC)', @item.preview_uri(params: {doc_id: @item.id}),
               target: 'preview' if @item.terminal_pc_or_smart_phone && @content.public_node && @item.preview_uri.present? %>
+  <%= link_to 'プレビュー(携帯)', @item.preview_uri(mobile: true, params: {doc_id: @item.id}),
+              target: 'preview' if @item.terminal_mobile && @content.public_node && @item.preview_uri.present? %>
   <%- end -%>
 </div>
