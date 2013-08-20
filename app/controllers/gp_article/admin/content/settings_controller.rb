@@ -53,6 +53,13 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       @item.extra_values = extra_values
     end
 
-    _update @item
+    _update(@item) do
+      if @item.name == 'calendar_relation' && @content.gp_calendar_content_event.nil?
+        @content.docs.where(event_state: 'visible').update_all(event_state: 'hidden')
+      end
+      if @item.name == 'map_relation' && @content.map_content_marker.nil?
+        @content.docs.where(marker_state: 'visible').update_all(marker_state: 'hidden')
+      end
+    end
   end
 end
