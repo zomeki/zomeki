@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Map::Content::Marker < Cms::Content
   IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  MARKER_ORDER_OPTIONS = [['投稿日昇順', 'time_asc'], ['投稿日降順', 'time_desc'], ['カテゴリ順', 'category'], ['アイウエオ順', 'syllabary']]
+  MARKER_ORDER_OPTIONS = [['投稿日昇順', 'time_asc'], ['投稿日降順', 'time_desc'], ['カテゴリ順', 'category']]
 
   default_scope where(model: 'Map::Marker')
 
@@ -108,11 +108,22 @@ class Map::Content::Marker < Cms::Content
         when b.categories.empty?
           1
         else
-          a.categories.first.try(:title) <=> b.categories.first.try(:title)
+          ac = a.categories.first
+          bc = b.categories.first
+          case
+          when ac.category_type_id != bc.category_type_id
+            ac.category_type_id <=> bc.category_type_id
+          when ac.parent_id != bc.parent_id
+            ac.parent_id <=> bc.parent_id
+          when ac.level_no != bc.level_no
+            ac.level_no <=> bc.level_no
+          when ac.sort_no != bc.sort_no
+            ac.sort_no <=> bc.sort_no
+          else
+            ac.name <=> bc.name
+          end
         end
       end
-    when 'syllabary'
-      markers.sort {|a, b| a.title <=> b.title }
     else
       markers
     end
