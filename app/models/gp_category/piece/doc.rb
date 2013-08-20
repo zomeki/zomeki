@@ -80,7 +80,7 @@ class GpCategory::Piece::Doc < Cms::Piece
     value.map{|v|
       v[:category] = GpCategory::Category.find_by_id(v[:category_id])
       v[:category] ? v : nil
-    }.compact
+    }.compact.sort {|a, b| a[:category].unique_sort_key <=> b[:category].unique_sort_key }
   end
 
   def new_category_set
