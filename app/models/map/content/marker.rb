@@ -108,7 +108,7 @@ class Map::Content::Marker < Cms::Content
         when b.categories.empty?
           1
         else
-          a.categories.first.try(:title) <=> b.categories.first.try(:title)
+          a.categories.first.unique_sort_key <=> b.categories.first.unique_sort_key
         end
       end
     when 'syllabary'
