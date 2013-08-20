@@ -135,6 +135,14 @@ class GpCategory::Category < ActiveRecord::Base
     category_type.docs_order
   end
 
+  def unique_sort_key
+    ancestors.inject('') {|k, a| k.concat('__%032d_%032d_%032d_%032d_%32s' % [a.category_type_id.to_i,
+                                                                             a.parent_id.to_i,
+                                                                             a.level_no.to_i,
+                                                                             a.sort_no.to_i,
+                                                                             a.name.to_s]) }
+  end
+
   private
 
   def set_defaults
