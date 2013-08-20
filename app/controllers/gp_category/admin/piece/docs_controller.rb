@@ -8,7 +8,7 @@ class GpCategory::Admin::Piece::DocsController < Cms::Admin::Piece::BaseControll
         category_id = value.to_i
         next if category_sets.any? {|cs| cs[:category_id] == category_id }
         next if GpCategory::Category.where(id: category_id).empty?
-        category_sets.push({category_id: category_id, layer: layers[key].to_s})
+        category_sets.push(category_id: category_id, layer: layers[key].to_s)
       end
       item_in_settings[:category_sets] = YAML.dump(category_sets)
     end
