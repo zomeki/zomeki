@@ -19,5 +19,6 @@
              .gsub('@update_date', h(doc.display_updated_at.try(:strftime, @content.date_style)))
              .gsub('@summary', h(doc.summary))
              .gsub('@group', h(doc.creator.group.name))
-             .gsub('@category', h(doc.categories.map(&:title).join(', ')))
+             .gsub('@category_link', doc.categories.map{|c| link_to c.title, c.public_uri }.join(', '))
+             .gsub('@category', doc.categories.map{|c| h c.title }.join(', '))
              .gsub('@image', doc_image).html_safe %>
