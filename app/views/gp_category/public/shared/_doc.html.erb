@@ -15,8 +15,8 @@
 -%>
 <%= doc_style.gsub('@title', doc_title)
              .gsub('@subtitle', h(doc.subtitle))
-             .gsub('@publish_date', h(doc.display_published_at.try(:strftime, @content.date_style)))
-             .gsub('@update_date', h(doc.display_updated_at.try(:strftime, @content.date_style)))
+             .gsub('@publish_date', h(doc.display_published_at.try(:strftime, date_style)))
+             .gsub('@update_date', h(doc.display_updated_at.try(:strftime, date_style)))
              .gsub('@summary', h(doc.summary))
              .gsub('@group', h(doc.creator.group.name))
              .gsub('@category_link', doc.categories.map{|c| link_to c.title, c.public_uri }.join(', '))
