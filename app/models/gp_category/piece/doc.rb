@@ -87,6 +87,12 @@ class GpCategory::Piece::Doc < Cms::Piece
     {category: nil, layer: LAYER_OPTIONS.first.last}
   end
 
+  def gp_article_content_docs
+    value = YAML.load(setting_value(:gp_article_content_doc_ids).to_s)
+    return [] unless value.is_a?(Array)
+    value.map{|v| GpArticle::Content::Doc.find_by_id(v) }.compact
+  end
+
   private
 
   def set_default_settings

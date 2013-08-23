@@ -25,7 +25,19 @@
     <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
   </tr>
   <tr>
-    <th>表示カテゴリ</th>
+    <th><%= GpArticle::Content::Doc.model_name.human %></th>
+    <td colspan="3">
+      <div id="gp_article_content_docs">
+        <%= render 'gp_article_content_doc', gacd: nil %>
+        <%- @item.gp_article_content_docs.each do |gacd| -%>
+        <%= render 'gp_article_content_doc', gacd: gacd %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', class: 'add_button' %></span>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::Category.model_name.human %></th>
     <td colspan="3">
       <table class="show" id="categories">
         <tbody>
@@ -45,8 +57,6 @@
   </tr>
 </table>
 
-
-
 <%= javascript_tag do -%>
 <%= toggle_form_function %>
 
@@ -62,6 +72,13 @@ $(document).ready(function () {
       });
     }
   });
+
+  var gp_article_content_docs_wrapper = $('#gp_article_content_docs');
+  gp_article_content_docs_wrapper.find('.add_button').on('click', function () {
+    var new_gp_article_content_doc = gp_article_content_docs_wrapper.children(':first-child').clone(true);
+    new_gp_article_content_doc.find(':disabled').removeAttr('disabled');
+    new_gp_article_content_doc.insertBefore(gp_article_content_docs_wrapper.children(':last-child')).show();
+  }).trigger('click');
 
   var categories_wrapper = $('#categories > tbody');
   categories_wrapper.find('> tr > td.category_type > select').on('change', function (event) {
