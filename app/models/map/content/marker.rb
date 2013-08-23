@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Map::Content::Marker < Cms::Content
   IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  MARKER_ORDER_OPTIONS = [['投稿日昇順', 'time_asc'], ['投稿日降順', 'time_desc'], ['カテゴリ順', 'category']]
+  MARKER_ORDER_OPTIONS = [['投稿日（昇順）', 'time_asc'], ['投稿日（降順）', 'time_desc'], ['カテゴリ順', 'category']]
 
   default_scope where(model: 'Map::Marker')
 
