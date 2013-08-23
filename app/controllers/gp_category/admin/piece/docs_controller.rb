@@ -13,6 +13,10 @@ class GpCategory::Admin::Piece::DocsController < Cms::Admin::Piece::BaseControll
       item_in_settings[:category_sets] = YAML.dump(category_sets)
     end
 
+    if (gp_article_content_docs = params[:gp_article_content_docs]).is_a?(Array)
+      item_in_settings[:gp_article_content_doc_ids] = YAML.dump(gp_article_content_docs.map{|d| d.to_i if d.present? }.compact.uniq)
+    end
+
     params[:item][:in_settings] = item_in_settings
 
     super

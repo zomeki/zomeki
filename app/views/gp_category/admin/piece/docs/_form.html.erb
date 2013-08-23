@@ -25,7 +25,23 @@
     <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
   </tr>
   <tr>
-    <th>表示カテゴリ</th>
+    <th><%= @item.locale :docs_order %></th>
+    <td colspan="3"><%= f.array_select 'in_settings[docs_order]', @item.class::DOCS_ORDER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Content::Doc.model_name.human %></th>
+    <td colspan="3">
+      <div id="gp_article_content_docs">
+        <%= render 'gp_article_content_doc', gacd: nil %>
+        <%- @item.gp_article_content_docs.each do |gacd| -%>
+        <%= render 'gp_article_content_doc', gacd: gacd %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', class: 'add_button' %></span>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::Category.model_name.human %></th>
     <td colspan="3">
       <table class="show" id="categories">
         <tbody>
@@ -43,9 +59,23 @@
       </table>
     </td>
   </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td colspan="3">
+      <p><strong>タイトル：</strong>@title <strong>サブタイトル：</strong>@subtitle <strong>公開日時：</strong>@publish_date <strong>更新日時：</strong>@update_date <strong>概要：</strong>@summary<br />
+      <strong>組織：</strong>@group <strong>カテゴリ（リンクなし）：</strong>@category <strong>カテゴリ（リンクあり）：</strong>@category_link <strong>添付画像：</strong>@image</p>
+      <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_name %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[more_link_name]', :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[more_link_url]', :style => 'width: 500px;' %></td>
+  </tr>
 </table>
-
-
 
 <%= javascript_tag do -%>
 <%= toggle_form_function %>
@@ -62,6 +92,13 @@ $(document).ready(function () {
       });
     }
   });
+
+  var gp_article_content_docs_wrapper = $('#gp_article_content_docs');
+  gp_article_content_docs_wrapper.find('.add_button').on('click', function () {
+    var new_gp_article_content_doc = gp_article_content_docs_wrapper.children(':first-child').clone(true);
+    new_gp_article_content_doc.find(':disabled').removeAttr('disabled');
+    new_gp_article_content_doc.insertBefore(gp_article_content_docs_wrapper.children(':last-child')).show();
+  }).trigger('click');
 
   var categories_wrapper = $('#categories > tbody');
   categories_wrapper.find('> tr > td.category_type > select').on('change', function (event) {
