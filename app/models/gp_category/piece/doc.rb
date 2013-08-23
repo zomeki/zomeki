@@ -1,5 +1,6 @@
 # encoding: utf-8
 class GpCategory::Piece::Doc < Cms::Piece
+  DOCS_ORDER_OPTIONS = [['公開日（降順）', 'published_at_desc'], ['公開日（昇順）', 'published_at_asc'], ['ランダム', 'random']]
   LAYER_OPTIONS = [['下層のカテゴリすべて', 'descendants'], ['該当カテゴリのみ', 'self']]
 
   default_scope where(model: 'GpCategory::Doc')
@@ -101,6 +102,7 @@ class GpCategory::Piece::Doc < Cms::Piece
     settings['layer'] = LAYER_OPTIONS.first.last if setting_value(:layer).nil?
     settings['list_style'] = '@title(@date @group)' if setting_value(:list_style).nil?
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
+    settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
 
     self.in_settings = settings
   end

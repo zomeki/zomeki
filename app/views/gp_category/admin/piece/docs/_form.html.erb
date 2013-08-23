@@ -25,6 +25,10 @@
     <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
   </tr>
   <tr>
+    <th><%= @item.locale :docs_order %></th>
+    <td colspan="3"><%= f.array_select 'in_settings[docs_order]', @item.class::DOCS_ORDER_OPTIONS %></td>
+  </tr>
+  <tr>
     <th><%= GpArticle::Content::Doc.model_name.human %></th>
     <td colspan="3">
       <div id="gp_article_content_docs">

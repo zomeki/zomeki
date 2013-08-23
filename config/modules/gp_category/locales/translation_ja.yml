@@ -30,6 +30,7 @@ ja:
         layer: 表示カテゴリ階層
         list_style: 表示形式
         date_style: 日付形式
+        docs_order: 記事表示順
       gp_category/piece/category_type:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
