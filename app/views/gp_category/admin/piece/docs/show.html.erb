@@ -25,7 +25,15 @@
     <td colspan="3"><%= @item.setting_value(:date_style) %></td>
   </tr>
   <tr>
-    <th>表示カテゴリ</th>
+    <th><%= @item.locale :docs_order %></th>
+    <td colspan="3"><%= @item.class::DOCS_ORDER_OPTIONS.detect{|o| o.last == @item.setting_value(:docs_order) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Content::Doc.model_name.human %></th>
+    <td colspan="3"><%= @item.gp_article_content_docs.map(&:name).join(', ') -%></td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::Category.model_name.human %></th>
     <td colspan="3">
       <table class="show">
         <tbody>
