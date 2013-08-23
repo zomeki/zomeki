@@ -32,6 +32,8 @@ ja:
         date_style: 日付形式
         docs_order: 記事表示順
         doc_style: 記事表示形式
+        more_link_name: 一覧リンク文字
+        more_link_url: 一覧リンクURL
       gp_category/piece/category_type:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
