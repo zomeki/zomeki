@@ -28,7 +28,6 @@ ja:
         category_id: 表示カテゴリ
         list_count: 表示件数
         layer: 表示カテゴリ階層
-        list_style: 表示形式
         date_style: 日付形式
         docs_order: 記事表示順
         doc_style: 記事表示形式
