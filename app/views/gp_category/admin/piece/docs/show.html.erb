@@ -45,5 +45,9 @@
       </table>
     </td>
   </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td colspan="3"><%=simple_format @item.setting_value(:doc_style) %></td>
+  </tr>
 </table>
 <%- end -%>
