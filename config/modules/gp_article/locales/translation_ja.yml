@@ -1,6 +1,7 @@
 ja:
   activerecord:
     models:
+      gp_article/content/doc: 汎用記事コンテンツ
       gp_article/doc: 記事
       gp_article/category_type: カテゴリタイプ
       gp_article/category: カテゴリ
