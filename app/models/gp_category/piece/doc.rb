@@ -23,8 +23,8 @@ class GpCategory::Piece::Doc < Cms::Piece
     setting_value(:layer).presence || LAYER_OPTIONS.first.last
   end
 
-  def list_style
-    setting_value(:list_style).to_s
+  def doc_style
+    setting_value(:doc_style).to_s
   end
 
   def date_style
@@ -100,7 +100,6 @@ class GpCategory::Piece::Doc < Cms::Piece
     settings = self.in_settings
 
     settings['layer'] = LAYER_OPTIONS.first.last if setting_value(:layer).nil?
-    settings['list_style'] = '@title(@date @group)' if setting_value(:list_style).nil?
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
     settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
 

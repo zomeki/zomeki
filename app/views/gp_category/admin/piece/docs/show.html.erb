@@ -3,10 +3,6 @@
 
 <table class="show">
   <tr>
-    <th><%= @item.locale :list_count %></th>
-    <td colspan="3"><%= @item.setting_value(:list_count) %></td>
-  </tr>
-  <tr>
     <th><%= @item.locale :layer %></th>
     <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
   </tr>
@@ -17,12 +13,8 @@
     <td><%= @item.category.try(:title) %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :list_style %></th>
-    <td colspan="3"><%= @item.setting_value(:list_style) %></td>
-  </tr>
-  <tr>
-    <th><%= @item.locale :date_style %></th>
-    <td colspan="3"><%= @item.setting_value(:date_style) %></td>
+    <th><%= @item.locale :list_count %></th>
+    <td colspan="3"><%= @item.setting_value(:list_count) %></td>
   </tr>
   <tr>
     <th><%= @item.locale :docs_order %></th>
@@ -56,6 +48,10 @@
   <tr>
     <th><%= @item.locale :doc_style %></th>
     <td colspan="3"><%=simple_format @item.setting_value(:doc_style) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= @item.setting_value(:date_style) %></td>
   </tr>
   <tr>
     <th><%= @item.locale :more_link_name %></th>
