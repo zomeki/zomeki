@@ -1,5 +1,5 @@
 <%- @category_type.public_categories.each do |category| -%>
   <%- category.public_docs.each do |doc| -%>
-    <%= render 'doc', doc: doc %>
+    <%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_type_doc_style %>
   <%- end -%>
 <%- end -%>

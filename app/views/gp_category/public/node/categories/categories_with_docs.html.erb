@@ -3,7 +3,7 @@
   <section class="categoryType docs">
     <ul>
       <%- @docs.each do |doc| -%>
-      <li><%= render 'doc', doc: doc %></li>
+      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style %></li>
       <%- end -%>
     </ul>
   </section>
@@ -19,7 +19,7 @@
           <%- unless child.public_docs.empty? -%>
           <ul>
             <%- child.public_docs.each do |doc| -%>
-            <li><%= render 'doc', doc: doc %></li>
+            <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style %></li>
             <%- end -%>
           </ul>
           <%- end -%>

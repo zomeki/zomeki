@@ -1,0 +1,24 @@
+<%-
+  link_to_options = link_to_doc_options(doc)
+
+  doc_title = if link_to_options
+                link_to *([doc.title] + link_to_options)
+              else
+                h doc.title
+              end
+
+  doc_image = if (file = doc.image_files.first)
+                link_to *([image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")] + link_to_options)
+              else
+                ''
+              end
+-%>
+<%= doc_style.gsub('@title', doc_title)
+             .gsub('@subtitle', h(doc.subtitle))
+             .gsub('@publish_date', h(doc.display_published_at.try(:strftime, @content.date_style)))
+             .gsub('@update_date', h(doc.display_updated_at.try(:strftime, @content.date_style)))
+             .gsub('@summary', h(doc.summary))
+             .gsub('@group', h(doc.creator.group.name))
+             .gsub('@category_link', doc.categories.map{|c| link_to c.title, c.public_uri }.join(', '))
+             .gsub('@category', doc.categories.map{|c| h c.title }.join(', '))
+             .gsub('@image', doc_image).html_safe %>
