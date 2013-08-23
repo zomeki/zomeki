@@ -17,7 +17,7 @@
     <h2>記事</h2>
     <ul>
       <%- @docs.each do |doc| -%>
-      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style %></li>
+      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
       <%- end -%>
     </ul>
   </section>
