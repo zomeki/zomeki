@@ -26,7 +26,17 @@ class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
       doc_ids = piece_doc_ids
     end
 
-    @docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
+    @docs = GpArticle::Doc.where(id: doc_ids).limit(@piece.list_count)
+    @docs = case @piece.docs_order
+            when 'published_at_desc'
+              @docs.order('display_published_at DESC, published_at DESC')
+            when 'published_at_asc'
+              @docs.order('display_published_at ASC, published_at ASC')
+            when 'random'
+              @docs.order('RAND()')
+            else
+              @docs
+            end
 
     render :index_mobile if Page.mobile?
   end

@@ -31,6 +31,10 @@ class GpCategory::Piece::Doc < Cms::Piece
     setting_value(:date_style).to_s
   end
 
+  def docs_order
+    setting_value(:docs_order).to_s
+  end
+
   def content
     GpCategory::Content::CategoryType.find(super)
   end
