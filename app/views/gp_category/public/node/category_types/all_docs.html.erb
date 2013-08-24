@@ -1,7 +1,11 @@
 <div class="contentGpCategoryCategoryType">
   <%- @category_type.public_categories.each do |category| -%>
-    <%- category.public_docs.each do |doc| -%>
-      <%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_type_doc_style, date_style: @content.date_style %>
+    <%- unless category.public_docs.empty? -%>
+    <ul>
+      <%- category.public_docs.each do |doc| -%>
+      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_type_doc_style, date_style: @content.date_style %></li>
+      <%- end -%>
+    </ul>
     <%- end -%>
   <%- end -%>
 </div>
