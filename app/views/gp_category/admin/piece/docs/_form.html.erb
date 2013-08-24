@@ -35,7 +35,7 @@
           <%- end -%>
           <tr>
             <td colspan="4">&nbsp;</td>
-            <td style="text-align: right;"><%= button_tag '追加', type: 'button', class: 'add_categories_line' %></td>
+            <td style="text-align: right;"><%= button_tag '追加', type: 'button', class: 'add_button' %></td>
           </tr>
         </tbody>
       </table>
@@ -87,12 +87,14 @@ $(document).ready(function () {
       });
     }
   });
-  categories_wrapper.find('.add_categories_line').on('click', function () {
+  categories_wrapper.find('.add_button').on('click', function () {
     var next_index = (categories_wrapper.find('tr').length - 3) / 2; <%# クローン元(2) + 追加ボタン(1) => 3tr, 単位 => 2tr %>
 
     var categories_tr = categories_wrapper.children(':first-child').clone(true);
     var categories = categories_tr.find('select[name="categories[N]"]');
     categories.attr('name', categories.attr('name').replace('N', next_index));
+    var category_types = categories_tr.find('select[name="category_types[N]"]');
+    category_types.attr('name', category_types.attr('name').replace('N', next_index));
     categories_tr.find(':disabled').removeAttr('disabled');
     categories_tr.insertBefore(categories_wrapper.children(':last-child')).show();
 

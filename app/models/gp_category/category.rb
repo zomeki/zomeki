@@ -136,11 +136,8 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def unique_sort_key
-    ancestors.inject('') {|k, a| k.concat('__%032d_%032d_%032d_%032d_%32s' % [a.category_type_id.to_i,
-                                                                             a.parent_id.to_i,
-                                                                             a.level_no.to_i,
-                                                                             a.sort_no.to_i,
-                                                                             a.name.to_s]) }
+    ancestors.inject('') {|k, a| k.concat('__%032d_%32s_%032d_%032d_%032d_%032d_%32s' % [a.category_type.sort_no.to_i, a.category_type.name.to_s,
+                                                                                         a.category_type_id.to_i, a.parent_id.to_i, a.level_no.to_i, a.sort_no.to_i, a.name.to_s]) }
   end
 
   private

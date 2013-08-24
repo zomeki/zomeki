@@ -22,12 +22,12 @@
           <%- @item.category_sets.each do |category_set| -%>
           <tr>
             <th><%= GpCategory::CategoryType.model_name.human %></th>
-            <td><%= category_set[:category].category_type.title %></td>
+            <td><%= category_set[:category_type].title %></td>
             <th><%= GpCategory::Category.model_name.human %></th>
-            <td><%= category_set[:category].title %></td>
+            <td><%= category_set[:category].try(:title) %></td>
           </tr>
           <tr>
-            <th><%= GpCategory::Category.model_name.human %>階層</th>
+            <td><%= GpCategory::Category.model_name.human %>階層</td>
             <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|o| o.last == category_set[:layer] }.try(:first) %></td>
           </tr>
           <%- end -%>

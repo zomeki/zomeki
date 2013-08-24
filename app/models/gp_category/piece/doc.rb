@@ -36,45 +36,42 @@ class GpCategory::Piece::Doc < Cms::Piece
   end
 
   def categories
-    category_sets.map {|cs|
-      if cs[:layer] == 'descendants'
-        cs[:category].descendants
-      else
-        cs[:category]
-      end
-    }.flatten.uniq
+    if category_sets.empty?
+      content.category_types.inject([]) {|result, ct|
+        result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
+      }
+    else
+      category_sets.map {|cs|
+        unless cs[:category]
+          cs[:category_type].root_categories.inject([]) {|r, c| r | c.descendants }
+        else
+          if cs[:layer] == 'descendants'
+            cs[:category].descendants
+          else
+            cs[:category]
+          end
+        end
+      }.flatten.uniq
+    end
   end
-
-#TODO: Remove later
-#  def categories
-#    unless category_type
-#      return category_types.inject([]) {|result, ct|
-#                 result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
-#               }
-#    end
-#
-#    if (category_id = setting_value(:category_id)).present?
-#      if 'descendants'
-#        category_type.categories.find_by_id(category_id).try(:descendants) || []
-#      else
-#        category_type.categories.where(id: category_id)
-#      end
-#    else
-#      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
-#    end
-#  end
 
   def category_sets
     value = YAML.load(setting_value(:category_sets).to_s)
     return [] unless value.is_a?(Array)
-    value.map{|v|
-      v[:category] = GpCategory::Category.find_by_id(v[:category_id])
-      v[:category] ? v : nil
-    }.compact.sort {|a, b| a[:category].unique_sort_key <=> b[:category].unique_sort_key }
+    value.map {|v|
+      next nil if (v[:category_type] = GpCategory::CategoryType.find_by_id(v[:category_type_id])).nil?
+      next nil if v[:category_id].nonzero? && (v[:category] = GpCategory::Category.find_by_id(v[:category_id])).nil?
+      next v
+    }.compact.sort do |a, b|
+      next a[:category_type].unique_sort_key <=> b[:category_type].unique_sort_key if a[:category].nil? && b[:category].nil?
+      next a[:category_type].unique_sort_key <=> b[:category].unique_sort_key if a[:category].nil?
+      next a[:category].unique_sort_key <=> b[:category_type].unique_sort_key if b[:category].nil?
+      a[:category].unique_sort_key <=> b[:category].unique_sort_key
+    end
   end
 
   def new_category_set
-    {category: nil, layer: LAYER_OPTIONS.first.last}
+    {category_type_id: nil, category_id: nil, layer: LAYER_OPTIONS.first.last}
   end
 
   def gp_article_content_docs
