@@ -1,32 +1,31 @@
 <div class="contentGpCategoryCategory">
   <%- unless @docs.empty? -%>
-  <section class="categoryType docs">
-    <ul>
-      <%- @docs.each do |doc| -%>
-      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
-      <%- end -%>
-    </ul>
+  <section class="category<%= @category.name.try(:camelize) %>">
+    <div class="docs">
+      <ul>
+        <%- @docs.each do |doc| -%>
+        <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
+        <%- end -%>
+      </ul>
+    </div>
   </section>
   <%- end -%>
 
-  <%- unless @category.public_children.empty? -%>
-  <section class="categoryType categories">
-    <nav>
+  <%- @category.public_children.each do |child| -%>
+  <section class="category<%= child.name.try(:camelize) %> classification">
+    <h2><%= link_to child.title, child.public_uri %></h2>
+    <%- unless child.public_docs.empty? -%>
+    <div class="docs">
       <ul>
-        <%- @category.public_children.each do |child| -%>
-        <li class="category<%= child.name.try(:camelize) %>">
-          <%= link_to child.title, child.public_uri %>
-          <%- unless child.public_docs.empty? -%>
-          <ul>
-            <%- child.public_docs.each do |doc| -%>
-            <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
-            <%- end -%>
-          </ul>
-          <%- end -%>
-        </li>
+        <%- child.public_docs.each do |doc| -%>
+        <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
         <%- end -%>
       </ul>
-    </nav>
+    </div>
+    <%- end -%>
+    <div class="more">
+      <%= link_to '一覧へ', child.public_uri %>
+    </div>
   </section>
   <%- end -%>
 
