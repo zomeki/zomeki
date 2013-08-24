@@ -9,8 +9,14 @@ class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
 
   def index
     piece_category_ids = @piece.categories.map(&:id)
+    piece_docs = find_public_docs_by_category_ids(piece_category_ids)
 
-    piece_doc_ids = find_public_docs_by_category_ids(piece_category_ids).map(&:id)
+    unless (gacds = @piece.gp_article_content_docs).empty?
+      gacd_ids = gacds.map(&:id)
+      piece_docs.select! {|d| gacd_ids.include?(d.content_id) }
+    end
+
+    piece_doc_ids = piece_docs.map(&:id)
 
     case @item
     when GpCategory::CategoryType

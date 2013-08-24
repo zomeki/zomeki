@@ -24,10 +24,7 @@ ja:
       gp_category/categorization:
         sort_no: 並び順
       gp_category/piece/doc:
-        category_type_id: 表示カテゴリタイプ
-        category_id: 表示カテゴリ
         list_count: 表示件数
-        layer: 表示カテゴリ階層
         date_style: 日付形式
         docs_order: 記事表示順
         doc_style: 記事表示形式
