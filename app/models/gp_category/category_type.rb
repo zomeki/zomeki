@@ -122,6 +122,10 @@ class GpCategory::CategoryType < ActiveRecord::Base
     self.sitemap_state == 'visible'
   end
 
+  def unique_sort_key
+    '__%032d_%32s' % [self.sort_no.to_i, self.name.to_s]
+  end
+
   private
 
   def set_defaults
