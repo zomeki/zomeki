@@ -100,16 +100,10 @@ class Map::Content::Marker < Cms::Content
       markers.sort {|a, b| b.created_at <=> a.created_at }
     when 'category'
       markers.sort do |a, b|
-        case
-        when a.categories.empty? && b.categories.empty?
-          0
-        when a.categories.empty?
-          -1
-        when b.categories.empty?
-          1
-        else
-          a.categories.first.unique_sort_key <=> b.categories.first.unique_sort_key
-        end
+        next  0 if a.categories.empty? && b.categories.empty?
+        next -1 if a.categories.empty?
+        next  1 if b.categories.empty?
+        a.categories.first.unique_sort_key <=> b.categories.first.unique_sort_key
       end
     else
       markers
