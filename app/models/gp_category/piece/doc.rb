@@ -19,10 +19,6 @@ class GpCategory::Piece::Doc < Cms::Piece
     (setting_value(:list_count).presence || 1000).to_i
   end
 
-  def layer
-    setting_value(:layer).presence || LAYER_OPTIONS.first.last
-  end
-
   def doc_style
     setting_value(:doc_style).to_s
   end
@@ -39,45 +35,34 @@ class GpCategory::Piece::Doc < Cms::Piece
     GpCategory::Content::CategoryType.find(super)
   end
 
-  def category_types
-    content.category_types
-  end
-
-  def category_types_for_option
-    category_types.map {|ct| [ct.title, ct.id] }
-  end
-
-  def category_type
-    category_types.find_by_id(setting_value(:category_type_id))
-  end
-
   def categories
-    unless category_type
-      return category_types.inject([]) {|result, ct|
-                 result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
-               }
-    end
-
-    if (category_id = setting_value(:category_id)).present?
-      if layer == 'descendants'
-        category_type.categories.find_by_id(category_id).try(:descendants) || []
+    category_sets.map {|cs|
+      if cs[:layer] == 'descendants'
+        cs[:category].descendants
       else
-        category_type.categories.where(id: category_id)
+        cs[:category]
       end
-    else
-      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
-    end
+    }.flatten.uniq
   end
 
-  def category
-    return nil if categories.empty?
-
-    if categories.respond_to?(:find_by_id)
-      categories.find_by_id(setting_value(:category_id))
-    else
-      categories.detect {|c| c.id.to_s == setting_value(:category_id) }
-    end
-  end
+#TODO: Remove later
+#  def categories
+#    unless category_type
+#      return category_types.inject([]) {|result, ct|
+#                 result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
+#               }
+#    end
+#
+#    if (category_id = setting_value(:category_id)).present?
+#      if 'descendants'
+#        category_type.categories.find_by_id(category_id).try(:descendants) || []
+#      else
+#        category_type.categories.where(id: category_id)
+#      end
+#    else
+#      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
+#    end
+#  end
 
   def category_sets
     value = YAML.load(setting_value(:category_sets).to_s)
@@ -103,7 +88,6 @@ class GpCategory::Piece::Doc < Cms::Piece
   def set_default_settings
     settings = self.in_settings
 
-    settings['layer'] = LAYER_OPTIONS.first.last if setting_value(:layer).nil?
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
     settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
 
