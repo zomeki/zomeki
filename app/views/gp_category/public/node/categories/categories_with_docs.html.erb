@@ -17,7 +17,7 @@
     <%- unless child.public_docs.empty? -%>
     <div class="docs">
       <ul>
-        <%- child.public_docs.each do |doc| -%>
+        <%- child.public_docs.limit(@content.category_docs_number).each do |doc| -%>
         <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
         <%- end -%>
       </ul>
