@@ -13,7 +13,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     Page.current_item = @category
     Page.title = @category.title
 
-    @docs = @category.public_docs.paginate(page: params[:page], per_page: 20)
+    @docs = @category.public_docs.paginate(page: params[:page], per_page: @content.category_docs_number)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     if Page.mobile?

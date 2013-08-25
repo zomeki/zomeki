@@ -1,7 +1,7 @@
 <%-
   category_ids = @category_type.public_categories.map(&:id)
   docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
-                       .order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: 20)
+                       .order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: @content.category_type_docs_number)
 -%>
 <div class="contentGpCategoryCategoryType">
   <%- unless docs.empty? -%>

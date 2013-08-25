@@ -32,8 +32,10 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
       case @item.name
       when 'category_type_style'
         extra_values[:category_type_doc_style] = params[:category_type_doc_style]
+        extra_values[:category_type_docs_number] = params[:category_type_docs_number]
       when 'category_style'
         extra_values[:category_doc_style] = params[:category_doc_style]
+        extra_values[:category_docs_number] = params[:category_docs_number]
       end
 
       @item.extra_values = extra_values

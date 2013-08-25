@@ -46,12 +46,20 @@ class GpCategory::Content::CategoryType < Cms::Content
     setting_extra_value(:category_type_style, :category_type_doc_style).to_s
   end
 
+  def category_type_docs_number
+    (setting_extra_value(:category_type_style, :category_type_docs_number).presence || 1000).to_i
+  end
+
   def category_style
     setting_value(:category_style).to_s
   end
 
   def category_doc_style
     setting_extra_value(:category_style, :category_doc_style).to_s
+  end
+
+  def category_docs_number
+    (setting_extra_value(:category_style, :category_docs_number).presence || 1000).to_i
   end
 
   private
