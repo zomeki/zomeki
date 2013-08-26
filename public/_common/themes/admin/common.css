@@ -44,7 +44,7 @@
  padding-left: 0px;
  font-size: 12px;
 }
-#noticeExplanation ul li .success {
+#noticeExplanation ul li .succeeded {
   color: #06f;
 }
 #noticeExplanation ul li .failed {

@@ -61,6 +61,7 @@ GEM
     hike (1.2.3)
     hpricot (0.8.6)
     httpauth (0.2.0)
+    httpclient (2.3.4.1)
     i18n (0.6.4)
     journey (1.0.4)
     jpmobile (3.0.7)
@@ -184,6 +185,7 @@ DEPENDENCIES
   email_spec (~> 1.4.0)
   factory_girl_rails (~> 4.2.1)
   hpricot (= 0.8.6)
+  httpclient (~> 2.3.4.1)
   jpmobile (~> 3.0.7)
   jquery-rails
   mail-iso-2022-jp (~> 2.0.2)
