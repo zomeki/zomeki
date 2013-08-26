@@ -6,7 +6,7 @@
   <p>次のURLを確認しました。</p>
   <ul>
     <%- results.each do |result| -%>
-    <li><%= result[:name] %> (<%= link_to result[:url], result[:url], target: 'preview' %>) <%=raw result[:result] ? '<span class="succeeded">成功</span>' : '<span class="failed">失敗</span>' %></li>
+    <li><%= result[:body] %> (<%= link_to result[:url], result[:url], target: 'preview' %>) <%=raw result[:result] ? '<span class="succeeded">成功</span>' : '<span class="failed">失敗</span>' %></li>
     <%- end -%>
   </ul>
   <%- end -%>

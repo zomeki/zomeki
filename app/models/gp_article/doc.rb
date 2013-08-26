@@ -383,6 +383,10 @@ class GpArticle::Doc < ActiveRecord::Base
     extract_links(self.body, all)
   end
 
+  def links_check_in_body
+    check_links(links_in_body)
+  end
+
   def links_in_mobile_body(all=false)
     extract_links(self.mobile_body, all)
   end
@@ -459,15 +463,35 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def extract_links(html, all)
-    links = Nokogiri::HTML.parse(html).css('a').map {|a| [a.text, a.attribute('href').value] }
+    links = Nokogiri::HTML.parse(html).css('a').map {|a| {body: a.text, url: a.attribute('href').value} }
     return links if all
     links.select do |link|
-      uri = URI.parse(link.last)
+      uri = URI.parse(link[:url])
       next true if uri.instance_of?(URI::Generic)
       [URI::HTTP, URI::HTTPS, URI::FTP].include?(uri.class)
     end
   rescue => evar
     warn_log evar.message
     return []
+  end
+
+  def check_links(links)
+    links.map do |link|
+      uri = URI.parse(link[:url])
+      if uri.instance_of?(URI::Generic)
+        url = "#{content.site.full_uri.sub(/\/$/, '')}/#{uri.path.sub(/^\//, '')}"
+      else
+        url = uri.to_s
+      end
+
+      client = HTTPClient.new
+      begin
+        res = client.head(url)
+        {body: link[:body], url: url, status: res.status, reason: res.reason, result: res.status.between?(200, 299)}
+      rescue => evar
+        warn_log evar.message
+        {body: link[:body], url: url, status: nil, reason: nil, result: false}
+      end
+    end
   end
 end
