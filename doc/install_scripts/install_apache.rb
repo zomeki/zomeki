@@ -66,14 +66,14 @@ def others
 end
 
 if __FILE__ == $0
-  if File.exist?('/etc/lsb-release')
-    if !`grep -s Ubuntu /etc/lsb-release`.empty?
+  if File.exist? '/etc/centos-release'
+    centos
+  elsif File.exist? '/etc/lsb-release'
+    unless `grep -s Ubuntu /etc/lsb-release`.empty?
       ubuntu
     else
       others
     end
-  elsif File.exist?('/etc/centos-release')
-    centos
   else
     others
   end
