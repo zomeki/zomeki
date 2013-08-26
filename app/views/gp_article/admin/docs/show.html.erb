@@ -61,7 +61,7 @@
         <td>
           <ul>
             <%- @item.links_in_body.each do |link| -%>
-            <li><%= link.first %> (<%= link_to link.last, link.last, target: 'preview' %>)</li>
+            <li><%= link[:body] %> (<%= link_to link[:url], link[:url], target: 'preview' %>)</li>
             <%- end -%>
           </ul>
         </td>
@@ -175,7 +175,7 @@
         <td>
           <ul>
             <%- @item.links_in_mobile_body.each do |link| -%>
-            <li><%= link.first %> (<%= link_to link.last, link.last, target: 'preview' %>)</li>
+            <li><%= link[:body] %> (<%= link_to link[:url], link[:url], target: 'preview' %>)</li>
             <%- end -%>
           </ul>
         </td>

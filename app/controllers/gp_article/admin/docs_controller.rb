@@ -103,26 +103,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
 
     if params[:link_check]
-      results = @item.links_in_body.map do |link|
-          uri = URI.parse(link.last)
-          if uri.instance_of?(URI::Generic)
-            url = "#{@item.content.site.full_uri.sub(/\/$/, '')}/#{uri.path.sub(/^\//, '')}"
-          else
-            url = uri.to_s
-          end
-
-          client = HTTPClient.new
-          begin
-            res = client.head(url)
-            {name: link.first, url: url, status: res.status, reason: res.reason, result: res.status.between?(200, 299)}
-          rescue => evar
-            warn_log evar.message
-            {name: link.first, url: url, status: nil, reason: nil, result: false}
-          end
-        end
-
+      results = @item.links_check_in_body
       flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: results}).html_safe
-
       return render(:action => :edit)
     end
 
