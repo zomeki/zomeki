@@ -29,14 +29,14 @@ others() {
   exit
 }
 
-if [ -f /etc/lsb-release ]; then
+if [ -f /etc/centos-release ]; then
+  centos
+elif [ -f /etc/lsb-release ]; then
   if grep -qs Ubuntu /etc/lsb-release; then
     ubuntu
   else
     others
   fi
-elif [ -f /etc/centos-release ]; then
-  centos
 else
   others
 fi
