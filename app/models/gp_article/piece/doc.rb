@@ -14,6 +14,22 @@ class GpArticle::Piece::Doc < Cms::Piece
     end
   end
 
+  def docs_number
+    (setting_value(:docs_number).presence || 1000).to_i
+  end
+
+  def docs_order
+    setting_value(:docs_order).to_s
+  end
+
+  def doc_style
+    setting_value(:doc_style).to_s
+  end
+
+  def date_style
+    setting_value(:date_style).to_s
+  end
+
   private
 
   def set_default_settings
