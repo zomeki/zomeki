@@ -1,0 +1,13 @@
+<div class="noticeExplanation" id="noticeExplanation">
+  <h2>リンクチェック結果</h2>
+  <%- if results.empty? -%>
+  <p>リンクが含まれていませんでした。</p>
+  <%- else -%>
+  <p>次のURLを確認しました。</p>
+  <ul>
+    <%- results.each do |result| -%>
+    <li><%= result[:name] %> (<%= link_to result[:url], result[:url], target: 'preview' %>) <%=raw result[:result] ? '<span class="succeeded">成功</span>' : '<span class="failed">失敗</span>' %></li>
+    <%- end -%>
+  </ul>
+  <%- end -%>
+</div>

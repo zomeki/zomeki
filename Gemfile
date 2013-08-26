@@ -8,6 +8,7 @@ gem 'rails', '3.2.14'
 gem 'mysql2'
 
 gem 'dynamic_form', '~> 1.1.4'
+gem 'httpclient', '~> 2.3.4.1'
 gem 'jpmobile', '~> 3.0.7'
 gem 'mail-iso-2022-jp', '~> 2.0.2'
 gem 'moji', '~> 1.6'

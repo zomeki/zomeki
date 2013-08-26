@@ -462,9 +462,9 @@ class GpArticle::Doc < ActiveRecord::Base
     links = Nokogiri::HTML.parse(html).css('a').map {|a| [a.text, a.attribute('href').value] }
     return links if all
     links.select do |link|
-      href = link.last.split(':', 2)
-      next true if href.size == 1 # no scheme
-      %w|http https ftp|.include?(href.first)
+      uri = URI.parse(link.last)
+      next true if uri.instance_of?(URI::Generic)
+      [URI::HTTP, URI::HTTPS, URI::FTP].include?(uri.class)
     end
   rescue => evar
     warn_log evar.message

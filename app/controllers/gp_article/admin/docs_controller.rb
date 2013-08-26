@@ -101,6 +101,31 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def update
     @item.attributes = params[:item]
+
+    if params[:link_check]
+      results = @item.links_in_body.map do |link|
+          uri = URI.parse(link.last)
+          if uri.instance_of?(URI::Generic)
+            url = "#{@item.content.site.full_uri.sub(/\/$/, '')}/#{uri.path.sub(/^\//, '')}"
+          else
+            url = uri.to_s
+          end
+
+          client = HTTPClient.new
+          begin
+            res = client.head(url)
+            {name: link.first, url: url, status: res.status, reason: res.reason, result: res.status.between?(200, 299)}
+          rescue => evar
+            warn_log evar.message
+            {name: link.first, url: url, status: nil, reason: nil, result: false}
+          end
+        end
+
+      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: results}).html_safe
+
+      return render(:action => :edit)
+    end
+
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
