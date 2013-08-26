@@ -383,7 +383,7 @@ class GpArticle::Doc < ActiveRecord::Base
     extract_links(self.body, all)
   end
 
-  def links_check_in_body
+  def check_links_in_body
     check_links(links_in_body)
   end
 
@@ -487,7 +487,13 @@ class GpArticle::Doc < ActiveRecord::Base
       client = HTTPClient.new
       begin
         res = client.head(url)
-        {body: link[:body], url: url, status: res.status, reason: res.reason, result: res.status.between?(200, 299)}
+        if res.redirect?
+          3.times do
+            break unless res.redirect?
+            res = client.head(res.headers['Location'])
+          end
+        end
+        {body: link[:body], url: url, status: res.status, reason: res.reason, result: res.ok?}
       rescue => evar
         warn_log evar.message
         {body: link[:body], url: url, status: nil, reason: nil, result: false}

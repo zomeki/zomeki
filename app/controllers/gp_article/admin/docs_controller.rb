@@ -78,10 +78,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def create
     @item = @content.docs.build(params[:item])
 
-    if params[:link_check]
-      results = @item.links_check_in_body
-      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: results}).html_safe
-      return render(:action => :new)
+    check_results = @item.check_links_in_body
+    error_exists = check_results.any? {|r| !r[:result] }
+    if error_exists || params[:link_check]
+      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
+      @item.errors.add(:base, 'リンクチェック結果を確認してください。') if error_exists && !params[:ignore_link_check]
+      return render(:action => :new) if params[:link_check]
     end
 
     @item.concept = @content.concept
@@ -108,10 +110,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def update
     @item.attributes = params[:item]
 
-    if params[:link_check]
-      results = @item.links_check_in_body
-      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: results}).html_safe
-      return render(:action => :edit)
+    check_results = @item.check_links_in_body
+    error_exists = check_results.any? {|r| !r[:result] }
+    if error_exists || params[:link_check]
+      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
+      @item.errors.add(:base, 'リンクチェック結果を確認してください。') if error_exists && !params[:ignore_link_check]
+      return render(:action => :edit) if params[:link_check]
     end
 
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
