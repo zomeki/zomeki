@@ -22,7 +22,7 @@ end
   <%= link_to '非公開', gp_article_docs_path(target: 'closed'), (params[:target] == 'closed' ? {class: 'current'} : {}) %>
   <%- end -%>
 
-  <%- if params[:action] == 'new' -%>
+  <%- if %w|new create|.include?(params[:action]) -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <%- end -%>
 
@@ -37,7 +37,7 @@ end
   <%= link_to :close, {:do => :close}, :confirm => '公開を終了してよろしいですか？' if @item.closable? %>
   <%- end -%>
 
-  <%- if params[:action] == 'edit' -%>
+  <%- if %w|edit update|.include?(params[:action]) -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
