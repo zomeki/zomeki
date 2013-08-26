@@ -1,13 +1,16 @@
 <div class="noticeExplanation" id="noticeExplanation">
   <h2>リンクチェック結果</h2>
   <%- if results.empty? -%>
-  <p>リンクが含まれていませんでした。</p>
+    <p>リンクが含まれていませんでした。</p>
   <%- else -%>
-  <p>次のURLを確認しました。</p>
-  <ul>
-    <%- results.each do |result| -%>
-    <li><%= result[:body] %> (<%= link_to result[:url], result[:url], target: 'preview' %>) <%=raw result[:result] ? '<span class="succeeded">成功</span>' : '<span class="failed">失敗</span>' %></li>
+    <p>次のURLを確認しました。</p>
+    <ul>
+      <%- results.each do |result| -%>
+      <li><%= result[:body] %> (<%= link_to result[:url], result[:url], target: 'preview' %>) <%=raw result[:result] ? '<span class="succeeded">成功</span>' : '<span class="failed">失敗</span>' %></li>
+      <%- end -%>
+    </ul>
+    <%- unless results.all? {|r| r[:result] } -%>
+    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_link_check' %> <%= label_tag 'ignore_link_check', 'エラーを無視する' %></div>
     <%- end -%>
-  </ul>
   <%- end -%>
 </div>
