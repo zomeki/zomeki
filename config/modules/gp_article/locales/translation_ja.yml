@@ -51,3 +51,10 @@ ja:
         more: 一覧リンク
         condition: 結合
         sort_no: 並び順
+      gp_article/piece/doc:
+        docs_number: 表示件数
+        docs_order: 記事表示順
+        doc_style: 記事表示形式
+        date_style: 日付形式
+        more_link_name: 一覧リンク文字
+        more_link_url: 一覧リンクURL
