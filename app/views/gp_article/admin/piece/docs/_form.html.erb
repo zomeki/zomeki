@@ -1,0 +1,34 @@
+<%= render(layout: 'gp_article/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :docs_number %></th>
+    <td><%= f.array_text_field 'in_settings[docs_number]', class: 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :docs_order %></th>
+    <td><%= f.array_select 'in_settings[docs_order]', @item.class::DOCS_ORDER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td>
+      <p><strong>タイトル：</strong>@title <strong>サブタイトル：</strong>@subtitle <strong>公開日時：</strong>@publish_date <strong>更新日時：</strong>@update_date <strong>概要：</strong>@summary<br />
+      <strong>組織：</strong>@group <strong>カテゴリ（リンクなし）：</strong>@category <strong>カテゴリ（リンクあり）：</strong>@category_link <strong>添付画像：</strong>@image</p>
+      <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_name %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_name]', :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_url]', :style => 'width: 500px;' %></td>
+  </tr>
+</table>
+<%- end -%>

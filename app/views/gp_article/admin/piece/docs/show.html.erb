@@ -1,0 +1,30 @@
+<%= render(layout: 'gp_article/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :docs_number %></th>
+    <td><%= @item.setting_value(:docs_number) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :docs_order %></th>
+    <td><%= @item.class::DOCS_ORDER_OPTIONS.detect{|o| o.last == @item.setting_value(:docs_order) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td><%=simple_format @item.setting_value(:doc_style) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= @item.setting_value(:date_style) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_name %></th>
+    <td><%= @item.setting_value(:more_link_name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= @item.setting_value(:more_link_url) %></td>
+  </tr>
+</table>
+<%- end -%>
