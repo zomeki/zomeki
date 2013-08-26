@@ -379,6 +379,14 @@ class GpArticle::Doc < ActiveRecord::Base
     content.setting_extra_value(:map_relation, :lat_lng).presence || super
   end
 
+  def links_in_body(all=false)
+    extract_links(self.body, all)
+  end
+
+  def links_in_mobile_body(all=false)
+    extract_links(self.mobile_body, all)
+  end
+
   private
 
   def set_name
@@ -448,5 +456,18 @@ class GpArticle::Doc < ActiveRecord::Base
     self.event_started_on = self.event_ended_on if self.event_started_on.blank?
     self.event_ended_on = self.event_started_on if self.event_ended_on.blank?
     errors.add(:event_ended_on, "が#{self.class.human_attribute_name :event_started_on}を過ぎています。") if self.event_ended_on < self.event_started_on
+  end
+
+  def extract_links(html, all)
+    links = Nokogiri::HTML.parse(html).css('a').map {|a| [a.text, a.attribute('href').value] }
+    return links if all
+    links.select do |link|
+      href = link.last.split(':', 2)
+      next true if href.size == 1 # no scheme
+      %w|http https ftp|.include?(href.first)
+    end
+  rescue => evar
+    warn_log evar.message
+    return []
   end
 end

@@ -50,11 +50,23 @@
 
     <table class="show">
       <tr>
-        <th><%= @item.locale :body %></th>
+        <th colspan="2"><%= @item.locale :body %></th>
       </tr>
       <tr>
-        <td><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+        <td colspan="2"><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
       </tr>
+      <%- unless @item.links_in_body.empty? -%>
+      <tr>
+        <th><%= @item.locale :body %>に含まれるリンク</th>
+        <td>
+          <ul>
+            <%- @item.links_in_body.each do |link| -%>
+            <li><%= link.first %> (<%= link_to link.last, link.last, target: 'preview' %>)</li>
+            <%- end -%>
+          </ul>
+        </td>
+      </tr>
+      <%- end -%>
     </table>
 
     <p class="form">記事設定</p>
@@ -157,6 +169,18 @@
       <tr>
         <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
       </tr>
+      <%- unless @item.links_in_mobile_body.empty? -%>
+      <tr>
+        <th><%= @item.locale :mobile_body %>に含まれるリンク</th>
+        <td>
+          <ul>
+            <%- @item.links_in_mobile_body.each do |link| -%>
+            <li><%= link.first %> (<%= link_to link.last, link.last, target: 'preview' %>)</li>
+            <%- end -%>
+          </ul>
+        </td>
+      </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab8">
