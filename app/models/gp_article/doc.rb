@@ -65,6 +65,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validate :node_existence
   validate :event_dates_range
+  validate :broken_link_existence
 
   after_initialize :set_defaults
   after_save :set_tags
@@ -384,11 +385,21 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def check_links_in_body
-    check_links(links_in_body)
+    check_results = check_links(links_in_body)
+    @broken_link_exists_in_body = check_results.any? {|r| !r[:result] }
+    return check_results
   end
 
   def links_in_mobile_body(all=false)
     extract_links(self.mobile_body, all)
+  end
+
+  def broken_link_exists?
+    @broken_link_exists_in_body
+  end
+
+  def ignore_broken_links
+    @broken_link_exists_in_body = false
   end
 
   private
@@ -499,5 +510,9 @@ class GpArticle::Doc < ActiveRecord::Base
         {body: link[:body], url: url, status: nil, reason: nil, result: false}
       end
     end
+  end
+
+  def broken_link_existence
+    errors.add(:base, 'リンクチェック結果を確認してください。') if broken_link_exists?
   end
 end
