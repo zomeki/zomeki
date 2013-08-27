@@ -134,7 +134,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def destroy
-    _destroy @item
+    _destroy(@item) do
+      send_link_broken_notification(@item) unless @item.backlinks.empty?
+    end
   end
 
   def recognize(item)
@@ -191,6 +193,23 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   protected
+
+  def send_link_broken_notification(item)
+    mail_from = 'noreply'
+
+    item.backlinked_docs.each do |doc|
+      subject = "【#{doc.content.site.name.presence || 'ZOMEKI'}】リンク切れ通知"
+
+      body = <<-EOT
+「#{doc.title}」からリンクしている「#{item.title}」が削除されました。
+  次のURLをクリックしてリンクを確認してください。
+
+  #{gp_article_doc_url(content: @content, id: doc.id)}
+      EOT
+
+      send_mail(mail_from, doc.creator.user.email, subject, body)
+    end
+  end
 
   def send_recognition_request_mail(item, users=nil)
     users ||= item.recognizers
