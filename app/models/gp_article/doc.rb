@@ -71,6 +71,7 @@ class GpArticle::Doc < ActiveRecord::Base
   after_initialize :set_defaults
   after_save :set_tags
   after_save :set_display_attributes
+  after_save :save_links
 
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
@@ -515,5 +516,15 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def broken_link_existence
     errors.add(:base, 'リンクチェック結果を確認してください。') if broken_link_exists?
+  end
+
+  def save_links
+    lib = links_in_body
+    links.each do |link|
+      link.destroy unless lib.detect {|l| l[:body] == link.body && l[:url] == link.url }
+    end
+    lib.each do |link|
+      links.create(body: link[:body], url: link[:url]) unless links.find_by_body_and_url(link[:body], link[:url])
+    end
   end
 end
