@@ -80,9 +80,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     check_results = @item.check_links_in_body
     @item.ignore_broken_links if params[:ignore_link_check]
-    if params[:link_check] || @item.broken_link_exists?
+    if params[:link_check_in_body] || @item.broken_link_exists?
       flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
-      return render(:action => :new) if params[:link_check]
+      return render(:action => :new) if params[:link_check_in_body]
     end
 
     @item.concept = @content.concept
@@ -111,9 +111,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     check_results = @item.check_links_in_body
     @item.ignore_broken_links if params[:ignore_link_check]
-    if params[:link_check] || @item.broken_link_exists?
+    if params[:link_check_in_body] || @item.broken_link_exists?
       flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
-      return render(:action => :edit) if params[:link_check]
+      return render(:action => :edit) if params[:link_check_in_body]
     end
 
     commit_state = params.keys.detect {|k| k =~ /^commit_/ }
