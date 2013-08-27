@@ -404,6 +404,14 @@ class GpArticle::Doc < ActiveRecord::Base
     @broken_link_exists_in_body = false
   end
 
+  def backlinks
+    links.engine.where(links.table[:url].matches("%#{self.public_uri.sub(/\/$/, '')}%"))
+  end
+
+  def backlinked_docs
+    self.class.where(id: backlinks.pluck(:doc_id))
+  end
+
   private
 
   def set_name
