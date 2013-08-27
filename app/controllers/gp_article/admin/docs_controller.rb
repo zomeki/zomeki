@@ -79,10 +79,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item = @content.docs.build(params[:item])
 
     check_results = @item.check_links_in_body
-    error_exists = check_results.any? {|r| !r[:result] }
-    if error_exists || params[:link_check]
+    @item.ignore_broken_links if params[:ignore_link_check]
+    if params[:link_check] || @item.broken_link_exists?
       flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
-      @item.errors.add(:base, 'リンクチェック結果を確認してください。') if error_exists && !params[:ignore_link_check]
       return render(:action => :new) if params[:link_check]
     end
 
@@ -111,10 +110,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
 
     check_results = @item.check_links_in_body
-    error_exists = check_results.any? {|r| !r[:result] }
-    if error_exists || params[:link_check]
+    @item.ignore_broken_links if params[:ignore_link_check]
+    if params[:link_check] || @item.broken_link_exists?
       flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
-      @item.errors.add(:base, 'リンクチェック結果を確認してください。') if error_exists && !params[:ignore_link_check]
       return render(:action => :edit) if params[:link_check]
     end
 
