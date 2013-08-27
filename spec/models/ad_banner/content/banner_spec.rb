@@ -4,18 +4,18 @@ describe AdBanner::Content::Banner do
   before do
     Core.user = FactoryGirl.build(:sys_user_system_admin)
     Core.user_group = Core.user.group
-    [:cms_content_map_marker_1,
-     :cms_content_ad_banner_banner_1,
-     :cms_content_ad_banner_banner_2].each do |fg_id|
-      fg_find_or_create(fg_id)
-    end
   end
 
   subject { AdBanner::Content::Banner }
   it { should < Cms::Content }
 
   describe :all do
-    subject { AdBanner::Content::Banner.all }
-    it { should have(2).items }
+    it 'identifies own class' do
+      expect {
+        FactoryGirl.create(:cms_content_map_marker_1)
+        FactoryGirl.create(:cms_content_ad_banner_banner_1)
+        FactoryGirl.create(:cms_content_ad_banner_banner_2)
+      }.to change(AdBanner::Content::Banner, :count).by(2)
+    end
   end
 end
