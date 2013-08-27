@@ -84,12 +84,18 @@
         <td><%= @item.raw_tags %></td>
       </tr>
       <%- end -%>
+      <%- unless @item.rel_docs.empty? -%>
       <tr>
         <th><%= @item.locale :in_rel_doc_ids %></th>
         <td>
-          <% @item.rel_docs.each {|doc| %><div style="margin-top: 10px; width: 700px;"><%= doc.title %></div><% } %>
+          <ul>
+            <%- @item.rel_docs.each do |doc| -%>
+            <li><%= doc.title %></li>
+            <%- end -%>
+          </ul>
         </td>
       </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab2">
