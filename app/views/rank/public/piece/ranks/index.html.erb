@@ -1,0 +1,5 @@
+<ul>
+  <% @ranks.each_with_index do |rank, i| -%>
+  <li><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", :target=>['_blank'])%> (<%= rank.accesses %>)</li>
+  <%- end -%>
+</ul>

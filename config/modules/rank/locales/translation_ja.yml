@@ -1,0 +1,20 @@
+ja:
+  activerecord:
+    models:
+      rank/rank: アクセスランキング
+    attributes:
+      rank/rank:
+        order: 順位
+        access: アクセス数
+        page_title: ページタイトル
+        hostname: ホスト名
+        page_path: URL
+        date: 日付
+        pageviews: PV
+        visitors: 訪問者
+      rank/piece/rank:
+        ranking_target: 対象
+        ranking_term: 期間
+        display_count: 表示件数
+        link_string: 一覧リンク文字
+        link_url: 一覧リンク
