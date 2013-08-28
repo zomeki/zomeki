@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130827013851) do
+ActiveRecord::Schema.define(:version => 20130828153340) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1066,6 +1066,18 @@ ActiveRecord::Schema.define(:version => 20130827013851) do
 
   add_index "public_bbs_threads", ["content_id"], :name => "index_public_bbs_threads_on_content_id"
   add_index "public_bbs_threads", ["user_id"], :name => "index_public_bbs_threads_on_user_id"
+
+  create_table "rank_ranks", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "page_title"
+    t.string   "hostname"
+    t.string   "page_path"
+    t.date     "date"
+    t.integer  "pageviews"
+    t.integer  "visitors"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"
