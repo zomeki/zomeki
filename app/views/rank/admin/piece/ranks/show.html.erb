@@ -1,0 +1,26 @@
+<%= render(layout: 'rank/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :ranking_target %></th>
+    <td><%= @item.show_label(:ranking_target, @item.ranking_targets) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :ranking_term %></th>
+    <td><%= @item.show_label(:ranking_term, @item.ranking_terms) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :display_count %></th>
+    <td><%= @item.setting_value(:display_count) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :link_string %></th>
+    <td><%= @item.setting_value(:link_string) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :link_url %></th>
+    <td><%= @item.setting_value(:link_url) %></td>
+  </tr>
+</table>
+<%- end -%>

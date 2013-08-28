@@ -1,0 +1,26 @@
+<%= render(layout: 'rank/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :ranking_target %></th>
+    <td><%= f.array_radio_buttons 'in_settings[ranking_target]', @item.ranking_targets %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :ranking_term %></th>
+    <td><%= f.array_select 'in_settings[ranking_term]', @item.ranking_terms, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :display_count %></th>
+    <td><%= f.array_text_field 'in_settings[display_count]', class: 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :link_string %></th>
+    <td><%= f.array_text_field 'in_settings[link_string]', class: 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :link_url %></th>
+    <td><%= f.array_text_field 'in_settings[link_url]', class: 'name' %></td>
+  </tr>
+</table>
+<%- end -%>
