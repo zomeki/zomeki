@@ -8,6 +8,7 @@ gem 'rails', '3.2.14'
 gem 'mysql2'
 
 gem 'dynamic_form', '~> 1.1.4'
+gem 'garb', '~> 0.9.1'
 gem 'httpclient', '~> 2.3.4.1'
 gem 'jpmobile', '~> 3.0.7'
 gem 'mail-iso-2022-jp', '~> 2.0.2'
@@ -21,8 +22,6 @@ gem 'will_paginate', '~> 3.0.4'
 
 gem 'hpricot', '0.8.6'
 gem 'tamtam', '0.0.3'
-
-gem 'garb'
 
 # Gems used only for assets and not required
 # in production environments by default.
