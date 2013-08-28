@@ -83,7 +83,7 @@ $('.datetimepicker').datetimepicker({
 
   def disable_enter_script
     s = <<-EOS
-$('form').keypress(function (event) { if (event.target.type !== 'textarea' && event.which === 13) return false; });
+$('form').on('keypress', function (e) { if (e.target.type !== 'textarea' && e.which === 13) return false; });
     EOS
     s.html_safe
   end
