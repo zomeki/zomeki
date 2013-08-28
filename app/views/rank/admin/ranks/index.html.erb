@@ -1,0 +1,19 @@
+<table class="index">
+  <tr>
+    <th><%= Rank::Rank.human_attribute_name :order %></th>
+    <th><%= Rank::Rank.human_attribute_name :page_title %></th>
+    <th><%= Rank::Rank.human_attribute_name :page_path %></th>
+    <th><%= Rank::Rank.human_attribute_name :access %></th>
+  </tr>
+
+  <% @ranks.each_with_index do |rank, i| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= (i + 1) + (params[:page].to_i > 0 ? (params[:page].to_i - 1) * 50 : 0) %></td>
+    <td><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", :target=>['_blank']) %></td>
+    <td><%= rank.page_path %></td>
+    <td><%= rank.accesses %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
