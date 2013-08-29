@@ -30,6 +30,14 @@ class GpArticle::Piece::Doc < Cms::Piece
     setting_value(:date_style).to_s
   end
 
+  def more_link_body
+    setting_value(:more_link_body).to_s
+  end
+
+  def more_link_url
+    setting_value(:more_link_url).to_s
+  end
+
   private
 
   def set_default_settings
