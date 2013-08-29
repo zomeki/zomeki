@@ -1,6 +1,6 @@
 <div class="contentGpCategoryCategoryType">
+  <%- @category_type.public_root_categories.each do |category| -%>
   <section class="categoryType categoryType<%= @category_type.name.try(:camelize) %>">
-    <%- @category_type.public_root_categories.each do |category| -%>
     <h2><%= link_to category.title, category.public_uri %></h2>
     <%- unless category.public_children.empty? -%>
     <ul class="children">
@@ -9,6 +9,6 @@
       <%- end -%>
     </ul>
     <%- end -%>
-    <%- end -%>
   </section>
+  <%- end -%>
 </div>
