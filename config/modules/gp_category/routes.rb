@@ -28,6 +28,9 @@ ZomekiCMS::Application.routes.draw do
     resources :node_category_types,
       :controller => 'admin/node/category_types',
       :path       => ':parent/node_category_types'
+    resources :node_docs,
+      :controller => 'admin/node/docs',
+      :path       => ':parent/node_docs'
 
     ## pieces
     resources :piece_category_types,
@@ -47,5 +50,6 @@ ZomekiCMS::Application.routes.draw do
     match 'node_category_types/:name(/index.:format)' => 'public/node/category_types#show'
     match 'node_category_types/:category_type_name/*category_names/index(.:format)' => 'public/node/categories#show'
     match 'node_category_types/:category_type_name/*category_names' => 'public/node/categories#show'
+    match 'node_docs(/index.:format)' => 'public/node/docs#index'
   end
 end

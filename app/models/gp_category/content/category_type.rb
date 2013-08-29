@@ -2,6 +2,7 @@
 class GpCategory::Content::CategoryType < Cms::Content
   CATEGORY_TYPE_STYLE_OPTIONS = [['全カテゴリ一覧', 'all_categories'], ['全記事一覧', 'all_docs'], ['カテゴリ＋記事', 'categories_with_docs']]
   CATEGORY_STYLE_OPTIONS = [['カテゴリ一覧＋記事一覧', 'categories_and_docs'], ['カテゴリ＋記事', 'categories_with_docs']]
+  DOC_STYLE_OPTIONS = [['全記事一覧', 'all_docs']]
 
   default_scope where(model: 'GpCategory::CategoryType')
 
@@ -60,6 +61,18 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   def category_docs_number
     (setting_extra_value(:category_style, :category_docs_number).presence || 1000).to_i
+  end
+
+  def doc_style
+    setting_value(:doc_style).to_s
+  end
+
+  def doc_doc_style
+    setting_extra_value(:doc_style, :doc_doc_style).to_s
+  end
+
+  def doc_docs_number
+    (setting_extra_value(:doc_style, :doc_docs_number).presence || 1000).to_i
   end
 
   private
