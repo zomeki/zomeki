@@ -23,9 +23,11 @@
       </ul>
     </div>
     <%- end -%>
+    <%- if child.public_docs.count > @content.category_docs_number -%>
     <div class="more">
       <%= link_to '一覧へ', child.public_uri %>
     </div>
+    <%- end -%>
   </section>
   <%- end -%>
 
