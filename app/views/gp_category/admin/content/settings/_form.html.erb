@@ -52,3 +52,22 @@
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'doc_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <p><strong>タイトル：</strong>@title <strong>サブタイトル：</strong>@subtitle <strong>公開日時：</strong>@publish_date <strong>更新日時：</strong>@update_date <strong>概要：</strong>@summary<br />
+      <strong>組織：</strong>@group <strong>カテゴリ（リンクなし）：</strong>@category <strong>カテゴリ（リンクあり）：</strong>@category_link <strong>添付画像：</strong>@image</p>
+      <%= text_area_tag :doc_doc_style, @item.extra_values[:doc_doc_style], size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示件数</th>
+    <td>
+      <%= text_field_tag :doc_docs_number, @item.extra_values[:doc_docs_number], class: 'number' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>

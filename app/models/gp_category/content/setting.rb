@@ -10,6 +10,8 @@ class GpCategory::Content::Setting < Cms::ContentSetting
     :options => GpCategory::Content::CategoryType::CATEGORY_TYPE_STYLE_OPTIONS
   set_config :category_style, :name => "#{GpCategory::Category.model_name.human}表示形式",
     :options => GpCategory::Content::CategoryType::CATEGORY_STYLE_OPTIONS
+  set_config :doc_style, :name => '新着記事一覧表示形式',
+    :options => GpCategory::Content::CategoryType::DOC_STYLE_OPTIONS
 
   def upper_text
   end
