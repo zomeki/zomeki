@@ -31,6 +31,14 @@ class GpCategory::Piece::Doc < Cms::Piece
     setting_value(:docs_order).to_s
   end
 
+  def more_link_body
+    setting_value(:more_link_body).to_s
+  end
+
+  def more_link_url
+    setting_value(:more_link_url).to_s
+  end
+
   def content
     GpCategory::Content::CategoryType.find(super)
   end
