@@ -11,9 +11,11 @@
       </ul>
     </div>
     <%- end -%>
+    <%- if category.public_docs.count > @content.category_type_docs_number -%>
     <div class="more">
       <%= link_to '一覧へ', category.public_uri %>
     </div>
+    <%- end -%>
   </section>
   <%- end -%>
 </div>
