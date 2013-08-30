@@ -488,10 +488,11 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def check_links(links)
-    links.map do |link|
+    links.map{ |link|
       uri = URI.parse(link[:url])
       if uri.instance_of?(URI::Generic)
-        url = "#{content.site.full_uri.sub(/\/$/, '')}/#{uri.path.sub(/^\//, '')}"
+        next unless uri.path =~ /^\//
+        url = "#{content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
       else
         url = uri.to_s
       end
@@ -510,7 +511,7 @@ class GpArticle::Doc < ActiveRecord::Base
         warn_log evar.message
         {body: link[:body], url: url, status: nil, reason: nil, result: false}
       end
-    end
+    }.compact
   end
 
   def broken_link_existence
