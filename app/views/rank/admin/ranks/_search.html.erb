@@ -1,0 +1,17 @@
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+<table>
+  <tr>
+    <td>範囲指定</td>
+    <td><%= text_field_tag 'from', params[:from], :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <td>〜</td>
+    <td><%= text_field_tag 'to', params[:to], :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <td><%= submit_tag '適用' %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datepicker_script -%>
+});
+<%- end -%>

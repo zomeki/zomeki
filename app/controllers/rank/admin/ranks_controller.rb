@@ -14,32 +14,35 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
        @content.setting_value(:password).present? and
        @content.setting_value(:web_property_id).present?
 
-      require 'rubygems'
-      require 'garb'
+      begin
+        require 'rubygems'
+        require 'garb'
 
-      Garb::Session.login(@content.setting_value(:username), @content.setting_value(:password))
-      profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == @content.setting_value(:web_property_id)}
+        Garb::Session.login(@content.setting_value(:username), @content.setting_value(:password))
+        profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == @content.setting_value(:web_property_id)}
 
-      results = Rank::GoogleAnalytics.results(profile)
+        results = Rank::GoogleAnalytics.results(profile, :start_date => @content.setting_value(:start_date) || Time.now - 1.month )
 
-      results.each do |result|
-        Rank::Rank.create!(
-            :content_id => @content.id,
-            :page_title => result.page_title,
-            :hostname   => result.hostname,
-            :page_path  => result.page_path,
-            :date       => result.date,
-            :pageviews  => result.pageviews,
-            :visitors   => result.visitors,
-            )
+        results.each do |result|
+          Rank::Rank.create!(
+              :content_id => @content.id,
+              :page_title => result.page_title,
+              :hostname   => result.hostname,
+              :page_path  => result.page_path,
+              :date       => result.date,
+              :pageviews  => result.pageviews,
+              :visitors   => result.visitors,
+              )
+        end
       end
     end
 
     rank_table = Rank::Rank.arel_table
-    select_col = 'pageviews' # 'visitors'
-    from       = '0000-00-00'
-    to         = '9999-99-99'
-    @ranks = @content.ranks.where(rank_table[:date].gteq(from).and(rank_table[:date].lteq(to))).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: 50)
+    @target = params[:target]
+    @target = 'pageviews' unless @target == 'pageviews' || @target == 'visitors'
+    from    = params[:from].blank? ? '0000-00-00' : params[:from]
+    to      = params[:to].blank?   ? '9999-99-99' : params[:to]
+    @ranks  = @content.ranks.where(rank_table[:date].gteq(from).and(rank_table[:date].lteq(to))).select('*').select(rank_table[@target].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: 50)
 
     _index @ranks
   end

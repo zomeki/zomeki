@@ -15,6 +15,10 @@ ZomekiCMS::Application.routes.draw do
       :controller  => "admin/ranks",
       :path        => ":content/ranks"
 
+    resources :ranks, :only => [:index],
+      :controller  => "admin/ranks",
+      :path        => ":content/ranks/:target"
+
     ## nodes
     resources :node_previous_days,
       :controller => 'admin/node/previous_days',
