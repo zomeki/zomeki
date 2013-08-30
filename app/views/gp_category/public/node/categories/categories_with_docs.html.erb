@@ -8,6 +8,11 @@
         <%- end -%>
       </ul>
     </div>
+    <%- if @docs.total_entries > @docs.per_page -%>
+    <div class="more">
+      <%= link_to '一覧へ', "#{@category.public_uri}more.html" %>
+    </div>
+    <%- end -%>
   </section>
   <%- end -%>
 
@@ -30,6 +35,4 @@
     <%- end -%>
   </section>
   <%- end -%>
-
-  <%= paginate @docs %>
 </div>

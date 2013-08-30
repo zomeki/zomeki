@@ -3,6 +3,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
+    @more = (params[:file] == 'more')
   end
 
   def show
@@ -13,14 +14,20 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     Page.current_item = @category
     Page.title = @category.title
 
-    @docs = @category.public_docs.paginate(page: params[:page], per_page: @content.category_docs_number)
+    per_page = (@more ? 30 : @content.category_docs_number)
+
+    @docs = @category.public_docs.paginate(page: params[:page], per_page: per_page)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     if Page.mobile?
       render :show_mobile
     else
-      if (style = @content.category_style).present?
-        render style
+      if @more
+        render 'more'
+      else
+        if (style = @content.category_style).present?
+          render style
+        end
       end
     end
   end

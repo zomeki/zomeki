@@ -1,0 +1,15 @@
+<div class="contentGpCategoryCategory">
+  <%- unless @docs.empty? -%>
+  <section class="categoryType">
+    <div class="docs">
+      <ul>
+        <%- @docs.each do |doc| -%>
+        <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  </section>
+  <%- end -%>
+
+  <%= paginate @docs %>
+</div>
