@@ -62,11 +62,11 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validate :validate_inquiry
   validate :validate_recognizers, :if => :state_recognize?
-  validate :validate_platform_dependent_characters
 
+  validate :validate_platform_dependent_characters, :unless => :state_draft?
   validate :node_existence
   validate :event_dates_range
-  validate :broken_link_existence
+  validate :broken_link_existence, :unless => :state_draft?
 
   after_initialize :set_defaults
   after_save :set_tags
@@ -398,10 +398,6 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def broken_link_exists?
     @broken_link_exists_in_body
-  end
-
-  def ignore_broken_links
-    @broken_link_exists_in_body = false
   end
 
   def backlinks

@@ -76,17 +76,16 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def create
+    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item = @content.docs.build(params[:item])
 
-    check_results = @item.check_links_in_body
-    @item.ignore_broken_links if params[:ignore_link_check]
-    if params[:link_check_in_body] || @item.broken_link_exists?
-      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
+    if params[:link_check_in_body] || (commit_state != 'commit_draft' && params[:ignore_link_check].nil?)
+      check_results = @item.check_links_in_body
+      flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :new) if params[:link_check_in_body]
     end
 
     @item.concept = @content.concept
-    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
@@ -107,16 +106,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def update
+    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.attributes = params[:item]
 
-    check_results = @item.check_links_in_body
-    @item.ignore_broken_links if params[:ignore_link_check]
-    if params[:link_check_in_body] || @item.broken_link_exists?
-      flash[:link_check_result] = render_to_string(:partial => 'link_check_result', :locals => {results: check_results}).html_safe
+    if params[:link_check_in_body] || (commit_state != 'commit_draft' && params[:ignore_link_check].nil?)
+      check_results = @item.check_links_in_body
+      flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:link_check_in_body]
     end
 
-    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
     @item.change_state_by_commit(commit_state)
 
     location = url_for(action: 'edit') if @item.state_draft?
