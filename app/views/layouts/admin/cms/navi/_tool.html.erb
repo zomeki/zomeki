@@ -1,4 +1,4 @@
-<%= link_to "再構築"  , "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/tool_rebuild", :class => (current == :rebuild ? 'current' : '') %>
-<%= link_to "本文検索", "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/tool_search", :class => (current == :search ? 'current' : '') %>
+<%= link_to '再構築'  , tool_rebuild_path, class: (current == :rebuild ? 'current' : '') %>
+<%= link_to '本文検索', tool_search_path, class: (current == :search ? 'current' : '') %>
 <%#= link_to "エクスポート", "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/export" , :class => (current == :export  ? 'current' : '') %>
 <%#= link_to "インポート"  , "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/import" , :class => (current == :import  ? 'current' : '') %>
