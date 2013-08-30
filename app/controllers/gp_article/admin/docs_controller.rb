@@ -200,6 +200,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       body = <<-EOT
 「#{doc.title}」からリンクしている「#{item.title}」が削除されました。
+  対象のリンクは次の通りです。
+
+#{item.backlinks.where(doc_id: doc.id).map{|l| "  ・#{l.body} ( #{l.url} )" }.join("\n")}
+
   次のURLをクリックしてリンクを確認してください。
 
   #{gp_article_doc_url(content: @content, id: doc.id)}
