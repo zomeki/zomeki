@@ -2,3 +2,4 @@
 <%= link_to '本文検索', tool_search_path, class: (current == :search ? 'current' : '') %>
 <%#= link_to "エクスポート", "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/export" , :class => (current == :export  ? 'current' : '') %>
 <%#= link_to "インポート"  , "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/import" , :class => (current == :import  ? 'current' : '') %>
+<%= link_to 'リンクチェック', tool_link_check_path, class: (current == :link_check ? 'current' : '') %>
