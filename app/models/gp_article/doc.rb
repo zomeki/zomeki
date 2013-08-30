@@ -214,11 +214,6 @@ class GpArticle::Doc < ActiveRecord::Base
     state == 'public'
   end
 
-  def change_state_by_commit(commit_state)
-    new_state = commit_state.to_s.sub('commit_', '')
-    self.state = new_state if STATE_OPTIONS.any? {|so| so.last == new_state }
-  end
-
   def close
     @save_mode = :close
     self.state = 'closed' if self.state_public?
