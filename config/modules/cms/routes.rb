@@ -125,14 +125,12 @@ ZomekiCMS::Application.routes.draw do
     resources :piece_sns_parts,
       :controller  => "admin/piece/sns_parts"
   end
-  
-  scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => "" do
-    match "tool_rebuild" => "admin/tool/rebuild#index",
-      :as => nil
-    match "tool_search"  => "admin/tool/search#index",
-      :as => nil
+
+  scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => '' do
+    match 'tool_rebuild' => 'admin/tool/rebuild#index', as: 'tool_rebuild'
+    match 'tool_search' => 'admin/tool/search#index', as: 'tool_search'
   end
-      
+
   ## public
   scope "_public/#{mod}", :module => mod, :as => "" do
     match "layouts/:id/:file.:format" => "public/layouts#index",
