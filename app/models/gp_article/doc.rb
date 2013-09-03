@@ -488,29 +488,17 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def check_links(links)
-    links.map{ |link|
+    links.map{|link|
       uri = URI.parse(link[:url])
-      unless uri.absolute?
-        next unless uri.path =~ /^\//
-        url = "#{content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
-      else
-        url = uri.to_s
-      end
+      url = unless uri.absolute?
+              next unless uri.path =~ /^\//
+              "#{content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
+            else
+              uri.to_s
+            end
 
-      client = HTTPClient.new
-      begin
-        res = client.head(url)
-        if res.redirect?
-          3.times do
-            break unless res.redirect?
-            res = client.head(res.headers['Location'])
-          end
-        end
-        {body: link[:body], url: url, status: res.status, reason: res.reason, result: res.ok?}
-      rescue => evar
-        warn_log evar.message
-        {body: link[:body], url: url, status: nil, reason: nil, result: false}
-      end
+      res = Util::LinkChecker.check_url(url)
+      {body: link[:body], url: url, status: res[:status], reason: res[:reason], result: res[:result]}
     }.compact
   end
 

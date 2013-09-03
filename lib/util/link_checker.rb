@@ -42,7 +42,7 @@ class Util::LinkChecker
       3.times do
         break unless res.redirect?
 
-        uri = URI.parse(res.headers['Location'])
+        uri = URI.parse(res.headers['Location'] || res.headers['location'])
         next_url = unless uri.absolute?
                      path = uri.path
 
@@ -64,9 +64,8 @@ class Util::LinkChecker
     end
     {status: res.status, reason: res.reason, result: res.ok?}
   rescue => evar
-    warn_log (message = evar.message)
-    message = 'サーバが見つかりません。' if message.index('Name or service not known')
-    {status: nil, reason: message, result: false}
+    warn_log evar.message
+    {status: nil, reason: evar.message, result: false}
   end
 
   def self.check_in_progress
