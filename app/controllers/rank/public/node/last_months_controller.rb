@@ -7,13 +7,13 @@ class Rank::Public::Node::LastMonthsController < Cms::Controller::Public::Base
   end
 
   def index
-    select_col = 'pageviews' # 'visitors'
 
     t = Date.today
     from = (t - 1.month).beginning_of_month
     to   = (t - 1.month).end_of_month
 
-    per_page = 50
+    select_col = 'pageviews' # 'visitors'
+    per_page   = 50
 
     rank_table = Rank::Rank.arel_table
     @ranks = @content.ranks.where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F')))).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
