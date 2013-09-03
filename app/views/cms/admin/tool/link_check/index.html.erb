@@ -13,8 +13,8 @@
   <%- @logs.each do |log| -%>
   <tr>
     <td>
-      <%- if log.link_checkable.is_a?(GpArticle::Doc) -%>
-      <%= link_to log.title, gp_article_doc_path(content: log.link_checkable.content, id: log.link_checkable.id) %>
+      <%- if (link_checkable = log.link_checkable).is_a?(GpArticle::Doc) -%>
+      <%= link_to log.title, gp_article_doc_path(content: link_checkable.content, id: link_checkable.id) %>
       <%- else -%>
       <%= log.title %>
       <%- end -%>
