@@ -479,7 +479,7 @@ class GpArticle::Doc < ActiveRecord::Base
     return links if all
     links.select do |link|
       uri = URI.parse(link[:url])
-      next true if uri.instance_of?(URI::Generic)
+      next true unless uri.absolute?
       [URI::HTTP, URI::HTTPS, URI::FTP].include?(uri.class)
     end
   rescue => evar
@@ -490,7 +490,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def check_links(links)
     links.map{ |link|
       uri = URI.parse(link[:url])
-      if uri.instance_of?(URI::Generic)
+      unless uri.absolute?
         next unless uri.path =~ /^\//
         url = "#{content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
       else
