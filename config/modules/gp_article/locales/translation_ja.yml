@@ -29,6 +29,8 @@ ja:
         in_editable_groups: 編集可能グループ
         in_rel_doc_ids: 関連記事
         marker_state: マップ表示
+        meta_description: 説明文
+        meta_keywords: キーワード
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名
