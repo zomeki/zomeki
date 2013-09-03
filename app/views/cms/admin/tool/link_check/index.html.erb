@@ -1,0 +1,45 @@
+<%- if @reload -%>
+<div id="reload_count"></div>
+<%- end -%>
+
+<%- unless @logs.empty? -%>
+<table class="index">
+  <tr>
+    <th style="text-align: center;">ページタイトル</th>
+    <th style="text-align: center;">ステータス</th>
+    <th style="text-align: center;">リンクテキスト</th>
+    <th style="text-align: center;">リンクURL</th>
+  </tr>
+  <%- @logs.each do |log| -%>
+  <tr>
+    <td>
+      <%- if log.link_checkable.is_a?(GpArticle::Doc) -%>
+      <%= link_to log.title, gp_article_doc_path(content: log.link_checkable.content, id: log.link_checkable.id) %>
+      <%- else -%>
+      <%= log.title %>
+      <%- end -%>
+    </td>
+    <td><%= log.status %> <%= log.reason %></td>
+    <td><%= log.body %></td>
+    <td><%= link_to log.url, log.url, target: 'preview' %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+<%- if @reload -%>
+  (function () {
+    var count = 10;
+    var interval_id = setInterval(function () {
+        $('#reload_count').text(count + '秒後に更新します。');
+        if (--count < 1) {
+          clearInterval(interval_id);
+          location.reload();
+        }
+      }, 1000);
+  })();
+<%- end -%>
+});
+<%- end -%>

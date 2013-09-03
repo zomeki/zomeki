@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130828153340) do
+ActiveRecord::Schema.define(:version => 20130902003005) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -340,6 +340,28 @@ ActiveRecord::Schema.define(:version => 20130828153340) do
     t.text     "smart_phone_head"
     t.text     "smart_phone_body",       :limit => 2147483647
     t.text     "smart_phone_stylesheet", :limit => 2147483647
+  end
+
+  create_table "cms_link_check_logs", :force => true do |t|
+    t.integer  "link_check_id"
+    t.integer  "link_checkable_id"
+    t.string   "link_checkable_type"
+    t.boolean  "checked"
+    t.string   "title"
+    t.string   "body"
+    t.string   "url"
+    t.integer  "status"
+    t.string   "reason"
+    t.boolean  "result"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  create_table "cms_link_checks", :force => true do |t|
+    t.boolean  "in_progress"
+    t.boolean  "checked"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "cms_map_markers", :force => true do |t|
