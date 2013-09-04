@@ -21,7 +21,7 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
         Garb::Session.login(@content.setting_value(:username), @content.setting_value(:password))
         profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == @content.setting_value(:web_property_id)}
 
-        results = Rank::GoogleAnalytics.results(profile, :start_date => @content.setting_value(:start_date) || Time.now - 1.month )
+        results = Rank::GoogleAnalytics.results(profile, :start_date => DateTime.parse(@content.setting_value(:start_date)) || Time.now - 1.month)
 
         results.each do |result|
           Rank::Rank.create!(
@@ -34,6 +34,11 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
               :visitors   => result.visitors,
               )
         end
+      rescue Garb::AuthenticationRequest::AuthError => e
+        logger.warn e
+        flash[:alert] = "認証エラーです。 （#{@content.setting_value(:username)} ）"
+      rescue => e
+        logger.warn e
       end
     end
 
@@ -45,5 +50,11 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
     @ranks  = @content.ranks.where(rank_table[:date].gteq(from).and(rank_table[:date].lteq(to))).select('*').select(rank_table[@target].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: 50)
 
     _index @ranks
+  end
+
+  after_filter :flash_clear
+  def flash_clear
+    flash[:alert ] = nil
+    flash[:notice] = nil
   end
 end
