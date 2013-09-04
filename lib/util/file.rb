@@ -6,10 +6,10 @@ class Util::File
     end
     if options[:data]
       begin
-        f = File.open(path, "w")
+        f = File.open(path, "wb")
         begin
           f.flock(File::LOCK_EX) if options[:use_lock] != false
-          f.write(options[:data] ? options[:data].force_encoding('utf-8') : '')
+          f.write(options[:data])
           f.flock(File::LOCK_UN) if options[:use_lock] != false
         ensure
           f.close
