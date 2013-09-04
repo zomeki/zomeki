@@ -102,6 +102,8 @@ module Sys::Model::Base::File
         warn_log(e.message)
       end
     end
+
+    @file_content = file.read
   end
 
   def upload_path
@@ -263,8 +265,7 @@ module Sys::Model::Base::File
 
   ## filter/aftar_save
   def upload_internal_file
-    return true if file.blank?
-    Util::File.put(upload_path, :data => file.read, :mkdir => true)
+    Util::File.put(upload_path, :data => @file_content, :mkdir => true) unless @file_content.nil?
     return true
   end
 
