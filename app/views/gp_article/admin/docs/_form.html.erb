@@ -254,7 +254,7 @@
     <table class="show">
       <tr>
         <th><%= f.label :name %></th>
-        <td colspan="3"><%= f.text_field :name, :style => 'width: 200px;' %></td>
+        <td><%= f.text_field :name, :style => 'width: 200px;' %></td>
       </tr>
       <tr>
         <th>表示端末</th>
@@ -262,6 +262,19 @@
           <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
           <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
         </td>
+      </tr>
+    </table>
+
+    <p class="form">metaタグ（検索エンジン用）</p>
+
+    <table class="show">
+      <tr>
+        <th><%= f.label :meta_description %></th>
+        <td><%= f.text_area :meta_description, :size => '100x3' %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :meta_keywords %></th>
+        <td><%= f.text_field :meta_keywords, :style => 'width: 700px;' %></td>
       </tr>
     </table>
 
