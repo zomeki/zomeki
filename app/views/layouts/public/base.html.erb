@@ -13,6 +13,13 @@
 
   <%= csrf_meta_tags %>
   <%= Page.layout.head_tag(request) %>
+
+  <%- if Page.current_item.try(:respond_to?, :meta_description) && (meta_description = Page.current_item.meta_description).present? -%>
+  <meta name="description" content="<%= meta_description.gsub(/(\r\n|\r|\n)/, ' ') %>" />
+  <%- end -%>
+  <%- if Page.current_item.try(:respond_to?, :meta_keywords) && (meta_keywords = Page.current_item.meta_keywords).present? -%>
+  <meta name="keywords" content="<%= meta_keywords %>" />
+  <%- end -%>
 </head>
 <body <%= Page.body_id %> <%= Page.body_class %>>
   <%= yield %>

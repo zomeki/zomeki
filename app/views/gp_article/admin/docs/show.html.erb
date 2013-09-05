@@ -206,6 +206,19 @@
       </tr>
     </table>
 
+    <p class="form">metaタグ（検索エンジン用）</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :meta_description %></th>
+        <td><%= @item.meta_description.gsub(/(\r\n|\r|\n)/, ' ') %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :meta_keywords %></th>
+        <td><%= @item.meta_keywords %></td>
+      </tr>
+    </table>
+
     <%= editable_group_view @item %>
     <%= creator_view @item %>
   </div>
