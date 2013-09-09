@@ -1,10 +1,10 @@
-<div class="contentRankRank">
+<div class="contentRankLastMonth">
 
 <h2><%= Rank::Rank.model_name.human %>一覧</h2>
 
 <ul>
-  <% @ranks.each_with_index do |rank, i| -%>
-  <li><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", :target=>['_blank'])%> (<%= rank.accesses %>)</li>
+  <% @ranks.each.with_index(1) do |rank, i| -%>
+  <li <%= (i <= 10) ? "class=""ranking#{i}""" : "" %>><span class="rank"><%= i %></span><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", {target: "http://#{rank.hostname}/".index(Core.site.full_uri) ? nil : '_blank'})%> (<%= rank.accesses %>)</li>
   <%- end -%>
 </ul>
 
