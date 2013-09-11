@@ -2,16 +2,16 @@
 <table>
   <tr>
     <td>範囲指定</td>
-    <td><%= text_field_tag 'from', params[:from], :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <td><%= text_field_tag 'from', params[:from], :style => 'width: 100px;', :class => 'js-date' %></td>
     <td>〜</td>
-    <td><%= text_field_tag 'to', params[:to], :style => 'width: 100px;', :class => 'datepicker' %></td>
+    <td><%= text_field_tag 'to', params[:to], :style => 'width: 100px;', :class => 'js-date' %></td>
     <td><%= submit_tag '適用' %></td>
   </tr>
 </table>
 <%- end -%>
 
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  <%= enable_datepicker_script -%>
+<%= javascript_tag do %>
+$(function() {
+  $('.js-date').datepicker({ dateFormat: 'yy-mm-dd' });
 });
-<%- end -%>
+<% end %>
