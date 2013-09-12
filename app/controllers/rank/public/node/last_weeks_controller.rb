@@ -14,7 +14,7 @@ class Rank::Public::Node::LastWeeksController < Cms::Controller::Public::Base
     to   = t - wday.days
 
     select_col = 'pageviews' # 'visitors'
-    per_page   = 50
+    per_page   = 20
 
     rank_table = Rank::Rank.arel_table
     @ranks = @content.ranks.where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F')))).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
