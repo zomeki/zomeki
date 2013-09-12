@@ -52,6 +52,8 @@ module Rank::Controller::Rank
 
   def get_data(profile, limit, offset, start_date)
     start_date = Date.new(start_date.year, start_date.month, start_date.day) unless start_date.nil?
+    start_date = Date.new(2005,01,01) if start_date.blank? || start_date < Date.new(2005,01,01)
+
     res = Rank::GoogleAnalytics.results(profile, :limit => limit, :offset => offset, :start_date => start_date)
     return res
   end
