@@ -1,6 +1,6 @@
 <%-
   return '' unless node.sitemap_visible?
-  css_class = "#{css_class + '-' if css_class.present?}#{File.basename(node.name, '.*').camelize(:lower)}"
+  css_class = "#{css_class + '-' if css_class.present?}#{File.basename(node.name.to_s, '.*').camelize(:lower)}"
 -%>
 <li class="level<%= level %> <%= css_class %>">
   <%= link_to node.title, node.public_uri, class: "level#{level}" %>
