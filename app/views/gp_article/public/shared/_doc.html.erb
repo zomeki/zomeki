@@ -14,9 +14,9 @@ contents = {
   category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.pluck(:title).join(', '), class: 'category'),
   }
 
-doc_line = (Page.mobile? ? contents[:title] : list_style.gsub('@title@', contents[:title])
-                                                        .gsub('@date@', contents[:date])
-                                                        .gsub('@group@', contents[:group])
-                                                        .gsub('@category@', contents[:category])).html_safe
+doc_line = (Page.mobile? ? contents[:title] : list_style.gsub(/@title@?/, contents[:title])
+                                                        .gsub(/@date@?/, contents[:date])
+                                                        .gsub(/@group@?/, contents[:group])
+                                                        .gsub(/@category@?/, contents[:category])).html_safe
 -%>
 <%= doc_line %>
