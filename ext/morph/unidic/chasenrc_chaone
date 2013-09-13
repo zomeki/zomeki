@@ -3,7 +3,7 @@
 ;;  chaOne用
 ;;
 
-(GRAMMAR /var/share/joruri/ext/morph/unidic)
+(GRAMMAR /var/share/zomeki/ext/morph/unidic)
 (DADIC chadic)
 
 (UNKNOWN_POS (名詞 普通名詞 一般))
