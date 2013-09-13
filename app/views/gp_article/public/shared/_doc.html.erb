@@ -7,11 +7,16 @@ doc_title = if link_to_options
               h doc.title
             end
 
-title = %Q!<span class="title">#{doc_title}</span>!
-date = %Q!<span class="date">#{h doc.display_published_at.try(:strftime, date_style)}</span>!
-group = %Q!<span class="group">#{h doc.creator.group.name}</span>!
-category = %Q!<span class="category">#{h doc.categories.map(&:title).join(', ')}</span>!
+contents = {
+  title: doc_title.blank? ? '' : content_tag(:span, doc_title, class: 'title'),
+  date: doc.display_published_at.blank? ? '' : content_tag(:span, doc.display_published_at.try(:strftime, date_style), class: 'date'),
+  group: doc.creator.blank? ? '' : content_tag(:span, doc.creator.group.name, class: 'group'),
+  category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.pluck(:title).join(', '), class: 'category'),
+  }
 
-doc_line = (Page.mobile? ? title : list_style.gsub(/@title/, title).gsub(/@date/, date).gsub(/@group/, group).gsub(/@category/, category)).html_safe
+doc_line = (Page.mobile? ? contents[:title] : list_style.gsub('@title@', contents[:title])
+                                                        .gsub('@date@', contents[:date])
+                                                        .gsub('@group@', contents[:group])
+                                                        .gsub('@category@', contents[:category])).html_safe
 -%>
 <%= doc_line %>
