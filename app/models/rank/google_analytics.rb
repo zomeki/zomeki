@@ -1,5 +1,5 @@
 class Rank::GoogleAnalytics
   extend Garb::Model
-  metrics :visitors, :pageviews
+  metrics :visits, :pageviews #:visitors
   dimensions :date, :page_title, :page_path, :hostname
 end

@@ -5,8 +5,8 @@
 ;;;
 ;;;  grammar.cha/ctypes.cha/cforms.cha location /文法ファイル
 ;;;
-;(文法ファイル  /var/share/joruri/ext/morph/ipadic)
-(GRAMMAR  /var/share/joruri/ext/morph/ipadic)
+;(文法ファイル  /var/share/zomeki/ext/morph/ipadic)
+(GRAMMAR  /var/share/zomeki/ext/morph/ipadic)
 
 ;;;
 ;;;  dictionary /辞書
