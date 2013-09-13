@@ -9,10 +9,10 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :required_recognizers, :name => '承認/必須承認者',
     :form_type => :multiple_select,
     :options => lambda { Sys::User }
-  set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
-    :comment => '日付：@date タイトル：@title 組織：@group カテゴリ：@category'
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
-    :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
+    :comment => I18n.t('comments.date_style').html_safe
+  set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
+    :comment => I18n.t('comments.list_style').html_safe
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons
