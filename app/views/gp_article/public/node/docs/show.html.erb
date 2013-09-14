@@ -20,6 +20,13 @@ else
   body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
 end) %></div>
 
+<%- if @item.links_in_body.any?{|l| l[:url] =~ /\.pdf$/i } -%>
+<div class="adobeReader">
+  <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>
+  <a href="http://get.adobe.com/jp/reader/" target="_blank" title="Adobe Readerダウンロード">Adobe Readerダウンロード</a>
+</div>
+<%- end -%>
+
 <%- unless Page.mobile? -%>
 <%= render 'cms/public/_partial/maps/view', item: @item %>
 <%- end -%>
