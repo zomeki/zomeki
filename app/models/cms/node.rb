@@ -22,6 +22,8 @@ class Cms::Node < ActiveRecord::Base
   
   has_many   :children, :foreign_key => :parent_id,  :class_name => 'Cms::Node',
     :order => 'sitemap_sort_no IS NULL, sitemap_sort_no, name', :dependent => :destroy
+  has_many   :children_in_route, :foreign_key => :route_id,  :class_name => 'Cms::Node',
+    :order => 'sitemap_sort_no IS NULL, sitemap_sort_no, name', :dependent => :destroy
   
   validates_presence_of :parent_id, :state, :model, :name, :title
   validates_uniqueness_of :name, :scope => [:site_id, :parent_id],
@@ -225,6 +227,10 @@ class Cms::Node < ActiveRecord::Base
 
   def public_children
     children.public
+  end
+
+  def public_children_in_route
+    children_in_route.public
   end
   
 protected
