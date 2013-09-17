@@ -317,6 +317,10 @@ protected
     end
   end
 
+  def public_children
+    children.public
+  end
+
   private
 
   def set_defaults
