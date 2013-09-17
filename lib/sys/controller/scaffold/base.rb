@@ -32,7 +32,7 @@ protected
         format.xml  { render(:xml => item.to_xml(:dasherize => false), :status => status, :location => location) }
       end
     else
-      flash.now[:notice] = '登録処理に失敗しました。'
+      flash.now[:alert] = '登録処理に失敗しました。'
       respond_to do |format|
         format.html { render(:action => :new) }
         format.xml  { render(:xml => item.errors, :status => :unprocessable_entity) }
@@ -51,7 +51,7 @@ protected
         format.xml  { head :ok }
       end
     else
-      flash.now[:notice] = '更新処理に失敗しました。'
+      flash.now[:alert] = '更新処理に失敗しました。'
       respond_to do |format|
         format.html { render :action => :edit }
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
@@ -69,7 +69,7 @@ protected
         format.xml  { head :ok }
       end
     else
-      flash.now[:notice] = '削除処理に失敗しました。'
+      flash.now[:alert] = '削除処理に失敗しました。'
       respond_to do |format|
         format.html { render :action => :show }
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
