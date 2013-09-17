@@ -1,0 +1,6 @@
+<%= render 'approval/admin/shared/menu', index_path: approval_approval_flows_path(content: @content),
+                                                sub: "#{Approval::ApprovalFlow.model_name.human}#{case action_name.to_sym
+                                                                                                  when :index; '一覧'
+                                                                                                  when :new;   '登録'
+                                                                                                  when :edit;  '編集'
+                                                                                                  end}" %>
