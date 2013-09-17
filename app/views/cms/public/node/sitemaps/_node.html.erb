@@ -14,9 +14,9 @@
     <%- end -%>
   <%- end -%>
 
-  <%- unless node.public_children.empty? -%>
+  <%- unless node.public_children_in_route.empty? -%>
   <ul class="level<%= level + 1 %> <%= css_class %>">
-    <%= render partial: 'node', collection: node.public_children, locals: {level: level + 1, css_class: css_class} %>
+    <%= render partial: 'node', collection: node.public_children_in_route, locals: {level: level + 1, css_class: css_class} %>
   </ul>
   <%- end -%>
 </li>
