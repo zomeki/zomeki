@@ -79,7 +79,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item = @content.docs.build(params[:item])
 
-    if params[:link_check_in_body] || (new_state != 'draft' && params[:ignore_link_check].nil?)
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :new) if params[:link_check_in_body]
@@ -109,7 +109,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item.attributes = params[:item]
 
-    if params[:link_check_in_body] || (new_state != 'draft' && params[:ignore_link_check].nil?)
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:link_check_in_body]
