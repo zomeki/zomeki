@@ -1,0 +1,20 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= Approval::ApprovalFlow.human_attribute_name :title %></th>
+    <th><%= Approval::ApprovalFlow.human_attribute_name :group_id %></th>
+    <th style="text-align: center; width: 60px;"><%= Approval::ApprovalFlow.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 120px;"><%= Approval::ApprovalFlow.human_attribute_name :updated_at %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, approval_approval_flow_path(content: @content, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: left;"><%= item.group.try(:name) %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>
