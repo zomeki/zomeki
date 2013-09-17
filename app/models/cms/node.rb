@@ -222,6 +222,10 @@ class Cms::Node < ActiveRecord::Base
   def sitemap_visible?
     self.sitemap_state == 'visible'
   end
+
+  def public_children
+    children.public
+  end
   
 protected
   def remove_file
@@ -315,10 +319,6 @@ protected
       
       return item
     end
-  end
-
-  def public_children
-    children.public
   end
 
   private
