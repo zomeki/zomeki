@@ -43,7 +43,7 @@ end) %></div>
 <%- end -%>
 <%- end -%>
 
-<%= render 'cms/public/_partial/inquiries/view', item: @item %>
+<%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
 <%- unless Page.mobile? -%>
 <div class="back"><%= link_to_function '戻る', 'history.back();' %></div>
