@@ -1,0 +1,23 @@
+<%-
+
+return if item.inquiries.size == 0
+return if !item.inquiries.any?(&:visible?)
+
+-%><div class="inquiry">
+  <h2>お問い合わせ</h2>
+  <%- item.inquiries.each do |inquiry| -%>
+    <%- next unless inquiry.visible? -%>
+    <address>
+    <% if item.inquiry_display_field?(:group_id) && inquiry.group
+     %><div class="section"><%= inquiry.group.full_name %></div><% end %>
+    <% if item.inquiry_display_field?(:charge) && inquiry.charge.present?
+     %><div class="charge"><%= inquiry.charge %></div><% end %>
+    <% if item.inquiry_display_field?(:charge) && inquiry.tel.present?
+     %><div class="tel"><span class="label">電話</span>：<%= inquiry.tel %></div><% end %>
+    <% if item.inquiry_display_field?(:tel) && inquiry.fax.present?
+     %><div class="fax"><span class="label">ファクシミリ</span>：<%= inquiry.fax %></div><% end %>
+    <% if item.inquiry_display_field?(:fax) && inquiry.email.present?
+     %><div class="email"><span class="label">E-Mail</span>：<%= email_to inquiry.email %></div><% end %>
+    </address>
+  <%- end -%>
+</div>
