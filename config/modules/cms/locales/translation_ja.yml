@@ -152,4 +152,11 @@ ja:
         name: "ファイル名"
       cms/node/sitemap:
         name: "ファイル名"
+      
+      cms/inquiry:
+        group_id: 課
+        charge: 室・担当
+        tel: 電話番号
+        fax: ファクシミリ
+        email: メールアドレス
 
