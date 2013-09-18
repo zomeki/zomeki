@@ -1,4 +1,4 @@
-<%= form_for(:item, :url => gp_article_doc_path, :html => { method: 'put' }) do |f| %>
+<%= form_for(@item, :as => :item, :url => gp_article_doc_path, :html => { method: 'put' }) do |f| %>
   <%= error_messages_for :item %>
   <%= flash[:link_check_result] %>
   <%= render 'form', :f => f %>
