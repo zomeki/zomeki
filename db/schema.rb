@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130903070120) do
+ActiveRecord::Schema.define(:version => 20130909040727) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -298,7 +298,8 @@ ActiveRecord::Schema.define(:version => 20130903070120) do
   end
 
   create_table "cms_inquiries", :force => true do |t|
-    t.string   "state",      :limit => 15
+    t.integer  "parent_unid"
+    t.string   "state",       :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -308,6 +309,8 @@ ActiveRecord::Schema.define(:version => 20130903070120) do
     t.text     "fax"
     t.text     "email"
   end
+
+  add_index "cms_inquiries", ["parent_unid"], :name => "index_cms_inquiries_on_parent_unid"
 
   create_table "cms_kana_dictionaries", :force => true do |t|
     t.integer  "unid"

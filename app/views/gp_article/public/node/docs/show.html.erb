@@ -43,7 +43,7 @@ end) %></div>
 <%- end -%>
 <%- end -%>
 
-<%= render 'cms/public/_partial/inquiries/view', item: @item %>
+<%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
 <%- if @item.links_in_body.any?{|l| l[:url] =~ /\.pdf$/i } -%>
 <div class="adobeReader">
