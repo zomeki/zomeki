@@ -72,7 +72,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def new
     @item = @content.docs.build
-    @item.in_inquiry = @item.default_inquiry
   end
 
   def create

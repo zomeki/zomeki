@@ -29,6 +29,11 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :display_dates, :name => '記事日付表示',
     :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
     :form_type => :check_boxes
+  set_config :inquiry_setting, :name => '連絡先',
+    :options => [['使用する', 'enabled'], ['使用しない', 'disabled']]
+
+  INQUIRY_STATES = [['表示', 'visible'], ['非表示', 'hidden']]
+  INQUIRY_FIELDS = [['課', 'group_id'], ['室・担当', 'charge'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email']]
 
   def upper_text
   end
@@ -50,5 +55,12 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def default_category_id
     extra_values[:default_category_id] || 0
+  end
+  
+  def default_inquiry_setting
+    {
+      display_fields: ['group_id', 'charge', 'tel', 'fax', 'email'], 
+      require_fields: ['group_id', 'tel', 'email'], 
+    } 
   end
 end

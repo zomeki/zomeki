@@ -1,0 +1,43 @@
+<%-
+
+return nil if !item.inquiries || item.inquiries.size == 0
+return nil if !item.inquiries.any?(&:visible?)
+
+-%>
+
+<%- item.inquiries.each_with_index do |inquiry, i| -%>
+  <%- next if !inquiry.visible? -%>
+  <p class="form">連絡先<%= i+1 if i != 0 %></p>
+  <table class="show">
+    <%- if item.inquiry_display_field?(:group_id) -%>
+    <tr>
+      <th>課</th>
+      <td><%= safe{inquiry.group.full_name} %></td>
+    </tr>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:charge) -%>
+    <tr>
+      <th>室・担当</th>
+      <td><%= inquiry.charge %></td>
+    </tr>
+    <% end %>
+    <%- if item.inquiry_display_field?(:tel) -%>
+    <tr>
+      <th>電話番号</th>
+      <td><%= inquiry.tel %></td>
+    </tr>
+    <% end %>
+    <%- if item.inquiry_display_field?(:fax) -%>
+    <tr>
+      <th>ファクシミリ</th>
+      <td><%= inquiry.fax %></td>
+    </tr>
+    <% end %>
+    <%- if item.inquiry_display_field?(:email) -%>
+    <tr>
+      <th>メールアドレス</th>
+      <td><%= inquiry.email %></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>
