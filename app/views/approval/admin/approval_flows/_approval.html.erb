@@ -1,13 +1,20 @@
 <%-
   common_attrs = {id: nil}
-  common_attrs.merge!(disabled: true) unless approval
+  if approval
+    index = approval.index
+    users = approval.users.map{|u| [u.name, u.id] }
+  else
+    index = nil
+    users = []
+    common_attrs.merge!(disabled: true)
+  end
 -%>
 <div class="approval" style="<%= 'display: none;' if common_attrs[:disabled] %>">
-  <%= hidden_field_tag nil, 'N', common_attrs.merge(class: 'index') %>
-  <div style="float: left;"><%= select_tag 'approvals[N]', options_for_select([]),
-                                                           common_attrs.merge(multiple: true, style: 'height: 150px; width: 150px;', class: 'approvals', id: 'approvals_N') %></div>
+  <%= hidden_field_tag nil, index || 'N', common_attrs.merge(class: 'index') %>
+  <div style="float: left;"><%= select_tag "approvals[#{index || 'N'}]", options_for_select(users),
+                                           common_attrs.merge(multiple: true, style: 'height: 150px; width: 150px;', class: 'approvals', id: "approvals_#{index || 'N'}") %></div>
   <div style="float: left; margin: 35px 10px; height: 70px;">
-    <div><%= button_to_function '右へ ->', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()), parseInt($(this).closest('div.approval').find('input.index').val()) + 1)", common_attrs %></div>
-    <div style="margin-top: 20px;"><%= button_to_function '<- 左へ', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()) + 1, parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %></div>
+    <div><%= button_to_function '次へ ->', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()), parseInt($(this).closest('div.approval').find('input.index').val()) + 1)", common_attrs %></div>
+    <div style="margin-top: 20px;"><%= button_to_function '<- 前へ', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()) + 1, parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %></div>
   </div>
 </div>
