@@ -23,17 +23,32 @@ class Approval::Admin::ApprovalFlowsController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.approval_flows.build(params[:item])
-    _create @item
+    _create(@item) do
+      set_approvals
+    end
   end
 
   def update
     @item = @content.approval_flows.find(params[:id])
     @item.attributes = params[:item]
-    _update @item
+    _update(@item) do
+      set_approvals
+    end
   end
 
   def destroy
     @item = @content.approval_flows.find(params[:id])
     _destroy @item
+  end
+
+  private
+
+  def set_approvals
+    return unless params[:approvals].is_a?(Hash)
+    params[:approvals].each do |key, value|
+      next unless value.is_a?(Array)
+      approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key)
+      approval.user_ids = value
+    end
   end
 end
