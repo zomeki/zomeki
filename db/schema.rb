@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130917050829) do
+ActiveRecord::Schema.define(:version => 20130919060418) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -68,6 +68,16 @@ ActiveRecord::Schema.define(:version => 20130917050829) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "approval_assignments", :force => true do |t|
+    t.integer  "approval_id"
+    t.integer  "user_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "approval_assignments", ["approval_id"], :name => "index_approval_assignments_on_approval_id"
+  add_index "approval_assignments", ["user_id"], :name => "index_approval_assignments_on_user_id"
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
