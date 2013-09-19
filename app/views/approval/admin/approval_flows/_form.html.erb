@@ -15,4 +15,85 @@
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
+  <tr>
+    <th>承認者</th>
+    <td>
+      <div style="margin-bottom: 10px;"><%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '-- グループを選択してください --', name: nil %></div>
+
+      <div style="float: left;"><%= select_tag 'candidates', options_for_select([]), multiple: true, style: 'height: 150px; width: 150px;' %></div>
+      <div style="float: left; margin: 35px 10px; height: 70px;">
+        <div><%= button_to_function '追加 ->', "$('#candidates > option:selected').appendTo($('#approvals_0'));" %></div>
+        <div style="margin-top: 20px;"><%= button_to_function '<- 除外', "$('#approvals_0 > option:selected').appendTo($('#candidates'));" %></div>
+      </div>
+
+      <div id="approvals">
+        <%= render 'approval' %>
+      </div>
+    </td>
+  </tr>
 </table>
+
+<%= javascript_tag do -%>
+function increase_approval() {
+  var approvals_wrapper = $('#approvals');
+  var new_approval = approvals_wrapper.children(':first-child').clone(true);
+  var next_index = approvals_wrapper.children().length - 1;
+
+  new_approval.find(':disabled').removeAttr('disabled');
+  new_approval.find('input.index').val(next_index)
+  new_approval.find('select.approvals').attr('id', new_approval.find('select.approvals').attr('id').replace('N', next_index));
+  new_approval.find('select.approvals').attr('name', new_approval.find('select.approvals').attr('name').replace('N', next_index));
+  new_approval.appendTo(approvals_wrapper).show();
+}
+
+function decrease_approval() {
+  var approvals_wrapper = $('#approvals');
+  if (approvals_wrapper.children().length > 1) {
+    approvals_wrapper.children(':last-child').remove();
+  }
+}
+
+function move_users(from, to) {
+  var next_list = $('#approvals_' + (from + 1));
+  var from_list = $('#approvals_' + from);
+  var to_list   = $('#approvals_' + to);
+
+  if (from_list.find('> option:selected').length === 0) { return; }
+
+  if (from_list.find('> option:selected').length === from_list.find('> option').length &&
+      (from < to || (from > to && next_list[0]))) {
+    alert('最低1人は残す必要があります。');
+    return;
+  }
+
+  if (to_list[0] === undefined) {
+    increase_approval();
+    to_list = $('#approvals_' + to);
+  }
+
+  from_list.find('> option:selected').appendTo(to_list);
+
+  if (from_list.find('> option').length === 0) { decrease_approval(); }
+}
+
+$(document).ready(function () {
+  $('#groups').on('change', function (event) {
+    var group_id = parseInt(event.target.value);
+    if (isNaN(group_id)) {
+      $('#candidates').html('<option value=""></option>');
+    } else {
+      $('#candidates').html('<option value="">更新中...</option>');
+      $.get('<%= sys_group_users_path(parent: 'PARENT') %>?options=true'.replace('PARENT', group_id), function (data) {
+        $('#candidates').html(data);
+      });
+    }
+  });
+
+  $('#candidates').closest('form').submit(function (event) {
+    $('#candidates > option').attr('selected', false);
+    $('#approvals select.approvals > option').attr('selected', true);
+  });
+
+  increase_approval();
+});
+<%- end -%>
