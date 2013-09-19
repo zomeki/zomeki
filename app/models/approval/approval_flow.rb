@@ -9,6 +9,8 @@ class Approval::ApprovalFlow < ActiveRecord::Base
 
   belongs_to :group, :class_name => 'Sys::Group'
 
+  has_many :assignments, :dependent => :destroy
+
   after_initialize :set_defaults
 
   validates :title, :presence => true
