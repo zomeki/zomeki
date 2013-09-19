@@ -28,6 +28,9 @@
 
       <div id="approvals">
         <%= render 'approval' %>
+        <%- @item.approvals.each do |approval| -%>
+        <%= render 'approval', approval: approval %>
+        <%- end -%>
       </div>
     </td>
   </tr>
@@ -71,6 +74,7 @@ function move_users(from, to) {
     to_list = $('#approvals_' + to);
   }
 
+  to_list.find('> option').attr('selected', false);
   from_list.find('> option:selected').appendTo(to_list);
 
   if (from_list.find('> option').length === 0) { decrease_approval(); }
@@ -94,6 +98,8 @@ $(document).ready(function () {
     $('#approvals select.approvals > option').attr('selected', true);
   });
 
+  <%- if @item.approvals.empty? -%>
   increase_approval();
+  <%- end -%>
 });
 <%- end -%>
