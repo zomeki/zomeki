@@ -168,3 +168,13 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'approval_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'approval_content_id',
+                       options_from_collection_for_select(Approval::Content::ApprovalFlow.all, :id, :name, @item.extra_values[:approval_content_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
