@@ -15,12 +15,16 @@
     <td><%= f.array_text_field 'in_settings[display_count]', class: 'number' %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :link_string %></th>
-    <td><%= f.array_text_field 'in_settings[link_string]', class: 'name' %></td>
+    <th><%= @item.locale :show_count %></th>
+    <td><%= f.array_select 'in_settings[show_count]', @item.show_counts, include_blank: true %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :link_url %></th>
-    <td><%= f.array_text_field 'in_settings[link_url]', class: 'name' %></td>
+    <th><%= @item.locale :more_link_body %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_body]', class: 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_url]', class: 'name' %></td>
   </tr>
 </table>
 <%- end -%>
