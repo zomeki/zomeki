@@ -13,4 +13,8 @@
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
+  <tr>
+    <th>承認者</th>
+    <td><%= @item.approvals.map{|a| a.users.pluck(:name).join('、') }.join(' ＞ ') %></td>
+  </tr>
 </table>
