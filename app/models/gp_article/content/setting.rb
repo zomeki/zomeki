@@ -29,6 +29,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :display_dates, :name => '記事日付表示',
     :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
     :form_type => :check_boxes
+  set_config :approval_relation, :name => '承認フロー',
+    :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
+    :form_type => :radio_buttons
 
   def upper_text
   end
