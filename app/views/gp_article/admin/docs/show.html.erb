@@ -5,7 +5,7 @@
     <li style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
     <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
     <li><a href="#tab4">承認</a></li>
-    <li><a href="#tab3">連絡先</a></li>
+    <li style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
     <li><a href="#tab2">公開日</a></li>
     <li><a href="#tab1">記事</a></li>
   </ul>
@@ -121,7 +121,7 @@
     <%= task_view @item %>
   </div>
   <div id="tab3">
-    <%= inquiry_view @item %>
+    <%= render 'cms/admin/_partial/many_inquiries/view', {item: @item} %>
   </div>
   <div id="tab4">
     <%= recognizer_view @item %>

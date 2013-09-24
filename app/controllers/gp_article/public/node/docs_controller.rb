@@ -8,7 +8,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def index
-    @docs = public_or_preview_docs.order('updated_at DESC').paginate(page: params[:page], per_page: 20)
+    @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|

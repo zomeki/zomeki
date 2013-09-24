@@ -9,10 +9,10 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :required_recognizers, :name => '承認/必須承認者',
     :form_type => :multiple_select,
     :options => lambda { Sys::User }
-  set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
-    :comment => '日付：@date タイトル：@title 組織：@group カテゴリ：@category'
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
-    :comment => '年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S'
+    :comment => I18n.t('comments.date_style').html_safe
+  set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
+    :comment => I18n.t('comments.list_style').html_safe
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons
@@ -29,6 +29,11 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :display_dates, :name => '記事日付表示',
     :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
     :form_type => :check_boxes
+  set_config :inquiry_setting, :name => '連絡先',
+    :options => [['使用する', 'enabled'], ['使用しない', 'disabled']]
+
+  INQUIRY_STATES = [['表示', 'visible'], ['非表示', 'hidden']]
+  INQUIRY_FIELDS = [['課', 'group_id'], ['室・担当', 'charge'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email']]
 
   def upper_text
   end
@@ -50,5 +55,12 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def default_category_id
     extra_values[:default_category_id] || 0
+  end
+  
+  def default_inquiry_setting
+    {
+      display_fields: ['group_id', 'charge', 'tel', 'fax', 'email'], 
+      require_fields: ['group_id', 'tel', 'email'], 
+    } 
   end
 end
