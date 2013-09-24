@@ -12,4 +12,11 @@
     <td><%=truncate (item.persisted? ? (item.form_type.to_s == 'password' ? '*****' :item.value_name) : '未設定'), length: 60 %></td>
   </tr>
   <% end %>
+
 </table>
+
+<%= form_tag 'content_settings/import', :method => :post do %>
+<div class="submitters">
+  <%= submit_tag '取り込む', :name => :submit_import %>
+</div>
+<% end %>
