@@ -45,6 +45,10 @@ class Approval::Admin::ApprovalFlowsController < Cms::Controller::Admin::Base
 
   def set_approvals
     return unless params[:approvals].is_a?(Hash)
+
+    indexes = params[:approvals].keys
+    @item.approvals.each{|a| a.destroy unless indexes.include?(a.index.to_s) }
+
     params[:approvals].each do |key, value|
       next unless value.is_a?(Array)
       approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key)
