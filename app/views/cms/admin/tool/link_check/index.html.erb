@@ -9,6 +9,7 @@
     <th style="text-align: center;">ステータス</th>
     <th style="text-align: center;">リンクテキスト</th>
     <th style="text-align: center;">リンクURL</th>
+    <th style="text-align: center;">結果</th>
   </tr>
   <%- @logs.each do |log| -%>
   <tr>
@@ -22,6 +23,7 @@
     <td><%= log.status %> <%= log.reason %></td>
     <td><%= log.body %></td>
     <td><%= link_to log.url, log.url, target: 'preview' %></td>
+    <td><%= log.result ? '○' : '×' %></td>
   </tr>
   <%- end -%>
 </table>

@@ -13,8 +13,7 @@
   <tr>
     <th><%= @item.locale :doc_style %></th>
     <td>
-      <p><strong>タイトル：</strong>@title <strong>サブタイトル：</strong>@subtitle <strong>公開日時：</strong>@publish_date <strong>更新日時：</strong>@update_date <strong>概要：</strong>@summary<br />
-      <strong>組織：</strong>@group <strong>カテゴリ（リンクなし）：</strong>@category <strong>カテゴリ（リンクあり）：</strong>@category_link <strong>添付画像：</strong>@image</p>
+      <%=raw t('comments.doc_style') %>
       <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
     </td>
   </tr>

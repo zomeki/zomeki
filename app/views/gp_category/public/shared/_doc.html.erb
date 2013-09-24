@@ -12,13 +12,25 @@
               else
                 ''
               end
+
+  contents = {
+    title: doc_title.blank? ? '' : content_tag(:span, doc_title, class: 'title'),
+    subtitle: doc.subtitle.blank? ? '' : content_tag(:span, doc.subtitle, class: 'subtitle'),
+    publish_date: doc.display_published_at.blank? ? '' : content_tag(:span, doc.display_published_at.try(:strftime, date_style), class: 'publish_date'),
+    update_date: doc.display_updated_at.blank? ? '' : content_tag(:span, doc.display_updated_at.try(:strftime, date_style), class: 'update_date'),
+    summary: doc.summary.blank? ? '' : content_tag(:span, doc.summary, class: 'summary'),
+    group: doc.creator.blank? ? '' : content_tag(:span, doc.creator.group.name, class: 'group'),
+    category_link: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c| link_to c.title, c.public_uri }.join(', ').html_safe, class: 'category'),
+    category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.pluck(:title).join(', '), class: 'category'),
+    image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
+    }
 -%>
-<%= doc_style.gsub('@title', doc_title)
-             .gsub('@subtitle', h(doc.subtitle))
-             .gsub('@publish_date', h(doc.display_published_at.try(:strftime, date_style)))
-             .gsub('@update_date', h(doc.display_updated_at.try(:strftime, date_style)))
-             .gsub('@summary', h(doc.summary))
-             .gsub('@group', h(doc.creator.group.name))
-             .gsub('@category_link', doc.categories.map{|c| link_to c.title, c.public_uri }.join(', '))
-             .gsub('@category', doc.categories.map{|c| h c.title }.join(', '))
-             .gsub('@image', doc_image).html_safe %>
+<%= doc_style.gsub(/@title@?/, contents[:title])
+             .gsub(/@subtitle@?/, contents[:subtitle])
+             .gsub(/@publish_date@?/, contents[:publish_date])
+             .gsub(/@update_date@?/, contents[:update_date])
+             .gsub(/@summary@?/, contents[:summary])
+             .gsub(/@group@?/, contents[:group])
+             .gsub(/@category_link@?/, contents[:category_link])
+             .gsub(/@category@?/, contents[:category])
+             .gsub(/@image@?/, contents[:image]).html_safe %>

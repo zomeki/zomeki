@@ -5,7 +5,7 @@ module Cms::Model::Rel::Inquiry
   @@inquiry_presence_of = [:group_id, :tel, :email]
   
   def self.included(mod)
-    mod.belongs_to :inquiry, :foreign_key => 'unid', :class_name => 'Cms::Inquiry',
+    mod.belongs_to :inquiry, :foreign_key => 'unid', :primary_key => 'parent_unid', :class_name => 'Cms::Inquiry',
       :dependent => :destroy
 
     mod.after_save :save_inquiry
@@ -82,7 +82,7 @@ module Cms::Model::Rel::Inquiry
     end
 
     if _inq.new_record?
-      _inq.id = unid
+      _inq.parent_unid = unid
       return false unless _inq.save_with_direct_sql
     else
       return false unless _inq.save

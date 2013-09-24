@@ -1,0 +1,99 @@
+<%-
+def inquiry_require_label(item, field)
+  if item.inquiry_require_field?(field)
+    %Q(<span class="note">※</span>).html_safe
+  end
+end
+item.build_default_inquiry
+-%>
+
+<table class="show">
+<tr>
+  <td>
+    <%- item.inquiry_states.each do |(label, value)| -%>
+      <%= radio_button_tag :inquiry_state, value, item.inquiries[0].state == value, :class => 'status' %>
+      <%= label_tag :"inquiry_state_#{value}", label -%>
+    <%- end -%>
+  </td>
+</tr>
+</table>
+
+<div id="inquiryForms">
+<%- item.inquiries.each_with_index do |inquiry, i| -%>
+  <%= f.fields_for :inquiries, inquiry do |f2| -%>
+    <div class="inquiryForm">
+    <p class="form">連絡先<%= i+1 if i != 0 %></p>
+    <%= f2.hidden_field :state, :class => "inquiryState" -%>
+    <table class="show">
+      <%- if item.inquiry_display_field?(:group_id) -%>
+      <tr>
+        <th><%= f2.label :group_id -%> <%= inquiry_require_label(item, :group_id) -%></th>
+        <td>
+          <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
+          <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
+          <%= f2.select_with_tree :group_id, groups, 
+            :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
+          <span id="inquiryGroupLabel#{i}"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
+        </td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:charge) -%>
+      <tr>
+        <th><%= f2.label :charge -%> <%= inquiry_require_label(item, :charge) -%></th>
+        <td><%= f2.text_field :charge, :class => 'name' %></td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:tel) -%>
+      <tr>
+        <th><%= f2.label :tel -%> <%= inquiry_require_label(item, :tel) -%></th>
+        <td><%= f2.text_field :tel, :class => 'number' %></td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:fax) -%>
+      <tr>
+        <th><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></th>
+        <td><%= f2.text_field :fax, :class => 'number' %></div></td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:email) -%>
+      <tr>
+        <th><%= f2.label :email -%> <%= inquiry_require_label(item, :email) -%></th>
+        <td><%= f2.text_field :email, :class => 'email' %></td>
+      </tr>
+      <%- end -%>
+    </table>
+    </div>
+  <%- end -%>
+<%- end -%>
+</div>
+
+<br />
+<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' -%>
+
+<script type="text/javascript">
+ $(function(){
+   $('#addInquiryForm').on('click', function(e) {
+     var no  = $('.inquiryForm').size();
+     var elm = $('.inquiryForm:last').clone();
+     elm.find('input').each(function() {
+       $(this).attr({
+         id: this.id.replace(/(\d+)/, no),
+         name: this.name.replace(/(\d+)/, no),
+         value: ''
+       });
+     });
+     elm.find('select option').each(function() {
+       $(this).attr({selected: false});
+     });
+     elm.find('p.form').show().html('連絡先' + String(no+1));
+     elm.find('[id^=item_inquiries_attributes][id$=group_id]').show();
+     elm.find('[id^=inquiryGroupLabel]').hide();
+     $('#inquiryForms').append(elm);
+   });
+   $('form').on('submit', function(e) {
+     var state = $('input[name=inquiry_state]:checked').val();
+     if (state == undefined) { state = 'hidden'; }
+     $('input.inquiryState').val(state);
+   });
+ });
+</script>

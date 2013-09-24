@@ -28,7 +28,18 @@ class Cms::Admin::Tool::LinkCheckController < Cms::Controller::Admin::Base
                 link_check.logs
               else
                 Util::LinkChecker.last_check.try(:logs) || Cms::LinkCheckLog.none
-              end).where(checked: true, result: false)
+              end).where(checked: true)
+
+      if params[:only]
+        @logs = case params[:only]
+                when 'failed'
+                  @logs.where(result: false)
+                when 'succeeded'
+                  @logs.where(result: true)
+                else
+                  @logs
+                end
+      end
     end
   end
 end
