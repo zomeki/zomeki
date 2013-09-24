@@ -15,12 +15,16 @@
     <td><%= @item.setting_value(:display_count) %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :link_string %></th>
-    <td><%= @item.setting_value(:link_string) %></td>
+    <th><%= @item.locale :show_count %></th>
+    <td><%= @item.show_label(:show_count, @item.show_counts) %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :link_url %></th>
-    <td><%= @item.setting_value(:link_url) %></td>
+    <th><%= @item.locale :more_link_body %></th>
+    <td><%= @item.setting_value(:more_link_body) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= @item.setting_value(:more_link_url) %></td>
   </tr>
 </table>
 <%- end -%>

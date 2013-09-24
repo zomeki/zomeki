@@ -16,5 +16,6 @@ ja:
         ranking_target: 対象
         ranking_term: 期間
         display_count: 表示件数
-        link_string: 一覧リンク文字
-        link_url: 一覧リンク
+        show_count: アクセス数の表示
+        more_link_body: 一覧リンク文字
+        more_link_url: 一覧リンク
