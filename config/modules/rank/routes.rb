@@ -8,7 +8,11 @@ ZomekiCMS::Application.routes.draw do
 
     resources :content_settings, :only => [:index, :show, :edit, :update],
       :controller  => "admin/content/settings",
-      :path        => ":content/content_settings"
+      :path        => ":content/content_settings" do
+        collection do
+          post :import
+        end
+      end
 
     ## contents
     resources :ranks, :only => [:index],

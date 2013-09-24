@@ -6,10 +6,10 @@ class Rank::Public::Piece::RanksController < Sys::Controller::Public::Base
   end
 
   def index
-    render :text => '' and return if @piece.in_settings[:ranking_target].blank? || @piece.in_settings[:ranking_term].blank?
+    render :text => '' and return if @piece.ranking_target.blank? || @piece.ranking_term.blank?
 
     t = Date.today
-    case @piece.in_settings[:ranking_term]
+    case @piece.ranking_term
     when 'previous_days'
       from = t.yesterday
       to   = t.yesterday
@@ -25,8 +25,8 @@ class Rank::Public::Piece::RanksController < Sys::Controller::Public::Base
       to   = t.yesterday
     end
 
-    select_col = @piece.in_settings[:ranking_target]
-    per_page   = @piece.in_settings[:display_count].to_i == 0 ? 50 : @piece.in_settings[:display_count].to_i
+    select_col = @piece.ranking_target
+    per_page   = @piece.display_count
 
     rank_table = Rank::Rank.arel_table
     @ranks = @piece.content.ranks.where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F')))).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
