@@ -7,12 +7,12 @@ describe Approval::ApprovalFlow do
   end
 
   it 'has a valid factory' do
-    banner = FactoryGirl.build(:approval_approval_flow_1)
-    expect(banner).to be_valid
+    approval_flow = FactoryGirl.build(:approval_approval_flow_1)
+    expect(approval_flow).to be_valid
   end
 
   it 'is invalid without a title' do
-    banner = FactoryGirl.build(:approval_approval_flow_1, title: nil)
-    expect(banner).to have(1).error_on(:title)
+    approval_flow = FactoryGirl.build(:approval_approval_flow_1, title: nil)
+    expect(approval_flow).to have(1).error_on(:title)
   end
 end

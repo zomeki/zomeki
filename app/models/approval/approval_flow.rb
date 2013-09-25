@@ -10,6 +10,7 @@ class Approval::ApprovalFlow < ActiveRecord::Base
   belongs_to :group, :class_name => 'Sys::Group'
 
   has_many :approvals, :dependent => :destroy
+  has_many :approval_requests, :dependent => :destroy
 
   after_initialize :set_defaults
 

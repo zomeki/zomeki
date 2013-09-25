@@ -34,7 +34,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation'].include?(@item.name)
+    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'approval_relation'].include?(@item.name)
       extra_values = @item.extra_values
 
       case @item.name
@@ -48,6 +48,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       when 'map_relation'
         extra_values[:map_content_id] = params[:map_content_id].to_i
         extra_values[:lat_lng] = params[:lat_lng]
+      when 'approval_relation'
+        extra_values[:approval_content_id] = params[:approval_content_id].to_i
       end
 
       @item.extra_values = extra_values
