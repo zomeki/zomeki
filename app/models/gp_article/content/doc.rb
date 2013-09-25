@@ -136,6 +136,14 @@ class GpArticle::Content::Doc < Cms::Content
     setting_extra_values('inquiry_setting').presence || GpArticle::Content::Setting.new.default_inquiry_setting
   end
 
+  def approval_content_approval_flow
+    Approval::Content::ApprovalFlow.find_by_id(setting_extra_value(:approval_relation, :approval_content_id))
+  end
+
+  def approval_related?
+    setting_value('approval_relation') == 'enabled'
+  end
+
   private
 
   def set_default_settings
