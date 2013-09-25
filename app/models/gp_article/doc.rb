@@ -12,7 +12,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
   include Cms::Model::Base::Page::TalkTask
-  include Cms::Model::Rel::Inquiry
+  include Cms::Model::Rel::ManyInquiry
   include Cms::Model::Rel::Map
 
   include Cms::Model::Auth::Concept
@@ -320,10 +320,14 @@ class GpArticle::Doc < ActiveRecord::Base
     item.in_recognizer_ids  = recognition.recognizer_ids if recognition
     item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
 
-    if inquiry.try(:group_id) == Core.user.group_id
-      item.in_inquiry = inquiry.attributes
-    else
-      item.in_inquiry = {:group_id => Core.user.group_id}
+    inquiries.each do |inquiry|
+      if inquiry.try(:group_id) == Core.user.group_id
+        item.inquiries.build(inquiry.attributes)
+      else
+        attrs = inquiry.attributes
+        attrs[:group_id] = Core.user.group_id
+        item.inquiries.build(attrs)
+      end
     end
 
     unless maps.empty?

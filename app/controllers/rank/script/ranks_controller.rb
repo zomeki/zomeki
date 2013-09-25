@@ -7,10 +7,7 @@ class Rank::Script::RanksController < ApplicationController
     span = 3.days
     contents = Rank::Content::Rank.all
     contents.each do |content|
-      start_date = DateTime.parse(content.setting_value(:start_date)) rescue Time.now - span
-      start_date = Time.now - span if start_date < Time.now - span
-
-      get_access(content, start_date)
+      get_access(content, Time.now - span)
     end
     render(:text => "OK")
   end

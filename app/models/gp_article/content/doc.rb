@@ -127,6 +127,14 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value('map_relation') == 'enabled'
   end
 
+  def inquiry_related?
+    setting_value('inquiry_setting') != 'disabled'
+  end
+
+  def inquiry_extra_values
+    setting_extra_values('inquiry_setting').presence || GpArticle::Content::Setting.new.default_inquiry_setting
+  end
+
   private
 
   def set_default_settings
@@ -135,5 +143,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
     in_settings[:calendar_relation] = CALENDAR_RELATION_OPTIONS.first.last unless setting_value(:calendar_relation)
     in_settings[:map_relation] = MAP_RELATION_OPTIONS.first.last unless setting_value(:map_relation)
+    in_settings[:inquiry_setting] = 'enabled' 
   end
 end
