@@ -5,9 +5,12 @@ module Rank::Controller::Rank
 
   def get_access(content, start_date)
 
-    return true if content.setting_value(:username).blank? or
-                   content.setting_value(:password).blank? or
-                   content.setting_value(:web_property_id).blank?
+    if content.setting_value(:username).blank? ||
+       content.setting_value(:password).blank? ||
+       content.setting_value(:web_property_id).blank?
+      flash[:alert] = "ユーザー・パスワード・トラッキングIDを設定してください。"
+      return true
+    end
 
     begin
       Garb::Session.login(content.setting_value(:username), content.setting_value(:password))
@@ -25,6 +28,7 @@ module Rank::Controller::Rank
       end
       results = copy
 
+      first_date = Date.today.strftime("%Y%m%d")
       results.each.with_index(1) do |result, i|
         rank = Rank::Rank.where(content_id: content.id)
                          .where(page_title: result.page_title)
@@ -33,17 +37,21 @@ module Rank::Controller::Rank
                          .where(date:       result.date)
                          .first_or_create
         rank.pageviews = result.pageviews
-        rank.visitors  = result.visits
+        rank.visitors  = result.unique_pageviews
         rank.save!
+
+        first_date = result.date if first_date > result.date
       end
 
       logger.info "Success: #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}"
+      flash[:notice] = "取り込みが完了しました。 （取り込み開始日は #{Date.parse(first_date).to_s} です）"
     rescue Garb::AuthenticationRequest::AuthError => e
       logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
       flash[:alert] = "認証エラーです。 （#{content.setting_value(:username)} ）"
       return false
     rescue => e
       logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
+      flash[:alert] = "取り込みに失敗しました。"
       return false
     end
 

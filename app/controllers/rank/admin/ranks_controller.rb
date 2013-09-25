@@ -1,9 +1,6 @@
 # encoding: utf-8
 class Rank::Admin::RanksController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
-  include Rank::Controller::Rank
-
-  after_filter :flash_clear
 
   def pre_dispatch
     return error_auth unless @content = Rank::Content::Rank.find_by_id(params[:content])
@@ -11,12 +8,6 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
   end
 
   def index
-    if @content.ranks.empty?
-      start_date = (DateTime.parse(@content.setting_value(:start_date)) rescue nil)
-
-      get_access(@content, start_date)
-    end
-
     per_page   = 20
 
     rank_table = Rank::Rank.arel_table
@@ -29,8 +20,4 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
     _index @ranks
   end
 
-  def flash_clear
-    flash[:alert ] = nil
-    flash[:notice] = nil
-  end
 end
