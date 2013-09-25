@@ -49,6 +49,7 @@ class GpArticle::Doc < ActiveRecord::Base
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
   has_many :links, :dependent => :destroy
+  has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
 
   before_save :make_file_contents_path_relative
   before_save :set_name
