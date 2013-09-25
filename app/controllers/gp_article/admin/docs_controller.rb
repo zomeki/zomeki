@@ -93,6 +93,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      set_approval_requests
 
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state_recognize?
@@ -122,6 +123,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      set_approval_requests
 
       send_recognition_request_mail(@item) if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
@@ -310,5 +312,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def release_document
     @item.holds.destroy_all
+  end
+
+  def set_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                     params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                   else
+                     []
+                   end
+
+    approval_flow_ids.each do |approval_flow_id|
+      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      @item.approval_requests.create(approval_flow_id: approval_flow_id)
+    end
+
+    @item.approval_requests.each do |approval_request|
+      approval_request.destroy unless approval_flow_ids.include?(approval_request.approval_flow_id)
+    end
   end
 end

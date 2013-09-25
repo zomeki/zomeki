@@ -128,6 +128,14 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value('map_relation') == 'enabled'
   end
 
+  def approval_content_approval_flow
+    Approval::Content::ApprovalFlow.find_by_id(setting_extra_value(:approval_relation, :approval_content_id))
+  end
+
+  def approval_related?
+    setting_value('approval_relation') == 'enabled'
+  end
+
   private
 
   def set_default_settings
