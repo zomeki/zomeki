@@ -407,6 +407,27 @@ class GpArticle::Doc < ActiveRecord::Base
     self.class.where(id: backlinks.pluck(:doc_id))
   end
 
+  def send_approval_request_mail
+    sender = Core.user
+
+    subject = "#{content.name}（#{content.site.name}）：承認依頼メール"
+    body = <<-EOT
+#{sender.name}さんより「#{title}」についての承認依頼が届きました。
+  次の手順により，承認作業を行ってください。
+
+  １．PC用記事のプレビューにより文書を確認
+    #{preview_uri(site: content.site)}
+  ２．次のリンクから承認を実施
+    #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
+    EOT
+
+    approval_requests.each do |approval_request|
+      approval_request.current_users.each do |user|
+        CommonMailer.plain(from: sender.email, to: user.email, subject: subject, body: body).deliver
+      end
+    end
+  end
+
   private
 
   def set_name
