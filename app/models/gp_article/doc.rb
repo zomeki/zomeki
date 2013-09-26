@@ -62,7 +62,6 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
 
   validate :validate_inquiry
-  validate :validate_recognizers, :if => :state_recognize?
 
   validate :validate_platform_dependent_characters, :unless => :state_draft?
   validate :node_existence
