@@ -18,11 +18,13 @@ class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
 
     piece_doc_ids = piece_docs.map(&:id)
 
-    case @item
-    when GpCategory::CategoryType
-      page_category_ids = @item.categories.map(&:id)
-    when GpCategory::Category
-      page_category_ids = @item.descendants.map(&:id)
+    unless @piece.page_filter == 'through'
+      case @item
+      when GpCategory::CategoryType
+        page_category_ids = @item.categories.map(&:id)
+      when GpCategory::Category
+        page_category_ids = @item.descendants.map(&:id)
+      end
     end
 
     if page_category_ids

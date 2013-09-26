@@ -15,6 +15,10 @@
     <td><%= @item.gp_article_content_docs.map(&:name).join(', ') -%></td>
   </tr>
   <tr>
+    <th>ページ絞り込み</th>
+    <td><%= @item.class::PAGE_FILTER_OPTIONS.detect{|o| o.last == @item.setting_value(:page_filter) }.try(:first) %></td>
+  </tr>
+  <tr>
     <th>表示<%= GpCategory::Category.model_name.human %></th>
     <td>
       <table class="show">
