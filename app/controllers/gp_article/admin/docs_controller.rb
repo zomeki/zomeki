@@ -100,7 +100,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_approval_requests
 
       @item.fix_tmp_files(params[:_tmp])
-      send_recognition_request_mail(@item) if @item.state_recognize?
+      @item.send_approval_request_mail if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
     end
   end
@@ -134,7 +134,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_marker_categories
       set_approval_requests
 
-      send_recognition_request_mail(@item) if @item.state_recognize?
+      @item.send_approval_request_mail if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
       @item.close unless @item.public? # Don't use "state_public?" here
 
