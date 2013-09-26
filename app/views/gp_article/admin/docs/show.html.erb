@@ -124,6 +124,14 @@
     <%= render 'cms/admin/_partial/many_inquiries/view', {item: @item} %>
   </div>
   <div id="tab4">
+    <%- if @content.approval_content_approval_flow -%>
+    <table class="show">
+      <tr>
+        <th><%= Approval::ApprovalFlow.model_name.human %></th>
+        <td><%= @item.approval_requests.map{|r| r.approval_flow.title }.join(', ') %></td>
+      </tr>
+    </table>
+    <%- end -%>
     <%= recognizer_view @item %>
   </div>
   <div id="tab5">
