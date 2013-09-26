@@ -87,6 +87,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.concept = @content.concept
     @item.state = new_state if new_state.present?
 
+    validate_approval_requests if @item.state_recognize?
+    unless @item.errors.empty?
+      return render(:action => :new)
+    end
+
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
     _create(@item, location: location) do
       set_categories
@@ -116,6 +121,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     @item.state = new_state if new_state.present?
+
+    validate_approval_requests if @item.state_recognize?
+    unless @item.errors.empty?
+      return render(:action => :edit)
+    end
 
     location = url_for(action: 'edit') if @item.state_draft?
     _update(@item, location: location) do
@@ -315,10 +325,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def set_approval_requests
     approval_flow_ids = if params[:approval_flows].is_a?(Array)
-                     params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
-                   else
-                     []
-                   end
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
 
     approval_flow_ids.each do |approval_flow_id|
       next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
@@ -328,5 +338,14 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.approval_requests.each do |approval_request|
       approval_request.destroy unless approval_flow_ids.include?(approval_request.approval_flow_id)
     end
+  end
+
+  def validate_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
   end
 end
