@@ -22,8 +22,8 @@
 
       <div style="float: left;"><%= select_tag 'candidates', options_for_select([]), multiple: true, style: 'height: 150px; width: 150px;' %></div>
       <div style="float: left; margin: 35px 10px; height: 70px;">
-        <div><%= button_to_function '追加 ->', "$('#candidates > option:selected').appendTo($('#approvals_0'));" %></div>
-        <div style="margin-top: 20px;"><%= button_to_function '<- 除外', "$('#approvals_0 > option:selected').appendTo($('#candidates'));" %></div>
+        <div><%= button_to_function '追加 ->', "$('#approvals_0 > option').attr('selected', false); $('#candidates > option:selected').clone(true).attr('selected', true).appendTo($('#approvals_0'));" %></div>
+        <div style="margin-top: 20px;"><%= button_to_function '<- 除外', "$('#candidates > option').attr('selected', false); $('#approvals_0 > option:selected').appendTo($('#candidates'));" %></div>
       </div>
 
       <div id="approvals">
