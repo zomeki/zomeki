@@ -52,7 +52,7 @@ class Approval::Admin::ApprovalFlowsController < Cms::Controller::Admin::Base
     params[:approvals].each do |key, value|
       next unless value.is_a?(Array)
       approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key)
-      approval.user_ids = value
+      approval.approver_ids = value
     end
   end
 end

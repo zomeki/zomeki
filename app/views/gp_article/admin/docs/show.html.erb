@@ -128,11 +128,24 @@
     <table class="show">
       <tr>
         <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td><%= @item.approval_requests.map{|r| r.approval_flow.title }.join(', ') %></td>
+        <td>
+          <%- unless @item.approval_requests.empty? -%>
+          <table>
+            <%- @item.approval_requests.each do |approval_request| -%>
+            <tr>
+              <th><%= approval_request.approval_flow.title %></th>
+              <td><%= approval_request.approval_flow.approvals.map{|a|
+                approvers = a.approvers.pluck(:name).join('、')
+                a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current') : content_tag(:span, approvers)
+                }.join(' ＞ ').html_safe %></td>
+            </tr>
+            <%- end -%>
+          </table>
+          <%- end -%>
+        </td>
       </tr>
     </table>
     <%- end -%>
-    <%= recognizer_view @item %>
   </div>
   <div id="tab5">
     <table class="show">
