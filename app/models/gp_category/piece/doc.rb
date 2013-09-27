@@ -2,6 +2,7 @@
 class GpCategory::Piece::Doc < Cms::Piece
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'published_at_desc'], ['公開日（昇順）', 'published_at_asc'], ['ランダム', 'random']]
   LAYER_OPTIONS = [['下層のカテゴリすべて', 'descendants'], ['該当カテゴリのみ', 'self']]
+  PAGE_FILTER_OPTIONS = [['絞り込む', 'filter'], ['絞り込まない', 'through']]
 
   default_scope where(model: 'GpCategory::Doc')
 
@@ -29,6 +30,10 @@ class GpCategory::Piece::Doc < Cms::Piece
 
   def docs_order
     setting_value(:docs_order).to_s
+  end
+
+  def page_filter
+    setting_value(:page_filter).to_s
   end
 
   def more_link_body
@@ -95,6 +100,7 @@ class GpCategory::Piece::Doc < Cms::Piece
 
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
     settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
+    settings['page_filter'] = PAGE_FILTER_OPTIONS.first.last if setting_value(:page_filter).nil?
 
     self.in_settings = settings
   end
