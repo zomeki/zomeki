@@ -23,6 +23,10 @@
     </td>
   </tr>
   <tr>
+    <th>ページ絞り込み</th>
+    <td><%= f.array_radio_buttons 'in_settings[page_filter]', @item.class::PAGE_FILTER_OPTIONS %></td>
+  </tr>
+  <tr>
     <th>表示<%= GpCategory::Category.model_name.human %></th>
     <td>
       <table class="show" id="categories">
