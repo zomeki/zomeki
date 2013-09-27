@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20130925070616) do
   end
 
   create_table "approval_approval_requests", :force => true do |t|
+    t.integer  "user_id"
     t.integer  "approval_flow_id"
     t.integer  "approvable_id"
     t.string   "approvable_type"
@@ -89,6 +90,7 @@ ActiveRecord::Schema.define(:version => 20130925070616) do
     t.integer  "assignable_id"
     t.string   "assignable_type"
     t.integer  "user_id"
+    t.string   "state"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end

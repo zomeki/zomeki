@@ -408,24 +408,57 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def send_approval_request_mail
-    sender = Core.user
-
     subject = "#{content.name}（#{content.site.name}）：承認依頼メール"
-    body = <<-EOT
-#{sender.name}さんより「#{title}」についての承認依頼が届きました。
+
+    approval_requests.each do |approval_request|
+      body = <<-EOT
+#{approval_request.user.name}さんより「#{title}」についての承認依頼が届きました。
   次の手順により，承認作業を行ってください。
 
   １．PC用記事のプレビューにより文書を確認
     #{preview_uri(site: content.site)}
   ２．次のリンクから承認を実施
     #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
-    EOT
+      EOT
 
-    approval_requests.each do |approval_request|
-      approval_request.current_users.each do |user|
-        CommonMailer.plain(from: sender.email, to: user.email, subject: subject, body: body).deliver
+      approval_request.current_assignments.map{|a| a.user unless a.state == 'approved' }.compact.each do |approver|
+        CommonMailer.plain(from: approval_request.user.email, to: approver.email, subject: subject, body: body).deliver
       end
     end
+  end
+
+  def send_approved_notification_mail
+    subject = "#{content.name}（#{content.site.name}）：承認完了メール"
+
+    approval_requests.each do |approval_request|
+      next unless approval_request.finished?
+
+      body = <<-EOT
+「#{title}」についての承認が完了しました。
+  次のＵＲＬをクリックして公開処理を行ってください。
+  #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
+      EOT
+
+      CommonMailer.plain(from: Core.user.email, to: approval_request.user.email, subject: subject, body: body).deliver
+    end
+  end
+
+  def approvers
+    approval_requests.inject([]){|u, r| u | r.current_assignments.map{|a| a.user unless a.state == 'approved' }.compact }
+  end
+
+  def approve(user)
+    approval_requests.each do |approval_request|
+      approval_request.approve(user) do |state|
+        case state
+        when 'progress'
+          send_approval_request_mail
+        when 'finish'
+          send_approved_notification_mail
+        end
+      end
+    end
+    update_column(:state, 'recognized') if approval_requests.all?{|r| r.finished? }
   end
 
   private

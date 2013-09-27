@@ -3,6 +3,7 @@ class CreateApprovalAssignments < ActiveRecord::Migration
     create_table :approval_assignments do |t|
       t.belongs_to :assignable, polymorphic: true
       t.belongs_to :user
+      t.string     :state
 
       t.timestamps
     end

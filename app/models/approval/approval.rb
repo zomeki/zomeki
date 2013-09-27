@@ -7,7 +7,7 @@ class Approval::Approval < ActiveRecord::Base
   validates_presence_of :approval_flow_id
 
   has_many :assignments, :as => :assignable, :dependent => :destroy
-  has_many :users, :through => :assignments
+  has_many :approvers, :through => :assignments, :source => :user
 
   validates :index, :presence => true, :uniqueness => {:scope => [:approval_flow_id]}
 

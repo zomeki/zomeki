@@ -201,6 +201,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
   end
 
+  def approve
+    @item.approve(Core.user) if @item.approvers.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
+  end
+
   protected
 
   def send_link_broken_notification(item)
@@ -332,7 +337,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     approval_flow_ids.each do |approval_flow_id|
       next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
-      @item.approval_requests.create(approval_flow_id: approval_flow_id)
+      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
     end
 
     @item.approval_requests.each do |approval_request|
@@ -346,6 +351,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                         else
                           []
                         end
+
     @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
   end
 end
