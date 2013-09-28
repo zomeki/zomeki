@@ -1,7 +1,7 @@
 # encoding: utf-8
 module Cms::Lib::Modules
   def self.modules
-    Cms::Lib::Modules::ModuleSet.load_modules
+    Cms::Lib::Modules::ModuleSet.load_modules.sort{|a, b| a.label <=> b.label }
   end
   
   def self.find(type, model)
