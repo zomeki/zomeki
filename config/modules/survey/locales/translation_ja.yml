@@ -1,0 +1,7 @@
+ja:
+  activerecord:
+    models:
+      survey/form: フォーム
+    attributes:
+      survey/form:
+        title: フォーム名

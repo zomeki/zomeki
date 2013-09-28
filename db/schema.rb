@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130925070616) do
+ActiveRecord::Schema.define(:version => 20130928130007) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1144,6 +1144,16 @@ ActiveRecord::Schema.define(:version => 20130925070616) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "survey_forms", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"
 
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"
