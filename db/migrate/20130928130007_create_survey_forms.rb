@@ -4,7 +4,10 @@ class CreateSurveyForms < ActiveRecord::Migration
       t.integer    :unid
       t.belongs_to :content
 
-      t.string :title
+      t.string     :state
+      t.string     :title
+      t.text       :upper_text
+      t.text       :lower_text
 
       t.timestamps
     end

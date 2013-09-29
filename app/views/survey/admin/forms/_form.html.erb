@@ -1,10 +1,23 @@
+<%= init_ckeditor %>
 <span class="note">※は必須項目です。</span>
 
 <p class="form">基本情報</p>
 
 <table class="show">
   <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
     <th><%= f.label :title %> <span class="note">※</span></th>
     <td><%= f.text_field :title, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :upper_text %></th>
+    <td class="cke_editor_wrapper"><%= f.text_area :upper_text, :class => 'ckeditor' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :lower_text %></th>
+    <td class="cke_editor_wrapper"><%= f.text_area :lower_text, :class => 'ckeditor' %></td>
   </tr>
 </table>
