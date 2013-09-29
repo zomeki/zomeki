@@ -4,4 +4,7 @@ ja:
       survey/form: フォーム
     attributes:
       survey/form:
+        state: 状態
         title: フォーム名
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト

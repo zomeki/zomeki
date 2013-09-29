@@ -1148,7 +1148,10 @@ ActiveRecord::Schema.define(:version => 20130928130007) do
   create_table "survey_forms", :force => true do |t|
     t.integer  "unid"
     t.integer  "content_id"
+    t.string   "state"
     t.string   "title"
+    t.text     "upper_text"
+    t.text     "lower_text"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
