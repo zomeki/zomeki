@@ -11,8 +11,11 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':content/content_settings'
 
     ## contents
-    resources :forms,
+    resources(:forms,
       :controller => 'admin/forms',
-      :path       => ':content/forms'
+      :path       => ':content/forms') do
+      resources :questions,
+        :controller => 'admin/questions'
+    end
   end
 end

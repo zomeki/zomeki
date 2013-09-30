@@ -5,6 +5,7 @@ class CreateSurveyForms < ActiveRecord::Migration
       t.belongs_to :content
 
       t.string     :state
+      t.string     :name
       t.string     :title
       t.text       :upper_text
       t.text       :lower_text

@@ -2,9 +2,19 @@ ja:
   activerecord:
     models:
       survey/form: フォーム
+      survey/question: 質問
     attributes:
       survey/form:
         state: 状態
         title: フォーム名
         upper_text: 上部テキスト
         lower_text: 下部テキスト
+      survey/question:
+        state: 状態
+        title: 項目名
+        sort_no: 並び順
+        description: 説明
+        style_attribute: スタイル（style=）
+        required: 必須
+        form_type: 種別
+        form_options: 選択候補（種別が選択の時に使用）
