@@ -2,12 +2,14 @@
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
     <th><%= Survey::Form.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 100px;"><%= Survey::Question.model_name.human %></th>
     <th style="text-align: center; width: 60px;"><%= Survey::Form.human_attribute_name :state %></th>
   </tr>
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, survey_form_path(content: @content, id: item.id) %></td>
     <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to "#{Survey::Question.model_name.human}一覧", survey_form_questions_path(content: @content, form_id: item.id) %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
   </tr>
   <%- end -%>
