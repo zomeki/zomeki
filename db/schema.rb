@@ -1222,6 +1222,7 @@ ActiveRecord::Schema.define(:version => 20130929233759) do
     t.string   "name"
     t.string   "name_en"
     t.string   "tel"
+    t.string   "fax"
     t.string   "outline_uri"
     t.string   "email"
   end
