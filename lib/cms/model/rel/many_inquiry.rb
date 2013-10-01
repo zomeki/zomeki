@@ -16,7 +16,7 @@ module Cms::Model::Rel::ManyInquiry
   def build_default_inquiry(params = {})
     if inquiries.size == 0
       if g =  Core.user.group
-        inquiries.build({:state => 'hidden', :group_id => g.id, :tel => g.tel, :email => g.email}.merge(params))
+        inquiries.build({:state => default_inquiry_state, :group_id => g.id, :tel => g.tel, :email => g.email}.merge(params))
       else
         inquiries.build(params)
       end
@@ -67,7 +67,7 @@ module Cms::Model::Rel::ManyInquiry
     if content && content.inquiry_extra_values
       content.inquiry_extra_values[:state]
     else
-      []
+      'hidden'
     end
   end
   
