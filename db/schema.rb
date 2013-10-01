@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130925070616) do
+ActiveRecord::Schema.define(:version => 20130930103857) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1192,6 +1192,7 @@ ActiveRecord::Schema.define(:version => 20130925070616) do
     t.string   "name"
     t.string   "name_en"
     t.string   "tel"
+    t.string   "fax"
     t.string   "outline_uri"
     t.string   "email"
   end
