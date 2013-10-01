@@ -7,7 +7,7 @@
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :group_id %></th>
-    <td><%= @item.group.try(:name) %></td>
+    <td><%= @item.group.try(:name) || 'すべて' %></td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>

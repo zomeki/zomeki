@@ -2,5 +2,5 @@
   <%= error_messages_for :item %>
   <%= flash[:link_check_result] %>
   <%= render 'form', :f => f %>
-  <%= submit @item.state_options %>
+  <%= submit (@content.approval_related? ? @item.state_options : @item.state_options.reject{|o| o.last == 'recognize' }) %>
 <% end %>
