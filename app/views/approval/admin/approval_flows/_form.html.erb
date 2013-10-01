@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <th><%= f.label :group_id %></th>
-    <td><%= f.select :group_id, Core.site.groups_for_option, include_blank: true %></td>
+    <td><%= f.select :group_id, Core.site.groups_for_option, include_blank: 'すべて' %></td>
   </tr>
   <tr>
     <th><%= f.label :sort_no %></th>
