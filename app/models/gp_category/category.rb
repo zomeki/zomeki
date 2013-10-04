@@ -129,6 +129,10 @@ class GpCategory::Category < ActiveRecord::Base
     "#{category_type.public_uri}#{path_from_root_category}/"
   end
 
+  def public_full_uri
+    "#{category_type.public_full_uri}#{path_from_root_category}/"
+  end
+
   def inherited_docs_order
     return self.docs_order if self.docs_order.present?
     return parent.inherited_docs_order if parent
