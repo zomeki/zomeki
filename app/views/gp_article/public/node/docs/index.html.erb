@@ -1,4 +1,8 @@
 <div class="contentGpArticleDocs">
+  <ul class="feed">
+    <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+    <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  </ul>
   <div class="docs">
     <% @items.each_with_index do |item, idx| %>
     <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
