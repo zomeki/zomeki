@@ -9,27 +9,11 @@ class Util::AccessibilityChecker
      errors.push("空白のpタグが存在") if !check_p(text)
      errors.push("hタグの順番が不正") if !check_h(text)
      errors.push("テーブルにサマリー、キャプションが正しく入力されていない") if !check_table_sc(text)
-     errors.push("テーブルにヘッダーが正しく入力されていない") if !check_table_th(text)
+     #errors.push("テーブルにヘッダーが正しく入力されていない") if !check_table_th(text)
      errors.push("テーブルに空白のセルが存在") if !check_table_cell(text)
      errors.push("リンクにアイコンクラスが設定されていない") if !check_href_icon(text, options[:host])
      
      return errors
-=begin
-     return nil if errors == []
-     
-     html = %Q(<h2>アクセシビリティ 書式チェック検証結果</h2>)
-     html += %Q(<p>書式チェックエラー</p><ul>)
-     errors.each do |error|
-       html += %Q(<li>#{error}</li>)
-     end
-     html += %Q(</ul>)
-     
-     #if options[:checkbox].is_a?(String)
-     # html += %Q(<div class="checkbox">#{options[:checkbox]}</div>)
-     #end
-    
-     html.html_safe
-=end
     end
 
   def self.modify(text, options={})
@@ -37,7 +21,7 @@ class Util::AccessibilityChecker
     _text = modify_br(_text)
     _text = modify_h(_text)
     _text = modify_table_sc(_text)
-    _text = modify_table_th(_text)
+    #_text = modify_table_th(_text)
     _text = modify_table_cell(_text)
     _text = modify_href_icon(_text, options[:host])
     return _text
@@ -94,6 +78,32 @@ class Util::AccessibilityChecker
   check
 end
 
+def self.check_table_cell(text)
+  check = true
+  text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
+    table_2 = $2
+    table_2.scan(/<th.*?>.*?<\/th.*?>/m){ |td|
+      break if !check
+      
+      if td =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/th.*?>/m
+        check = false
+      end
+    }
+    
+    table_2.scan(/<td\s*>.*?<\/td\s*>/m){ |td|
+      break if !check
+      
+      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/td\s*>/m
+        check = false
+      end
+    }
+  }
+  
+  check
+end  
+  
+  
+=begin
   def self.check_table_cell(text)
   check = true
   text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
@@ -108,6 +118,7 @@ end
   }
   check
 end
+=end
 
 def self.check_table_th(text)
   check = true  
@@ -225,6 +236,18 @@ def self.modify_table_cell(text)
         td
       end
     }
+    
+    table_2.gsub!(/<th(.*?)>(.*?)<\/th\s*>/m){ |th|
+      th_1 = $1
+      
+      if th =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*<\/th\s*>/m
+        "<th #{th_1}>セル</th>"
+      else
+        th
+      end
+    }
+    
+    
     "<table#{table_1}>\n#{table_2}\n</table>"
   }
 end
