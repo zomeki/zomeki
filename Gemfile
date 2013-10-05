@@ -56,6 +56,5 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.13'
   gem 'factory_girl_rails', '~> 4.2.1', require: false
   gem 'email_spec', '~> 1.4.0'
-  gem 'spring', '~> 0.0.8'
   gem 'rails_best_practices'
 end
