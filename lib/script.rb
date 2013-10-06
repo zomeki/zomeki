@@ -31,8 +31,8 @@ protected
   def self.lock(lock_key = @@lock_key)
     file = "#{Rails.root}/tmp/lock/#{lock_key}"
     if ::File.exist?(file)
-      locked = ::File.stat(file).mtime.to_i
-      return false if Time.now.to_i < locked + (60*60*3)
+      locked = ::File.stat(file).mtime
+      return false if Time.now > 1.day.since(locked)
       unlock(lock_key)
     end
     ::File.open(file, 'w')
