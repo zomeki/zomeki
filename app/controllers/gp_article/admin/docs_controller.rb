@@ -87,14 +87,20 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.concept = @content.concept
     @item.state = new_state if new_state.present?
 
+    validate_approval_requests if @item.state_recognize?
+    unless @item.errors.empty?
+      return render(:action => :new)
+    end
+
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
     _create(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
+      set_approval_requests
 
       @item.fix_tmp_files(params[:_tmp])
-      send_recognition_request_mail(@item) if @item.state_recognize?
+      @item.send_approval_request_mail if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
     end
   end
@@ -108,21 +114,37 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item.attributes = params[:item]
 
+    if params[:accessibility_check_modify]
+      @item.body = Util::AccessibilityChecker.modify @item.body
+    end
+    
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:link_check_in_body]
     end
-
+    
+    if params[:accessibility_check]
+      check_results = Util::AccessibilityChecker.check @item.body
+      flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      return render(:action => :edit)
+    end
+    
     @item.state = new_state if new_state.present?
+
+    validate_approval_requests if @item.state_recognize?
+    unless @item.errors.empty?
+      return render(:action => :edit)
+    end
 
     location = url_for(action: 'edit') if @item.state_draft?
     _update(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
+      set_approval_requests
 
-      send_recognition_request_mail(@item) if @item.state_recognize?
+      @item.send_approval_request_mail if @item.state_recognize?
       publish_by_update(@item) if @item.state_public?
       @item.close unless @item.public? # Don't use "state_public?" here
 
@@ -187,6 +209,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def approve
+    @item.approve(Core.user) if @item.approvers.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
   end
 
   protected
@@ -309,5 +336,32 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def release_document
     @item.holds.destroy_all
+  end
+
+  def set_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    approval_flow_ids.each do |approval_flow_id|
+      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+    end
+
+    @item.approval_requests.each do |approval_request|
+      approval_request.destroy unless approval_flow_ids.include?(approval_request.approval_flow_id)
+    end
+  end
+
+  def validate_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
   end
 end

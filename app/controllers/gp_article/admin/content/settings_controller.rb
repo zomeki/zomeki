@@ -34,7 +34,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting'].include?(@item.name)
+    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting', 'approval_relation'].include?(@item.name)
       extra_values = @item.extra_values
 
       case @item.name
@@ -52,6 +52,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:state] = params[:state]
         extra_values[:display_fields] = params[:display_fields] || []
         extra_values[:require_fields] = params[:require_fields] || []
+      when 'approval_relation'
+        extra_values[:approval_content_id] = params[:approval_content_id].to_i
       end
 
       @item.extra_values = extra_values

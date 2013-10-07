@@ -262,13 +262,13 @@ GalateaTalkをインストールします。
   # crontab -u zomeki -e
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # 記事の公開/非公開処理を行います。
-  10,25,40,55 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
+  0-45/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
 
   # トップページや中間ページを静的ファイルとして書き出します。
-  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/nodes/publish')"
+  3-48/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/nodes/publish')"
 
   # 音声ファイルを静的ファイルとして書き出します。
-  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/talk_tasks/exec')"
+  6-51/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/talk_tasks/exec')"
 
   # 新着記事ポータルで設定したAtomフィードを取り込みます。
   0 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/feeds/read')"

@@ -34,6 +34,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   INQUIRY_STATES = [['表示', 'visible'], ['非表示', 'hidden']]
   INQUIRY_FIELDS = [['課', 'group_id'], ['室・担当', 'charge'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email']]
+  set_config :approval_relation, :name => '承認フロー',
+    :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
+    :form_type => :radio_buttons
 
   def upper_text
   end

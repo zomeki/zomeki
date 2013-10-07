@@ -31,6 +31,7 @@ ja:
         ldap_version: "LDAP同期バージョン"
         web_state: "Web公開"
         tel: "電話番号"
+        fax: "ファクシミリ"
         outline_uri: "業務概要URL"
       
       sys/group_user: 

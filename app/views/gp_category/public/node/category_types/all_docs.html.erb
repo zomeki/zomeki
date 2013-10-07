@@ -1,18 +1,17 @@
-<%-
-  category_ids = @category_type.public_categories.map(&:id)
-  docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
-                       .order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: @content.category_type_docs_number)
--%>
 <div class="contentGpCategoryCategoryType">
-  <%- unless docs.empty? -%>
+  <%- unless @docs.empty? -%>
+  <ul class="feed">
+    <li><%= link_to 'RSS' , "#{@category_type.public_uri.sub(/\/$/, '')}.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+    <li><%= link_to 'Atom', "#{@category_type.public_uri.sub(/\/$/, '')}.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  </ul>
   <div class="docs">
     <ul>
-      <%- docs.each do |doc| -%>
+      <%- @docs.each do |doc| -%>
       <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_type_doc_style, date_style: @content.date_style %></li>
       <%- end -%>
     </ul>
   </div>
   <%- end -%>
 
-  <%= paginate docs %>
+  <%= paginate @docs %>
 </div>

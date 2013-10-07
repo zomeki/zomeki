@@ -32,7 +32,7 @@ end
   <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) %>
   <%= link_to '削除', gp_article_doc_path, :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
   <%= link_to :duplicate, {:do => :duplicate}, :confirm => '複製してよろしいですか？' %>
-  <%= link_to :recognize, {:do => :recognize}, :confirm => '承認してよろしいですか？' if @item.recognizable?(Core.user) %>
+  <%= link_to '承認', approve_gp_article_doc_path, :method => :post, :confirm => '承認してよろしいですか？' if @item.approvers.include?(Core.user) %>
   <%= link_to :publish, {:do => :publish}, :confirm => pubmsg if @item.publishable? %>
   <%= link_to :close, {:do => :close}, :confirm => '公開を終了してよろしいですか？' if @item.closable? %>
   <%- end -%>

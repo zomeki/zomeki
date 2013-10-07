@@ -2,6 +2,7 @@
 class GpArticle::Content::Doc < Cms::Content
   CALENDAR_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   MAP_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  APPROVAL_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -128,11 +129,19 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def inquiry_related?
-    setting_value('inquiry_setting') != 'disabled'
+    setting_value('inquiry_setting') == 'enabled'
   end
 
   def inquiry_extra_values
     setting_extra_values('inquiry_setting').presence || GpArticle::Content::Setting.new.default_inquiry_setting
+  end
+
+  def approval_content_approval_flow
+    Approval::Content::ApprovalFlow.find_by_id(setting_extra_value(:approval_relation, :approval_content_id))
+  end
+
+  def approval_related?
+    setting_value('approval_relation') == 'enabled'
   end
 
   private
@@ -143,6 +152,7 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
     in_settings[:calendar_relation] = CALENDAR_RELATION_OPTIONS.first.last unless setting_value(:calendar_relation)
     in_settings[:map_relation] = MAP_RELATION_OPTIONS.first.last unless setting_value(:map_relation)
-    in_settings[:inquiry_setting] = 'enabled' 
+    in_settings[:inquiry_setting] = 'enabled' unless setting_value(:inquiry_setting)
+    in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.first.last unless setting_value(:approval_relation)
   end
 end
