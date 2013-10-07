@@ -11,4 +11,5 @@ Cms::Lib::Modules::ModuleSet.draw :gp_category, '汎用カテゴリ' do |mod|
   mod.piece :category_types, '汎用カテゴリ一覧'
   mod.piece :docs, '汎用記事一覧'
   mod.piece :recent_tabs, '新着タブ'
+  mod.piece :feeds, 'フィード'
 end

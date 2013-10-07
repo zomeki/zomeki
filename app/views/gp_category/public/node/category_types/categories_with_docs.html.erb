@@ -3,10 +3,6 @@
   <section class="categoryType categoryType<%= @category_type.name.try(:camelize) %>">
     <h2><%= link_to category.title, category.public_uri %></h2>
     <%- unless category.public_docs.empty? -%>
-    <ul class="feed">
-      <li><%= link_to 'RSS' , "#{category.name}/show.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-      <li><%= link_to 'Atom', "#{category.name}/show.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
-    </ul>
     <div class="docs">
       <ul>
         <%- category.public_docs.limit(@content.category_type_docs_number).each do |doc| -%>
