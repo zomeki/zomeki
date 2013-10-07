@@ -1,4 +1,8 @@
 <div class="contentGpCategoryDoc">
+  <ul class="feed">
+    <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+    <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  </ul>
   <div class="docs">
     <ul>
       <%- @docs.each do |doc| -%>

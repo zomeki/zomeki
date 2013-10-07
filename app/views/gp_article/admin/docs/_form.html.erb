@@ -8,7 +8,7 @@
     <li><a href="#tab7">携帯</a></li>
     <li style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
     <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
-    <li><a href="#tab4">承認</a></li>
+    <li style="<%= 'display: none;' unless @content.approval_related? %>"><a href="#tab4">承認</a></li>
     <li style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
     <li><a href="#tab2">公開日</a></li>
     <li><a href="#tab1">記事</a></li>
@@ -55,7 +55,11 @@
       <tr>
         <td>
           <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
+          <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
         </td>
+      </tr>
+      <tr>
+ 
       </tr>
     </table>
 
@@ -162,7 +166,22 @@
     <%= render 'cms/admin/_partial/many_inquiries/form', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab4">
-    <%= recognizer_form f %>
+    <%- if @content.approval_content_approval_flow -%>
+    <table class="show">
+      <tr>
+        <th><%= Approval::ApprovalFlow.model_name.human %></th>
+        <td>
+          <%- @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]).each do |approval_flow| -%>
+            <%#= check_box_tag 'approval_flows[]', approval_flow.id, @item.approval_requests.find_by_approval_flow_id(approval_flow.id), id: "approval_flows_#{approval_flow.id}" %>
+            <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+            <%= label_tag "approval_flows_#{approval_flow.id}", approval_flow.title %>
+          <%- end -%>
+        </td>
+      </tr>
+    </table>
+    <%- else -%>
+    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
+    <%- end -%>
   </div>
   <div id="tab5">
     <table class="show">

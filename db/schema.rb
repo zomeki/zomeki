@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130909040727) do
+ActiveRecord::Schema.define(:version => 20130930103857) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -58,6 +58,45 @@ ActiveRecord::Schema.define(:version => 20130909040727) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "approval_approval_flows", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "title"
+    t.integer  "group_id"
+    t.integer  "sort_no"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "approval_approval_requests", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "approval_flow_id"
+    t.integer  "approvable_id"
+    t.string   "approvable_type"
+    t.integer  "current_index"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "approval_approvals", :force => true do |t|
+    t.integer  "approval_flow_id"
+    t.integer  "index"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "approval_assignments", :force => true do |t|
+    t.integer  "assignable_id"
+    t.string   "assignable_type"
+    t.integer  "user_id"
+    t.string   "state"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "approval_assignments", ["assignable_type", "assignable_id"], :name => "index_approval_assignments_on_assignable_type_and_assignable_id"
+  add_index "approval_assignments", ["user_id"], :name => "index_approval_assignments_on_user_id"
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -1153,6 +1192,7 @@ ActiveRecord::Schema.define(:version => 20130909040727) do
     t.string   "name"
     t.string   "name_en"
     t.string   "tel"
+    t.string   "fax"
     t.string   "outline_uri"
     t.string   "email"
   end
