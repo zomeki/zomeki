@@ -1,9 +1,5 @@
 <div class="contentGpCategoryCategoryType">
   <%- unless @docs.empty? -%>
-  <ul class="feed">
-    <li><%= link_to 'RSS' , "#{@category_type.public_uri.sub(/\/$/, '')}.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-    <li><%= link_to 'Atom', "#{@category_type.public_uri.sub(/\/$/, '')}.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
-  </ul>
   <div class="docs">
     <ul>
       <%- @docs.each do |doc| -%>
