@@ -20,11 +20,11 @@
         <th><%= f.label :title %> <span class="note">※</span></th>
         <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
         <th>タイトル設定</th>
-        <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
+        <td><%= link_to_function '閉じる▲', "toggle_form(this, '#title_settings')" %></td>
       </tr>
     </table>
 
-    <div id="title_settings" style="display: none;">
+    <div id="title_settings" style="display: block;">
       <table class="show">
         <tr>
           <th><%= f.label :href %></th>
@@ -38,6 +38,10 @@
         <tr>
           <th><%= f.label :summary %></th>
           <td colspan="2"><%= f.text_area :summary, :size => '100x5' %></td>
+        </tr>
+        <tr>
+          <th><%= f.label :list_image %></th>
+          <td colspan="2"><%= f.text_field :list_image, :style => 'width: 200px;' %></td>
         </tr>
       </table>
     </div>
@@ -59,7 +63,7 @@
         </td>
       </tr>
       <tr>
- 
+
       </tr>
     </table>
 
