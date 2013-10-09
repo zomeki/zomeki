@@ -9,21 +9,30 @@ class Util::AccessibilityChecker
      errors.push("空白のpタグが存在") if !check_p(text)
      errors.push("hタグの順番が不正") if !check_h(text)
      errors.push("テーブルにサマリー、キャプションが正しく入力されていない") if !check_table_sc(text)
-     #errors.push("テーブルにヘッダーが正しく入力されていない") if !check_table_th(text)
+     errors.push("テーブルにヘッダーが正しく入力されていない") if !check_table_th(text)
      errors.push("テーブルに空白のセルが存在") if !check_table_cell(text)
-     errors.push("リンクにアイコンクラスが設定されていない") if !check_href_icon(text, options[:host])
+     #errors.push("リンクにアイコンクラスが設定されていない") if !check_href_icon(text, options[:host])
+     
+     if result = Util::String.search_platform_dependent_characters(text)
+       errors.push("機種依存文字が存在:#{result}")
+     end
      
      return errors
     end
 
   def self.modify(text, options={})
-    _text = modify_p(text)
+    
+    _text = modify_platform_dependent_characters(text)
+    
+    _text = modify_p(_text)
     _text = modify_br(_text)
     _text = modify_h(_text)
     _text = modify_table_sc(_text)
-    #_text = modify_table_th(_text)
+    _text = modify_table_th(_text)
     _text = modify_table_cell(_text)
-    _text = modify_href_icon(_text, options[:host])
+    #_text = modify_href_icon(_text, options[:host])
+
+    
     return _text
   end
   
@@ -82,44 +91,29 @@ def self.check_table_cell(text)
   check = true
   text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_2 = $2
-    table_2.scan(/<th.*?>.*?<\/th.*?>/m){ |td|
-      break if !check
-      
-      if td =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/th.*?>/m
-        check = false
-      end
+   
+    table_2.scan(/<thead>(.*?)<\/thead>/m){
+      thead = $1
+      thead.scan(/<th.*?>.*?<\/th.*?>/m){ |td|
+        if td =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*?<\/th.*?>/m
+          check = false
+        end
+      }
     }
     
+    return check if !check
+    
     table_2.scan(/<td\s*>.*?<\/td\s*>/m){ |td|
-      break if !check
-      
-      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/td\s*>/m
+      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td\s*>/m
         check = false
       end
     }
+    return check if !check
+    
   }
-  
   check
 end  
   
-  
-=begin
-  def self.check_table_cell(text)
-  check = true
-  text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
-    table_2 = $2
-    table_2.scan(/<td\s*>.*?<\/td\s*>/m){ |td|
-      break if !check
-      
-      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/td\s*>/m
-        check = false
-      end
-    }
-  }
-  check
-end
-=end
-
 def self.check_table_th(text)
   check = true  
   text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
@@ -226,32 +220,61 @@ def self.modify_table_sc(text)
 end
 
 def self.modify_table_cell(text)
-  text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
+    text_ = text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_1 = $1
     table_2 = $2
     table_2.gsub!(/<td\s*>.*?<\/td\s*>/m){ |td|
-      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*<\/td\s*>/m
+      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td\s*>/m
         "<td>セル</td>"
       else
         td
       end
     }
     
-    table_2.gsub!(/<th(.*?)>(.*?)<\/th\s*>/m){ |th|
+    "<table#{table_1}>\n#{table_2}\n</table>"
+    }
+  
+    text_ = text_.gsub(/<thead>(.*?)<\/thead>/m){
+    thead = $1
+    thead.gsub!(/<th(.*?)>(.*?)<\/th\s*>/m){|th|
       th_1 = $1
-      
-      if th =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*<\/th\s*>/m
+      th_2 = $2
+     
+      if th =~ /<th.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/th\s*>/m
         "<th #{th_1}>セル</th>"
       else
         th
       end
     }
     
-    
-    "<table#{table_1}>\n#{table_2}\n</table>"
+    "<thead>#{thead}</thead>"
   }
 end
 
+def self.modify_table_th(text)
+  
+  return text if check_table_th(text)
+  
+  text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
+    table_1 = $1
+    table_2 = $2
+
+    td_count = 0
+    tr = table_2.scan(/<tr>.*?<\/tr>/m).shift
+    td_count = tr ? tr.scan("<td>").size : 0
+    #TODO
+    table_2.sub!(/<tbody>.*?<\/tbody>/m){ |tbody|
+      tbody = "<thead>\n<tr>\n" + ("<th scope=\"col\">&nbsp;</th>\n" * td_count) + "</tr>\n</thead>\n" +  tbody
+    }
+    
+    #raise "<table#{table_1}>#{table_2}</table>"
+    
+    "<table#{table_1}>#{table_2}</table>"
+     
+  }
+end
+
+=begin
 def self.modify_table_th(text)
   text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){ |table|
     table_1 = $1
@@ -264,6 +287,7 @@ def self.modify_table_th(text)
     end
   }
 end
+=end
 
 def self.modify_href_icon(text, host)
  text.gsub(/<a(.*?)>/){
@@ -288,6 +312,13 @@ def self.modify_href_icon(text, host)
     "<a#{a}>"
   }
 end
-  
-  
+
+  def self.modify_platform_dependent_characters(text)
+    
+    if result = Util::String.search_platform_dependent_characters(text)
+      text.gsub(/[#{result}]/, "")
+    else
+      text
+    end
+  end
 end
