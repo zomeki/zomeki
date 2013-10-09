@@ -20,11 +20,11 @@
         <th><%= f.label :title %> <span class="note">※</span></th>
         <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
         <th>タイトル設定</th>
-        <td><%= link_to_function '閉じる▲', "toggle_form(this, '#title_settings')" %></td>
+        <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
       </tr>
     </table>
 
-    <div id="title_settings" style="display: block;">
+    <div id="title_settings" style="display: none;">
       <table class="show">
         <tr>
           <th><%= f.label :href %></th>
