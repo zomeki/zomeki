@@ -11,9 +11,14 @@
 
                 if doc.list_image.present?
                   file = doc.image_files.select {|f| f.id == doc.list_image.to_i}.first || doc.image_files.first
+                else
+                  file = nil
+                  doc.image_files.each do |f|
+                    file = f and break if doc.body.index("file_contents/#{url_encode f.name}")
+                  end
                 end
 
-                link_to *([image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")] + link_to_options)
+                link_to *([image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")] + link_to_options) if file
               else
                 ''
               end
