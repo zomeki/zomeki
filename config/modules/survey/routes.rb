@@ -16,6 +16,27 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':content/forms') do
       resources :questions,
         :controller => 'admin/questions'
+      resources :form_answers, :only => [:index, :show],
+        :controller => 'admin/form_answers'
+    end
+
+    ## nodes
+    resources :node_forms,
+      :controller => 'admin/node/forms',
+      :path       => ':parent/node_forms'
+  end
+
+  ## public
+  scope "_public/#{mod}", :module => mod, :as => '' do
+    match 'node_forms(/index)' => 'public/node/forms#index'      # for end with slash
+    match 'node_forms/:id(/index)' => 'public/node/forms#show'   # for end with slash
+    resources(:node_forms, :only => [:index, :show],
+      :controller => 'public/node/forms') do
+      member do
+        post :confirm_answers
+        post :send_answers
+        get :finish
+      end
     end
   end
 end

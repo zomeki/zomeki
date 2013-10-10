@@ -1,7 +1,6 @@
 FactoryGirl.define do
   time_now = Time.now
   factory :survey_content_form_1, class: 'Survey::Content::Form' do
-    unid 1
     site_id 1
     concept_id 1
     state 'public'

@@ -7,6 +7,8 @@ class Survey::Question < ActiveRecord::Base
                        ['選択/単数回答（プルダウン）', 'select'], ['選択/単数回答（ラジオボタン）', 'radio_button'], ['選択/複数回答（チェックボックス）', 'check_box']]
   REQUIRED_OPTIONS = [['必須', true], ['任意', false]]
 
+  default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
+
   belongs_to :form
   validates_presence_of :form_id
 
@@ -18,6 +20,8 @@ class Survey::Question < ActiveRecord::Base
 
   after_initialize :set_defaults
 
+  scope :public, where(state: 'public')
+
   def content
     form.content
   end
@@ -26,12 +30,16 @@ class Survey::Question < ActiveRecord::Base
     write_attribute(:required, !['false', '0', 'f', 'no'].include?(new_required))
   end
 
+  def form_options_for_select
+    form_options.gsub("\r\n", "\n").gsub("\r", "\n").split("\n")
+  end
+
   private
 
   def set_defaults
-    self.state     = STATE_OPTIONS.first.last if self.has_attribute?(:state) && self.state.nil?
+    self.state     = STATE_OPTIONS.first.last     if self.has_attribute?(:state) && self.state.nil?
     self.form_type = FORM_TYPE_OPTIONS.first.last if self.has_attribute?(:form_type) && self.form_type.nil?
-    self.required  = REQUIRED_OPTIONS.first.last if self.has_attribute?(:required) && self.required.nil?
+    self.required  = REQUIRED_OPTIONS.first.last  if self.has_attribute?(:required) && self.required.nil?
     self.sort_no   = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 end

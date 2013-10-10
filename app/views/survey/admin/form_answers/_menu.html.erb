@@ -1,0 +1,5 @@
+<h2><%= @content.name %><%= @form ? " ： #{@form.title}" : '' %></h2>
+
+<div class="actionMenu">
+  <%= action_menu :index, survey_form_form_answers_path(content: @content, form_id: @form.id) %>
+</div>
