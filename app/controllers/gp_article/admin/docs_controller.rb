@@ -143,7 +143,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.state = new_state if new_state.present?
 
     validate_approval_requests if @item.state_recognize?
-    unless @item.errors.empty?
+    unless @item.errors.empty?      
       return render(:action => :edit)
     end
 
