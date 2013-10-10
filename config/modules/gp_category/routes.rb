@@ -42,6 +42,8 @@ ZomekiCMS::Application.routes.draw do
       resources :tabs,
         :controller => 'admin/piece/recent_tabs/tabs'
     end
+    resources :piece_feeds,
+      :controller => 'admin/piece/feeds'
   end
 
   ## public

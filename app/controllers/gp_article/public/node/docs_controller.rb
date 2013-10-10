@@ -1,5 +1,6 @@
 # encoding: utf-8
 class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
+  include GpArticle::Controller::Feed
   skip_filter :render_public_layout, :only => [:file_content]
 
   def pre_dispatch
@@ -9,6 +10,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
   def index
     @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: 20)
+    return true if render_feed(@docs)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|
