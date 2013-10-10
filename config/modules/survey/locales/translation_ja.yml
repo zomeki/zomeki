@@ -3,6 +3,7 @@ ja:
     models:
       survey/form: フォーム
       survey/question: 質問
+      survey/form_answer: 回答
     attributes:
       survey/form:
         state: 状態
@@ -18,3 +19,5 @@ ja:
         required: 必須
         form_type: 種別
         form_options: 選択候補（種別が選択の時に使用）
+      survey/form_answer:
+        created_at: 回答日時

@@ -1,0 +1,9 @@
+<div class="surveyForms">
+  <%- unless @forms.empty? -%>
+  <ul>
+    <%- @forms.each do |form| -%>
+    <li><%= link_to form.title, "#{@node.public_uri}#{form.name}" %></li>
+    <%- end -%>
+  </ul>
+  <%- end -%>
+<!-- end .surveyForms --></div>

@@ -1,5 +1,6 @@
 class Survey::Form < ActiveRecord::Base
   include Sys::Model::Base
+  include Sys::Model::Rel::Unid
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
@@ -12,11 +13,18 @@ class Survey::Form < ActiveRecord::Base
   validates_presence_of :state
 
   has_many :questions, :dependent => :destroy
+  has_many :form_answers, :dependent => :destroy
 
   validates :title, :presence => true
 
   after_initialize :set_defaults
   before_save :set_name
+
+  scope :public, where(state: 'public')
+
+  def public_questions
+    questions.public
+  end
 
   private
 
