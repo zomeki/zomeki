@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
-  before_filter :set_form, only: [:show, :confirm_answers, :send_answers]
+  before_filter :set_form, only: [:show, :confirm_answers, :send_answers, :finish]
 
   def pre_dispatch
     @node = Page.current_node
@@ -23,11 +23,14 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def send_answers
-    @form_answer = @form.form_answers.build
+    @form_answer = @form.form_answers.build(answered_url: params[:current_url], remote_addr: request.remote_addr, user_agent: request.user_agent)
     @form_answer.question_answers = params[:question_answers]
     return render(action: 'show') if params[:edit_answers]
     return render(action: 'show') unless @form_answer.save
     redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish"
+  end
+
+  def finish
   end
 
   private

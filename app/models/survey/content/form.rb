@@ -11,4 +11,8 @@ class Survey::Content::Form < Cms::Content
   def public_nodes
     nodes.public
   end
+
+  def public_node
+    public_nodes.first
+  end
 end
