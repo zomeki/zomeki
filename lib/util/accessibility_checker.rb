@@ -1,7 +1,6 @@
 # encoding: utf-8
 class Util::AccessibilityChecker
   
-  
    def self.check(text, options={})
      errors ||= []
      
@@ -32,7 +31,6 @@ class Util::AccessibilityChecker
     _text = modify_table_cell(_text)
     #_text = modify_href_icon(_text, options[:host])
 
-    
     return _text
   end
   
@@ -43,7 +41,7 @@ class Util::AccessibilityChecker
   def self.check_p(text)
     text.scan(/<p[^>]*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/p\s*>/) == []
   end
-  
+ 
   def self.check_h(text)
     h_num = 1
     check = true
@@ -113,23 +111,19 @@ def self.check_table_cell(text)
   }
   check
 end  
-  
+
 def self.check_table_th(text)
+  doc = Hpricot(text)
+  
   check = true  
-  text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
-    table_2 = $2
-    
-    if table_2 =~ /<thead\s*>.*?<\/thead\s*>/m
-      check = true
-      break
-    elsif !(table_2 =~ /<th\s*>.*?<\/th\s*>/m)
-      check = false
-      break
-    elsif table_2 =~ /<th\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>&nbsp;<\/p>)*?<\/th\s*>/m
-      check = false
-      break
-    end
-  }
+  
+  doc.search("table").each do |table|
+     check = (table.search("thead").to_s != "")
+     check = (table.search("th").to_s != "")
+     
+     break if !check
+  end
+  
   check
 end
 
@@ -276,15 +270,25 @@ end
 
 =begin
 def self.modify_table_th(text)
-  text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){ |table|
+  
+  return text if check_table_th(text)
+  
+  text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_1 = $1
     table_2 = $2
-    if !(table_2 =~ /<thead\s*>.*?<\/thead\s*>/m)
-      table_2 = "<thead><tr><th>ヘッダー</th></tr></thead>" + table_2
-      "<table#{table_1}>#{table_2}</table>"
-    else
-      table
-    end
+
+    td_count = 0
+    tr = table_2.scan(/<tr>.*?<\/tr>/m).shift
+    td_count = tr ? tr.scan("<td>").size : 0
+    #TODO
+    table_2.sub!(/<tbody>.*?<\/tbody>/m){ |tbody|
+      tbody = "<thead>\n<tr>\n" + ("<th scope=\"col\">&nbsp;</th>\n" * td_count) + "</tr>\n</thead>\n" +  tbody
+    }
+    
+    #raise "<table#{table_1}>#{table_2}</table>"
+    
+    "<table#{table_1}>#{table_2}</table>"
+     
   }
 end
 =end
