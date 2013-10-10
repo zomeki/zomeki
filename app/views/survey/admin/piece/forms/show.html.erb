@@ -1,0 +1,10 @@
+<%= render(layout: 'survey/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th>リンク先</th>
+    <td><%= "#{@item.target_form.title}（#{@item.target_form.name}）" if @item.target_form %></td>
+  </tr>
+</table>
+<%- end -%>

@@ -24,6 +24,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_forms,
       :controller => 'admin/node/forms',
       :path       => ':parent/node_forms'
+
+    ## pieces
+    resources :piece_forms,
+      :controller => 'admin/piece/forms'
   end
 
   ## public

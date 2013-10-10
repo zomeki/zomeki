@@ -27,5 +27,15 @@
     <%- end -%>
     <%= submit_tag '送信する' %>
     <%= submit_tag '変更する', name: 'edit_answers' %>
+
+    <%= hidden_field_tag :current_url %>
   <%- end -%>
 </div>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#current_url').closest('form').submit(function (event) {
+    $('#current_url').val(parent.location);
+  });
+});
+<%- end -%>

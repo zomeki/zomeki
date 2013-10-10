@@ -1158,8 +1158,11 @@ ActiveRecord::Schema.define(:version => 20131008072554) do
 
   create_table "survey_form_answers", :force => true do |t|
     t.integer  "form_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "answered_url"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "survey_form_answers", ["form_id"], :name => "index_survey_form_answers_on_form_id"
