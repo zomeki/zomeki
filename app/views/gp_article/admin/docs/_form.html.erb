@@ -39,6 +39,10 @@
           <th><%= f.label :summary %></th>
           <td colspan="2"><%= f.text_area :summary, :size => '100x5' %></td>
         </tr>
+        <tr>
+          <th><%= f.label :list_image %></th>
+          <td colspan="2"><%= f.text_field :list_image, :style => 'width: 200px;' %></td>
+        </tr>
       </table>
     </div>
 
@@ -55,7 +59,11 @@
       <tr>
         <td>
           <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
+          <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
         </td>
+      </tr>
+      <tr>
+
       </tr>
     </table>
 

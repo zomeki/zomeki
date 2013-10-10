@@ -67,7 +67,10 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :node_existence
   validate :event_dates_range
   validate :broken_link_existence, :unless => :state_draft?
-
+  
+  validate :validate_word_dictionary, :unless => :state_draft?
+  validate :validate_accessibility_check
+  
   after_initialize :set_defaults
   after_save :set_tags
   after_save :set_display_attributes
@@ -505,7 +508,7 @@ class GpArticle::Doc < ActiveRecord::Base
       end
     end
   end
-
+  
   def set_tags
     return tags.clear unless content.tag_content_tag
     all_tags = content.tag_content_tag.tags
@@ -572,5 +575,28 @@ class GpArticle::Doc < ActiveRecord::Base
     lib.each do |link|
       links.create(body: link[:body], url: link[:url]) unless links.find_by_body_and_url(link[:body], link[:url])
     end
+  end
+  
+  def validate_word_dictionary
+    dic = content.setting_value(:word_dictionary)
+    return if dic.blank?
+    
+    words = []
+    dic.split(/\r\n|\n/).each do |line|
+      next if line !~ /,/
+      data = line.split(/,/)
+      words << [data[0].strip, data[1].strip]
+    end
+    
+    if body.present?
+      words.each {|src, dst| self.body = body.gsub(src, dst) }
+    end
+    if mobile_body.present?
+      words.each {|src, dst| self.mobile_body = mobile_body.gsub(src, dst) }
+    end
+  end
+
+  def validate_accessibility_check
+    #errors.add(:base, 'アクセシビリティチェック結果を確認してください') if broken_link_exists?
   end
 end

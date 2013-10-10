@@ -78,10 +78,20 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item = @content.docs.build(params[:item])
 
+     if params[:accessibility_check_modify]
+      @item.body = Util::AccessibilityChecker.modify @item.body
+    end
+    
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :new) if params[:link_check_in_body]
+    end
+    
+    if params[:accessibility_check]
+      check_results = Util::AccessibilityChecker.check @item.body
+      flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      return render(:action => :new)
     end
 
     @item.concept = @content.concept
@@ -114,16 +124,26 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item.attributes = params[:item]
 
+    if params[:accessibility_check_modify]
+      @item.body = Util::AccessibilityChecker.modify @item.body
+    end
+    
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:link_check_in_body]
     end
-
+    
+    if params[:accessibility_check]
+      check_results = Util::AccessibilityChecker.check @item.body
+      flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      return render(:action => :edit)
+    end
+    
     @item.state = new_state if new_state.present?
 
     validate_approval_requests if @item.state_recognize?
-    unless @item.errors.empty?
+    unless @item.errors.empty?      
       return render(:action => :edit)
     end
 
