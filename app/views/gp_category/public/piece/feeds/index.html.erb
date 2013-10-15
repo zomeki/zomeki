@@ -1,6 +1,6 @@
-<%- if @path.present? -%>
+<%- if @feed -%>
 <ul class="feed">
-  <li><%= link_to 'RSS' , "#{@path}.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-  <li><%= link_to 'Atom', "#{@path}.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  <li><%= link_to 'RSS' , @piece.public_feed_uri('rss') , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+  <li><%= link_to 'Atom', @piece.public_feed_uri('atom'), :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
 </ul>
 <%- end -%>
