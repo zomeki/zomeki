@@ -43,6 +43,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   def set_form
     @form = @content.public_forms.find_by_name(params[:id])
     return http_error(404) unless @form
+    return render(text: '') unless @form.open?
 
     Page.current_item = @form
     Page.title = @form.title

@@ -28,6 +28,13 @@ class Survey::Form < ActiveRecord::Base
     questions.public
   end
 
+  def open?
+    now = Time.now
+    return false if opened_at && opened_at > now
+    return false if closed_at && closed_at < now
+    return true
+  end
+
   private
 
   def set_defaults
@@ -46,7 +53,7 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def open_period
-    return if self.opened_at.blank? && self.closed_at.blank?
-    errors.add(:opened_at, "が#{self.class.human_attribute_name :closed_at}を過ぎています。") if self.closed_at < self.opened_at
+    return if opened_at.blank? || closed_at.blank?
+    errors.add(:opened_at, "が#{self.class.human_attribute_name :closed_at}を過ぎています。") if closed_at < opened_at
   end
 end
