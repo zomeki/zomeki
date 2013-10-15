@@ -1,0 +1,18 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :upper_text %></th>
+    <td><%=raw @item.upper_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :lower_text %></th>
+    <td><%=raw @item.lower_text %></td>
+  </tr>
+</table>

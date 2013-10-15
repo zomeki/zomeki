@@ -3,6 +3,8 @@
 require 'will_paginate/array'
 
 class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Public::Base
+  include GpArticle::Controller::Feed
+
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
@@ -21,6 +23,14 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
 
     Page.current_item = @category_type
     Page.title = @category_type.title
+
+    case @content.category_type_style
+    when 'all_docs'
+      category_ids = @category_type.public_categories.map(&:id)
+      @docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
+                            .order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: @content.category_type_docs_number)
+      return true if render_feed(@docs)
+    end
 
     if Page.mobile?
       render :show_mobile

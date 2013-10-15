@@ -4,6 +4,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
   set_config :allowed_attachment_type, :name => '添付ファイル/許可する種類',
     :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
+  set_config :word_dictionary, :name => "本文/単語変換辞書",
+    :form_type => :text, :lower_text => "CSV形式（例　対象文字,変換後文字 ）"
   set_config :recognition_type, :name => '承認/承認フロー',
     :options => [['管理者承認が必要', 'with_admin']]
   set_config :required_recognizers, :name => '承認/必須承認者',
@@ -39,9 +41,11 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :form_type => :radio_buttons
 
   def upper_text
+    config[:upper_text].to_s
   end
 
   def lower_text
+    config[:lower_text].to_s
   end
 
   def category_type_ids
