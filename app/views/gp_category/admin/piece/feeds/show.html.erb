@@ -1,1 +1,10 @@
-<%= render partial: 'gp_category/admin/piece/shared/show' -%>
+<%= render(layout: 'gp_category/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :filename %></th>
+    <td><%= @item.setting_value(:filename) %></td>
+  </tr>
+</table>
+<%- end -%>
