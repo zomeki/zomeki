@@ -17,6 +17,8 @@ class Survey::Form < ActiveRecord::Base
 
   validates :title, :presence => true
 
+  validate :open_period
+
   after_initialize :set_defaults
   before_save :set_name
 
@@ -41,5 +43,10 @@ class Survey::Form < ActiveRecord::Base
            end
     seq = Util::Sequencer.next_id('survey_forms', :version => date)
     self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
+  end
+
+  def open_period
+    return if self.opened_at.blank? && self.closed_at.blank?
+    errors.add(:opened_at, "が#{self.class.human_attribute_name :closed_at}を過ぎています。") if self.closed_at < self.opened_at
   end
 end

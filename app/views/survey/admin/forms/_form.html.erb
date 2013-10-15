@@ -18,4 +18,20 @@
     <th><%= f.label :lower_text %></th>
     <td class="cke_editor_wrapper"><%= f.text_area :lower_text, :class => 'ckeditor' %></td>
   </tr>
+  <tr>
+    <th><%= f.label :opened_at %></th>
+    <td><%= f.text_field :opened_at, :value => value_for_datetimepicker(f.object_name, :opened_at),
+                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :closed_at %></th>
+    <td><%= f.text_field :closed_at, :value => value_for_datetimepicker(f.object_name, :closed_at),
+                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
 </table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datetimepicker_script -%>
+});
+<%- end -%>
