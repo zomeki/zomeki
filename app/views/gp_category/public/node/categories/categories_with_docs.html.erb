@@ -2,8 +2,8 @@
   <%- unless @docs.empty? -%>
   <section class="category<%= @category.name.try(:camelize) %>">
     <ul class="feed">
-      <li><%= link_to 'RSS' , "show.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-      <li><%= link_to 'Atom', "show.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+      <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+      <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
     </ul>
     <div class="docs">
       <ul>
@@ -24,10 +24,6 @@
   <section class="category<%= child.name.try(:camelize) %> classification">
     <h2><%= link_to child.title, child.public_uri %></h2>
     <%- unless child.public_docs.empty? -%>
-    <ul class="feed">
-      <li><%= link_to 'RSS' , "#{child.name}/show.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-      <li><%= link_to 'Atom', "#{child.name}/show.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
-    </ul>
     <div class="docs">
       <ul>
         <%- child.public_docs.limit(@content.category_docs_number).each do |doc| -%>

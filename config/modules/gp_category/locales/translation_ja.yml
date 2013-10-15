@@ -46,3 +46,5 @@ ja:
         more: 一覧リンク
         condition: 結合
         sort_no: 並び順
+      gp_category/piece/feed:
+        filename: ファイル名
