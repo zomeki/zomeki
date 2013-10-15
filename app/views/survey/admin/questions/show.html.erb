@@ -1,0 +1,34 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :description %></th>
+    <td><%=raw @item.description %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :form_type %></th>
+    <td><%= @item.class::FORM_TYPE_OPTIONS.detect{|o| o.last == @item.form_type }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :form_options %></th>
+    <td><%=simple_format @item.form_options %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :required %></th>
+    <td><%= @item.class::REQUIRED_OPTIONS.detect{|o| o.last == @item.required }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :style_attribute %></th>
+    <td><%= @item.style_attribute %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>

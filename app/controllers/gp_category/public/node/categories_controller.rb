@@ -1,5 +1,7 @@
 # encoding: utf-8
 class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::Base
+  include GpArticle::Controller::Feed
+
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
@@ -17,6 +19,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     per_page = (@more ? 30 : @content.category_docs_number)
 
     @docs = @category.public_docs.paginate(page: params[:page], per_page: per_page)
+    return true if render_feed(@docs)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     if Page.mobile?

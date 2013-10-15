@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130930103857) do
+ActiveRecord::Schema.define(:version => 20131008074353) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -699,6 +699,7 @@ ActiveRecord::Schema.define(:version => 20130930103857) do
     t.string   "marker_state"
     t.text     "meta_description"
     t.string   "meta_keywords"
+    t.integer  "list_image"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -1144,6 +1145,58 @@ ActiveRecord::Schema.define(:version => 20130930103857) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "survey_answers", :force => true do |t|
+    t.integer  "form_answer_id"
+    t.integer  "question_id"
+    t.text     "content"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "survey_answers", ["form_answer_id"], :name => "index_survey_answers_on_form_answer_id"
+  add_index "survey_answers", ["question_id"], :name => "index_survey_answers_on_question_id"
+
+  create_table "survey_form_answers", :force => true do |t|
+    t.integer  "form_id"
+    t.string   "answered_url"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "survey_form_answers", ["form_id"], :name => "index_survey_form_answers_on_form_id"
+
+  create_table "survey_forms", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.text     "upper_text"
+    t.text     "lower_text"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"
+
+  create_table "survey_questions", :force => true do |t|
+    t.integer  "form_id"
+    t.string   "state"
+    t.string   "title"
+    t.text     "description"
+    t.string   "form_type"
+    t.text     "form_options"
+    t.boolean  "required"
+    t.string   "style_attribute"
+    t.integer  "sort_no"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "survey_questions", ["form_id"], :name => "index_survey_questions_on_form_id"
 
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"

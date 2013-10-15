@@ -1,0 +1,13 @@
+<%= render(layout: 'survey/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th>リンク先</th>
+    <td>
+      <%= select_tag 'target_form', options_for_select(@item.content.public_forms.map{|f| ["#{f.title}（#{f.name}）", f.id] },
+                                                       @item.target_form.try(:id)), include_blank: true %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
