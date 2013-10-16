@@ -25,8 +25,13 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   def send_answers
     @form_answer = @form.form_answers.build(answered_url: params[:current_url], remote_addr: request.remote_addr, user_agent: request.user_agent)
     @form_answer.question_answers = params[:question_answers]
+
     return render(action: 'show') if params[:edit_answers]
     return render(action: 'show') unless @form_answer.save
+
+    CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
+                .deliver if @content.mail_from.present? && @content.mail_to.present?
+
     redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish"
   end
 
@@ -38,6 +43,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   def set_form
     @form = @content.public_forms.find_by_name(params[:id])
     return http_error(404) unless @form
+    return render(text: '') unless @form.open?
 
     Page.current_item = @form
     Page.title = @form.title

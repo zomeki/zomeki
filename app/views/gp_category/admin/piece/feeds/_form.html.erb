@@ -1,1 +1,10 @@
-<%= render partial: 'gp_category/admin/piece/shared/form', locals: {f: f} -%>
+<%= render(layout: 'gp_category/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :filename %></th>
+    <td><%= f.array_text_field 'in_settings[filename]', class: 'name' %></td>
+  </tr>
+</table>
+<%- end -%>

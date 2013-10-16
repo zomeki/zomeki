@@ -26,7 +26,7 @@ class Survey::FormAnswer < ActiveRecord::Base
   private
 
   def validate_base
-    errors.keys.each{|k| errors.delete(k) unless k == :base }
+    errors.keys.each{|k| errors.delete(k) unless [:base, :form_id].include?(k) }
     answers.each do |answer|
       errors.add(:base, "#{answer.question.title}を入力してください。") if answer.question.required? && answer.content.blank?
     end
