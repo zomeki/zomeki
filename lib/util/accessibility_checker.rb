@@ -11,8 +11,9 @@ class Util::AccessibilityChecker
      errors.push("テーブルにヘッダーが正しく入力されていない") if !check_table_th(text)
      errors.push("テーブルに空白のセルが存在") if !check_table_cell(text)
      #errors.push("リンクにアイコンクラスが設定されていない") if !check_href_icon(text, options[:host])
-     
-     if result = Util::String.search_platform_dependent_characters(text)
+ 
+     _text = text.gsub(/【.】/, "")
+     if result = Util::String.search_platform_dependent_characters(_text)
        errors.push("機種依存文字が存在:#{result}")
      end
      
@@ -101,8 +102,8 @@ def self.check_table_cell(text)
     
     return check if !check
     
-    table_2.scan(/<td\s*>.*?<\/td\s*>/m){ |td|
-      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td\s*>/m
+    table_2.scan(/<td.*?>.*?<\/td.*?>/m){ |td|
+      if td =~ /<td.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td.*?>/m
         check = false
       end
     }
@@ -217,9 +218,11 @@ def self.modify_table_cell(text)
     text_ = text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_1 = $1
     table_2 = $2
-    table_2.gsub!(/<td\s*>.*?<\/td\s*>/m){ |td|
-      if td =~ /<td\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td\s*>/m
-        "<td>セル</td>"
+    table_2.gsub!(/<td(.*?)>.*?<\/td>/m){ |td|
+      td_1 = $1
+      
+      if td =~ /<td.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td.*?>/m
+        "<td#{td_1}>セル</td>"
       else
         td
       end
@@ -230,7 +233,7 @@ def self.modify_table_cell(text)
   
     text_ = text_.gsub(/<thead>(.*?)<\/thead>/m){
     thead = $1
-    thead.gsub!(/<th(.*?)>(.*?)<\/th\s*>/m){|th|
+    thead.gsub!(/<th(.*?)>(.*?)<\/th>/m){|th|
       th_1 = $1
       th_2 = $2
      
@@ -320,7 +323,14 @@ end
   def self.modify_platform_dependent_characters(text)
     
     if result = Util::String.search_platform_dependent_characters(text)
-      text.gsub(/[#{result}]/, "")
+      
+      text.gsub!(/【([#{result}])】/){
+        $1
+      }
+      
+      text.gsub(/[#{result}]/){ |c|
+        "【#{c}】" 
+      }
     else
       text
     end
