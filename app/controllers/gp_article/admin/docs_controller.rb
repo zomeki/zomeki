@@ -77,8 +77,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def create
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item = @content.docs.build(params[:item])
-
-     if params[:accessibility_check_modify]
+       
+    @item.validate_word_dictionary #replace validate word
+    @item.ignore_accessibility_check = params[:ignore_accessibility_check]
+    
+    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
       @item.body = Util::AccessibilityChecker.modify @item.body
     end
     
@@ -88,10 +91,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(:action => :new) if params[:link_check_in_body]
     end
     
-    if params[:accessibility_check]
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'recognize') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
       flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
-      return render(:action => :new)
+      return render(:action => :new) if params[:accessibility_check]
     end
 
     @item.concept = @content.concept
@@ -123,8 +126,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def update
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
     @item.attributes = params[:item]
-
-    if params[:accessibility_check_modify]
+   
+    @item.validate_word_dictionary #replace validate word 
+    @item.ignore_accessibility_check = params[:ignore_accessibility_check]
+    
+    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
       @item.body = Util::AccessibilityChecker.modify @item.body
     end
     
@@ -134,10 +140,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(:action => :edit) if params[:link_check_in_body]
     end
     
-    if params[:accessibility_check]
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'recognize') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
-      flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
-      return render(:action => :edit)
+      flash[:accessibility_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      return render(:action => :edit) if params[:accessibility_check]
     end
     
     @item.state = new_state if new_state.present?

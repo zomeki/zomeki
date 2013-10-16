@@ -1,6 +1,7 @@
 <%= form_for(@item, :as => :item, :url => gp_article_doc_path, :html => { method: 'put' }) do |f| %>
   <%= error_messages_for :item %>
   <%= flash[:link_check_result] %>
+  <%= flash[:accessibility_check_result] %>
   <%= render 'form', :f => f %>
   <%= submit (@content.approval_related? ? @item.state_options : @item.state_options.reject{|o| o.last == 'recognize' }) %>
 <% end %>
