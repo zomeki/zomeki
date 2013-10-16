@@ -41,8 +41,18 @@
             <%= image_tag @content.default_image %>
           <%- end -%>
         <%- else -%>
-        <%- file = marker.files.first -%>
-        <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+          <%- if marker.doc.list_image.present? -%>
+            <%- file = marker.files.select {|f| f.id == marker.doc.list_image.to_i}.first || marker.files.first -%>
+          <%- else -%>
+            <%- marker.files.each do |f| -%>
+              <%- file = f and break if marker.doc.body.include?("file_contents/#{url_encode f.name}") -%>
+            <%- end -%>
+          <%- end  -%>
+          <%- if file -%>
+            <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
+          <%- else -%>
+            画像がありません。
+          <%- end -%>
         <%- end -%>
       </td>
       <%- end -%>
