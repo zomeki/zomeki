@@ -9,6 +9,6 @@
       <li><%= result %></li>
       <%- end -%>
     </ul>
-    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'accessibility_check_modify' %> <%= label_tag 'accessibility_check_modify', '入力内容を整形する' %></div>
+    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_accessibility_check' %> <%= label_tag 'ignore_accessibility_check', '無視' %>　<%= check_box_tag 'accessibility_check_modify' %> <%= label_tag 'accessibility_check_modify', '自動修正' %></div>
   <%- end -%>
 </div>
