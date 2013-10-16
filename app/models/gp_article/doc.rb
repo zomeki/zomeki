@@ -50,6 +50,7 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :holds, :as => :holdable, :dependent => :destroy
   has_many :links, :dependent => :destroy
   has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
+  has_many :body_histories, :class_name => 'GpArticle::DocBody'
 
   before_save :make_file_contents_path_relative
   before_save :set_name
@@ -75,6 +76,7 @@ class GpArticle::Doc < ActiveRecord::Base
   after_save :set_tags
   after_save :set_display_attributes
   after_save :save_links
+  after_save :save_current_body
 
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
@@ -598,5 +600,12 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def validate_accessibility_check
     #errors.add(:base, 'アクセシビリティチェック結果を確認してください') if broken_link_exists?
+  end
+
+  def save_current_body
+    unless body_histories.first.try(:body) == self.body
+      body_histories.offset(3).destroy_all
+      body_histories.create(body: self.body)
+    end
   end
 end

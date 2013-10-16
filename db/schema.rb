@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131008074353) do
+ActiveRecord::Schema.define(:version => 20131015151346) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -669,6 +669,15 @@ ActiveRecord::Schema.define(:version => 20131008074353) do
   add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
   add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
 
+  create_table "gp_article_doc_bodies", :force => true do |t|
+    t.integer  "doc_id"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "gp_article_doc_bodies", ["doc_id"], :name => "index_gp_article_doc_bodies_on_doc_id"
+
   create_table "gp_article_docs", :force => true do |t|
     t.integer  "unid"
     t.integer  "concept_id"
@@ -1178,6 +1187,8 @@ ActiveRecord::Schema.define(:version => 20131008074353) do
     t.text     "lower_text"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.datetime "opened_at"
+    t.datetime "closed_at"
   end
 
   add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"

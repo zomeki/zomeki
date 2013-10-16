@@ -15,4 +15,12 @@ class Survey::Content::Form < Cms::Content
   def public_node
     public_nodes.first
   end
+
+  def mail_from
+    setting_value(:mail_from).to_s
+  end
+
+  def mail_to
+    setting_value(:mail_to).to_s
+  end
 end
