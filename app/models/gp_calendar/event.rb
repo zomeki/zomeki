@@ -60,6 +60,8 @@ class GpCalendar::Event < ActiveRecord::Base
     return rel
   end
 
+  belongs_to :doc, :class_name => 'GpArticle::Doc' # Not saved to database
+
   private
 
   def set_defaults
