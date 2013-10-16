@@ -14,7 +14,7 @@
                 else
                   file = nil
                   doc.image_files.each do |f|
-                    file = f and break if doc.body.index("file_contents/#{url_encode f.name}")
+                    file = f and break if doc.body.include?("file_contents/#{url_encode f.name}")
                   end
                 end
 
