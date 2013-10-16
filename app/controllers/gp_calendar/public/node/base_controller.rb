@@ -56,6 +56,9 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
                                     started_on: doc.event_started_on, ended_on: doc.event_ended_on, description: doc.summary)
       event.categories = doc.event_categories
       event.files = doc.files
+
+      event.doc = doc
+
       events << event
     end
     events.sort! {|a, b| a.started_on <=> b.started_on }
