@@ -50,6 +50,7 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :holds, :as => :holdable, :dependent => :destroy
   has_many :links, :dependent => :destroy
   has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
+  has_many :body_histories, :class_name => 'GpArticle::DocBody'
 
   before_save :make_file_contents_path_relative
   before_save :set_name
@@ -63,18 +64,21 @@ class GpArticle::Doc < ActiveRecord::Base
 
   validate :validate_inquiry
 
-  validate :validate_platform_dependent_characters, :unless => :state_draft?
+  #validate :validate_platform_dependent_characters, :unless => :state_draft?
   validate :node_existence
   validate :event_dates_range
   validate :broken_link_existence, :unless => :state_draft?
   
-  validate :validate_word_dictionary, :unless => :state_draft?
-  validate :validate_accessibility_check
+  #validate :validate_word_dictionary, :unless => :state_draft?
+  validate :validate_accessibility_check, :unless => :state_draft?
   
   after_initialize :set_defaults
   after_save :set_tags
   after_save :set_display_attributes
   after_save :save_links
+  after_save :save_current_body
+
+  attr_accessor :ignore_accessibility_check
 
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
@@ -464,6 +468,27 @@ class GpArticle::Doc < ActiveRecord::Base
     update_column(:state, 'recognized') if approval_requests.all?{|r| r.finished? }
   end
 
+  begin
+  def validate_word_dictionary
+    dic = content.setting_value(:word_dictionary)
+    return if dic.blank?
+    
+    words = []
+    dic.split(/\r\n|\n/).each do |line|
+      next if line !~ /,/
+      data = line.split(/,/)
+      words << [data[0].strip, data[1].strip]
+    end
+    
+    if body.present?
+      words.each {|src, dst| self.body = body.gsub(src, dst) }
+    end
+    if mobile_body.present?
+      words.each {|src, dst| self.mobile_body = mobile_body.gsub(src, dst) }
+    end
+  end
+end
+  
   private
 
   def set_name
@@ -576,27 +601,19 @@ class GpArticle::Doc < ActiveRecord::Base
       links.create(body: link[:body], url: link[:url]) unless links.find_by_body_and_url(link[:body], link[:url])
     end
   end
-  
-  def validate_word_dictionary
-    dic = content.setting_value(:word_dictionary)
-    return if dic.blank?
-    
-    words = []
-    dic.split(/\r\n|\n/).each do |line|
-      next if line !~ /,/
-      data = line.split(/,/)
-      words << [data[0].strip, data[1].strip]
-    end
-    
-    if body.present?
-      words.each {|src, dst| self.body = body.gsub(src, dst) }
-    end
-    if mobile_body.present?
-      words.each {|src, dst| self.mobile_body = mobile_body.gsub(src, dst) }
+
+  def validate_accessibility_check
+    check_results = Util::AccessibilityChecker.check body
+
+    if check_results != [] && !ignore_accessibility_check
+     errors.add(:base, 'アクセシビリティチェック結果を確認してください')
     end
   end
 
-  def validate_accessibility_check
-    #errors.add(:base, 'アクセシビリティチェック結果を確認してください') if broken_link_exists?
+  def save_current_body
+    unless body_histories.first.try(:body) == self.body
+      body_histories.offset(3).destroy_all
+      body_histories.create(body: self.body)
+    end
   end
 end

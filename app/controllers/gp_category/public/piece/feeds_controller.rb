@@ -10,9 +10,9 @@ class GpCategory::Public::Piece::FeedsController < Sys::Controller::Public::Base
   def index
     case @item
     when Cms::Node
-      @path = "index" if @item.model == 'GpCategory::Doc'
+      @feed = true if @item.model == 'GpCategory::Doc'
     when GpCategory::Category
-      @path = "show" 
+      @feed = true 
     end
   end
 end
