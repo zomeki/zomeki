@@ -17,13 +17,16 @@
               <%- end -%>
             <%- else -%>
               <p class="thumb">
-
-              <%- if event.doc.list_image.present? -%>
-                <%- file = event.files.select {|f| f.id == event.doc.list_image.to_i}.first || event.files.first -%>
+              <%- if event.doc.nil? %>
+                <%- file = event.files.first -%>
               <%- else -%>
-                <%- event.files.each do |f| -%>
-                  <%- file = f and break if event.doc.body.include?("file_contents/#{url_encode f.name}") -%>
-                <%- end -%>
+                <%- if event.doc.list_image.present? -%>
+                  <%- file = event.files.select {|f| f.id == event.doc.list_image.to_i}.first || event.files.first -%>
+                <%- else -%>
+                  <%- event.files.each do |f| -%>
+                    <%- file = f and break if event.doc.body.include?("file_contents/#{url_encode f.name}") -%>
+                  <%- end -%>
+                <%- end  -%>
               <%- end  -%>
               <%- if file -%>
                 <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
