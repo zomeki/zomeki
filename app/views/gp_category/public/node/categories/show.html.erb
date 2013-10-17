@@ -16,8 +16,8 @@
   <section class="categoryType docs">
     <h2>記事一覧</h2>
     <ul class="feed">
-      <li><%= link_to 'RSS' , "show.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-      <li><%= link_to 'Atom', "show.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+      <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+      <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
     </ul>
     <ul>
       <%- @docs.each do |doc| -%>

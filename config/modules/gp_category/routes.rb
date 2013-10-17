@@ -53,5 +53,6 @@ ZomekiCMS::Application.routes.draw do
     match 'node_category_types/:category_type_name/*category_names/:file' => 'public/node/categories#show'
     match 'node_category_types/:category_type_name/*category_names' => 'public/node/categories#show'
     match 'node_docs(/index)' => 'public/node/docs#index'
+    match 'node_docs/:file' => 'public/node/docs#index'
   end
 end
