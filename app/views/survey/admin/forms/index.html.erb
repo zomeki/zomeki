@@ -4,6 +4,8 @@
     <th><%= Survey::Form.human_attribute_name :title %></th>
     <th style="text-align: center; width: 100px;"><%= Survey::Question.model_name.human %></th>
     <th style="text-align: center; width: 100px;"><%= Survey::FormAnswer.model_name.human %></th>
+    <th style="text-align: center; width: 80px;"><%= Survey::Form.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 120px;"><%= Survey::Form.human_attribute_name :created_at %></th>
     <th style="text-align: center; width: 60px;"><%= Survey::Form.human_attribute_name :state %></th>
   </tr>
   <%- @items.each do |item| -%>
@@ -12,6 +14,8 @@
     <td style="text-align: left;"><%= item.title %></td>
     <td style="text-align: center;"><%= link_to "#{Survey::Question.model_name.human}一覧", survey_form_questions_path(content: @content, form_id: item.id) %></td>
     <td style="text-align: center;"><%= link_to "#{Survey::FormAnswer.model_name.human}一覧", survey_form_form_answers_path(content: @content, form_id: item.id) %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%=l item.updated_at %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
   </tr>
   <%- end -%>
