@@ -29,6 +29,7 @@
     <%= submit_tag '変更する', name: 'edit_answers' %>
 
     <%= hidden_field_tag :current_url %>
+    <%= hidden_field_tag :current_url_title %>
     <%= hidden_field_tag :piece, true if params[:piece] -%>
   <%- end -%>
 </div>
@@ -39,7 +40,8 @@
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#current_url').closest('form').submit(function (event) {
-    $('#current_url').val(parent.location);
+    $('#current_url').val(parent.document.location);
+    $('#current_url_title').val(parent.document.title);
   });
 });
 <%- end -%>

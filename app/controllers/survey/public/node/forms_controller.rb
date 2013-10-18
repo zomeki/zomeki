@@ -25,7 +25,9 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def send_answers
-    @form_answer = @form.form_answers.build(answered_url: params[:current_url], remote_addr: request.remote_addr, user_agent: request.user_agent)
+    @form_answer = @form.form_answers.build(answered_url: params[:current_url],
+                                            answered_url_title: params[:current_url_title],
+                                            remote_addr: request.remote_addr, user_agent: request.user_agent)
     @form_answer.question_answers = params[:question_answers]
 
     return render(action: 'show') if params[:edit_answers]

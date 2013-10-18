@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018055420) do
+ActiveRecord::Schema.define(:version => 20131018074415) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1171,8 +1171,9 @@ ActiveRecord::Schema.define(:version => 20131018055420) do
     t.string   "answered_url"
     t.string   "remote_addr"
     t.string   "user_agent"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "answered_url_title"
   end
 
   add_index "survey_form_answers", ["form_id"], :name => "index_survey_form_answers_on_form_id"

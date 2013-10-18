@@ -7,7 +7,7 @@
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, survey_form_form_answer_path(content: @content, form_id: @form.id, id: item.id) %></td>
-    <td style="text-align: left;"><%=link_to item.answered_url, item.answered_url, target: 'preview' %></td>
+    <td style="text-align: left;"><%=link_to item.answered_url_title, item.answered_url, target: 'preview' %></td>
     <td style="text-align: center;"><%=i18n_l item.created_at %></td>
   </tr>
   <%- end -%>
