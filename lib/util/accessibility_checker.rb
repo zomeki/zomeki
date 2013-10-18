@@ -12,8 +12,7 @@ class Util::AccessibilityChecker
      errors.push("テーブルに空白のセルが存在") if !check_table_cell(text)
      #errors.push("リンクにアイコンクラスが設定されていない") if !check_href_icon(text, options[:host])
  
-     _text = text.gsub(/【.】/, "")
-     if result = Util::String.search_platform_dependent_characters(_text)
+     if result = Util::String.search_platform_dependent_characters(text)
        errors.push("機種依存文字が存在:#{result}")
      end
      
@@ -323,14 +322,7 @@ end
   def self.modify_platform_dependent_characters(text)
     
     if result = Util::String.search_platform_dependent_characters(text)
-      
-      text.gsub!(/【([#{result}])】/){
-        $1
-      }
-      
-      text.gsub(/[#{result}]/){ |c|
-        "【#{c}】" 
-      }
+      text.gsub(/[#{result}]/, "【機種依存文字】")
     else
       text
     end
