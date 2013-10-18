@@ -5,4 +5,12 @@ class Survey::Piece::Form < Cms::Piece
   def target_form
     content.public_forms.find_by_id(setting_value(:target_form_id))
   end
+
+  def upper_text
+    setting_value(:upper_text).to_s
+  end
+
+  def lower_text
+    setting_value(:lower_text).to_s
+  end
 end

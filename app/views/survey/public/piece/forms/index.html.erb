@@ -1,4 +1,8 @@
+<%=raw @piece.upper_text %>
+
 <iframe src="<%= @target_form_public_uri %>" style="width: 100%; height: 100%;" class="survey"></iframe>
+
+<%=raw @piece.lower_text %>
 
 <%= javascript_tag do -%>
 $(document).ready(function () {
