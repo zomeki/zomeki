@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018015040) do
+ActiveRecord::Schema.define(:version => 20131018021115) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1185,11 +1185,14 @@ ActiveRecord::Schema.define(:version => 20131018015040) do
     t.string   "title"
     t.text     "upper_text"
     t.text     "lower_text"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.datetime "opened_at"
     t.datetime "closed_at"
     t.integer  "sort_no"
+    t.text     "summary"
+    t.text     "description"
+    t.text     "receipt"
   end
 
   add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"

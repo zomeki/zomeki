@@ -14,6 +14,9 @@ ja:
         closed_at: 終了日時
         sort_no: 並び順
         created_at: 作成日時
+        summary: 概要
+        description: 説明
+        receipt: 送信後のメッセージ
       survey/question:
         state: 状態
         title: 項目名
