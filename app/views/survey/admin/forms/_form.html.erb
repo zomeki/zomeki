@@ -19,6 +19,18 @@
     <td class="cke_editor_wrapper"><%= f.text_area :lower_text, :class => 'ckeditor' %></td>
   </tr>
   <tr>
+    <th><%= f.label :summary %></th>
+    <td class="cke_editor_wrapper"><%= f.text_area :summary, :class => 'ckeditor' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :description %></th>
+    <td class="cke_editor_wrapper"><%= f.text_area :description, :class => 'ckeditor' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :receipt %></th>
+    <td class="cke_editor_wrapper"><%= f.text_area :receipt, :class => 'ckeditor' %></td>
+  </tr>
+  <tr>
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>

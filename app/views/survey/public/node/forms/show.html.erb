@@ -1,5 +1,6 @@
 <div class="surveyForm">
   <h2><%= @form_answer.form.title %></h2>
+  <% if @form_answer.form.description.present? %><div class="description"><%=raw @form_answer.form.description %></div><% end %>
 
   <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
     <%= f.error_messages %>

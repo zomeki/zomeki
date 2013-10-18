@@ -16,6 +16,18 @@
     <td><%=raw @item.lower_text %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :summary %></th>
+    <td><%=raw @item.summary %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :description %></th>
+    <td><%=raw @item.description %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :receipt %></th>
+    <td><%=raw @item.receipt %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
