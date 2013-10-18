@@ -39,5 +39,7 @@
     </div>
     <%- end -%>
     <%= submit_tag '確認画面へ' %>
+
+    <%= hidden_field_tag :piece, true if params[:piece] -%>
   <%- end -%>
 </div>
