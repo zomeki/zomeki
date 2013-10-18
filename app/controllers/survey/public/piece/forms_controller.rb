@@ -14,6 +14,6 @@ class Survey::Public::Piece::FormsController < Sys::Controller::Public::Base
     target_form = @piece.target_form
     return render(:text => '') unless target_form
 
-    @target_form_public_uri = "#{public_node.public_uri}#{target_form.name}"
+    @target_form_public_uri = "#{public_node.public_uri}#{target_form.name}?piece=true"
   end
 end

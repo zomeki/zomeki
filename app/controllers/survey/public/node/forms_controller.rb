@@ -1,6 +1,8 @@
 # encoding: utf-8
 class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   before_filter :set_form, only: [:show, :confirm_answers, :send_answers, :finish]
+  skip_filter :render_public_layout
+  after_filter :call_render_public_layout
 
   def pre_dispatch
     @node = Page.current_node
@@ -47,5 +49,9 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
     Page.current_item = @form
     Page.title = @form.title
+  end
+
+  def call_render_public_layout
+    render_public_layout unless params[:piece]
   end
 end
