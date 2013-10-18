@@ -41,12 +41,16 @@
             <%= image_tag @content.default_image %>
           <%- end -%>
         <%- else -%>
-          <%- if marker.doc.list_image.present? -%>
-            <%- file = marker.files.select {|f| f.id == marker.doc.list_image.to_i}.first || marker.files.first -%>
+          <%- if marker.doc.nil? %>
+            <%- file = marker.files.first -%>
           <%- else -%>
-            <%- marker.files.each do |f| -%>
-              <%- file = f and break if marker.doc.body.include?("file_contents/#{url_encode f.name}") -%>
-            <%- end -%>
+            <%- if marker.doc.list_image.present? -%>
+              <%- file = marker.files.select {|f| f.id == marker.doc.list_image.to_i}.first || marker.files.first -%>
+            <%- else -%>
+              <%- marker.files.each do |f| -%>
+                <%- file = f and break if marker.doc.body.include?("file_contents/#{url_encode f.name}") -%>
+              <%- end -%>
+            <%- end  -%>
           <%- end  -%>
           <%- if file -%>
             <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>

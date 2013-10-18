@@ -16,6 +16,10 @@
     <td><%=raw @item.lower_text %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :opened_at %></th>
     <td><%=l @item.opened_at rescue '' %></td>
   </tr>
