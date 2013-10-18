@@ -29,9 +29,13 @@
     <%= submit_tag '変更する', name: 'edit_answers' %>
 
     <%= hidden_field_tag :current_url %>
+    <%= hidden_field_tag :piece, true if params[:piece] -%>
   <%- end -%>
 </div>
 
+<%- if params[:piece] -%>
+<%= javascript_include_tag '/_common/js/jquery.min.js' %>
+<%- end -%>
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#current_url').closest('form').submit(function (event) {

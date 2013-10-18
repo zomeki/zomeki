@@ -34,7 +34,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
                 .deliver if @content.mail_from.present? && @content.mail_to.present?
 
-    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish"
+    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish#{'?piece=true' if params[:piece]}"
   end
 
   def finish
