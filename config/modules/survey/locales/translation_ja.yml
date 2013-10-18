@@ -27,3 +27,5 @@ ja:
       survey/form_answer:
         answered_url: 回答されたページ
         created_at: 回答日時
+        remote_addr: IPアドレス
+        user_agent: ユーザーエージェント

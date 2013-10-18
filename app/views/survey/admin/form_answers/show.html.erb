@@ -18,4 +18,20 @@
     </td>
   </tr>
   <%- end -%>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_at %></th>
+    <td><%=l @item.created_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :answered_url %></th>
+    <td><%=link_to @item.answered_url_title, @item.answered_url, target: 'preview' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :remote_addr %></th>
+    <td><%= @item.remote_addr %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :user_agent %></th>
+    <td><%= @item.user_agent %></td>
+  </tr>
 </table>
