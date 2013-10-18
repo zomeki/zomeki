@@ -55,7 +55,11 @@
           <%- if file -%>
             <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
           <%- else -%>
-            画像がありません。
+            <%- if @content.default_image.blank? -%>
+              画像がありません。
+            <%- else -%>
+              <%= image_tag @content.default_image %>
+            <%- end -%>
           <%- end -%>
         <%- end -%>
       </td>
