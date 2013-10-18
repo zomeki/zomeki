@@ -6,5 +6,13 @@
     <th>リンク先</th>
     <td><%= "#{@item.target_form.title}（#{@item.target_form.name}）" if @item.target_form %></td>
   </tr>
+  <tr>
+    <th>上部テキスト</th>
+    <td><%=raw @item.upper_text %></td>
+  </tr>
+  <tr>
+    <th>下部テキスト</th>
+    <td><%=raw @item.lower_text %></td>
+  </tr>
 </table>
 <%- end -%>

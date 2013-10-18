@@ -9,5 +9,15 @@
                                                        @item.target_form.try(:id)), include_blank: true %>
     </td>
   </tr>
+  <tr>
+    <th>上部テキスト</th>
+    <td class="cke_editor_wrapper"><%= text_area_tag :upper_text, @item.upper_text, class: 'ckeditor' %></td>
+  </tr>
+  <tr>
+    <th>下部テキスト</th>
+    <td class="cke_editor_wrapper"><%= text_area_tag :lower_text, @item.lower_text, class: 'ckeditor' %></td>
+  </tr>
 </table>
+
+<%= init_ckeditor %>
 <%- end -%>
