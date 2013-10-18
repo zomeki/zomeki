@@ -8,8 +8,6 @@ ja:
       survey/form:
         state: 状態
         title: フォーム名
-        upper_text: 上部テキスト
-        lower_text: 下部テキスト
         opened_at: 開始日時
         closed_at: 終了日時
         sort_no: 並び順
