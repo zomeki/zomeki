@@ -5,6 +5,8 @@ class Survey::Form < ActiveRecord::Base
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
 
+  default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
+
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'Survey::Content::Form'
   validates_presence_of :content_id
@@ -38,7 +40,8 @@ class Survey::Form < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
+    self.sort_no ||= 10                       if self.has_attribute?(:sort_no)
+    self.state   ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
   end
 
   def set_name
