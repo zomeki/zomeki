@@ -1,6 +1,8 @@
 class Survey::FormAnswer < ActiveRecord::Base
   include Sys::Model::Base
 
+  default_scope order("#{self.table_name}.created_at DESC")
+
   belongs_to :form
   validates_presence_of :form_id
 
