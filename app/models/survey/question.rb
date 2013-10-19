@@ -26,10 +26,6 @@ class Survey::Question < ActiveRecord::Base
     form.content
   end
 
-  def required=(new_required)
-    write_attribute(:required, !['false', '0', 'f', 'no'].include?(new_required))
-  end
-
   def form_options_for_select
     form_options.gsub("\r\n", "\n").gsub("\r", "\n").split("\n")
   end
