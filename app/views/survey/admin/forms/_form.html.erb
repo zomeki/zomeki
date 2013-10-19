@@ -36,6 +36,10 @@
     <td><%= f.text_field :closed_at, :value => value_for_datetimepicker(f.object_name, :closed_at),
                          :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
+  <tr>
+    <th><%= f.label :confirmation %></th>
+    <td><%= f.radio_buttons :confirmation, @item.class::CONFIRMATION_OPTIONS %></td>
+  </tr>
 </table>
 
 <%= javascript_tag do -%>
