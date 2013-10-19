@@ -19,24 +19,21 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def confirm_answers
-    @form_answer = @form.form_answers.build
-    @form_answer.question_answers = params[:question_answers]
-    render(action: 'show') unless @form_answer.valid?
+    build_answer
+
+    if @form_answer.form.confirmation?
+      render(action: 'show') unless @form_answer.valid?
+    else
+      save_answer_and_redirect_to_finish
+    end
   end
 
   def send_answers
-    @form_answer = @form.form_answers.build(answered_url: params[:current_url],
-                                            answered_url_title: params[:current_url_title],
-                                            remote_addr: request.remote_addr, user_agent: request.user_agent)
-    @form_answer.question_answers = params[:question_answers]
+    build_answer
 
     return render(action: 'show') if params[:edit_answers]
-    return render(action: 'show') unless @form_answer.save
 
-    CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
-                .deliver if @content.mail_from.present? && @content.mail_to.present?
-
-    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish#{'?piece=true' if params[:piece]}"
+    save_answer_and_redirect_to_finish
   end
 
   def finish
@@ -55,5 +52,21 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
   def call_render_public_layout
     render_public_layout unless params[:piece]
+  end
+
+  def build_answer
+    @form_answer = @form.form_answers.build(answered_url: params[:current_url].try(:sub, %r!/confirm_answers$!, ''),
+                                            answered_url_title: params[:current_url_title],
+                                            remote_addr: request.remote_addr, user_agent: request.user_agent)
+    @form_answer.question_answers = params[:question_answers]
+  end
+
+  def save_answer_and_redirect_to_finish
+    return render(action: 'show') unless @form_answer.save
+
+    CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
+                .deliver if @content.mail_from.present? && @content.mail_to.present?
+
+    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish#{'?piece=true' if params[:piece]}"
   end
 end
