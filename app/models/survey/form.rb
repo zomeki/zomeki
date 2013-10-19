@@ -4,6 +4,7 @@ class Survey::Form < ActiveRecord::Base
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+  CONFIRMATION_OPTIONS = [['あり', true], ['なし', false]]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
 
@@ -40,8 +41,9 @@ class Survey::Form < ActiveRecord::Base
   private
 
   def set_defaults
-    self.sort_no ||= 10                       if self.has_attribute?(:sort_no)
-    self.state   ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
+    self.state        = STATE_OPTIONS.first.last        if self.has_attribute?(:state) && self.state.nil?
+    self.confirmation = CONFIRMATION_OPTIONS.first.last if self.has_attribute?(:confirmation) && self.confirmation.nil?
+    self.sort_no      = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 
   def set_name

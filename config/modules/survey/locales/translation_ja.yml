@@ -15,6 +15,7 @@ ja:
         summary: 概要
         description: 説明
         receipt: 送信後のメッセージ
+        confirmation: 確認画面
       survey/question:
         state: 状態
         title: 項目名
