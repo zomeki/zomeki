@@ -4,6 +4,10 @@
     <td><%= @item.status.name %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :title %></th>
     <td><%= @item.title %></td>
   </tr>

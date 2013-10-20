@@ -18,12 +18,12 @@ class Survey::Form < ActiveRecord::Base
   has_many :questions, :dependent => :destroy
   has_many :form_answers, :dependent => :destroy
 
+  validates :name, :presence => true, :uniqueness => true, :format => {with: /^[-\w]*$/}
   validates :title, :presence => true
 
   validate :open_period
 
   after_initialize :set_defaults
-  before_save :set_name
 
   scope :public, where(state: 'public')
 
@@ -44,17 +44,6 @@ class Survey::Form < ActiveRecord::Base
     self.state        = STATE_OPTIONS.first.last        if self.has_attribute?(:state) && self.state.nil?
     self.confirmation = CONFIRMATION_OPTIONS.first.last if self.has_attribute?(:confirmation) && self.confirmation.nil?
     self.sort_no      = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
-  end
-
-  def set_name
-    return if self.name.present?
-    date = if created_at
-             created_at.strftime('%Y%m%d')
-           else
-             Date.strptime(Core.now, '%Y-%m-%d').strftime('%Y%m%d')
-           end
-    seq = Util::Sequencer.next_id('survey_forms', :version => date)
-    self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
   end
 
   def open_period
