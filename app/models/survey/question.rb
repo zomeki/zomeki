@@ -36,6 +36,7 @@ class Survey::Question < ActiveRecord::Base
     self.state     = STATE_OPTIONS.first.last     if self.has_attribute?(:state) && self.state.nil?
     self.form_type = FORM_TYPE_OPTIONS.first.last if self.has_attribute?(:form_type) && self.form_type.nil?
     self.required  = REQUIRED_OPTIONS.first.last  if self.has_attribute?(:required) && self.required.nil?
-    self.sort_no   = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
+    self.sort_no = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
+    self.form_text_max_length = 10 if self.has_attribute?(:form_text_max_length) && self.form_text_max_length.nil?
   end
 end

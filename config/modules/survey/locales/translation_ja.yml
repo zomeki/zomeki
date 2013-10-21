@@ -25,7 +25,8 @@ ja:
         style_attribute: スタイル（style=）
         required: 必須
         form_type: 種別
-        form_options: 選択候補（種別が選択の時に使用）
+        form_text_max_length: 最大文字数
+        form_options: 選択候補
       survey/form_answer:
         answered_url: 回答されたページ
         created_at: 回答日時

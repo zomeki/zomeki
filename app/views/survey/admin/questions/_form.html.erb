@@ -19,7 +19,11 @@
     <td><%= f.select :form_type, @item.class::FORM_TYPE_OPTIONS %></td>
   </tr>
   <tr>
-    <th><%= f.label :form_options %></th>
+    <th><%= f.label :form_text_max_length %><br />（種別が入力の時に使用）</th>
+    <td><%= f.text_field :form_text_max_length, :class => 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :form_options %><br />（種別が選択の時に使用）</th>
     <td><%= f.text_area :form_options, :size => '100x5' %></td>
   </tr>
   <tr>

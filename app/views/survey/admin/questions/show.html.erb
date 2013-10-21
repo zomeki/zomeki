@@ -16,7 +16,11 @@
     <td><%= @item.class::FORM_TYPE_OPTIONS.detect{|o| o.last == @item.form_type }.try(:first) %></td>
   </tr>
   <tr>
-    <th><%= @item.class.human_attribute_name :form_options %></th>
+    <th><%= @item.class.human_attribute_name :form_text_max_length %><br />（種別が入力の時に使用）</th>
+    <td><%= @item.form_text_max_length %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :form_options %><br />（種別が選択の時に使用）</th>
     <td><%=simple_format @item.form_options %></td>
   </tr>
   <tr>
