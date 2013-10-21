@@ -429,6 +429,7 @@ class GpArticle::Doc < ActiveRecord::Base
       EOT
 
       approval_request.current_assignments.map{|a| a.user unless a.state == 'approved' }.compact.each do |approver|
+        next if approval_request.user.email.blank? || approver.email.blank?
         CommonMailer.plain(from: approval_request.user.email, to: approver.email, subject: subject, body: body).deliver
       end
     end
@@ -446,6 +447,7 @@ class GpArticle::Doc < ActiveRecord::Base
   #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
       EOT
 
+      next if Core.user.email.blank? || approval_request.user.email.blank?
       CommonMailer.plain(from: Core.user.email, to: approval_request.user.email, subject: subject, body: body).deliver
     end
   end
