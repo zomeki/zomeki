@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131019021654) do
+ActiveRecord::Schema.define(:version => 20131020235113) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1207,8 +1207,9 @@ ActiveRecord::Schema.define(:version => 20131019021654) do
     t.boolean  "required"
     t.string   "style_attribute"
     t.integer  "sort_no"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+    t.integer  "form_text_max_length"
   end
 
   add_index "survey_questions", ["form_id"], :name => "index_survey_questions_on_form_id"
