@@ -20,7 +20,10 @@
     <td>
       <div style="margin-bottom: 10px;"><%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '-- グループを選択してください --', name: nil %></div>
 
-      <div style="float: left;"><%= select_tag 'candidates', options_for_select([]), multiple: true, style: 'height: 150px; width: 150px;' %></div>
+      <div style="float: left;">
+        ユーザ<br />
+        <%= select_tag 'candidates', options_for_select([]), multiple: true, style: 'height: 150px; width: 150px;' %>
+      </div>
       <div style="float: left; margin: 35px 10px; height: 70px;">
         <div><%= button_to_function '追加 ->', "$('#approvals_0 > option').attr('selected', false); $('#candidates > option:selected').clone(true).attr('selected', true).appendTo($('#approvals_0'));" %></div>
         <div style="margin-top: 20px;"><%= button_to_function '<- 除外', "$('#candidates > option').attr('selected', false); $('#approvals_0 > option:selected').appendTo($('#candidates'));" %></div>
@@ -44,6 +47,7 @@ function increase_approval() {
 
   new_approval.find(':disabled').removeAttr('disabled');
   new_approval.find('input.index').val(next_index)
+  new_approval.find('span.index').text(next_index + 1)
   new_approval.find('select.approvals').attr('id', new_approval.find('select.approvals').attr('id').replace('N', next_index));
   new_approval.find('select.approvals').attr('name', new_approval.find('select.approvals').attr('name').replace('N', next_index));
   new_approval.appendTo(approvals_wrapper).show();
