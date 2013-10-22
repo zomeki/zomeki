@@ -1,6 +1,4 @@
 <div class="surveyForm">
-  <h2><%= @form_answer.form.title %></h2>
-
   <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/send_answers") do |f| -%>
     <%- @form_answer.form.public_questions.each do |question| -%>
     <div class="question">
