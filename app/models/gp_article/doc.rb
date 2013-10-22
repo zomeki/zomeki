@@ -88,10 +88,24 @@ class GpArticle::Doc < ActiveRecord::Base
     docs = self.arel_table
 
     creators = Sys::Creator.arel_table
-    groups = Sys::Group.arel_table
-    users = Sys::User.arel_table
 
-    rel = self.joins(:creator => [:group, :user])
+    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank?
+            self.joins(:creator)
+          else
+            inners = []
+
+            if criteria[:group].present? || criteria[:group_id].present?
+              groups = Sys::Group.arel_table
+              inners << :group
+            end
+
+            if criteria[:user].present?
+              users = Sys::User.arel_table
+              inners << :user
+            end
+
+            self.joins(:creator => inners)
+          end
 
     rel = rel.where(docs[:content_id].eq(content.id)) if content.is_a?(GpArticle::Content::Doc)
 
@@ -151,8 +165,9 @@ class GpArticle::Doc < ActiveRecord::Base
     if criteria[:approvable].present?
       approval_requests = Approval::ApprovalRequest.arel_table
       assignments = Approval::Assignment.arel_table
-      rel = rel.joins(:approval_requests => :current_assignments).where(approval_requests[:user_id].eq(Core.user.id)
-                                                                        .or(assignments[:user_id].eq(Core.user.id)))
+      rel = rel.joins(:approval_requests => [:approval_flow => [:approvals => :assignments]])
+               .where(approval_requests[:user_id].eq(Core.user.id)
+                      .or(assignments[:user_id].eq(Core.user.id))).uniq
     end
 
     if criteria[:category_id].present?
@@ -462,6 +477,17 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def approvers
     approval_requests.inject([]){|u, r| u | r.current_assignments.map{|a| a.user unless a.approved_at }.compact }
+  end
+
+  def approval_participators
+    users = []
+    approval_requests.each do |approval_request|
+      users << approval_request.user
+      approval_request.approval_flow.approvals.each do |approval|
+        users.concat(approval.approvers)
+      end
+    end
+    return users.uniq
   end
 
   def approve(user)
