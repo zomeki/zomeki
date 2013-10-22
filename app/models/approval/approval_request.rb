@@ -22,9 +22,9 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   end
 
   def approve(user)
-    current_assignments.find_by_user_id(user.id).try(:update_column, :state, 'approved')
+    current_assignments.find_by_user_id(user.id).try(:update_attribute, :approved_at, Time.now)
     current_assignments.reload # to flush cache
-    if current_assignments.all?{|a| a.state == 'approved' }
+    if current_assignments.all?{|a| a.approved_at }
       if current_index == max_index
         yield('finish') if block_given?
       else
@@ -40,7 +40,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   end
 
   def finished?
-    current_index == max_index && current_assignments.all?{|a| a.state == 'approved' }
+    current_index == max_index && current_assignments.all?{|a| a.approved_at }
   end
 
   private
