@@ -134,10 +134,9 @@
         <th><%= Approval::ApprovalFlow.model_name.human %></th>
         <td>
           <%- unless @item.approval_requests.empty? -%>
-          <table class="approval">
+          <table class="approval noDesign">
             <%- @item.approval_requests.each do |approval_request| -%>
             <tr>
-              <th><%= approval_request.approval_flow.title %></th>
               <td><%= approval_request.approval_flow.approvals.map{|a|
                 approvers = a.approvers.pluck(:name).join('、')
                 a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;') : content_tag(:span, approvers, style: 'padding: 4px;')

@@ -189,11 +189,19 @@
     <table class="show">
       <tr>
         <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td>
-          <%- @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]).each do |approval_flow| -%>
-            <%#= check_box_tag 'approval_flows[]', approval_flow.id, @item.approval_requests.find_by_approval_flow_id(approval_flow.id), id: "approval_flows_#{approval_flow.id}" %>
-            <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
-            <%= label_tag "approval_flows_#{approval_flow.id}", approval_flow.title %>
+        <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
+          <%- unless approval_flows.empty? -%>
+          <table class="approval noDesign">
+            <%- approval_flows.each do |approval_flow| -%>
+            <tr>
+              <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+              <td><%= approval_flow.approvals.map{|a|
+                approvers = a.approvers.pluck(:name).join('、')
+                content_tag(:span, approvers, style: 'padding: 4px;')
+                }.join(' ＞ ').html_safe %></td>
+            </tr>
+            <%- end -%>
+          </table>
           <%- end -%>
         </td>
       </tr>
