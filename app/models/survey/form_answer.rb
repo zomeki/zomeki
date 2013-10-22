@@ -14,7 +14,7 @@ class Survey::FormAnswer < ActiveRecord::Base
     if qa.kind_of?(Hash)
       qa.each do |key, value|
         next unless question = form.questions.find_by_id(key)
-        answers.build(question: question, content: value.kind_of?(Array) ? value.join(',') : value)
+        answers.build(question: question, content: value.kind_of?(Array) ? value.reject{|v| v.blank? }.join(',') : value)
       end
     end
     return qa
