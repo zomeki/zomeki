@@ -1,8 +1,12 @@
-<%=raw @piece.upper_text %>
+<%- if @piece.upper_text.present? -%>
+<div class="upper_text"><%=raw @piece.upper_text %></div>
+<%- end -%>
 
 <iframe src="<%= @target_form_public_uri %>" style="width: 100%; height: 100%;" class="survey"></iframe>
 
-<%=raw @piece.lower_text %>
+<%- if @piece.lower_text.present? -%>
+<div class="lower_text"><%=raw @piece.lower_text %></div>
+<%- end -%>
 
 <%= javascript_tag do -%>
 $(document).ready(function () {
