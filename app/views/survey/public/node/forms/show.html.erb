@@ -48,11 +48,13 @@
     </div>
     <%- end -%>
 
-    <%- if @form_answer.form.confirmation? -%>
-    <%= submit_tag '確認画面へ' %>
-    <%- else -%>
-    <%= submit_tag '送信', confirm: '送信してもよろしいですか？', disable_with: '送信中...' %>
-    <%- end -%>
+    <div class="submit">
+      <%- if @form_answer.form.confirmation? -%>
+      <%= submit_tag '確認画面へ' %>
+      <%- else -%>
+      <%= submit_tag '送信', confirm: '送信してもよろしいですか？', disable_with: '送信中...' %>
+      <%- end -%>
+    </div>
 
     <%= hidden_field_tag :current_url, @form_answer.answered_url %>
     <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
