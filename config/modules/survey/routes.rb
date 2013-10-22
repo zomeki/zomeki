@@ -14,6 +14,9 @@ ZomekiCMS::Application.routes.draw do
     resources(:forms,
       :controller => 'admin/forms',
       :path       => ':content/forms') do
+      member do
+        get :download_form_answers
+      end
       resources :questions,
         :controller => 'admin/questions'
       resources :form_answers, :only => [:index, :show],

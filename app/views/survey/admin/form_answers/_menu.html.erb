@@ -2,4 +2,8 @@
 
 <div class="actionMenu">
   <%= action_menu :index, survey_form_form_answers_path(content: @content, form_id: @form.id) %>
+  <%- if action_name == 'index' -%>
+  <%= link_to '戻る', survey_forms_path(content: @content) %>
+  <%= link_to 'CSV出力', download_form_answers_survey_form_path(content: @content, id: @form.id) %>
+  <%- end -%>
 </div>
