@@ -55,6 +55,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     when 'publishable'
       criteria[:recognizable] = true
       criteria[:state] = 'recognized'
+    when 'approvable'
+      criteria[:approvable] = true
+      criteria[:state] = 'recognize'
+    when 'approved'
+      criteria[:approvable] = true
+      criteria[:state] = 'recognized'
     else
       criteria[:editable] = true
     end

@@ -148,6 +148,13 @@ class GpArticle::Doc < ActiveRecord::Base
             end
     end
 
+    if criteria[:approvable].present?
+      approval_requests = Approval::ApprovalRequest.arel_table
+      assignments = Approval::Assignment.arel_table
+      rel = rel.joins(:approval_requests => :current_assignments).where(approval_requests[:user_id].eq(Core.user.id)
+                                                                        .or(assignments[:user_id].eq(Core.user.id)))
+    end
+
     if criteria[:category_id].present?
       cats = GpCategory::Categorization.arel_table
 
