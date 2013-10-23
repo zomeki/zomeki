@@ -239,6 +239,10 @@ class GpArticle::Doc < ActiveRecord::Base
     state == 'recognize'
   end
 
+  def state_recognized?
+    state == 'recognized'
+  end
+
   def state_public?
     state == 'public'
   end
