@@ -30,6 +30,9 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
       @docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
                             .order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: @content.category_type_docs_number)
       return true if render_feed(@docs)
+      return http_error(404) if @docs.current_page > @docs.total_pages
+    else
+      return http_error(404) if params[:page].to_i > 1
     end
 
     if Page.mobile?
