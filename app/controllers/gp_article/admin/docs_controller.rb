@@ -18,6 +18,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @event_category_types = @content.event_category_types
     @marker_category_types = @content.marker_category_types
     @item = @content.docs.find(params[:id]) if params[:id].present?
+    @params_categories = params[:categories].kind_of?(Hash) ? params[:categories] : {}
   end
 
   def index

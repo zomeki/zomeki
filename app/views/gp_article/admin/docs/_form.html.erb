@@ -105,9 +105,16 @@
           <div id="category_type_<%= category_type.id %>_categories">
             <%= render 'category', category_type: category_type, category: nil,
                                    categories_for_option: category_type.categories_for_option %>
-            <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
-            <%= render 'category', category_type: category_type, category: category,
-                                   categories_for_option: category_type.categories_for_option %>
+            <%- if (pc = @params_categories[category_type.id.to_s]).kind_of?(Array) -%>
+              <%- pc.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+              <%= render 'category', category_type: category_type, category: category,
+                                     categories_for_option: category_type.categories_for_option %>
+              <%- end -%>
+            <%- else -%>
+              <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+              <%= render 'category', category_type: category_type, category: category,
+                                     categories_for_option: category_type.categories_for_option %>
+              <%- end -%>
             <%- end -%>
             <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
           </div>
