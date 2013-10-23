@@ -4,20 +4,16 @@
 <table class="show">
   <tr>
     <th>リンク先</th>
-    <td>
-      <%= select_tag 'target_form', options_for_select(@item.content.public_forms.map{|f| ["#{f.title}（#{f.name}）", f.id] },
-                                                       @item.target_form.try(:id)), include_blank: true %>
-    </td>
+    <td><%= f.array_select 'in_settings[target_form_id]',
+                           @item.content.public_forms.map{|f| ["#{f.title}（#{f.name}）", f.id] }, include_blank: true %></td>
   </tr>
   <tr>
     <th>上部テキスト</th>
-    <td class="cke_editor_wrapper"><%= text_area_tag :upper_text, @item.upper_text, class: 'ckeditor' %></td>
+    <td><%= f.array_text_area 'in_settings[upper_text]', class: 'body' %></td>
   </tr>
   <tr>
     <th>下部テキスト</th>
-    <td class="cke_editor_wrapper"><%= text_area_tag :lower_text, @item.lower_text, class: 'ckeditor' %></td>
+    <td><%= f.array_text_area 'in_settings[lower_text]', class: 'body' %></td>
   </tr>
 </table>
-
-<%= init_ckeditor %>
 <%- end -%>
