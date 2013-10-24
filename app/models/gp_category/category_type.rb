@@ -6,6 +6,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
 
+  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'display_published_at DESC, published_at DESC'], ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
@@ -129,8 +130,9 @@ class GpCategory::CategoryType < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state         ||= 'public'                         if self.has_attribute?(:state)
-    self.sort_no       ||= 10                               if self.has_attribute?(:sort_no)
-    self.sitemap_state ||= SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state)
+    self.state         = STATE_OPTIONS.first.last         if self.has_attribute?(:state) && self.state.nil?
+    self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
+    self.docs_order    = DOCS_ORDER_OPTIONS.first.last    if self.has_attribute?(:docs_order) && self.docs_order.nil?
+    self.sort_no = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 end
