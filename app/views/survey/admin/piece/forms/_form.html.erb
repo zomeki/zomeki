@@ -3,16 +3,25 @@
 
 <table class="show">
   <tr>
-    <th>リンク先</th>
+    <th><%= f.label :target_form_id %></th>
     <td><%= f.array_select 'in_settings[target_form_id]',
                            @item.content.public_forms.map{|f| ["#{f.title}（#{f.name}）", f.id] }, include_blank: true %></td>
   </tr>
+</table>
+
+<p class="form">挿入テキスト</p>
+
+<table class="show">
   <tr>
-    <th>上部テキスト</th>
+    <th><%= f.label :upper_text %></th>
+  </tr>
+  <tr>
     <td><%= f.array_text_area 'in_settings[upper_text]', class: 'body' %></td>
   </tr>
   <tr>
-    <th>下部テキスト</th>
+    <th><%= f.label :lower_text %></th>
+  </tr>
+  <tr>
     <td><%= f.array_text_area 'in_settings[lower_text]', class: 'body' %></td>
   </tr>
 </table>
