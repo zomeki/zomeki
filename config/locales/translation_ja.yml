@@ -33,6 +33,7 @@ ja:
 
   will_paginate:
     page_gap: " || "
+
   comments:
     doc_style: <p><strong>タイトル：</strong>@title@ <strong>サブタイトル：</strong>@subtitle@ <strong>公開日時：</strong>@publish_date@ <strong>更新日時：</strong>@update_date@ <strong>概要：</strong>@summary@<br /><strong>組織：</strong>@group@ <strong>カテゴリ（リンクなし）：</strong>@category@ <strong>カテゴリ（リンクあり）：</strong>@category_link@ <strong>添付画像：</strong>@image@</p>
     list_style: <strong>日付：</strong>@date@ <strong>タイトル：</strong>@title@ <strong>組織：</strong>@group@ <strong>カテゴリ：</strong>@category@

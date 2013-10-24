@@ -57,4 +57,5 @@ group :development, :test do
   gem 'factory_girl_rails', '~> 4.2.1', require: false
   gem 'email_spec', '~> 1.4.0'
   gem 'rails_best_practices'
+  gem 'i18n_generators'
 end
