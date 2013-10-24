@@ -32,3 +32,7 @@ ja:
         created_at: 回答日時
         remote_addr: IPアドレス
         user_agent: ユーザーエージェント
+      survey/piece/form:
+        target_form_id: リンク先
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト
