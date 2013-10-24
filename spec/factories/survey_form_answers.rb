@@ -2,6 +2,6 @@
 
 FactoryGirl.define do
   factory :survey_form_answer_1, :class => 'Survey::FormAnswer' do
-    association :form, :factory => :survey_form_1
+    association :form, :factory => :survey_form_2
   end
 end
