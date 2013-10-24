@@ -1,10 +1,4 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_view @item, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'survey/admin/piece/shared/show') do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
@@ -18,7 +12,6 @@
   </tr>
 </table>
 
-<br />
 <p class="form">挿入テキスト</p>
 
 <table class="show">
@@ -35,5 +28,4 @@
     <td><%= @item.setting_value(:lower_text) %></td>
   </tr>
 </table>
-
-<%= creator_view @item %>
+<%- end -%>
