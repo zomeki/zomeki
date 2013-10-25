@@ -91,10 +91,10 @@ module GpArticle::Controller::Feed
           doc.inquiries.each do |inquiry|
             if inquiry.group.present? || inquiry.email.present?
               xml.author do |auth|
-                name  = inquiry.group.full_name
+                name  = inquiry.group.try(:full_name) || ''
                 name += "　#{inquiry.charge}" if inquiry.charge.present?
-                auth.name  "#{name}"
-                auth.email "#{inquiry.email}"
+                auth.name  "#{name}" if name.present?
+                auth.email "#{inquiry.email}" if inquiry.email.present?
               end
             end
           end
