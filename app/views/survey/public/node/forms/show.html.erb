@@ -1,5 +1,5 @@
 <div class="surveyForm">
-  <% if @form_answer.form.description.present? %><div class="description"><%=raw @form_answer.form.description %></div><% end %>
+  <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
   <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
     <%= f.error_messages %>
@@ -41,7 +41,7 @@
         </div>
 
         <%- if question.description.present? -%>
-        <div class="description"><%=raw question.description %></div>
+        <div class="body"><%=raw question.description %></div>
         <%- end -%>
       </div>
       <%- end -%>
