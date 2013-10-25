@@ -32,6 +32,7 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
       return true if render_feed(@docs)
       return http_error(404) if @docs.current_page > @docs.total_pages
     else
+      return http_error(404) if params[:format].in?('rss', 'atom')
       return http_error(404) if params[:page].to_i > 1
     end
 

@@ -5,8 +5,10 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
     path = "#{@node.public_path}"
     publish_more(@node, :uri => uri, :path => path, :first => 2, :dependent => :more)
 
-    feed_piece_ids = @node.layout.pieces.select{|piece| piece.model == 'GpCategory::Feed'}.map(&:id)
-    @feed_pieces = GpCategory::Piece::Feed.where(:id => feed_piece_ids).all
+    if @node.layout
+      feed_piece_ids = @node.layout.pieces.select{|piece| piece.model == 'GpCategory::Feed'}.map(&:id)
+      @feed_pieces = GpCategory::Piece::Feed.where(:id => feed_piece_ids).all
+    end
 
     @node.content.public_category_types.each do |category_type|
       uri  = "#{@node.public_uri}#{category_type.name}/"
@@ -31,15 +33,18 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
 
     publish_page(cat.category_type, :uri => "#{uri}index.rss", :path => "#{path}index.rss", :dependent => "#{cat_path}rss")
     publish_page(cat.category_type, :uri => "#{uri}index.atom", :path => "#{path}index.atom", :dependent => "#{cat_path}atom")
-    @feed_pieces.each do |piece|
-      rss = piece.public_feed_uri('rss')
-      atom = piece.public_feed_uri('atom')
-      publish_page(cat.category_type, :uri => "#{uri}#{rss}", :path => "#{path}#{rss}", :dependent => "#{cat_path}#{rss}")
-      publish_page(cat.category_type, :uri => "#{uri}#{atom}", :path => "#{path}#{atom}", :dependent => "#{cat_path}#{atom}")
-    end
     publish_more(cat.category_type, :uri => uri, :path => path, :dependent => "#{cat_path}more")
     publish_more(cat.category_type, :uri => uri, :path => path, :file => 'more', :dependent => "#{cat_path}more_docs")
 
+    if @feed_pieces
+      @feed_pieces.each do |piece|
+        rss = piece.public_feed_uri('rss')
+        atom = piece.public_feed_uri('atom')
+        publish_page(cat.category_type, :uri => "#{uri}#{rss}", :path => "#{path}#{rss}", :dependent => "#{cat_path}#{rss}")
+        publish_page(cat.category_type, :uri => "#{uri}#{atom}", :path => "#{path}#{atom}", :dependent => "#{cat_path}#{atom}")
+      end
+    end
+    
     cat.public_children.each do |c|
       publish_category(c)
     end
