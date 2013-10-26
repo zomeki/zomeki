@@ -62,6 +62,7 @@
           <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
         </td>
       </tr>
+<%- if false -%>
       <%- unless @item.body_histories.empty? -%>
       <tr>
         <th>履歴</th>
@@ -80,6 +81,7 @@
         </td>
       </tr>
       <%- end -%>
+<%- end -%>
     </table>
 
     <p class="form">添付ファイル</p>
