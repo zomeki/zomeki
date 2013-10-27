@@ -117,6 +117,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      @item.approval_requests.destroy_all if @item.state_recognize?
       set_approval_requests
 
       @item.fix_tmp_files(params[:_tmp])
@@ -165,6 +166,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      @item.approval_requests.destroy_all if @item.state_recognize?
       set_approval_requests
 
       @item.send_approval_request_mail if @item.state_recognize?
