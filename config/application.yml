@@ -11,3 +11,7 @@ sys:
 cms:
   #ページ数付きページ書き出し数
   publish_more_pages: 0
+
+gp_article:
+  #携帯向け内容制限[Bytes]
+  body_limit_for_mobile: 81920
