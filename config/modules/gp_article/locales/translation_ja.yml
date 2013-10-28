@@ -23,8 +23,8 @@ ja:
         event_started_on: イベント開始日
         event_ended_on: イベント終了日
         raw_tags: 関連ワード
-        mobile_title: タイトル
-        mobile_body: 内容
+        mobile_title: 携帯用タイトル
+        mobile_body: 携帯用内容
         terminal_pc_or_smart_phone: PC・スマートフォン
         terminal_mobile: 携帯
         in_editable_groups: 編集可能グループ

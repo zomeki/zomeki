@@ -13,5 +13,5 @@ cms:
   publish_more_pages: 0
 
 gp_article:
-  #携帯向け内容制限[Bytes]
-  body_limit_for_mobile: 81920
+  #携帯用内容制限[Bytes]
+  body_limit_for_mobile: 20
