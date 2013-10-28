@@ -14,10 +14,7 @@
 <div class="body"><%=raw (unless Page.mobile?
   @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
 else
-  body_doc = Nokogiri::XML("<bory_root>#{@item.mobile_body.presence || @item.body}</bory_root>")
-  body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value).to_s) }
-  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
-  body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
+  @item.body_for_mobile
 end) %></div>
 
 <%- unless Page.mobile? -%>

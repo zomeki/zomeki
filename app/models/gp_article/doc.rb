@@ -68,10 +68,11 @@ class GpArticle::Doc < ActiveRecord::Base
   validate :node_existence
   validate :event_dates_range
   validate :broken_link_existence, :unless => :state_draft?
-  
+  validate :body_limit_for_mobile
+
   #validate :validate_word_dictionary, :unless => :state_draft?
   validate :validate_accessibility_check, :unless => :state_draft?
-  
+
   after_initialize :set_defaults
   after_save :set_tags
   after_save :set_display_attributes
@@ -508,7 +509,6 @@ class GpArticle::Doc < ActiveRecord::Base
     update_column(:state, 'recognized') if approval_requests.all?{|r| r.finished? }
   end
 
-  begin
   def validate_word_dictionary
     dic = content.setting_value(:word_dictionary)
     return if dic.blank?
@@ -527,8 +527,14 @@ class GpArticle::Doc < ActiveRecord::Base
       words.each {|src, dst| self.mobile_body = mobile_body.gsub(src, dst) }
     end
   end
-end
-  
+
+  def body_for_mobile
+    body_doc = Nokogiri::XML("<bory_root>#{self.mobile_body.presence || self.body}</bory_root>")
+    body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value).to_s) }
+    body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
+    body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
+  end
+
   private
 
   def set_name
@@ -655,5 +661,11 @@ end
       body_histories.offset(3).destroy_all
       body_histories.create(body: self.body)
     end
+  end
+
+  def body_limit_for_mobile
+    return if self.mobile_body.present?
+    limit = Zomeki.config.application['gp_article.body_limit_for_mobile'].to_i
+    errors.add(:body, "が携帯向け容量制限#{limit}バイトを超えています。") if self.body_for_mobile.bytesize > limit
   end
 end
