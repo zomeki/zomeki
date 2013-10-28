@@ -14,4 +14,4 @@ cms:
 
 gp_article:
   #携帯用内容制限[Bytes]
-  body_limit_for_mobile: 20
+  body_limit_for_mobile: 81920
