@@ -665,9 +665,10 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def body_limit_for_mobile
     limit = Zomeki.config.application['gp_article.body_limit_for_mobile'].to_i
-    if self.body_for_mobile.bytesize > limit
+    current_size = self.body_for_mobile.bytesize
+    if current_size > limit
       target = self.mobile_body.present? ? :mobile_body : :body
-      errors.add(target, "が携帯向け容量制限#{limit}バイトを超えています。")
+      errors.add(target, "が携帯向け容量制限#{limit}バイトを超えています。（現在#{current_size}バイト）")
     end
   end
 end
