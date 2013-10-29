@@ -31,7 +31,8 @@ class Survey::FormAnswer < ActiveRecord::Base
     errors.keys.each{|k| errors.delete(k) unless [:base, :form_id].include?(k) }
     answers.each do |answer|
       if ['text_field', 'text_area'].include?(answer.question.form_type)
-        errors.add(:base, "#{answer.question.title}は#{answer.question.form_text_max_length}文字以内で入力してください。") if answer.content.size > answer.question.form_text_max_length
+        max = answer.question.form_text_max_length
+        errors.add(:base, "#{answer.question.title}は#{max}文字以内で入力してください。") if max && max < answer.content.size
       end
       errors.add(:base, "#{answer.question.title}を入力してください。") if answer.question.required? && answer.content.blank?
     end
