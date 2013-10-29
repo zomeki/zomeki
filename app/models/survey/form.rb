@@ -3,7 +3,7 @@ class Survey::Form < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Cms::Model::Auth::Content
 
-  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+  STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'approvable'], ['即時公開', 'public']]
   CONFIRMATION_OPTIONS = [['あり', true], ['なし', false]]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
@@ -17,6 +17,7 @@ class Survey::Form < ActiveRecord::Base
 
   has_many :questions, :dependent => :destroy
   has_many :form_answers, :dependent => :destroy
+  has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => true, :format => {with: /^[-\w]*$/}
   validates :title, :presence => true
@@ -36,6 +37,92 @@ class Survey::Form < ActiveRecord::Base
     return false if opened_at && opened_at > now
     return false if closed_at && closed_at < now
     return true
+  end
+
+  def state_options
+    options = STATE_OPTIONS
+    options.reject!{|o| o.last == 'public' } unless Core.user.has_auth?(:manager)
+    options.reject!{|o| o.last == 'approvable' } unless content.approval_related?
+    return options
+  end
+
+  def state_draft?
+    state == 'draft'
+  end
+
+  def state_approvable?
+    state == 'approvable'
+  end
+
+  def state_approved?
+    state == 'approved'
+  end
+
+  def state_public?
+    state == 'public'
+  end
+
+  def send_approval_request_mail
+    approve_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
+
+    approval_requests.each do |approval_request|
+      approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
+        next if approval_request.user.email.blank? || approver.email.blank?
+        CommonMailer.approval_request(approval_request: approval_request, approve_url: approve_url,
+                                      from: approval_request.user.email, to: approver.email).deliver
+      end
+    end
+  end
+
+  def send_approved_notification_mail
+    publish_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
+
+    approval_requests.each do |approval_request|
+      next unless approval_request.finished?
+
+      approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
+      next if approver.email.blank? || approval_request.user.email.blank?
+      CommonMailer.approved_notification(approval_request: approval_request, publish_url: publish_url,
+                                         from: approver.email, to: approval_request.user.email).deliver
+    end
+  end
+
+  def approvers
+    approval_requests.inject([]){|u, r| u | r.current_assignments.map{|a| a.user unless a.approved_at }.compact }
+  end
+
+  def approval_participators
+    users = []
+    approval_requests.each do |approval_request|
+      users << approval_request.user
+      approval_request.approval_flow.approvals.each do |approval|
+        users.concat(approval.approvers)
+      end
+    end
+    return users.uniq
+  end
+
+  def approve(user)
+    return unless state_approvable?
+
+    approval_requests.each do |approval_request|
+      approval_request.approve(user) do |state|
+        case state
+        when 'progress'
+          send_approval_request_mail
+        when 'finish'
+          send_approved_notification_mail
+        end
+      end
+    end
+
+    update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
+  end
+
+  def publish
+    return unless state_approved?
+    approval_requests.destroy_all
+    update_column(:state, 'public')
   end
 
   private

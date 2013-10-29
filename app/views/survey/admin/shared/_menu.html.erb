@@ -6,4 +6,8 @@
   <%= action_menu :show %>
   <%= action_menu :edit if @item.try(:editable?) %>
   <%= action_menu :destroy if @item.try(:deletable?) %>
+  <%- if action_name == 'show' -%>
+  <%= link_to '承認', approve_survey_form_path, :method => :post, :confirm => '承認してもよろしいですか？' if @item.state_approvable? && @item.approvers.include?(Core.user) %>
+  <%= link_to '公開', publish_survey_form_path, :method => :post, :confirm => '公開してもよろしいですか？' if @item.state_approved? && @item.approval_participators.include?(Core.user) %>
+  <%- end -%>
 </div>

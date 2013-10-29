@@ -21,6 +21,18 @@ class Survey::Admin::Content::SettingsController < Cms::Controller::Admin::Base
   def update
     @item = Survey::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
+
+    if ['approval_relation'].include?(@item.name)
+      extra_values = @item.extra_values
+
+      case @item.name
+      when 'approval_relation'
+        extra_values[:approval_content_id] = params[:approval_content_id].to_i
+      end
+
+      @item.extra_values = extra_values
+    end
+
     _update @item
   end
 end
