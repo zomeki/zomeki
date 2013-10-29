@@ -3,10 +3,6 @@
 
 <table class="show">
   <tr>
-    <th><%= f.label :state %></th>
-    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
-  </tr>
-  <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :class => 'name' %>（使用可能文字： 半角英数字,_,-）</td>
   </tr>
@@ -45,6 +41,35 @@
     <td><%= f.radio_buttons :confirmation, @item.class::CONFIRMATION_OPTIONS %></td>
   </tr>
 </table>
+
+<%- if @content.approval_related? -%>
+<p class="form">承認</p>
+
+<table class="show">
+  <tr>
+    <th><%= Approval::ApprovalFlow.model_name.human %></th>
+    <%- if @content.approval_content_approval_flow -%>
+    <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
+      <%- unless approval_flows.empty? -%>
+      <table class="approval noDesign">
+        <%- approval_flows.each do |approval_flow| -%>
+        <tr>
+          <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+          <td><%= approval_flow.approvals.map{|a|
+            approvers = a.approvers.pluck(:name).join('、')
+            content_tag(:span, approvers, style: 'padding: 4px;')
+            }.join(' ＞ ').html_safe %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    </td>
+    <%- else -%>
+    <td><%= link_to '使用する承認フローを選択してください。', survey_content_settings_path %></td>
+    <%- end -%>
+  </tr>
+</table>
+<%- end -%>
 
 <%= javascript_tag do -%>
 $(document).ready(function () {
