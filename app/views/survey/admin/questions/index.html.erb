@@ -2,12 +2,16 @@
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
     <th><%= Survey::Question.human_attribute_name :title %></th>
+    <th><%= Survey::Question.human_attribute_name :form_type %></th>
+    <th><%= Survey::Question.human_attribute_name :required %></th>
     <th style="text-align: center; width: 80px;"><%= Survey::Question.human_attribute_name :sort_no %></th>
   </tr>
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, survey_form_question_path(content: @content, form_id: @form.id, id: item.id) %></td>
     <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: left;"><%= item.class::FORM_TYPE_OPTIONS.detect{|o| o.last == item.form_type }.try(:first) %></td>
+    <td style="text-align: left;"><%= item.class::REQUIRED_OPTIONS.detect{|o| o.last == item.required }.try(:first) %></td>
     <td style="text-align: right;"><%= item.sort_no %></td>
   </tr>
   <%- end -%>

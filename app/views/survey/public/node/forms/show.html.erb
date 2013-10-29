@@ -17,10 +17,14 @@
           <%- case question.form_type -%>
           <%- when 'text_field' -%>
             <%= text_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute %>
+            <%- if question.form_text_max_length -%>
             <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>
+            <%- end -%>
           <%- when 'text_area' -%>
             <%= text_area_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute, size: '100x10' %>
+            <%- if question.form_text_max_length -%>
             <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>
+            <%- end -%>
           <%- when 'select' -%>
             <%= select_tag "question_answers[#{question.id}]",
                            options_for_select(question.form_options_for_select, @form_answer.detect_answer_by_question(question).try(:content)), style: question.style_attribute,
