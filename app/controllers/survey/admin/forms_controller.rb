@@ -29,7 +29,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
 
     @item = @content.forms.build(params[:item])
 
-    @item.state = new_state if new_state.present?
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
     return render(:action => :edit) unless @item.errors.empty?
@@ -47,7 +47,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
 
     @item.attributes = params[:item]
 
-    @item.state = new_state if new_state.present?
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
     return render(:action => :edit) unless @item.errors.empty?
