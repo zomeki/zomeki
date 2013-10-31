@@ -8,6 +8,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
   def pre_dispatch
     return error_auth unless @content = Survey::Content::Form.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
+    @item = @content.forms.find(params[:id]) if params[:id].present?
   end
 
   def index
@@ -16,7 +17,6 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
   end
 
   def show
-    @item = @content.forms.find(params[:id])
     _show @item
   end
 
@@ -25,24 +25,46 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
   end
 
   def create
+    new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
+
     @item = @content.forms.build(params[:item])
-    _create @item
+
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
+
+    validate_approval_requests if @item.state_approvable?
+    return render(:action => :edit) unless @item.errors.empty?
+
+    location = url_for(action: 'edit') if @item.state_draft?
+    _create(@item, location: location) do
+      @item.approval_requests.destroy_all if @item.state_approvable?
+      set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+    end
   end
 
   def update
-    @item = @content.forms.find(params[:id])
+    new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
+
     @item.attributes = params[:item]
-    _update @item
+
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
+
+    validate_approval_requests if @item.state_approvable?
+    return render(:action => :edit) unless @item.errors.empty?
+
+    location = url_for(action: 'edit') if @item.state_draft?
+    _update(@item, location: location) do
+      @item.approval_requests.destroy_all if @item.state_approvable?
+      set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+    end
   end
 
   def destroy
-    @item = @content.forms.find(params[:id])
     _destroy @item
   end
 
   def download_form_answers
-    @item = @content.forms.find(params[:id])
-
     csv_string = CSV.generate do |csv|
       header = [Survey::FormAnswer.human_attribute_name(:created_at),
                 "#{Survey::FormAnswer.human_attribute_name(:answered_url)}URL",
@@ -69,5 +91,44 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
 
     send_data csv_string.encode(Encoding::WINDOWS_31J, :invalid => :replace, :undef => :replace),
               type: Rack::Mime.mime_type('.csv'), filename: 'answers.csv'
+  end
+
+  def approve
+    @item.approve(Core.user) if @item.state_approvable? && @item.approvers.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
+  end
+
+  def publish
+    @item.publish if @item.state_approved? && @item.approval_participators.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '公開処理が完了しました。'
+  end
+
+  private
+
+  def set_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    approval_flow_ids.each do |approval_flow_id|
+      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+    end
+
+    @item.approval_requests.each do |approval_request|
+      approval_request.destroy unless approval_flow_ids.include?(approval_request.approval_flow_id)
+    end
+  end
+
+  def validate_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
   end
 end

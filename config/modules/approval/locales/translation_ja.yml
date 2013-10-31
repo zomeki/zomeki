@@ -1,6 +1,7 @@
 ja:
   activerecord:
     models:
+      approval/content/approval_flow: 承認フロー
       approval/approval_flow: 承認フロー
     attributes:
       approval/approval_flow:
