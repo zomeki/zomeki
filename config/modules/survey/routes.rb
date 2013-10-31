@@ -16,6 +16,8 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':content/forms') do
       member do
         get :download_form_answers
+        post :approve
+        post :publish
       end
       resources :questions,
         :controller => 'admin/questions'

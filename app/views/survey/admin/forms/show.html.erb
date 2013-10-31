@@ -40,3 +40,32 @@
     <td><%= @item.class::CONFIRMATION_OPTIONS.detect{|o| o.last == @item.confirmation }.try(:first) %></td>
   </tr>
 </table>
+
+<%- if @content.approval_related? -%>
+<p class="form">承認</p>
+
+<table class="show">
+  <tr>
+    <th><%= Approval::ApprovalFlow.model_name.human %></th>
+    <%- if @content.approval_content_approval_flow -%>
+    <td>
+      <%- unless @item.approval_requests.empty? -%>
+      <table class="approval noDesign">
+        <%- @item.approval_requests.each do |approval_request| -%>
+        <tr>
+          <td><%= approval_request.approval_flow.approvals.map{|a|
+            approvers = a.approvers.pluck(:name).join('、')
+            a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;') :
+                                                     content_tag(:span, approvers, style: 'padding: 4px;')
+            }.join(' ＞ ').html_safe %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    </td>
+    <%- else -%>
+    <td><%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %></td>
+    <%- end -%>
+  </tr>
+</table>
+<%- end -%>

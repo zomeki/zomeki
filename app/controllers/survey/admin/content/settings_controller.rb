@@ -21,6 +21,11 @@ class Survey::Admin::Content::SettingsController < Cms::Controller::Admin::Base
   def update
     @item = Survey::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
+
+    @item.extra_values do |ev|
+      ev[:approval_content_id] = params[:approval_content_id].to_i
+    end
+
     _update @item
   end
 end

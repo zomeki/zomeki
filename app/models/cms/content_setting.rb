@@ -86,9 +86,14 @@ class Cms::ContentSetting < ActiveRecord::Base
   end
 
   def extra_values
-    return {}.with_indifferent_access unless self.extra_value.is_a?(String)
-    ev = YAML.load(self.extra_value)
-    return {}.with_indifferent_access unless ev.is_a?(Hash)
-    return ev.with_indifferent_access
+    ev_string = self.extra_value
+    ev = ev_string.kind_of?(String) ? YAML.load(ev_string) : {}.with_indifferent_access
+    ev = {}.with_indifferent_access unless ev.kind_of?(Hash)
+    ev = ev.with_indifferent_access unless ev.kind_of?(ActiveSupport::HashWithIndifferentAccess)
+    if block_given?
+      yield ev
+      self.extra_values = ev
+    end
+    return ev
   end
 end

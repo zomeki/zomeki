@@ -18,4 +18,32 @@ class CommonMailer < ActionMailer::Base
          to: to,
          subject: "【#{form_answer.form.content.site.name.presence || 'ZOMEKI'}】回答が届きました。"
   end
+
+  def approval_request(approval_request: nil, approve_url: nil, from: nil, to: nil)
+    raise ArgumentError.new('approval_request required.') if approval_request.nil?
+    raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.nil? || to.nil?
+    raise ArgumentError.new('approve_url required.') if approve_url.nil?
+
+    content = approval_request.approvable.content
+    @approval_request = approval_request
+    @approve_url = approve_url
+
+    mail from: from,
+         to: to,
+         subject: "【#{content.site.name.presence || 'ZOMEKI'}】承認依頼（#{content.name}）"
+  end
+
+  def approved_notification(approval_request: nil, publish_url: nil, from: nil, to: nil)
+    raise ArgumentError.new('approval_request required.') if approval_request.nil?
+    raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.nil? || to.nil?
+    raise ArgumentError.new('publish_url required.') if publish_url.nil?
+
+    content = approval_request.approvable.content
+    @approval_request = approval_request
+    @publish_url = publish_url
+
+    mail from: from,
+         to: to,
+         subject: "【#{content.site.name.presence || 'ZOMEKI'}】承認完了（#{content.name}）"
+  end
 end
