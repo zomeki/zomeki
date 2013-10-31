@@ -6,6 +6,7 @@ class Script
     ENV['INPUTRC'] ||= '/etc/inputrc'
 
     @@lock_key = 'script_' + path.gsub(/\W/, '_')
+    @@lock_key << '_' + Digest::MD5.new.update(options.to_s).to_s if options.present? 
     @@options  = options
     
     unless self.lock
