@@ -21,8 +21,6 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
       item = Cms::Node.find_by_id(v[:id])
       next unless item
       next if item.name.blank? || item.name == last_name
-      next if Script.options.is_a?(Array) && !Script.options.include?(item.public_uri)
-      next if Script.options.is_a?(Regexp) && Script.options !~ item.public_uri 
       last_name = item.name
       
       if !item.public?
