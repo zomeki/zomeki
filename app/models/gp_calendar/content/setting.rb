@@ -11,6 +11,8 @@ class GpCalendar::Content::Setting < Cms::ContentSetting
     :form_type => :radio_buttons
   set_config :default_image, :name => '初期画像',
     :comment => '（例 /images/sample.jpg ）'
+  set_config :show_qreki, :name => '旧暦表示',
+    :options => [["表示する", 1], ["表示しない", 0]]
 
   def upper_text
   end
