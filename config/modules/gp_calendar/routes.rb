@@ -19,6 +19,10 @@ ZomekiCMS::Application.routes.draw do
         :controller => 'admin/events/files'
     end
 
+    resources :holidays,
+      :controller => 'admin/holidays',
+      :path       => ':content/holidays'
+
     ## nodes
     resources :node_events,
       :controller => 'admin/node/events',

@@ -1,0 +1,28 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :date %></th>
+    <td><%=i18n_l @item.date, '%m月%d日' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :description %></th>
+    <td><%= @item.description %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :kind %></th>
+    <td><%= @item.class::KIND_OPTIONS.detect{|to| to.last == @item.kind }.try(:first) %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+<%= toggle_form_function -%>
+<%- end -%>
+
+<%= creator_view @item %>
