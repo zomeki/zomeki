@@ -20,7 +20,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
 
   after_initialize :set_defaults
 
-  validates_presence_of :name, :date
+  validates_presence_of :name
 
   scope :public, where(state: 'public')
 

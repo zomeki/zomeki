@@ -1,6 +1,7 @@
 # encoding: utf-8
 class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
+  include GpCalendar::Controller::Holiday
 
   def pre_dispatch
     return error_auth unless @content = GpCalendar::Content::Event.find_by_id(params[:content])
@@ -8,7 +9,8 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
   end
 
   def index
-    criteria = params[:criteria] || {}
+    create_default_holidays(@content)
+
     @items = @content.holidays.order("date_format(date,'%m%d')").paginate(page: params[:page], per_page: 50)
     _index @items
   end
@@ -24,12 +26,14 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.holidays.build(params[:item])
+    @item.date = parse_date(params[:item][:date])
     _create @item
   end
 
   def update
     @item = @content.holidays.find(params[:id])
     @item.attributes = params[:item]
+    @item.date = parse_date(params[:item][:date])
     _update @item
   end
 

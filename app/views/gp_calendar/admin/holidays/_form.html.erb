@@ -1,5 +1,3 @@
-<%-# inline_id = @item.id || params[:_tmp].presence || Util::Sequencer.next_id(:tmp, md5: true) -%>
-
 <span class="note">※は必須項目です。</span>
 
 <table class="show">
@@ -12,7 +10,7 @@
     <td><%= f.text_field :name %></td>
   </tr>
   <tr>
-    <th><%= f.label :date %> <span class="note">※</span></th>
+    <th><%= f.label :date %></th>
     <td><%= f.text_field :date, value: value_for_datepicker(f.object_name, :date), style: 'width: 150px;', :class => 'datepicker' %></td>
   </tr>
   <tr>
@@ -30,5 +28,6 @@
 <%= javascript_tag do %>
 $(document).ready(function () {
   <%= enable_datepicker_script %>
+  $('.datepicker').datepicker('option', 'dateFormat', 'mm月dd日');
 });
 <% end %>
