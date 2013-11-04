@@ -5,6 +5,7 @@ class GpCalendar::Content::Event < Cms::Content
   default_scope where(model: 'GpCalendar::Event')
 
   has_many :events, :foreign_key => :content_id, :class_name => 'GpCalendar::Event', :dependent => :destroy
+  has_many :holidays, :foreign_key => :content_id, :class_name => 'GpCalendar::Holiday', :dependent => :destroy
 
   before_create :set_default_settings
 

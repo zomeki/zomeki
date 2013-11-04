@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       gp_calendar/event: イベント
+      gp_calendar/holiday: 休日
     attributes:
       gp_calendar/event:
         id: ID
@@ -11,4 +12,12 @@ ja:
         title: イベント名
         href: イベントURL
         description: 概要
+        created_at: 作成日時
+      gp_calendar/holiday:
+        id: ID
+        state: 状態
+        name: 休日名
+        date: 日付
+        description: 概要
+        kind: 種別
         created_at: 作成日時
