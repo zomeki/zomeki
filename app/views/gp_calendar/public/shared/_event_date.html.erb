@@ -7,15 +7,15 @@
 <%- if event.started_on == event.ended_on -%>
   <span class="startDate closeDate"><%= started_on %></span>
 	<%- if @content.setting_value(:show_qreki) == "1" -%>
-  <span class="startDate closeDate">旧<%= started_on %></span>
+  <span class="startDate closeDate"><%= qreki_strf(event.started_on) %></span>
 	<%- end -%>
 <%- else -%>
   <span class="startDate"><%= started_on %></span>
   <span class="from">～</span>
   <span class="closeDate"><%= ended_on %></span>
 	<%- if @content.setting_value(:show_qreki) == "1" -%>
-  <span class="startDate">旧<%= started_on %></span>
+  <span class="startDate"><%= qreki_strf(event.started_on) %></span>
   <span class="from">～</span>
-  <span class="closeDate">旧<%= ended_on %></span>
+  <span class="closeDate"><%= qreki_strf(event.ended_on) %></span>
 	<%- end -%>
 <%- end -%>
