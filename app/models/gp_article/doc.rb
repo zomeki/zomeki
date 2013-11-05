@@ -24,6 +24,8 @@ class GpArticle::Doc < ActiveRecord::Base
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
+  default_scope where("#{self.table_name}.state != 'archived'")
+
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
   validates_presence_of :content_id
@@ -33,6 +35,9 @@ class GpArticle::Doc < ActiveRecord::Base
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
+
+  belongs_to :prev_edition, :class_name => self.name
+  has_one :next_edition, :foreign_key => :prev_edition_id, :class_name => self.name
 
   has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
   has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations,
@@ -53,13 +58,14 @@ class GpArticle::Doc < ActiveRecord::Base
 
   before_save :make_file_contents_path_relative
   before_save :set_name
+  before_save :replace_public
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
   validates :body, :length => {maximum: 300000}
   validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
-  validates :name, :uniqueness => true, :format => {with: /^[\-\w]*$/ }
+  validate :name_validity
 
   validate :validate_inquiry
 
@@ -164,6 +170,10 @@ class GpArticle::Doc < ActiveRecord::Base
     return rel
   end
 
+  def prev_edition
+    self.class.unscoped { super }
+  end
+
   def state=(new_state)
     self.published_at ||= Core.now if new_state == 'public'
     super
@@ -226,6 +236,10 @@ class GpArticle::Doc < ActiveRecord::Base
     state == 'public'
   end
 
+  def state_archived?
+    state == 'archived'
+  end
+
   def close
     @save_mode = :close
     self.state = 'closed' if self.state_public?
@@ -281,6 +295,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def duplicate(dup_for=nil)
     new_attributes = self.attributes
 
+    new_attributes[:state] = 'draft'
     new_attributes[:id] = nil
     new_attributes[:unid] = nil
     new_attributes[:created_at] = nil
@@ -288,14 +303,14 @@ class GpArticle::Doc < ActiveRecord::Base
     new_attributes[:display_updated_at] = nil
     new_attributes[:published_at] = nil
     new_attributes[:display_published_at] = nil
+    new_attributes[:prev_edition_id] = nil
 
     new_doc = self.class.new(new_attributes)
 
     case dup_for
-    when :archive
-      new_doc.state = 'archived'
+    when :replace
+      new_doc.prev_edition = self
     else
-      new_doc.state = 'draft'
       new_doc.name = nil
       new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
     end
@@ -336,7 +351,7 @@ class GpArticle::Doc < ActiveRecord::Base
       new_doc.in_maps = new_maps
     end
 
-    return nil unless new_doc.save
+    new_doc.save!
 
     files.each do |f|
       Sys::File.new(f.attributes).tap do |new_file|
@@ -472,14 +487,14 @@ class GpArticle::Doc < ActiveRecord::Base
   def validate_word_dictionary
     dic = content.setting_value(:word_dictionary)
     return if dic.blank?
-    
+
     words = []
     dic.split(/\r\n|\n/).each do |line|
       next if line !~ /,/
       data = line.split(/,/)
       words << [data[0].strip, data[1].strip]
     end
-    
+
     if body.present?
       words.each {|src, dst| self.body = body.gsub(src, dst) }
     end
@@ -496,6 +511,16 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   private
+
+  def name_validity
+    errors.add(:name, :invalid) if self.name && self.name !~ /^[\-\w]*$/
+
+    if (doc = self.class.find_by_name_and_state(self.name, self.state))
+      unless doc.id == self.id || state_archived?
+        errors.add(:name, :taken) unless state_public? && prev_edition.try(:state_public?)
+      end
+    end
+  end
 
   def set_name
     return if self.name.present?
@@ -539,7 +564,7 @@ class GpArticle::Doc < ActiveRecord::Base
       end
     end
   end
-  
+
   def set_tags
     return tags.clear unless content.tag_content_tag
     all_tags = content.tag_content_tag.tags
@@ -630,5 +655,10 @@ class GpArticle::Doc < ActiveRecord::Base
       target = self.mobile_body.present? ? :mobile_body : :body
       errors.add(target, "が携帯向け容量制限#{limit}バイトを超えています。（現在#{current_size}バイト）")
     end
+  end
+
+  def replace_public
+    return unless state_public?
+    prev_edition.try(:update_column, :state, 'archived')
   end
 end
