@@ -7,7 +7,6 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Rel::Creator
   include Sys::Model::Rel::EditableGroup
   include Sys::Model::Rel::File
-  include Sys::Model::Rel::Recognition
   include Sys::Model::Rel::Task
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
@@ -20,7 +19,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   include GpArticle::Model::Rel::Doc::Rel
 
-  STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'recognize'], ['即時公開', 'public']]
+  STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'approvable'], ['即時公開', 'public']]
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
@@ -142,27 +141,6 @@ class GpArticle::Doc < ActiveRecord::Base
             end
     end
 
-    if criteria[:recognizable].present?
-      recognitions = Sys::Recognition.arel_table
-
-      rel = if content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
-              rel.joins(:recognition).where(creators[:user_id].eq(Core.user.id)
-                                            .or(recognitions[:user_id].eq(Core.user.id))
-                                            .or(recognitions[:recognizer_ids].eq(Core.user.id.to_s)
-                                            .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
-                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
-                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}")
-                                            .or(recognitions[:info_xml].matches("%<admin %")))))))
-            else
-              rel.joins(:recognition).where(creators[:user_id].eq(Core.user.id)
-                                            .or(recognitions[:user_id].eq(Core.user.id))
-                                            .or(recognitions[:recognizer_ids].eq(Core.user.id.to_s)
-                                            .or(recognitions[:recognizer_ids].matches("#{Core.user.id} %")
-                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id} %")
-                                            .or(recognitions[:recognizer_ids].matches("% #{Core.user.id}"))))))
-            end
-    end
-
     if criteria[:approvable].present?
       approval_requests = Approval::ApprovalRequest.arel_table
       assignments = Approval::Assignment.arel_table
@@ -236,12 +214,12 @@ class GpArticle::Doc < ActiveRecord::Base
     state == 'draft'
   end
 
-  def state_recognize?
-    state == 'recognize'
+  def state_approvable?
+    state == 'approvable'
   end
 
-  def state_recognized?
-    state == 'recognized'
+  def state_approved?
+    state == 'approved'
   end
 
   def state_public?
@@ -274,39 +252,6 @@ class GpArticle::Doc < ActiveRecord::Base
     end
 
     publish_page(content, :path => public_path, :uri => public_uri)
-  end
-
-  def search(search_params)
-    search_params.each do |key, value|
-      next if value.blank?
-
-      case key.to_s
-      when 's_id'
-        self.and "#{GpArticle::Doc.table_name}.id", value.to_i
-      when 's_title'
-        self.and_keywords value, :title
-      when 's_group'
-        self.join :creator
-        self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
-        self.and "#{Sys::Group.table_name}.name", 'LIKE', "%#{value}%"
-      when 's_group_id'
-        self.join :creator
-        self.join "INNER JOIN #{Sys::Group.table_name} ON #{Sys::Group.table_name}.id = #{Sys::Creator.table_name}.group_id"
-        self.and "#{Sys::Group.table_name}.id", value.to_i
-      when 's_user'
-        self.join :creator
-        self.join "INNER JOIN #{Sys::User.table_name} ON #{Sys::User.table_name}.id = #{Sys::Creator.table_name}.user_id"
-        self.and "#{Sys::User.table_name}.name", 'LIKE', "%#{value}%"
-      when 's_free_word'
-        self.and(Condition.new) do |c|
-          c.or 'title', 'LIKE', "%#{value}%"
-          c.or 'body', 'LIKE', "%#{value}%"
-          c.or 'name', 'LIKE', "%#{value}%"
-        end
-      end
-    end
-
-    return self
   end
 
   def bread_crumbs(doc_node)
@@ -508,6 +453,8 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def approve(user)
+    return unless state_approvable?
+
     approval_requests.each do |approval_request|
       approval_request.approve(user) do |state|
         case state
@@ -518,7 +465,8 @@ class GpArticle::Doc < ActiveRecord::Base
         end
       end
     end
-    update_column(:state, 'recognized') if approval_requests.all?{|r| r.finished? }
+
+    update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
   end
 
   def validate_word_dictionary
@@ -578,7 +526,7 @@ class GpArticle::Doc < ActiveRecord::Base
       case state
       when 'public'
         errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、即時公開が行えません。')
-      when 'recognize'
+      when 'approvable'
         errors.add(:base, '記事コンテンツのディレクトリが作成されていないため、承認依頼が行えません。')
       end
     end
