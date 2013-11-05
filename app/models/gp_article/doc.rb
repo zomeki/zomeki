@@ -333,68 +333,80 @@ class GpArticle::Doc < ActiveRecord::Base
     Cms::Lib::BreadCrumbs.new(crumbs)
   end
 
-  def duplicate(rel_type=nil)
+  def duplicate(dup_for=nil)
     new_attributes = self.attributes
 
     new_attributes[:id] = nil
     new_attributes[:unid] = nil
     new_attributes[:created_at] = nil
     new_attributes[:updated_at] = nil
-    new_attributes[:recognized_at] = nil
+    new_attributes[:display_updated_at] = nil
     new_attributes[:published_at] = nil
-    new_attributes[:state] = 'draft'
+    new_attributes[:display_published_at] = nil
 
-    item = self.class.new(new_attributes)
+    new_doc = self.class.new(new_attributes)
 
-    if rel_type.nil?
-      item.name = nil
-      item.title = item.title.gsub(/^(【複製】)*/, '【複製】')
+    case dup_for
+    when :archive
+      new_doc.state = 'archived'
+    else
+      new_doc.state = 'draft'
+      new_doc.name = nil
+      new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
     end
 
-    item.in_recognizer_ids  = recognition.recognizer_ids if recognition
-    item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
+    new_doc.in_editable_groups = editable_group.group_ids.split if editable_group
 
     inquiries.each do |inquiry|
       if inquiry.try(:group_id) == Core.user.group_id
-        item.inquiries.build(inquiry.attributes)
+        new_doc.inquiries.build(inquiry.attributes)
       else
         attrs = inquiry.attributes
         attrs[:group_id] = Core.user.group_id
-        item.inquiries.build(attrs)
+        new_doc.inquiries.build(attrs)
       end
     end
 
     unless maps.empty?
-      _maps = {}
-      maps.each do |m|
-        _maps[m.name] = m.in_attributes.symbolize_keys
-        _maps[m.name][:markers] = {}
-        m.markers.each_with_index{|mm, key| _maps[m.name][:markers][key] = mm.attributes.symbolize_keys}
+      new_maps = {}
+      maps.each_with_index do |m, i|
+        new_markers = {}
+        m.markers.each_with_index do |mm, j|
+          new_markers[j.to_s] = {
+           'name' => mm.name,
+           'lat'  => mm.lat,
+           'lng'  => mm.lng
+          }.with_indifferent_access
+        end
+
+        new_maps[i.to_s] = {
+          'name'     => m.name,
+          'title'    => m.title,
+          'map_lat'  => m.map_lat,
+          'map_lng'  => m.map_lng,
+          'map_zoom' => m.map_zoom,
+          'markers'  => new_markers
+        }.with_indifferent_access
       end
-      item.in_maps = _maps
+      new_doc.in_maps = new_maps
     end
 
-    return nil unless item.save
+    return nil unless new_doc.save
 
     files.each do |f|
-      file = Sys::File.new(f.attributes)
-      file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
-      file.unid = nil
-      file.parent_unid = item.unid
-      file.save
+      Sys::File.new(f.attributes).tap do |new_file|
+        new_file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+        new_file.unid = nil
+        new_file.parent_unid = new_doc.unid
+        new_file.save
+      end
     end
 
-    item.categories = self.categories
+    new_doc.categories = self.categories
+    new_doc.event_categories = self.event_categories
+    new_doc.marker_categories = self.marker_categories
 
-    if rel_type == :replace
-      rel = Sys::UnidRelation.new
-      rel.unid = item.unid
-      rel.rel_unid = self.unid
-      rel.rel_type = 'replace'
-      rel.save
-    end
-
-    return item
+    return new_doc
   end
 
   def editable?
