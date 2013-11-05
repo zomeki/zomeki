@@ -85,11 +85,6 @@ class GpArticle::Content::Doc < Cms::Content
     YAML.load(setting_value(:save_button_states).presence || '[]')
   end
 
-  def required_recognizers
-    ids = YAML.load(setting_value(:required_recognizers).presence || '[]')
-    Sys::User.where(id: ids)
-  end
-
   def display_dates(key)
     YAML.load(setting_value(:display_dates).presence || '[]').include?(key.to_s)
   end

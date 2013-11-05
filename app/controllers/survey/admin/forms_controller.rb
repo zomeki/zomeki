@@ -32,7 +32,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
-    return render(:action => :edit) unless @item.errors.empty?
+    return render(:action => :new) unless @item.errors.empty?
 
     location = url_for(action: 'edit') if @item.state_draft?
     _create(@item, location: location) do
