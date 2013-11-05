@@ -118,6 +118,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
   end
 
+  def edit
+    redirect_to edit_gp_article_doc_url(@content, @item.duplicate(:replace)) if @item.state_public?
+  end
+
   def update
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
