@@ -3,9 +3,9 @@ map     = item.maps.find(:first)
 markers = map ? map.markers : []
 
 default_position = item.default_map_position.split(/[ ]*,[ ]*/)
-map_lat  = (map && map.map_lat  != '') ? map.map_lat : default_position[0]
-map_lng  = (map && map.map_lng  != '') ? map.map_lng : default_position[1]
-map_zoom = (map && map.map_zoom != '') ? map.map_zoom : 14
+map_lat  = (map && map.map_lat.present?) ? map.map_lat : default_position[0]
+map_lng  = (map && map.map_lng.present?) ? map.map_lng : default_position[1]
+map_zoom = (map && map.map_zoom.present?) ? map.map_zoom : 14
 
 in_size = safe(0){params[:item][:in_maps]['0'][:markers].size}
 markers_size = [3, markers.size, in_size].max

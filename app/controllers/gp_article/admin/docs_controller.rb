@@ -221,18 +221,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def duplicate(item)
-    if dupe_item = item.duplicate
-      flash[:notice] = '複製処理が完了しました。'
-      respond_to do |format|
-        format.html { redirect_to url_for(:action => :index) }
-        format.xml  { head :ok }
-      end
+    if item.duplicate
+      redirect_to url_for(:action => :index), notice: '複製処理が完了しました。'
     else
-      flash[:alert] = '複製処理に失敗しました。'
-      respond_to do |format|
-        format.html { redirect_to url_for(:action => :show) }
-        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
-      end
+      redirect_to url_for(:action => :index), alert: '複製処理に失敗しました。'
     end
   end
 
