@@ -63,6 +63,10 @@ class GpCalendar::Content::Event < Cms::Content
     setting_value(:default_image).to_s
   end
 
+  def image_cnt
+    setting_extra_value(:show_images, :image_cnt).to_i || 0
+  end
+
   private
 
   def set_default_settings
