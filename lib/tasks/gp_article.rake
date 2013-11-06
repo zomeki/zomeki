@@ -46,5 +46,13 @@ namespace :zomeki do
         end
       end
     end
+
+    namespace :migrate do
+      desc 'Change state "recognize" to "approve".'
+      task(:recognize_to_approve => :environment) do
+        GpArticle::Doc.where(state: 'recognize').each{|d| d.update_column(:state, 'approvable') }
+        GpArticle::Doc.where(state: 'recognized').each{|d| d.update_column(:state, 'approved') }
+      end
+    end
   end
 end

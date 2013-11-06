@@ -2,7 +2,6 @@
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Publication
-  include Sys::Controller::Scaffold::Recognition
 
   before_filter :hold_document, :only => [ :edit ]
   before_filter :check_intercepted, :only => [ :update ]
@@ -14,7 +13,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     @category_types = @content.category_types
     @visible_category_types = @content.visible_category_types
-    @recognition_type = @content.setting_value(:recognition_type)
     @event_category_types = @content.event_category_types
     @marker_category_types = @content.marker_category_types
     @item = @content.docs.find(params[:id]) if params[:id].present?
@@ -50,18 +48,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     when 'closed'
       criteria[:state] = 'closed'
       criteria[:touched_user_id] = Core.user.id
-    when 'recognizable'
-      criteria[:recognizable] = true
-      criteria[:state] = 'recognize'
-    when 'publishable'
-      criteria[:recognizable] = true
-      criteria[:state] = 'recognized'
     when 'approvable'
       criteria[:approvable] = true
-      criteria[:state] = 'recognize'
+      criteria[:state] = 'approvable'
     when 'approved'
       criteria[:approvable] = true
-      criteria[:state] = 'recognized'
+      criteria[:state] = 'approved'
     else
       criteria[:editable] = true
     end
@@ -73,7 +65,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def show
-    @item.recognition.try(:change_type, @recognition_type)
     _show @item
   end
 
@@ -83,95 +74,96 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def create
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
+
     @item = @content.docs.build(params[:item])
-       
-    @item.validate_word_dictionary #replace validate word
+
+    @item.validate_word_dictionary # replace validate word
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
-    
+
     if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
       @item.body = Util::AccessibilityChecker.modify @item.body
     end
-    
+
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :new) if params[:link_check_in_body]
     end
-    
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'recognize') && params[:ignore_accessibility_check].nil?)
+
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
       flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
       return render(:action => :new) if params[:accessibility_check]
     end
 
     @item.concept = @content.concept
-    @item.state = new_state if new_state.present?
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
-    validate_approval_requests if @item.state_recognize?
-    unless @item.errors.empty?
-      return render(:action => :new)
-    end
+    validate_approval_requests if @item.state_approvable?
+    return render(:action => :new) unless @item.errors.empty?
 
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
     _create(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
-      @item.approval_requests.destroy_all if @item.state_recognize?
+
+      @item.approval_requests.destroy_all if @item.state_approvable?
       set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+
+      publish_by_update(@item) if @item.state_public?
 
       @item.fix_tmp_files(params[:_tmp])
-      @item.send_approval_request_mail if @item.state_recognize?
-      publish_by_update(@item) if @item.state_public?
     end
   end
 
   def edit
-    @item.recognition.try(:change_type, @recognition_type)
-    _show @item
+    redirect_to edit_gp_article_doc_url(@content, @item.duplicate(:replace)) if @item.state_public?
   end
 
   def update
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
+
     @item.attributes = params[:item]
-   
+
     @item.validate_word_dictionary #replace validate word 
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
-    
+
     if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
       @item.body = Util::AccessibilityChecker.modify @item.body
     end
-    
+
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:link_check_in_body]
     end
-    
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'recognize') && params[:ignore_accessibility_check].nil?)
+
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
       flash[:accessibility_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
       return render(:action => :edit) if params[:accessibility_check]
     end
-    
-    @item.state = new_state if new_state.present?
 
-    validate_approval_requests if @item.state_recognize?
-    unless @item.errors.empty?      
-      return render(:action => :edit)
-    end
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
+
+    validate_approval_requests if @item.state_approvable?
+    return render(:action => :edit) unless @item.errors.empty?
 
     location = url_for(action: 'edit') if @item.state_draft?
     _update(@item, location: location) do
       set_categories
       set_event_categories
       set_marker_categories
-      @item.approval_requests.destroy_all if @item.state_recognize?
-      set_approval_requests
 
-      @item.send_approval_request_mail if @item.state_recognize?
+      @item.approval_requests.destroy_all if @item.state_approvable?
+      set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+
       publish_by_update(@item) if @item.state_public?
-      @item.close unless @item.public? # Don't use "state_public?" here
+
+      @item.close unless @item.public? # DO NOT use "state_public?" here
 
       release_document
     end
@@ -180,19 +172,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def destroy
     _destroy(@item) do
       send_link_broken_notification(@item) unless @item.backlinks.empty?
-    end
-  end
-
-  def recognize(item)
-    _recognize(item) do
-      if @item.state == 'recognized'
-        send_recognition_success_mail(@item)
-      elsif @recognition_type == 'with_admin'
-        if item.recognition.recognized_all?(false)
-          users = Sys::User.find_managers
-          send_recognition_request_mail(@item, users)
-        end
-      end
     end
   end
 
@@ -254,43 +233,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       send_mail(mail_from, doc.creator.user.email, subject, body)
     end
-  end
-
-  def send_recognition_request_mail(item, users=nil)
-    users ||= item.recognizers
-
-    mail_from = Core.user.email
-
-    subject = "#{item.content.name}（#{item.content.site.name}）：承認依頼メール"
-    body = <<-EOT
-#{Core.user.name}さんより「#{item.title}」についての承認依頼が届きました。
-  次の手順により，承認作業を行ってください。
-
-  １．PC用記事のプレビューにより文書を確認
-    #{item.preview_uri}
-  ２．次のリンクから承認を実施
-    #{gp_article_doc_url(content: @content, id: item.id)}
-    EOT
-
-    users.each {|user| send_mail(mail_from, user.email, subject, body) }
-  end
-
-  def send_recognition_success_mail(item)
-    return true unless item.recognition
-    return true unless item.recognition.user
-    return true if item.recognition.user.email.blank?
-
-    mail_from = Core.user.email
-    mail_to = item.recognition.user.email
-
-    subject = "#{item.content.name}（#{item.content.site.name}）：最終承認完了メール"
-    body = <<-EOT
-「#{item.title}」についての承認が完了しました。
-  次のＵＲＬをクリックして公開処理を行ってください。
-  #{gp_article_doc_url(content: @content, id: item.id)}
-    EOT
-
-    send_mail(mail_from, mail_to, subject, body)
   end
 
   def set_categories

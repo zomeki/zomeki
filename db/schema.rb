@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131022065758) do
+ActiveRecord::Schema.define(:version => 20131105135800) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -709,6 +709,7 @@ ActiveRecord::Schema.define(:version => 20131022065758) do
     t.text     "meta_description"
     t.string   "meta_keywords"
     t.integer  "list_image"
+    t.integer  "prev_edition_id"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
