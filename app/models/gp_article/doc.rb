@@ -59,6 +59,7 @@ class GpArticle::Doc < ActiveRecord::Base
   before_save :make_file_contents_path_relative
   before_save :set_name
   before_save :replace_public
+  before_destroy :keep_edition_relation
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
@@ -177,6 +178,16 @@ class GpArticle::Doc < ActiveRecord::Base
   def prev_editions(docs=[])
     docs << self
     prev_edition.prev_editions(docs) if prev_edition
+    return docs
+  end
+
+  def next_edition
+    self.class.unscoped { super }
+  end
+
+  def next_editions(docs=[])
+    docs << self
+    next_edition.next_editions(docs) if next_edition
     return docs
   end
 
@@ -678,5 +689,9 @@ class GpArticle::Doc < ActiveRecord::Base
   def replace_public
     return unless state_public?
     prev_edition.try(:update_column, :state, 'archived')
+  end
+
+  def keep_edition_relation
+    prev_edition.nil?
   end
 end
