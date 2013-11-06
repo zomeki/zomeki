@@ -9,7 +9,7 @@ end
 <h2><%= @content.name %><%= sub ? " ： #{sub}" : '' %></h2>
 
 <div class="actionMenu">
-  <%- if params[:action] == 'index' -%>
+  <%- if action_name == 'index' -%>
   <%= link_to '新規作成', new_gp_article_doc_path %>
   <span class="separator"></span>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path, (params[:target].blank? ? {class: 'current'} : {}) %>
@@ -22,22 +22,23 @@ end
   <%= link_to '非公開', gp_article_docs_path(target: 'closed'), (params[:target] == 'closed' ? {class: 'current'} : {}) %>
   <%- end -%>
 
-  <%- if %w|new create|.include?(params[:action]) -%>
+  <%- if %w|new create|.include?(action_name) -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <%- end -%>
 
-  <%- if params[:action] == 'show' -%>
+  <%- if action_name == 'show' -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
+  <%= link_to '履歴', gp_article_doc_histories_path(@content, @item) if @item.state_public? && @item.prev_edition %>
   <span class="separator"></span>
-  <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) %>
+  <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) && !(@item.state_public? && @item.next_edition) %>
   <%= link_to '削除', gp_article_doc_path, :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
   <%= link_to :duplicate, {:do => :duplicate}, :confirm => '複製してよろしいですか？' %>
-  <%= link_to '承認', approve_gp_article_doc_path, :method => :post, :confirm => '承認してよろしいですか？' if @item.approvers.include?(Core.user) %>
-  <%= link_to :publish, {:do => :publish}, :confirm => pubmsg if @item.approval_participators.include?(Core.user) && @item.state_recognized? %>
+  <%= link_to '承認', approve_gp_article_doc_path, :method => :post, :confirm => '承認してよろしいですか？' if @item.state_approvable? && @item.approvers.include?(Core.user) %>
+  <%= link_to :publish, {:do => :publish}, :confirm => pubmsg if @item.state_approved? && @item.approval_participators.include?(Core.user) %>
   <%= link_to :close, {:do => :close}, :confirm => '公開を終了してよろしいですか？' if @item.closable? %>
   <%- end -%>
 
-  <%- if %w|edit update|.include?(params[:action]) -%>
+  <%- if %w|edit update|.include?(action_name) -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
