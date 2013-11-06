@@ -20,6 +20,8 @@ ZomekiCMS::Application.routes.draw do
       end
       resources :files,
         :controller => 'admin/docs/files'
+      resources :histories,
+        :controller => 'admin/docs/histories', :only => [:index, :show]
     end
 
     ## nodes
