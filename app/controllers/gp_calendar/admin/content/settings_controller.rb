@@ -29,6 +29,11 @@ class GpCalendar::Admin::Content::SettingsController < Cms::Controller::Admin::B
       extra_values[:category_ids] = category_ids.map{|id| id.to_i if id.present? }.compact.uniq
 
       @item.extra_values = extra_values
+
+    elsif @item.name == 'show_images'
+      @item.extra_values do |ev|
+        ev[:image_cnt] = params[:image_cnt].to_i
+      end
     end
 
     _update @item
