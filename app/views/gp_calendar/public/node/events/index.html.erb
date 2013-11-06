@@ -40,8 +40,9 @@
               <%- end -%>
               <%- topfile = file -%>
 
-              <%- event.insert_files.each do |file| -%>
+              <%- event.insert_files.each.with_index(1) do |file, index| -%>
               <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" if topfile.blank? || file.name != topfile.name %>
+              <%- break if @content.image_cnt > 0 && index >= @content.image_cnt -%>
               <%- end -%>
 
             </p>

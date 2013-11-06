@@ -94,3 +94,12 @@ $(document).ready(function () {
 });
 <%- end -%>
 <%- end -%>
+
+<%- if @item.name == 'show_images' -%>
+<table class="show">
+  <tr>
+    <th>画像表示数</th>
+    <td><%= text_field_tag(:image_cnt, @item.extra_values[:image_cnt], style: 'width: 200px;') %></td>
+  </tr>
+</table>
+<%- end -%>
