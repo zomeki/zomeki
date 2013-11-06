@@ -6,11 +6,6 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
   set_config :word_dictionary, :name => "本文/単語変換辞書",
     :form_type => :text, :lower_text => "CSV形式（例　対象文字,変換後文字 ）"
-  set_config :recognition_type, :name => '承認/承認フロー',
-    :options => [['管理者承認が必要', 'with_admin']]
-  set_config :required_recognizers, :name => '承認/必須承認者',
-    :form_type => :multiple_select,
-    :options => lambda { Sys::User }
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
     :comment => I18n.t('comments.date_style').html_safe
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",

@@ -37,7 +37,11 @@ module Cms::Model::Base::Page::Publisher
 
   def publishable
     editable
-    self.and "#{self.class.table_name}.state", 'recognized'
+    if respond_to?(:state_approved?)
+      self.and "#{self.class.table_name}.state", 'approved'
+    else
+      self.and "#{self.class.table_name}.state", 'recognized'
+    end
     return self
   end
 
@@ -49,7 +53,11 @@ module Cms::Model::Base::Page::Publisher
 
   def publishable?
     return false unless editable?
-    return false unless recognized?
+    if respond_to?(:state_approved?)
+      return false unless state_approved?
+    else
+      return false unless recognized?
+    end
     return true
   end
 
