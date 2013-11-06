@@ -20,6 +20,7 @@ class Sys::Base::Status < ActiveRecord::Base
       when 'public';     return '公開中'
       when 'closed';     return '非公開'
       when 'completed';  return '完了'
+      when 'archived';   return '履歴'
       end
       nil
     end

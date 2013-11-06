@@ -174,6 +174,12 @@ class GpArticle::Doc < ActiveRecord::Base
     self.class.unscoped { super }
   end
 
+  def prev_editions(docs=[])
+    docs << self
+    prev_edition.prev_editions(docs) if prev_edition
+    return docs
+  end
+
   def state=(new_state)
     self.published_at ||= Core.now if new_state == 'public'
     super
@@ -508,6 +514,18 @@ class GpArticle::Doc < ActiveRecord::Base
     body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value).to_s) }
     body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
     body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
+  end
+
+  def will_replace?
+    prev_edition && (state_draft? || state_approvable? || state_approved?)
+  end
+
+  def will_be_replaced?
+    next_edition && state_public?
+  end
+
+  def was_replaced?
+    prev_edition && state_public?
   end
 
   private
