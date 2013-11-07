@@ -28,9 +28,9 @@ end
 
   <%- if action_name == 'show' -%>
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
-  <%= link_to '履歴', gp_article_doc_histories_path(@content, @item) if @item.state_public? && @item.prev_edition %>
+  <%= link_to '履歴', gp_article_doc_histories_path(@content, @item) if @item.was_replaced? %>
   <span class="separator"></span>
-  <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) && !(@item.state_public? && @item.next_edition) %>
+  <%= link_to '編集', edit_gp_article_doc_path if @item.try(:editable?) && !@item.will_be_replaced? %>
   <%= link_to '削除', gp_article_doc_path, :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
   <%= link_to :duplicate, {:do => :duplicate}, :confirm => '複製してよろしいですか？' %>
   <%= link_to '承認', approve_gp_article_doc_path, :method => :post, :confirm => '承認してよろしいですか？' if @item.state_approvable? && @item.approvers.include?(Core.user) %>
