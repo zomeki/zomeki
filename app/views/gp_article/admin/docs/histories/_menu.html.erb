@@ -1,0 +1,11 @@
+<h2><%= @content.name %> ： <%= GpArticle::Doc.model_name.human %> ： <%= @doc.title %></h2>
+
+<div class="actionMenu">
+  <%- if action_name == 'index' -%>
+  <%= link_to '戻る', gp_article_doc_path(@content, @doc) %>
+  <%- end -%>
+
+  <%- if action_name == 'show' -%>
+  <%= link_to '履歴一覧', gp_article_doc_histories_path(@content, @doc) %>
+  <%- end -%>
+</div>

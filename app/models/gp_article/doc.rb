@@ -59,6 +59,7 @@ class GpArticle::Doc < ActiveRecord::Base
   before_save :make_file_contents_path_relative
   before_save :set_name
   before_save :replace_public
+  before_destroy :keep_edition_relation
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
@@ -172,6 +173,22 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def prev_edition
     self.class.unscoped { super }
+  end
+
+  def prev_editions(docs=[])
+    docs << self
+    prev_edition.prev_editions(docs) if prev_edition
+    return docs
+  end
+
+  def next_edition
+    self.class.unscoped { super }
+  end
+
+  def next_editions(docs=[])
+    docs << self
+    next_edition.next_editions(docs) if next_edition
+    return docs
   end
 
   def state=(new_state)
@@ -510,6 +527,18 @@ class GpArticle::Doc < ActiveRecord::Base
     body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
   end
 
+  def will_replace?
+    prev_edition && (state_draft? || state_approvable? || state_approved?)
+  end
+
+  def will_be_replaced?
+    next_edition && state_public?
+  end
+
+  def was_replaced?
+    prev_edition && state_public?
+  end
+
   private
 
   def name_validity
@@ -660,5 +689,9 @@ class GpArticle::Doc < ActiveRecord::Base
   def replace_public
     return unless state_public?
     prev_edition.try(:update_column, :state, 'archived')
+  end
+
+  def keep_edition_relation
+    prev_edition.nil?
   end
 end
