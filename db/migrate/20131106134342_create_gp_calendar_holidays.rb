@@ -5,7 +5,7 @@ class CreateGpCalendarHolidays < ActiveRecord::Migration
       t.references :content
 
       t.string     :state
-      t.string     :name
+      t.string     :title
       t.date       :date
       t.text       :description
       t.string     :kind

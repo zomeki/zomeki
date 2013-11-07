@@ -10,5 +10,7 @@ class GpCalendar::Public::Node::TodaysEventsController < GpCalendar::Public::Nod
 
     category_ids = @events.inject([]) {|i, e| i.concat(e.category_ids) }
     @event_categories = GpCategory::Category.where(id: category_ids)
+
+    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
   end
 end
