@@ -55,7 +55,7 @@
         <td id="<%= 'day%02d' % event.started_on.day if event.started_on.month == @date.month %>" class="date">
           <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
         </td>
-        <td class="event">
+        <td class="<%= event.kind rescue 'event' %>">
           <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
           <%- if event.categories.present? -%>
           <p class="category">

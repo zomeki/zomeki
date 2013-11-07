@@ -16,8 +16,9 @@ ja:
       gp_calendar/holiday:
         id: ID
         state: 状態
-        name: 休日名
+        title: 休日名
         date: 日付
+        started_on: 日付
         description: 概要
         kind: 種別
         created_at: 作成日時

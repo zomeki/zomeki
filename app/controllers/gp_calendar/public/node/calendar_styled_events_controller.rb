@@ -16,5 +16,8 @@ class GpCalendar::Public::Node::CalendarStyledEventsController < GpCalendar::Pub
         weeks.last.push(day)
         next weeks
       end
+
+    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
+
   end
 end

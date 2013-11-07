@@ -8,6 +8,13 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
 
     merge_docs_into_events(event_docs(@date.beginning_of_month, @date.end_of_month), @events)
 
+    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
+    @holidays.each do |holiday|
+      holiday.started_on = @date.year
+      @events << holiday
+    end
+    @events.sort! {|a, b| a.started_on <=> b.started_on}
+
     filter_events_by_specified_category(@events)
   end
 
