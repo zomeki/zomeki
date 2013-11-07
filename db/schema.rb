@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131105135800) do
+ActiveRecord::Schema.define(:version => 20131106134342) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -754,6 +754,18 @@ ActiveRecord::Schema.define(:version => 20131105135800) do
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
     t.integer "event_id"
     t.integer "category_id"
+  end
+
+  create_table "gp_calendar_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.date     "date"
+    t.text     "description"
+    t.string   "kind"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "gp_category_categories", :force => true do |t|
