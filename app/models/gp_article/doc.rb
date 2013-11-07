@@ -692,6 +692,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def keep_edition_relation
-    prev_edition.nil?
+    next_edition.update_column(:prev_edition_id, prev_edition_id) if next_edition
+    return true
   end
 end
