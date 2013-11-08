@@ -1,5 +1,5 @@
 <div class="calendarEvents calendarTodayEvents">
-  <h2 class="today"><%= @today.strftime("%Y年%-m月%-d日(#{localize_wday('%a', @today.wday)})") %>
+  <h2 class="today"><span class="date"><%= @today.strftime("%Y年%-m月%-d日(#{localize_wday('%a', @today.wday)})") %></span>
   <%- if @content.setting_value(:show_qreki) == "1" -%>
   <span class="qreki"><%= qreki(@today) %></span>
   <%- end -%>
@@ -7,14 +7,14 @@
 
   <%- @holidays.each do |holiday| -%>
   <div class="<%= holiday.kind %>">
-  <h2><%= holiday.title %></h2>
-  <%= holiday.description %>
+  <p class="title"><%= holiday.title %></p>
+  <p class="summary"><%= holiday.description %></p>
   </div>
   <%- end -%>
 
   <%- unless @events.empty? -%>
     <%- @event_categories.each do |category| -%>
-    <h2><%= category.title %></h2>
+    <h3><%= category.title %></h3>
 
     <table border="1">
       <tbody>
