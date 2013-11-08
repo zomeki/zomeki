@@ -90,13 +90,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
-      flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
+      self.class.helpers.large_flash(flash, :key => :link_check_result,
+                                     :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
       return render(:action => :new) if params[:link_check_in_body]
     end
 
     if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
-      flash[:link_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
       return render(:action => :new) if params[:accessibility_check]
     end
 
@@ -140,13 +142,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
-      flash[:link_check_result] = render_to_string(partial: 'link_check_result', locals: {results: check_results}).html_safe
+      self.class.helpers.large_flash(flash, :key => :link_check_result,
+                                     :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
       return render(:action => :edit) if params[:link_check_in_body]
     end
 
     if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
-      flash[:accessibility_check_result] = render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}).html_safe
+      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
       return render(:action => :edit) if params[:accessibility_check]
     end
 
