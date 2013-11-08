@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Util::AccessibilityChecker
   
-   def self.check(text, options={})
+def self.check(text, options={})
      errors ||= []
      
      errors.push("brタグが連続で存在") if !check_br(text)
@@ -17,9 +17,9 @@ class Util::AccessibilityChecker
      end
      
      return errors
-    end
+end
 
-  def self.modify(text, options={})
+def self.modify(text, options={})
     
     _text = modify_platform_dependent_characters(text)
     
@@ -32,17 +32,17 @@ class Util::AccessibilityChecker
     #_text = modify_href_icon(_text, options[:host])
 
     return _text
-  end
+end
   
-  def self.check_br(text)
+def self.check_br(text)
     text.scan(/(?:<br\s*\/?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*){2,}/) == []
-  end
+end
   
-  def self.check_p(text)
+def self.check_p(text)
     text.scan(/<p[^>]*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/p\s*>/) == []
-  end
+end
  
-  def self.check_h(text)
+def self.check_h(text)
     h_num = 1
     check = true
     text.scan(/<h(\d)\s*>/){ |h|
@@ -56,9 +56,9 @@ class Util::AccessibilityChecker
     end
     }
   return check
-  end
+end
 
-  def self.check_table_sc(text)
+def self.check_table_sc(text)
   check = true
   text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_1 = $1
@@ -87,6 +87,31 @@ end
 
 def self.check_table_cell(text)
   check = true
+  doc = Hpricot(text)
+  
+  doc.search("table").each do |table|
+    
+    table.search("th").each do |th|
+      check = (th.inner_text.gsub(/(\302\240|\s|　)/, "") != "")
+      break if !check
+    end
+    
+    break if !check
+    
+    table.search("td").each do |td|
+      check = (td.inner_text.gsub(/(\302\240|\s|　)/, "") != "")
+      break if !check
+    end
+     
+    break if !check
+  end
+  
+  check
+end
+
+=begin
+def self.check_table_cell(text)
+  check = true
   text.scan(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_2 = $2
    
@@ -102,7 +127,8 @@ def self.check_table_cell(text)
     return check if !check
     
     table_2.scan(/<td.*?>.*?<\/td.*?>/m){ |td|
-      if td =~ /<td.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;|<p>|<\/p>)*<\/td.*?>/m
+      if td =~ /<td.*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/td.*?>/m
+                 raise td
         check = false
       end
     }
@@ -110,7 +136,8 @@ def self.check_table_cell(text)
     
   }
   check
-end  
+end
+=end
 
 def self.check_table_th(text)
   doc = Hpricot(text)
@@ -158,15 +185,15 @@ def self.check_href_icon(text, host)
   check
 end
 
-  def self.modify_br(text)
+def self.modify_br(text)
     text.gsub(/(?:<br\s*\/?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*){2,}/, "<br />\n")
-  end
+end
   
-  def self.modify_p(text)
+def self.modify_p(text)
     text.gsub(/<p[^>]*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/p\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*/, "")
-  end
+end
   
-  def self.modify_h(text)
+def self.modify_h(text)
     h_num = 1
     return text.gsub(/<h(\d)\s*>(.*?)<\/h(\d)\s*>/m){ |h|
     num = $1.to_i
@@ -179,7 +206,7 @@ end
       "<h#{h_num}>#{$2}</h#{h_num}>"
     end
     }
-  end
+end
 
 def self.modify_table_sc(text)
   return text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
@@ -214,6 +241,28 @@ def self.modify_table_sc(text)
 end
 
 def self.modify_table_cell(text)
+doc = Hpricot(text)
+  
+  doc.search("table").each do |table|
+    
+    table.search("th").each do |th|
+      if th.inner_text.gsub(/(\302\240|\s|　)/, "") == ""
+        th.inner_html = "セル"
+      end
+    end
+    
+    table.search("td").each do |td|
+      if td.inner_text.gsub(/(\302\240|\s|　)/, "") == ""
+        td.inner_html = "セル"
+      end
+    end
+  end
+  
+  doc.to_s
+end
+
+=begin
+def self.modify_table_cell(text)
     text_ = text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){
     table_1 = $1
     table_2 = $2
@@ -246,6 +295,7 @@ def self.modify_table_cell(text)
     "<thead>#{thead}</thead>"
   }
 end
+=end
 
 def self.modify_table_th(text)
   
@@ -319,12 +369,12 @@ def self.modify_href_icon(text, host)
   }
 end
 
-  def self.modify_platform_dependent_characters(text)
+def self.modify_platform_dependent_characters(text)
     
     if result = Util::String.search_platform_dependent_characters(text)
       text.gsub(/[#{result}]/, "【機種依存文字】")
     else
       text
     end
-  end
+end
 end
