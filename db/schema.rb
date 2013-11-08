@@ -669,15 +669,6 @@ ActiveRecord::Schema.define(:version => 20131106134342) do
   add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
   add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
 
-  create_table "gp_article_doc_bodies", :force => true do |t|
-    t.integer  "doc_id"
-    t.text     "body"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "gp_article_doc_bodies", ["doc_id"], :name => "index_gp_article_doc_bodies_on_doc_id"
-
   create_table "gp_article_docs", :force => true do |t|
     t.integer  "unid"
     t.integer  "concept_id"

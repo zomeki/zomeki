@@ -54,7 +54,6 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :holds, :as => :holdable, :dependent => :destroy
   has_many :links, :dependent => :destroy
   has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
-  has_many :body_histories, :class_name => 'GpArticle::DocBody'
 
   before_save :make_file_contents_path_relative
   before_save :set_name
@@ -83,7 +82,6 @@ class GpArticle::Doc < ActiveRecord::Base
   after_save :set_tags
   after_save :set_display_attributes
   after_save :save_links
-  after_save :save_current_body
 
   attr_accessor :ignore_accessibility_check
 
@@ -667,13 +665,6 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if check_results != [] && !ignore_accessibility_check
      errors.add(:base, 'アクセシビリティチェック結果を確認してください')
-    end
-  end
-
-  def save_current_body
-    unless body_histories.first.try(:body) == self.body
-      body_histories.offset(3).destroy_all
-      body_histories.create(body: self.body)
     end
   end
 
