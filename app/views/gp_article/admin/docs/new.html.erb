@@ -3,5 +3,5 @@
   <%=raw large_flash(flash, :key => :link_check_result) %>
   <%=raw large_flash(flash, :key => :accessibility_check_result) %>
   <%= render 'form', :f => f %>
-  <%= submit (@content.approval_related? ? @item.state_options : @item.state_options.reject{|o| o.last == 'recognize' }) %>
+  <%= submit @item.state_options %>
 <% end %>
