@@ -62,26 +62,6 @@
           <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
         </td>
       </tr>
-<%- if false -%>
-      <%- unless @item.body_histories.empty? -%>
-      <tr>
-        <th>履歴</th>
-      </tr>
-      <%- end -%>
-      <%- @item.body_histories.each do |body_history| -%>
-      <tr>
-        <td>
-          <strong><%=l body_history.updated_at %></strong>
-          <%= link_to_function '復元する', "CKEDITOR.instances['item_body'].setData($('#body_history_#{body_history.id}_body').val())" %>
-          <%= link_to_function '開く▼', "toggle_form(this, '#body_history_#{body_history.id}')" %>
-          <%= hidden_field_tag "body_history_#{body_history.id}_body", body_history.body %>
-          <div id="body_history_<%= body_history.id %>" style="border: 1px solid #ccc; display: none; margin-top: 10px;">
-            <%=raw body_history.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %>
-          </div>
-        </td>
-      </tr>
-      <%- end -%>
-<%- end -%>
     </table>
 
     <p class="form">添付ファイル</p>
