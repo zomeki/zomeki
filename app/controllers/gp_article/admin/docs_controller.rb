@@ -7,7 +7,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   before_filter :check_intercepted, :only => [ :update ]
 
   def pre_dispatch
-    return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
+    return http_error(404) unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     return redirect_to(request.env['PATH_INFO']) if params[:reset_criteria]
 
@@ -15,8 +15,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @visible_category_types = @content.visible_category_types
     @event_category_types = @content.event_category_types
     @marker_category_types = @content.marker_category_types
+
     @item = @content.docs.find(params[:id]) if params[:id].present?
+
     @params_categories = params[:categories].kind_of?(Hash) ? params[:categories] : {}
+    @params_event_categories = params[:event_categories].kind_of?(Hash) ? params[:event_categories] : {}
+    @params_marker_categories = params[:marker_categories].kind_of?(Hash) ? params[:marker_categories] : {}
   end
 
   def index
