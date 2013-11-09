@@ -15,7 +15,9 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def show
-    @form_answer = @form.form_answers.build
+    @form_answer = @form.form_answers.build(answered_url: "#{@content.site.full_uri.sub(/\/+$/, '')}#{@content.public_node.public_uri}#{@form.name}",
+                                            answered_url_title: @form.title,
+                                            remote_addr: request.remote_addr, user_agent: request.user_agent)
   end
 
   def confirm_answers
