@@ -66,9 +66,8 @@
   <%- end -%>
 </div>
 
-<%- if params[:piece] -%>
-<%= javascript_include_tag '/_common/js/jquery.min.js' %>
-<%- end -%>
+<%- unless Page.mobile? -%>
+<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
 <%= javascript_tag do -%>
 $(document).ready(function () {
   $('#current_url').closest('form').submit(function (event) {
@@ -76,4 +75,5 @@ $(document).ready(function () {
     $('#current_url_title').val(parent.document.title);
   });
 });
+<%- end -%>
 <%- end -%>
