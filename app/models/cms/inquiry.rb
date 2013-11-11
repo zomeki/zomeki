@@ -3,7 +3,7 @@ class Cms::Inquiry < ActiveRecord::Base
   
   belongs_to :group, :foreign_key => :group_id, :class_name => 'Sys::Group'
   
-  before_save :set_group
+  #before_save :set_group
   
   #validates_presence_of :unid
   
