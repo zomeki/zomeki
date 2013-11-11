@@ -7,6 +7,7 @@
     <th style="text-align: center; width: 80px;"><%= Survey::Form.human_attribute_name :sort_no %></th>
     <th style="text-align: center; width: 120px;"><%= Survey::Form.human_attribute_name :created_at %></th>
     <th style="text-align: center; width: 60px;"><%= Survey::Form.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 65px;">プレビュー</th>
   </tr>
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
@@ -17,6 +18,10 @@
     <td style="text-align: right;"><%= item.sort_no %></td>
     <td style="text-align: center;"><%=l item.updated_at %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
+    <td style="text-align: center;">
+      <%= link_to_if @content.public_node && item.preview_uri.present?, 'PC', item.preview_uri, target: '_blank' %>
+      <%= link_to_if @content.public_node && item.preview_uri.present?, '携帯', item.preview_uri(mobile: true), target: '_blank' %>
+    </td>
   </tr>
   <%- end -%>
 </table>
