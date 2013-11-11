@@ -84,7 +84,14 @@ module Sys::Model::Base::File
 
     if file.content_type =~ %r<^image/>i
       begin
-        image = Magick::Image.read(file.path).first
+        image = case file
+                when ActionDispatch::Http::UploadedFile
+                  Magick::Image.read(file.path).first
+                when Sys::Lib::File::NoUploadedFile
+                  Magick::Image.from_blob(file.read).shift
+                else
+                  raise %Q!"#{file.class}" is not supported.!
+                end
         if image_resize.present?
           image.resize_to_fit!(image_resize.to_i)
           image.write(file.path)
@@ -94,11 +101,7 @@ module Sys::Model::Base::File
           self.image_width  = image.columns
           self.image_height = image.rows
         end
-      rescue LoadError => e
-        warn_log(e.message)
-      rescue Magick::ImageMagickError => e
-        warn_log(e.message)
-      rescue NoMethodError => e
+      rescue => e
         warn_log(e.message)
       end
     end
