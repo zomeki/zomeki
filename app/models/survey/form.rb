@@ -64,11 +64,12 @@ class Survey::Form < ActiveRecord::Base
 
   def send_approval_request_mail
     approve_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
+    preview_url = self.preview_uri
 
     approval_requests.each do |approval_request|
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
         next if approval_request.user.email.blank? || approver.email.blank?
-        CommonMailer.approval_request(approval_request: approval_request, approve_url: approve_url,
+        CommonMailer.approval_request(approval_request: approval_request, preview_url: preview_url, approve_url: approve_url,
                                       from: approval_request.user.email, to: approver.email).deliver
       end
     end
@@ -123,6 +124,18 @@ class Survey::Form < ActiveRecord::Base
     return unless state_approved?
     approval_requests.destroy_all
     update_column(:state, 'public')
+  end
+
+  def public_uri
+    return nil unless content.public_node
+    "#{content.public_node.public_uri}#{name}"
+  end
+
+  def preview_uri(site: nil, mobile: false, params: {})
+    return nil unless public_uri
+    site ||= ::Page.site
+    params = params.map{|k, v| "#{k}=#{v}" }.join('&')
+    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}#{params.present? ? "?#{params}" : ''}"
   end
 
   private

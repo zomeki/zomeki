@@ -44,7 +44,8 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   private
 
   def set_form
-    @form = @content.public_forms.find_by_name(params[:id])
+    forms = Core.mode == 'preview' ? @content.forms : @content.public_forms
+    @form = forms.find_by_name(params[:id])
     return http_error(404) unless @form
     return render(text: '') unless @form.open?
 
