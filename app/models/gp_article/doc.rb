@@ -337,13 +337,13 @@ class GpArticle::Doc < ActiveRecord::Base
 
     new_doc.in_editable_groups = editable_group.group_ids.split if editable_group
 
-    inquiries.each do |inquiry|
-      if inquiry.try(:group_id) == Core.user.group_id
-        new_doc.inquiries.build(inquiry.attributes)
-      else
+    inquiries.each_with_index do |inquiry, i|
+      if i == 0
         attrs = inquiry.attributes
         attrs[:group_id] = Core.user.group_id
-        new_doc.inquiries.build(attrs)
+        new_doc.inquiries.build(inquiry.attributes)
+      else
+        new_doc.inquiries.build(inquiry.attributes)
       end
     end
 
