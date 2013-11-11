@@ -12,7 +12,29 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
   end
 
   def index
-    @items = @content.forms.paginate(page: params[:page], per_page: 30)
+    criteria = params[:criteria] || {}
+
+    case params[:target]
+    when 'draft'
+      criteria[:state] = 'draft'
+      criteria[:touched_user_id] = Core.user.id
+    when 'public'
+      criteria[:state] = 'public'
+      criteria[:touched_user_id] = Core.user.id
+    when 'closed'
+      criteria[:state] = 'closed'
+      criteria[:touched_user_id] = Core.user.id
+    when 'approvable'
+      criteria[:approvable] = true
+      criteria[:state] = 'approvable'
+    when 'approved'
+      criteria[:approvable] = true
+      criteria[:state] = 'approved'
+    end
+
+    forms = Survey::Form.arel_table
+    @items = Survey::Form.all_with_content_and_criteria(@content, criteria).reorder(forms[:created_at].desc).paginate(page: params[:page], per_page: 30)
+
     _index @items
   end
 
