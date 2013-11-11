@@ -24,6 +24,7 @@ item.build_default_inquiry
     <div class="inquiryForm">
     <p class="form">連絡先<%= i+1 if i != 0 %></p>
     <%= f2.hidden_field :state, :class => "inquiryState" -%>
+    <%= f2.hidden_field :_destroy -%>
     <table class="show">
       <%- if item.inquiry_display_field?(:group_id) -%>
       <tr>
@@ -62,16 +63,22 @@ item.build_default_inquiry
       </tr>
       <%- end -%>
     </table>
+    <%= button_tag '削除する', :type => :button, :class => 'deleteInquiry', :style => "margin: 10px 0; display: #{i == 0 ? 'none' : 'block'}"   -%>
     </div>
   <%- end -%>
 <%- end -%>
 </div>
 
-<br />
+<hr />
 <%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' -%>
 
 <script type="text/javascript">
  $(function(){
+   $(document).on('click', '.deleteInquiry', function(e) {
+     if (!confirm('削除してよろしいですか？')) { return; }
+     $(this).siblings('input[id$=_destroy]').val(true);
+     $(this).closest('.inquiryForm').hide();
+   });
    $('#addInquiryForm').on('click', function(e) {
      var no  = $('.inquiryForm').size();
      var elm = $('.inquiryForm:last').clone();
@@ -88,6 +95,8 @@ item.build_default_inquiry
      elm.find('p.form').show().html('連絡先' + String(no+1));
      elm.find('[id^=item_inquiries_attributes][id$=group_id]').show();
      elm.find('[id^=inquiryGroupLabel]').hide();
+     elm.find('.deleteInquiry').show();
+     elm.show();
      $('#inquiryForms').append(elm);
    });
    $('form').on('submit', function(e) {
