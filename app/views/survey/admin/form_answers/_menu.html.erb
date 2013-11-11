@@ -1,9 +1,15 @@
-<h2><%= @content.name %><%= @form ? " ： #{@form.title}" : '' %></h2>
+<h2><%= @content.name %> ： <%= @form.title %> ： <%= "#{Survey::FormAnswer.model_name.human}#{case action_name
+                                                                                               when 'index'; '一覧'
+                                                                                               when 'new';   '登録'
+                                                                                               when 'edit';  '編集'
+                                                                                               end}" %></h2>
 
 <div class="actionMenu">
-  <%= action_menu :index, survey_form_form_answers_path(content: @content, form_id: @form.id) %>
   <%- if action_name == 'index' -%>
-  <%= link_to '戻る', survey_forms_path(content: @content) %>
   <%= link_to 'CSV出力', download_form_answers_survey_form_path(content: @content, id: @form.id) %>
+  <%- end -%>
+
+  <%- if action_name == 'show' -%>
+  <%= link_to '一覧', url_for(action: 'index') %>
   <%- end -%>
 </div>
