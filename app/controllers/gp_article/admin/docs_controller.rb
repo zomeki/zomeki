@@ -24,9 +24,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     @params_item_in_editable_groups = if (ieg = params[:item].try('[]', :in_editable_groups)).kind_of?(Array)
                                         ieg
-                                      else
-                                        []
                                       end
+    @params_item_in_maps = if (im = params[:item].try('[]', :in_maps)).kind_of?(Hash)
+                             im
+                           end
   end
 
   def index
