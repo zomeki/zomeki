@@ -35,11 +35,14 @@ class Survey::Form < ActiveRecord::Base
 
   def self.all_with_content_and_criteria(content, criteria)
     forms = self.arel_table
-    creators = Sys::Creator.arel_table
 
-    rel = self.joins(:creator)
-    rel = rel.where(forms[:content_id].eq(content.id))
+    rel = self.where(forms[:content_id].eq(content.id))
     rel = rel.where(forms[:state].eq(criteria[:state])) if criteria[:state].present?
+
+    if criteria[:touched_user_id].present? || criteria[:editable].present?
+      creators = Sys::Creator.arel_table
+      rel = rel.joins(:creator)
+    end
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
