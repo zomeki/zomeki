@@ -7,20 +7,17 @@
                 h doc.title
               end
 
-  doc_image = if (file = doc.image_files.first)
+  image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
 
-                if doc.list_image.present?
-                  file = doc.image_files.select {|f| f.id == doc.list_image.to_i}.first || doc.image_files.first
-                else
-                  file = nil
-                  doc.image_files.each do |f|
-                    file = f and break if doc.body.include?("file_contents/#{url_encode f.name}")
-                  end
-                end
-
-                link_to *([image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")] + link_to_options) if file
+  doc_image = if image_file
+                link_to *([image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode image_file.name}")] + link_to_options)
               else
-                ''
+                unless (img_tags = Nokogiri::HTML.parse(doc.body).css('img[src^="file_contents/"]')).empty?
+                  filename = File.basename(img_tags.first.attributes['src'].value)
+                  link_to *([image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode filename}")] + link_to_options)
+                else
+                  ''
+                end
               end
 
   contents = {

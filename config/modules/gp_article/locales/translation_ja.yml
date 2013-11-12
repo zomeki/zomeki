@@ -18,7 +18,7 @@ ja:
         href: リンクURL
         subtitle: サブタイトル
         summary: 概要
-        list_image: 画像
+        list_image: 画像（添付ファイル名）
         state: 状態
         event_state: イベントカレンダー表示
         event_started_on: イベント開始日
