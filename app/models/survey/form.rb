@@ -2,7 +2,11 @@ class Survey::Form < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Base::OperationLog
   include Sys::Model::Rel::Unid
-  include Cms::Model::Auth::Content
+  include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::EditableGroup
+
+  include Cms::Model::Auth::Concept
+  include Sys::Model::Auth::EditableGroup
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'approvable'], ['即時公開', 'public']]
   CONFIRMATION_OPTIONS = [['あり', true], ['なし', false]]
@@ -31,15 +35,29 @@ class Survey::Form < ActiveRecord::Base
 
   def self.all_with_content_and_criteria(content, criteria)
     forms = self.arel_table
+    creators = Sys::Creator.arel_table
 
-    rel = self.where(forms[:content_id].eq(content.id))
-
+    rel = self.joins(:creator)
+    rel = rel.where(forms[:content_id].eq(content.id))
     rel = rel.where(forms[:state].eq(criteria[:state])) if criteria[:state].present?
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
+      rel = rel.includes(:operation_logs).where(operation_logs[:user_id].eq(criteria[:touched_user_id])
+                                                .or(creators[:user_id].eq(criteria[:touched_user_id])))
+    end
 
-      rel = rel.includes(:operation_logs).where(operation_logs[:user_id].eq(criteria[:touched_user_id]))
+    if criteria[:editable].present?
+      editable_groups = Sys::EditableGroup.arel_table
+      rel = unless Core.user.has_auth?(:manager)
+              rel.includes(:editable_group).where(creators[:group_id].eq(Core.user.group.id)
+                                                  .or(editable_groups[:group_ids].eq(Core.user.group.id.to_s)
+                                                  .or(editable_groups[:group_ids].matches("#{Core.user.group.id} %")
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id} %")
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id}"))))))
+            else
+              rel
+            end
     end
 
     if criteria[:approvable].present?
