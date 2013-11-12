@@ -50,6 +50,10 @@ table.index td {
   padding: 5px 6px;
   border-left: 1px solid #ccc;
 }
+table.index td.approvable {
+  font-weight: bold;
+  color: #ee0000;
+}
 table.index tr.cycle td {
   background-color: #f4f4f4;
 }
