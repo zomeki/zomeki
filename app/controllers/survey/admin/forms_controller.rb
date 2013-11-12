@@ -60,7 +60,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     validate_approval_requests if @item.state_approvable?
     return render(:action => :new) unless @item.errors.empty?
 
-    location = url_for(action: 'edit') if @item.state_draft?
+    location = ->(f){ edit_suervey_form_url(@content, f) } if @item.state_draft?
     _create(@item, location: location) do
       @item.approval_requests.destroy_all if @item.state_approvable?
       set_approval_requests
