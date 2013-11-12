@@ -21,6 +21,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @params_categories = params[:categories].kind_of?(Hash) ? params[:categories] : {}
     @params_event_categories = params[:event_categories].kind_of?(Hash) ? params[:event_categories] : {}
     @params_marker_categories = params[:marker_categories].kind_of?(Hash) ? params[:marker_categories] : {}
+
+    @params_item_in_editable_groups = if (ieg = params[:item].try('[]', :in_editable_groups)).kind_of?(Array)
+                                        ieg
+                                      else
+                                        []
+                                      end
   end
 
   def index

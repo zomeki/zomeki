@@ -338,12 +338,16 @@
         <td>
           <div id="editable_groups">
             <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
-            <%- Sys::Group.where(id: @item.in_editable_groups).each do |group| -%>
+            <%- Sys::Group.where(id: (@params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups
+                                                                                      : @item.in_editable_groups)).each do |group| -%>
             <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
             <%- end -%>
             <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
           </div>
-          <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL', @item.editable_group.try(:all?), id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
+          <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL',
+                                 @params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups.include?('ALL')
+                                                                                 : @item.editable_group.try(:all?),
+                                 id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
         </td>
       </tr>
     </table>
