@@ -15,6 +15,8 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     criteria = params[:criteria] || {}
 
     case params[:target]
+    when 'all'
+      # No criteria
     when 'draft'
       criteria[:state] = 'draft'
       criteria[:touched_user_id] = Core.user.id
@@ -30,6 +32,8 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     when 'approved'
       criteria[:approvable] = true
       criteria[:state] = 'approved'
+    else
+      criteria[:editable] = true
     end
 
     forms = Survey::Form.arel_table
