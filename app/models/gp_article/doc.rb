@@ -194,8 +194,8 @@ class GpArticle::Doc < ActiveRecord::Base
     super
   end
 
-  def raw_tags=(raw_tags)
-    super raw_tags.gsub('　', ' ')
+  def raw_tags=(new_raw_tags)
+    super (new_raw_tags.nil? ? new_raw_tags : new_raw_tags.to_s.gsub('　', ' '))
   end
 
   def public_path
