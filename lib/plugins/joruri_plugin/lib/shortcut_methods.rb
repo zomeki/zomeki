@@ -14,3 +14,10 @@ end
 def error_log(message)
   Rails.logger.error "[#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}] ERROR  #{message}"
 end
+
+class String
+  def to_utf8
+    require "nkf"
+    NKF.nkf('-wxm0', self.to_s)
+  end
+end

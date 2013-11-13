@@ -14,9 +14,9 @@ class Cms::Public::TalkController < ApplicationController
     res = Util::Http::Request.send(uri)
     return http_error(404) if res.status != 200
     
-    gtalk = Cms::Lib::Navi::Gtalk.new
-    gtalk.make res.body
-    file = gtalk.output
+    jtalk = Cms::Lib::Navi::Jtalk.new
+    jtalk.make res.body
+    file = jtalk.output
     send_file(file[:path], :type => file[:mime_type], :filename => 'sound.mp3', :disposition => 'inline')
     
     #file = "#{Rails.root}/ext/making.mp3"
