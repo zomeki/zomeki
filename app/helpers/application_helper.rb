@@ -80,7 +80,7 @@ module ApplicationHelper
   ## furigana
   def ruby(str, ruby = nil)
     ruby = Page.ruby unless ruby
-    return ruby == true ? Cms::Lib::Navi::Ruby.convert(str) : str
+    return ruby == true ? Cms::Lib::Navi::Kana.convert(str) : str
   end
 
   def i18n_l(value, format=nil)
