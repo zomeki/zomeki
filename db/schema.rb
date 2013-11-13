@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131108063933) do
+ActiveRecord::Schema.define(:version => 20131113085328) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -699,7 +699,7 @@ ActiveRecord::Schema.define(:version => 20131108063933) do
     t.string   "marker_state"
     t.text     "meta_description"
     t.string   "meta_keywords"
-    t.integer  "list_image"
+    t.string   "list_image"
     t.integer  "prev_edition_id"
   end
 
