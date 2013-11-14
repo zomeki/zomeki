@@ -198,14 +198,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish(item)
-    item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
     item.update_column(:published_at, Core.now)
     _publish(item) { publish_ruby(item) }
   end
 
   def publish_by_update(item)
     return unless item.terminal_pc_or_smart_phone
-    item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
     if item.publish(render_public_as_string(item.public_uri))
       publish_ruby(item)
       flash[:notice] = '公開処理が完了しました。'

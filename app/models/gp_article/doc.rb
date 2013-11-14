@@ -227,6 +227,13 @@ class GpArticle::Doc < ActiveRecord::Base
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 
+  def preview_uri(site: nil, mobile: false, params: {})
+    return nil unless public_uri
+    site ||= ::Page.site
+    params = params.map{|k, v| "#{k}=#{v}" }.join('&')
+    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}preview/#{id}/#{params.present? ? "?#{params}" : ''}"
+  end
+
   def state_options
     options = if Core.user.has_auth?(:manager) || content.save_button_states.include?('public')
                 STATE_OPTIONS
