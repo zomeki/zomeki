@@ -86,7 +86,26 @@ addEvent(window, 'load', function() {
   google.maps.event.addListener(map, 'dragend', function(){ me.syncMap(); } );
   google.maps.event.addListener(map, 'zoom_changed', function(){ me.syncMap(); } );
   google.maps.event.addListener(map, 'click', function(event){ me.syncClick(event); } );
-  
+
+  <%- if @params_item_in_maps.kind_of?(Hash) &&
+         (params_markers = @params_item_in_maps['0'].try('[]', 'markers')).kind_of?(Hash) -%>
+    <%- params_markers.each do |key, value| next if value['lat'].blank? || value['lng'].blank? -%>
+    var marker<%= key %> = new google.maps.Marker({
+      // title: '<%= value['name'] %>'
+      position: new google.maps.LatLng(<%= value['lat'] %>, <%= value['lng'] %>),
+      map: map
+    });
+    var infowindow<%= key %> = new google.maps.InfoWindow({
+      content: '<%= h(value['name']).gsub(/\r\n|\r|\n/, '<br />').html_safe %>',
+      disableAutoPan: false
+    });
+    google.maps.event.addListener(marker<%= key %>, 'click', function() {
+      infowindow<%= key %>.open(map, marker<%= key %>);
+    });
+
+    me.markers['item_in_maps_0_markers<%= key %>'] = marker<%= key %>;
+    <%- end -%>
+  <%- else -%>
   // markers
   <% markers.each_with_index do |marker, idx| %>
     var marker<%= idx %> = new google.maps.Marker({
@@ -101,11 +120,12 @@ addEvent(window, 'load', function() {
     google.maps.event.addListener(marker<%= idx %>, 'click', function() {
       infowindow<%= idx %>.open(map, marker<%= idx %>);
     });
-    
+
     // registers to a editor
     me.markers['item_in_maps_0_markers<%= idx %>'] = marker<%= idx %>;
   <% end %>
-  
+  <%- end -%>
+
   // hidden
   google.maps.event.addListener(map, 'tilesloaded', function() {
     google.maps.event.clearListeners(map, 'tilesloaded');
