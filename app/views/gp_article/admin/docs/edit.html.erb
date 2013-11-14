@@ -1,3 +1,5 @@
+<%= render 'replacement_notification' %>
+
 <%= form_for(@item, :as => :item, :url => gp_article_doc_path, :html => { method: 'put' }) do |f| %>
   <%= error_messages_for :item %>
   <%=raw large_flash(flash, :key => :link_check_result) %>
