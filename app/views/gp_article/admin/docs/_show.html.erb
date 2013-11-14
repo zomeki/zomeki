@@ -1,9 +1,4 @@
-<%- if @item.will_be_replaced? -%>
-<div class="next_edition">更新用の記事が作成されています。：<%= link_to @item.next_edition.title, gp_article_doc_path(@content, @item.next_edition) %></div>
-<%- end -%>
-<%- if @item.will_replace? -%>
-<div class="prev_edition">公開時に更新される記事：<%= link_to @item.prev_edition.title, gp_article_doc_path(@content, @item.prev_edition) %></div>
-<%- end -%>
+<%= render 'replacement_notification' %>
 
 <div class="tabs">
   <ul>
