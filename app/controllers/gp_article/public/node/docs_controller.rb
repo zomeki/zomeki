@@ -28,7 +28,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def show
-    @item = public_or_preview_docs.find_by_name(params[:name])
+    @item = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) unless @item
 
     Page.current_item = @item
@@ -40,7 +40,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def file_content
-    @doc = public_or_preview_docs.find_by_name(params[:name])
+    @doc = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) unless @doc
 
     if (file = @doc.files.find_by_name("#{params[:basename]}.#{params[:extname]}"))
@@ -55,11 +55,19 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
   private
 
-  def public_or_preview_docs
+  def public_or_preview_docs(id: nil, name: nil)
+    docs = if Core.mode == 'preview'
+             @content.preview_docs
+           else
+             @content.public_docs
+           end
+
+    return docs if id.nil? && name.nil?
+
     if Core.mode == 'preview'
-      @content.preview_docs
+      docs.find_by_id(id) || docs.find_by_name(name)
     else
-      @content.public_docs
+      docs.find_by_name(name)
     end
   end
 end

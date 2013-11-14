@@ -43,9 +43,9 @@ end
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
   <span class="separator"></span>
-  <%= link_to 'プレビュー(PC)', @item.preview_uri(params: {doc_id: @item.id}),
+  <%= link_to 'プレビュー(PC)', @item.preview_uri,
               target: 'preview' if @item.terminal_pc_or_smart_phone && @content.public_node && @item.preview_uri.present? %>
-  <%= link_to 'プレビュー(携帯)', @item.preview_uri(mobile: true, params: {doc_id: @item.id}),
+  <%= link_to 'プレビュー(携帯)', @item.preview_uri(mobile: true),
               target: 'preview' if @item.terminal_mobile && @content.public_node && @item.preview_uri.present? %>
   <%- end -%>
 </div>
