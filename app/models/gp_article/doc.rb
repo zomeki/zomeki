@@ -545,6 +545,11 @@ class GpArticle::Doc < ActiveRecord::Base
   private
 
   def name_validity
+    if prev_edition
+      self.name = prev_edition.name
+      return
+    end
+
     errors.add(:name, :invalid) if self.name && self.name !~ /^[\-\w]*$/
 
     if (doc = self.class.find_by_name_and_state(self.name, self.state))
