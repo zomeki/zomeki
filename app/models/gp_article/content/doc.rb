@@ -10,8 +10,12 @@ class GpArticle::Content::Doc < Cms::Content
 
   before_create :set_default_settings
 
+  def all_docs
+    docs.unscoped
+  end
+
   def preview_docs
-    docs.mobile(::Page.mobile?)
+    docs.unscoped.mobile(::Page.mobile?)
   end
 
   def public_docs

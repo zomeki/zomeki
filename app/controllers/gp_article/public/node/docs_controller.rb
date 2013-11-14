@@ -65,7 +65,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
     return docs if id.nil? && name.nil?
 
     if Core.mode == 'preview'
-      docs.find_by_id(id) || docs.find_by_name(name)
+      docs.find_by_id(id)
     else
       docs.find_by_name(name)
     end

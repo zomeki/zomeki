@@ -13,10 +13,10 @@ class GpArticle::Admin::Docs::HistoriesController < Cms::Controller::Admin::Base
 
   def index
     doc_ids = @doc.prev_editions.select(&:state_archived?).map(&:id)
-    @items = @content.docs.unscoped.where(id: doc_ids).reorder('display_published_at DESC').paginate(page: params[:page], per_page: 30)
+    @items = @content.all_docs.where(id: doc_ids).reorder('display_published_at DESC').paginate(page: params[:page], per_page: 30)
   end
 
   def show
-    @item = @content.docs.unscoped.find(params[:id])
+    @item = @content.all_docs.find(params[:id])
   end
 end

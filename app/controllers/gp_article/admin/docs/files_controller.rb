@@ -10,7 +10,7 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
     if (@doc_id = params[:doc_id]) =~ /^[0-9a-z]{32}$/
       @tmp_unid = @doc_id
     else
-      @doc = @content.docs.find(@doc_id)
+      @doc = @content.all_docs.find(@doc_id)
     end
   end
 
