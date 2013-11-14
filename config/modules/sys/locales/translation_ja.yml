@@ -1,5 +1,7 @@
 ja: 
   activerecord: 
+    models:
+      sys/user: "ユーザ"
     attributes: 
       sys/sequence: 
         created_at: "作成日時"
