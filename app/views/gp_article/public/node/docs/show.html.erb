@@ -12,7 +12,8 @@
 <%- end -%>
 
 <div class="body"><%=raw (unless Page.mobile?
-  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
+  @item.body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? @item.public_uri
+                                                                                  : @item.preview_uri}file_contents/))
 else
   @item.body_for_mobile
 end) %></div>
