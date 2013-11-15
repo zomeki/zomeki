@@ -20,7 +20,7 @@ CKEDITOR.editorConfig = function( config ) {
     { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
     { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
     { name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
-    { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube' ] }
+    { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube','Audio','Video' ] }
 
   ];
 
@@ -53,7 +53,8 @@ CKEDITOR.editorConfig = function( config ) {
   // テンプレート内容の置き換えしない
   config.templates_replaceContent = false;
 
-  config.extraPlugins = 'youtube';
+  config.extraPlugins = 'youtube,audio,video';
+  config.extraAllowedContent = 'audio[*]{*}; video[*]{*};';
 };
 
 // スタイルの設定
