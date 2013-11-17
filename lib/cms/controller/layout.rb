@@ -161,7 +161,7 @@ module Cms::Controller::Layout
     
     ## ruby(kana)
     if Page.ruby
-      body = Cms::Lib::Navi::Ruby.convert(body)
+      body = Cms::Lib::Navi::Kana.convert(body)
     end
     
 #    ## for preview

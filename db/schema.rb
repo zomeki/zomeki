@@ -356,9 +356,8 @@ ActiveRecord::Schema.define(:version => 20131113085328) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.text     "body",        :limit => 2147483647
-    t.text     "ipadic_body", :limit => 2147483647
-    t.text     "unidic_body", :limit => 2147483647
+    t.text     "body",       :limit => 2147483647
+    t.text     "mecab_csv",  :limit => 2147483647
   end
 
   create_table "cms_layouts", :force => true do |t|

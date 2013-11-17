@@ -21,7 +21,7 @@ module Cms::Model::Base::Page::TalkTask
       talk = true
     elsif !::File.exist?(path)
       talk = true
-    elsif ::File.stat(path).mtime < Cms::KanaDictionary.dic_mtime(:talk)
+    elsif ::File.stat(path).mtime < Cms::KanaDictionary.dic_mtime
       talk = true
     end
     

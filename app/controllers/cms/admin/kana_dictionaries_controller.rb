@@ -8,6 +8,9 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   end
   
   def index
+    return test if params[:do] == 'test'
+    return make_dictionary if params[:do] == 'make_dictionary'
+    
     item = Cms::KanaDictionary.new#.readable
     item.page  params[:page], params[:limit]
     item.order params[:sort], 'name, id'
@@ -24,13 +27,14 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
 
   def new
     @item = Cms::KanaDictionary.new({
-      :body => "# コメント（先頭に「#」）\n" +
-        "\n# 日本語例 （「漢字, カタカナ」の組み合わせで記述）\n" +
+      :body => "" +
+        "# コメント ... 先頭に「#」\n" +
+        "# 辞書には登録されません。\n\n" +
+        "# 日本語例 ... 「漢字, カタカナ」\n" +
         "文字, モジ\n" +
-        "単語, タンゴ\n" +
-        "\n# アルファベット例 （長音記号「ー」はアイウエオで記述）\n" +
-        "Japanese, ジャパニイズ\n" +
-        "People, ピイプル\n"
+        "単語, タンゴ\n\n" +
+        "# 英字例 ... 「英字, カタカナ」\n" +
+        "ZOMEKI, ゾメキ\n"
     })
   end
   
@@ -53,13 +57,13 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   end
   
   def make
-    errors = Cms::KanaDictionary.make_dic_file
-    if errors.empty?
+    res = Cms::KanaDictionary.make_dic_file
+    if res == true
       flash[:notice] = '辞書を更新しました。'
     else
-      flash[:alert] = "<ul><li>#{errors.join('</li><li>')}</li></ul>".html_safe
+      flash[:notice] = res.join('<br />')
     end
-
+    
     redirect_to cms_kana_dictionaries_url
   end
   
@@ -67,13 +71,13 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     @mode = true
     
     if params[:yomi_kana]
-      render :inline => Cms::Lib::Navi::Ruby.convert(params[:body])
+      render :inline => Cms::Lib::Navi::Kana.convert(params[:body])
     elsif params[:talk_kana]
-      render :inline => Cms::Lib::Navi::Gtalk.make_text(params[:body])
+      render :inline => Cms::Lib::Navi::Jtalk.make_text(params[:body])
     elsif params[:talk_file]
-      gtalk = Cms::Lib::Navi::Gtalk.new
-      gtalk.make params[:body]
-      file = gtalk.output
+      jtalk = Cms::Lib::Navi::Jtalk.new
+      jtalk.make params[:body]
+      file = jtalk.output
       send_file(file[:path], :type => file[:path], :filename => 'sound.mp3', :disposition => 'inline')
     end
   end
