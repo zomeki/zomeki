@@ -153,17 +153,10 @@ function Navigation_Talk(flag) {
   if (player) {
     uri += '.mp3' + param;
     if (player.html() == '') {
-      html = '<script type="text/javascript" src="/_common/swf/niftyplayer/niftyplayer.js"></script>' +
-      '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' +
-      ' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"' +
-      ' width="165" height="37" id="niftyPlayer1" align="">' +
-      '<param name=movie value="/_common/swf/niftyplayer/niftyplayer.swf?file=' + uri + '&as=1">' +
-      '<param name=quality value=high>' +
-      '<param name=bgcolor value=#FFFFFF>' +
-      '<embed src="/_common/swf/niftyplayer/niftyplayer.swf?file=' + uri + '&as=1" quality=high bgcolor=#FFFFFF' +
-      ' width="165" height="37" name="niftyPlayer1" align="" type="application/x-shockwave-flash"' +
-      ' swLiveConnect="true" pluginspage="http://www.macromedia.com/go/getflashplayer">' +
-      '</embed>' +
+      html = '<object type="application/x-shockwave-flash" data="/_common/swf/dewplayer/dewplayer-vol.swf" width="240" height="20" id="dewplayer" name="dewplayer">' +
+      '<param name="wmode" value="transparent" />' +
+      '<param name="movie" value="/_common/swf/dewplayer/dewplayer-vol.swf" />' +
+      '<param name="flashvars" value="mp3=' + uri + '&autostart=1" />' +
       '</object>';
       player.html(html);
     } else {

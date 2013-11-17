@@ -27,9 +27,9 @@ class Cms::Script::TalkTasksController < Cms::Controller::Script::Publication
     #hash = Digest::MD5.new.update(content.to_s).to_s
     #return true if hash == task.content_hash && ::File.exist?("#{task.path}.mp3")
     
-    gtalk = Cms::Lib::Navi::Gtalk.new
-    gtalk.make(content)
-    mp3 = gtalk.output
+    jtalk = Cms::Lib::Navi::Jtalk.new
+    jtalk.make(content)
+    mp3 = jtalk.output
     return false unless mp3
     return false if ::File.stat(mp3[:path]).size == 0
     FileUtils.mv(mp3[:path], "#{task.path}.mp3")
