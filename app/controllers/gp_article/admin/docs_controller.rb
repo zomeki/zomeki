@@ -236,7 +236,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def pullback
     if @item.state_approvable? && @item.approval_requesters.include?(Core.user)
-      @item.pullback(Core.user, comment: params[:comment])
+      @item.pullback(comment: params[:comment])
       redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しが完了しました。'
     else
       redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しに失敗しました。'
