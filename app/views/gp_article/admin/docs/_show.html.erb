@@ -176,8 +176,27 @@
       <%- end -%>
     <%- end -%>
 
+    <%- unless @item.approval_requests.all?{|r| r.histories.empty? } -%>
     <p class="form">履歴</p>
 
+      <%- @item.approval_requests.each do |approval_request| -%>
+      <table class="show histories">
+        <%- approval_request.histories.each do |history| -%>
+        <tr>
+          <th>
+            <span class="reason"><%= history.reason_title %></span>
+            <span class="group"><%= history.user.group.name %></span>
+            <span class="user"><%= history.user.name %>（<%= history.user.account %>）</span>
+            <span class="date"><%=l history.updated_at %></span>
+          </th>
+        </tr>
+        <tr>
+          <td><%=simple_format history.comment %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    <%- end -%>
     <%- else -%>
     <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
     <%- end -%>
