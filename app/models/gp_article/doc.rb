@@ -479,11 +479,11 @@ class GpArticle::Doc < ActiveRecord::Base
     end
   end
 
-  def send_passbacked_notification_mail
+  def send_passbacked_notification_mail(requester: nil, approver: nil, comment: '')
 #TODO: メールを送る
   end
 
-  def send_pullbacked_notification_mail
+  def send_pullbacked_notification_mail(requester: nil, comment: '')
 #TODO: メールを送る
   end
 
@@ -523,17 +523,20 @@ class GpArticle::Doc < ActiveRecord::Base
     update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
   end
 
-  def passback(user, comment: nil)
+  def passback(approver, comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_passbacked_notification_mail if approval_request.passback(user, comment: comment)
+      send_passbacked_notification_mail(requester: approval_request.user,
+                                        approver: approver,
+                                        comment: comment) if approval_request.passback(approver, comment: comment)
     end
   end
 
-  def pullback(user, comment: nil)
+  def pullback(comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_pullbacked_notification_mail if approval_request.pullback(user, comment: comment)
+      send_pullbacked_notification_mail(requester: approval_request.user,
+                                        comment: comment) if approval_request.pullback(comment: comment)
     end
   end
 
