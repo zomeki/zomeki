@@ -50,12 +50,11 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     return true
   end
 
-  def passback(user, comment: nil)
-    return false unless current_approvers.include?(user)
+  def passback(approver, comment: '')
+    return false unless current_approvers.include?(approver)
 
-    comment ||= ''
     transaction do
-      histories.create(user: user, reason: 'passback', comment: comment)
+      histories.create(user: approver, reason: 'passback', comment: comment || '')
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
@@ -65,12 +64,11 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     return true
   end
 
-  def pullback(user, comment: nil)
+  def pullback(comment: '')
     return false unless self.user == user
 
-    comment ||= ''
     transaction do
-      histories.create(user: user, reason: 'pullback', comment: comment)
+      histories.create(user: self.user, reason: 'passback', comment: comment || '')
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
