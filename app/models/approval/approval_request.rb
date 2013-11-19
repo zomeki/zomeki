@@ -10,6 +10,8 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
   has_many :current_assignments, :class_name => 'Approval::Assignment', :as => :assignable, :dependent => :destroy
   has_many :current_approvers, :through => :current_assignments, :source => :user
+  has_many :histories, :foreign_key => :request_id, :class_name => 'Approval::ApprovalRequestHistory', :dependent => :destroy,
+           :order => 'updated_at DESC, created_at DESC'
 
   after_initialize :set_defaults
 
@@ -50,29 +52,31 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
   def passback(user, comment: nil)
     return false unless current_approvers.include?(user)
+
     comment ||= ''
     transaction do
+      histories.create(user: user, reason: 'passback', comment: comment)
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
       reload # to flush cache
     end
-#TODO: コメントを書く
-p "差し戻し：#{comment}"
+
     return true
   end
 
   def pullback(user, comment: nil)
     return false unless self.user == user
+
     comment ||= ''
     transaction do
+      histories.create(user: user, reason: 'pullback', comment: comment)
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
       reload # to flush cache
     end
-#TODO: コメントを書く
-p "引き戻し：#{comment}"
+
     return true
   end
 
