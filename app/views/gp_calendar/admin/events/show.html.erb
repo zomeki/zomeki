@@ -65,7 +65,7 @@
       <% if file.image_file? %>
         <%= link_to image_tag(file_content_path, style: file.reduced_size(width: 80, height: 40, css: true)), file_content_path, target: '_blank' %>
       <% else %>
-        <%= link_to 'File', file_content_path, class: file.css_class, target: '_blank' %>
+        <%= link_to 'File', file_content_path, class: file.css_class %>
       <% end %>
     </td>
     <td><span class="file_name" file_name="<%= file.name %>"><%= file.name %></span></td>
