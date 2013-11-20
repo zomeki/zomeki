@@ -225,6 +225,24 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
   end
 
+  def passback
+    if @item.state_approvable? && @item.approvers.include?(Core.user)
+      @item.passback(Core.user, comment: params[:comment])
+      redirect_to gp_article_doc_url(@content, @item), notice: '差し戻しが完了しました。'
+    else
+      redirect_to gp_article_doc_url(@content, @item), notice: '差し戻しに失敗しました。'
+    end
+  end
+
+  def pullback
+    if @item.state_approvable? && @item.approval_requesters.include?(Core.user)
+      @item.pullback(comment: params[:comment])
+      redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しが完了しました。'
+    else
+      redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しに失敗しました。'
+    end
+  end
+
   protected
 
   def send_link_broken_notification(item)

@@ -479,8 +479,20 @@ class GpArticle::Doc < ActiveRecord::Base
     end
   end
 
+  def send_passbacked_notification_mail(requester: nil, approver: nil, comment: '')
+#TODO: メールを送る
+  end
+
+  def send_pullbacked_notification_mail(requester: nil, comment: '')
+#TODO: メールを送る
+  end
+
   def approvers
     approval_requests.inject([]){|u, r| u | r.current_assignments.map{|a| a.user unless a.approved_at }.compact }
+  end
+
+  def approval_requesters
+    approval_requests.inject([]){|u, r| u.include?(r.user) ? u : u.push(r.user) }
   end
 
   def approval_participators
@@ -509,6 +521,23 @@ class GpArticle::Doc < ActiveRecord::Base
     end
 
     update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
+  end
+
+  def passback(approver, comment: '')
+    return unless state_approvable?
+    approval_requests.each do |approval_request|
+      send_passbacked_notification_mail(requester: approval_request.user,
+                                        approver: approver,
+                                        comment: comment) if approval_request.passback(approver, comment: comment)
+    end
+  end
+
+  def pullback(comment: '')
+    return unless state_approvable?
+    approval_requests.each do |approval_request|
+      send_pullbacked_notification_mail(requester: approval_request.user,
+                                        comment: comment) if approval_request.pullback(comment: comment)
+    end
   end
 
   def validate_word_dictionary

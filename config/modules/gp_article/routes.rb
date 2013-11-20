@@ -17,6 +17,8 @@ ZomekiCMS::Application.routes.draw do
       match 'file_contents/:basename.:extname' => 'admin/docs/files#content'
       member do
         post :approve
+        post :passback
+        post :pullback
       end
       resources :files,
         :controller => 'admin/docs/files'
