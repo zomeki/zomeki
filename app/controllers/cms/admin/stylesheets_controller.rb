@@ -6,7 +6,6 @@ class Cms::Admin::StylesheetsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_auth?(:designer)
     @root      = "#{Core.site.public_path}/_themes"
     @path      = params[:path].to_s
-    @path     += ".#{params[:format]}" if params[:format].present?
     @full_path = "#{@root}/#{@path}"
     @base_uri  = ["#{Core.site.public_path}/", "/"]
 
@@ -43,16 +42,16 @@ class Cms::Admin::StylesheetsController < Cms::Controller::Admin::Base
   
   def show
     @item.read_body
-    render 'show.html.erb'
+    render :show
   end
   
   def new
-    render 'new.html.erb'
+    render :new
   end
   
   def edit
     @item.read_body
-    render 'edit.html.erb'
+    render :edit
   end
   
   def rename
@@ -63,7 +62,7 @@ class Cms::Admin::StylesheetsController < Cms::Controller::Admin::Base
         return redirect_to(location)
       end
     end
-    render 'rename.html.erb'
+    render :rename
   end
   
   def move
@@ -74,7 +73,7 @@ class Cms::Admin::StylesheetsController < Cms::Controller::Admin::Base
         return redirect_to(location)
       end
     end
-    render 'move.html.erb'
+    render :move
   end
   
   def create
@@ -106,7 +105,7 @@ class Cms::Admin::StylesheetsController < Cms::Controller::Admin::Base
       location = make_path(@path, '?do=edit')
       return redirect_to(location)
     end
-    render 'edit.html.erb'
+    render :edit
   end
   
   def destroy

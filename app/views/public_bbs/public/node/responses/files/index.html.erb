@@ -48,7 +48,7 @@
         <%= link_to image_tag(file_content_path, :style => item.reduced_size(:width => 80, :height => 40, :css => true)),
           file_content_path, :target => '_blank' %>
       <% else %>
-        <%= link_to 'File', file_content_path, :class => item.css_class, :target => '_blank' %>
+        <%= link_to 'File', file_content_path, :class => item.css_class, :onclick => "parent.document.location=$(this).attr('href'); return false;" %>
       <% end %>
     </td>
     <td style="text-align: center;">

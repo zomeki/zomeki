@@ -57,7 +57,7 @@ class Cms::Stylesheet < Sys::Model::ValidationModel::Base
   
   def textfile?
     return false unless file?
-    mime_type.blank? || mime_type =~ /^text/i
+    mime_type.blank? || mime_type =~ /(text|javascript)/i
   end
   
   def escaped_path
