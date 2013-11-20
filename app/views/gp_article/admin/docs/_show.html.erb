@@ -141,7 +141,8 @@
             <tr>
               <td><%= approval_request.approval_flow.approvals.map{|a|
                 approvers = a.approvers.pluck(:name).join('、')
-                a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;') : content_tag(:span, approvers, style: 'padding: 4px;')
+                a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;')
+                                                       : content_tag(:span, approvers, style: 'padding: 4px;')
                 }.join(' ＞ ').html_safe %></td>
             </tr>
             <%- end -%>
@@ -150,6 +151,52 @@
         </td>
       </tr>
     </table>
+
+    <%- if @item.state_approvable? && @item.approvers.include?(Core.user) -%>
+      <%= form_tag passback_gp_article_doc_path(@content, @item) do %>
+      <table class="show">
+        <tr>
+          <th>差し戻し</th>
+          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
+          <td><%= submit_tag '差し戻し', confirm: '差し戻してよろしいですか？' %></td>
+        </tr>
+      </table>
+      <%- end -%>
+    <%- end -%>
+
+    <%- if @item.state_approvable? && @item.approval_requesters.include?(Core.user) -%>
+      <%= form_tag pullback_gp_article_doc_path(@content, @item) do %>
+      <table class="show">
+        <tr>
+          <th>引き戻し</th>
+          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
+          <td><%= submit_tag '引き戻し', confirm: '引き戻してよろしいですか？' %></td>
+        </tr>
+      </table>
+      <%- end -%>
+    <%- end -%>
+
+    <%- unless @item.approval_requests.all?{|r| r.histories.empty? } -%>
+    <p class="form">履歴</p>
+
+      <%- @item.approval_requests.each do |approval_request| -%>
+      <table class="show histories">
+        <%- approval_request.histories.each do |history| -%>
+        <tr>
+          <th>
+            <span class="reason"><%= history.reason_title %></span>
+            <span class="group"><%= history.user.group.name %></span>
+            <span class="user"><%= history.user.name %>（<%= history.user.account %>）</span>
+            <span class="date"><%=l history.updated_at %></span>
+          </th>
+        </tr>
+        <tr>
+          <td><%=simple_format history.comment %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    <%- end -%>
     <%- else -%>
     <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
     <%- end -%>
