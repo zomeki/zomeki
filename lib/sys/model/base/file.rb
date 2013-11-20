@@ -153,7 +153,7 @@ module Sys::Model::Base::File
   end
 
   def united_name
-    title + '(' + eng_unit + ')'
+    "#{title}[#{::File.extname(name.to_s).gsub(/\./, '').upcase}：#{eng_unit}]"
   end
 
   def alt
@@ -184,33 +184,19 @@ module Sys::Model::Base::File
 
   def eng_unit
     _size = size
-    return '' unless _size.to_s =~ /^[0-9]+$/
-    if _size >= 10**9
-      _kilo = 3
-      _unit = 'G'
-    elsif _size >= 10**6
-      _kilo = 2
-      _unit = 'M'
-    elsif _size >= 10**3
-      _kilo = 1
-      _unit = 'K'
-    else
-      _kilo = 0
-      _unit = ''
+    return _size if _size.to_s !~ /^[0-9]+$/
+    
+    if _size >= 1024**3
+      bs = (_size.to_f / (1024**3)).round#.to_s + '000'
+      return "#{bs}GB"
+    elsif _size >= 1024**2
+      bs = (_size.to_f / (1024**2)).round#.to_s + '000'
+      return "#{bs}MB"
+    elsif _size >= 1000
+      bs = (_size.to_f / 1024).round#.to_s + '000'
+      return "#{bs}KB"
     end
-
-    if _kilo > 0
-      _size = (_size.to_f / (1024**_kilo)).to_s + '000'
-      _keta = _size.index('.')
-      if _keta == 3
-        _size = _size.slice(0, 3)
-      else
-        _size = _size.to_f * (10**(3-_keta))
-        _size = _size.to_f.ceil.to_f / (10**(3-_keta))
-      end
-    end
-
-    "#{_size}#{_unit}Bytes"
+    return "#{_size}Bytes"
   end
 
   def reduced_size(options = {})
