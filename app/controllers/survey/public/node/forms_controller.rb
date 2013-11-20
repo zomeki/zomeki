@@ -1,5 +1,6 @@
 # encoding: utf-8
 class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
+  include SimpleCaptcha::ControllerHelpers
   before_filter :set_form, only: [:show, :confirm_answers, :send_answers, :finish]
   skip_filter :render_public_layout
   after_filter :call_render_public_layout
@@ -24,9 +25,10 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     build_answer
 
     if @form_answer.form.confirmation?
-      render(action: 'show') unless @form_answer.valid?
+      return render(action: 'show') unless @content.use_captcha? ? @form_answer.valid_with_captcha? : @form_answer.valid?
     else
-      save_answer_and_redirect_to_finish
+      return render(action: 'show') unless @content.use_captcha? ? @form_answer.save_with_captcha : @form_answer.save
+      send_mail_and_redirect_to_finish
     end
   end
 
@@ -34,8 +36,9 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     build_answer
 
     return render(action: 'show') if params[:edit_answers]
+    return render(action: 'show') unless @form_answer.save
 
-    save_answer_and_redirect_to_finish
+    send_mail_and_redirect_to_finish
   end
 
   def finish
@@ -60,13 +63,12 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   def build_answer
     @form_answer = @form.form_answers.build(answered_url: params[:current_url].try(:sub, %r!/confirm_answers$!, ''),
                                             answered_url_title: params[:current_url_title],
-                                            remote_addr: request.remote_addr, user_agent: request.user_agent)
+                                            remote_addr: request.remote_addr, user_agent: request.user_agent,
+                                            captcha: params[:captcha], captcha_key: params[:captcha_key])
     @form_answer.question_answers = params[:question_answers]
   end
 
-  def save_answer_and_redirect_to_finish
-    return render(action: 'show') unless @form_answer.save
-
+  def send_mail_and_redirect_to_finish
     CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
                 .deliver if @content.mail_from.present? && @content.mail_to.present?
 
