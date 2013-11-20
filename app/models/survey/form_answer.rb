@@ -1,6 +1,8 @@
 class Survey::FormAnswer < ActiveRecord::Base
   include Sys::Model::Base
 
+  apply_simple_captcha
+
   default_scope order("#{self.table_name}.created_at DESC")
 
   belongs_to :form

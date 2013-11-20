@@ -1,0 +1,36 @@
+<div class="captchaForm" id="captchaForm">
+  <div class="image"><%= simple_captcha_options[:image] %></div>
+  <div class="reload"><%= link_to '更新', '#', id: 'captchaReload' %></div>
+  <div class="talk"><%= link_to 'よみあげる', '#', id: 'captchaTalk' %></div>
+  <div class="player" id="captchaTalkPlayer"></div>
+  <div class="field"><%= simple_captcha_options[:field] %></div>
+  <div class="label"><%= simple_captcha_options[:label] %></div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+  $('#captchaReload').on('click', function(e) {
+    $('#captchaForm').parent().load('/_tools/captcha/index');
+    $('#captchaTalk').text('よみあげる');
+    $('#captchaTalkPlayer').html('');
+    return false;
+  });
+  $('#captchaTalk').on('click', function(e) {
+    var player = $('#captchaTalkPlayer');
+    if (player.html() == '') {
+      var uri = '/_tools/captcha/talk?key=' + $('#captcha_key').val() + '%26time=' + (new Date).getTime();
+      var html = '<object type="application/x-shockwave-flash" data="/_common/swf/dewplayer/dewplayer-vol.swf" width="240" height="20" id="dewplayer" name="dewplayer">' +
+        '<param name="wmode" value="transparent" />' +
+        '<param name="movie" value="/_common/swf/dewplayer/dewplayer-vol.swf" />' +
+        '<param name="flashvars" value="mp3=' + uri + '&autostart=1" />' +
+        '</object>';
+      player.html(html);
+      $('#captchaTalk').text('よみあげ中');
+    } else {
+      player.html('');
+      $('#captchaTalk').text('よみあげる');
+    }
+    return false;
+  });
+});
+</script>

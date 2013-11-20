@@ -1,3 +1,15 @@
+<%- unless Page.mobile? -%>
+<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#current_url').closest('form').submit(function (event) {
+    $('#current_url').val(parent.document.location);
+    $('#current_url_title').val(parent.document.title);
+  });
+});
+<%- end -%>
+<%- end -%>
+
 <div class="surveyForm">
   <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
@@ -52,6 +64,13 @@
     </div>
     <%- end -%>
 
+    <%- if @content.use_captcha? -%>
+    <div class="question">
+      <div class="question_content">画像認証</div>
+      <div class="answer_content"><%= show_simple_captcha %></div>
+    </div>
+    <%- end -%>
+
     <div class="submit">
       <%- if @form_answer.form.confirmation? -%>
       <%= submit_tag '確認画面へ' %>
@@ -65,15 +84,3 @@
     <%= hidden_field_tag :piece, true if params[:piece] -%>
   <%- end -%>
 </div>
-
-<%- unless Page.mobile? -%>
-<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  $('#current_url').closest('form').submit(function (event) {
-    $('#current_url').val(parent.document.location);
-    $('#current_url_title').val(parent.document.title);
-  });
-});
-<%- end -%>
-<%- end -%>

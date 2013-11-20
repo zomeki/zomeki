@@ -8,6 +8,7 @@ gem 'rails', '3.2.14'
 gem 'mysql2'
 
 gem 'dynamic_form', '~> 1.1.4'
+gem 'galetahub-simple_captcha', '~> 0.1.5', :require => 'simple_captcha'
 gem 'garb', '~> 0.9.1'
 gem 'httpclient', '~> 2.3.4.1'
 gem 'jpmobile', '~> 3.0.7'
