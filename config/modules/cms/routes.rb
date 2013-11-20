@@ -12,9 +12,9 @@ ZomekiCMS::Application.routes.draw do
       :controller  => "admin/navi/sites"
       # :as => :cms_navi_concepts
     match "stylesheets/(*path)" => "admin/stylesheets#index",
-      :as => :stylesheets
+      :as => :stylesheets, :format => false
     match "stylesheets/" => "admin/stylesheets#index",
-      :as => :stylesheets
+      :as => :stylesheets, :format => false
     
     resources :tests,
       :controller  => "admin/tests"
