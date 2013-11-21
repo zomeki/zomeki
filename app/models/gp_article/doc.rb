@@ -445,7 +445,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     approval_requests.each do |approval_request|
       body = <<-EOT
-#{approval_request.user.name}さんより「#{title}」についての承認依頼が届きました。
+#{approval_request.requester.name}さんより「#{title}」についての承認依頼が届きました。
   次の手順により，承認作業を行ってください。
 
   １．PC用記事のプレビューにより文書を確認
@@ -455,8 +455,8 @@ class GpArticle::Doc < ActiveRecord::Base
       EOT
 
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
-        next if approval_request.user.email.blank? || approver.email.blank?
-        CommonMailer.plain(from: approval_request.user.email, to: approver.email, subject: subject, body: body).deliver
+        next if approval_request.requester.email.blank? || approver.email.blank?
+        CommonMailer.plain(from: approval_request.requester.email, to: approver.email, subject: subject, body: body).deliver
       end
     end
   end
@@ -474,8 +474,8 @@ class GpArticle::Doc < ActiveRecord::Base
       EOT
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
-      next if approver.email.blank? || approval_request.user.email.blank?
-      CommonMailer.plain(from: approver.email, to: approval_request.user.email, subject: subject, body: body).deliver
+      next if approver.email.blank? || approval_request.requester.email.blank?
+      CommonMailer.plain(from: approver.email, to: approval_request.requester.email, subject: subject, body: body).deliver
     end
   end
 
@@ -492,13 +492,13 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def approval_requesters
-    approval_requests.inject([]){|u, r| u.include?(r.user) ? u : u.push(r.user) }
+    approval_requests.inject([]){|u, r| u.include?(r.requester) ? u : u.push(r.requester) }
   end
 
   def approval_participators
     users = []
     approval_requests.each do |approval_request|
-      users << approval_request.user
+      users << approval_request.requester
       approval_request.approval_flow.approvals.each do |approval|
         users.concat(approval.approvers)
       end
@@ -526,7 +526,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def passback(approver, comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_passbacked_notification_mail(requester: approval_request.user,
+      send_passbacked_notification_mail(requester: approval_request.requester,
                                         approver: approver,
                                         comment: comment) if approval_request.passback(approver, comment: comment)
     end
@@ -535,7 +535,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def pullback(comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_pullbacked_notification_mail(requester: approval_request.user,
+      send_pullbacked_notification_mail(requester: approval_request.requester,
                                         comment: comment) if approval_request.pullback(comment: comment)
     end
   end

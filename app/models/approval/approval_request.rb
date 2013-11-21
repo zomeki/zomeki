@@ -1,7 +1,7 @@
 class Approval::ApprovalRequest < ActiveRecord::Base
   include Sys::Model::Base
 
-  belongs_to :user, :class_name => 'Sys::User'
+  belongs_to :requester, :foreign_key => :user_id, :class_name => 'Sys::User'
   validates_presence_of :user_id
   belongs_to :approvable, :polymorphic => true
   validates_presence_of :approvable_type, :approvable_id
@@ -65,10 +65,8 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   end
 
   def pullback(comment: '')
-    return false unless self.user == user
-
     transaction do
-      histories.create(user: self.user, reason: 'passback', comment: comment || '')
+      histories.create(user: self.requester, reason: 'pullback', comment: comment || '')
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids

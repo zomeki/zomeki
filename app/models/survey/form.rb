@@ -114,9 +114,9 @@ class Survey::Form < ActiveRecord::Base
 
     approval_requests.each do |approval_request|
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
-        next if approval_request.user.email.blank? || approver.email.blank?
+        next if approval_request.requester.email.blank? || approver.email.blank?
         CommonMailer.approval_request(approval_request: approval_request, preview_url: preview_url, approve_url: approve_url,
-                                      from: approval_request.user.email, to: approver.email).deliver
+                                      from: approval_request.requester.email, to: approver.email).deliver
       end
     end
   end
@@ -128,9 +128,9 @@ class Survey::Form < ActiveRecord::Base
       next unless approval_request.finished?
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
-      next if approver.email.blank? || approval_request.user.email.blank?
+      next if approver.email.blank? || approval_request.requester.email.blank?
       CommonMailer.approved_notification(approval_request: approval_request, publish_url: publish_url,
-                                         from: approver.email, to: approval_request.user.email).deliver
+                                         from: approver.email, to: approval_request.requester.email).deliver
     end
   end
 
@@ -141,7 +141,7 @@ class Survey::Form < ActiveRecord::Base
   def approval_participators
     users = []
     approval_requests.each do |approval_request|
-      users << approval_request.user
+      users << approval_request.requester
       approval_request.approval_flow.approvals.each do |approval|
         users.concat(approval.approvers)
       end
