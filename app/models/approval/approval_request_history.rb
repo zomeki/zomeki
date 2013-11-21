@@ -5,7 +5,7 @@ class Approval::ApprovalRequestHistory < ActiveRecord::Base
 
   belongs_to :request, :class_name => 'Approval::ApprovalRequest'
   validates_presence_of :request_id
-  belongs_to :user, :class_name => 'Sys::User'
+  belongs_to :operator, :foreign_key => :user_id, :class_name => 'Sys::User'
   validates_presence_of :user_id
 
   def reason_title

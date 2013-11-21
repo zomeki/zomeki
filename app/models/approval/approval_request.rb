@@ -54,7 +54,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     return false unless current_approvers.include?(approver)
 
     transaction do
-      histories.create(user: approver, reason: 'passback', comment: comment || '')
+      histories.create(operator: approver, reason: 'passback', comment: comment || '')
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
@@ -66,7 +66,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
   def pullback(comment: '')
     transaction do
-      histories.create(user: self.requester, reason: 'pullback', comment: comment || '')
+      histories.create(operator: self.requester, reason: 'pullback', comment: comment || '')
       decrement!(:current_index) unless current_index == min_index
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
