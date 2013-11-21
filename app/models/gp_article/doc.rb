@@ -451,7 +451,7 @@ class GpArticle::Doc < ActiveRecord::Base
   １．PC用記事のプレビューにより文書を確認
     #{preview_uri(site: content.site)}
   ２．次のリンクから承認を実施
-    #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
+    #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
@@ -470,7 +470,7 @@ class GpArticle::Doc < ActiveRecord::Base
       body = <<-EOT
 「#{title}」についての承認が完了しました。
   次のＵＲＬをクリックして公開処理を行ってください。
-  #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id)}
+  #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
@@ -479,12 +479,23 @@ class GpArticle::Doc < ActiveRecord::Base
     end
   end
 
-  def send_passbacked_notification_mail(requester: nil, approver: nil, comment: '')
-#TODO: メールを送る
+  def send_passbacked_notification_mail(approval_request: nil, approver: nil, comment: '')
+    return if approver.email.blank? || approval_request.requester.email.blank?
+
+    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+
+    CommonMailer.passbacked_notification(approval_request: approval_request, approver: approver, comment: comment, detail_url: detail_url,
+                                         from: approver.email, to: approval_request.requester.email).deliver
   end
 
-  def send_pullbacked_notification_mail(requester: nil, comment: '')
-#TODO: メールを送る
+  def send_pullbacked_notification_mail(approval_request: nil, comment: '')
+    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+
+    approval_request.current_approvers.each do |approver|
+      next if approver.email.blank? || approval_request.requester.email.blank?
+      CommonMailer.pullbacked_notification(approval_request: approval_request, comment: comment, detail_url: detail_url,
+                                           from: approval_request.requester.email, to: approver.email).deliver
+    end
   end
 
   def approvers
@@ -526,17 +537,19 @@ class GpArticle::Doc < ActiveRecord::Base
   def passback(approver, comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_passbacked_notification_mail(requester: approval_request.requester,
+      send_passbacked_notification_mail(approval_request: approval_request,
                                         approver: approver,
-                                        comment: comment) if approval_request.passback(approver, comment: comment)
+                                        comment: comment)
+      approval_request.passback(approver, comment: comment)
     end
   end
 
   def pullback(comment: '')
     return unless state_approvable?
     approval_requests.each do |approval_request|
-      send_pullbacked_notification_mail(requester: approval_request.requester,
-                                        comment: comment) if approval_request.pullback(comment: comment)
+      send_pullbacked_notification_mail(approval_request: approval_request,
+                                        comment: comment)
+      approval_request.pullback(comment: comment)
     end
   end
 
