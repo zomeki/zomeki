@@ -48,4 +48,36 @@ class CommonMailer < ActionMailer::Base
          to: to,
          subject: "【#{content.site.name.presence || 'ZOMEKI'}】承認完了（#{content.name}）"
   end
+
+  def passbacked_notification(approval_request: nil, approver: nil, detail_url: nil, comment: '', from: nil, to: nil)
+    raise ArgumentError.new('approval_request required.') if approval_request.nil?
+    raise ArgumentError.new('approver required.') if approver.nil?
+    raise ArgumentError.new('detail_url required.') if detail_url.nil?
+    raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.nil? || to.nil?
+
+    content = approval_request.approvable.content
+    @approval_request = approval_request
+    @approver = approver
+    @detail_url = detail_url
+    @comment = comment
+
+    mail from: from,
+         to: to,
+         subject: "【#{content.site.name.presence || 'ZOMEKI'}】差し戻し（#{content.name}）"
+  end
+
+  def pullbacked_notification(approval_request: nil, detail_url: nil, comment: '', from: nil, to: nil)
+    raise ArgumentError.new('approval_request required.') if approval_request.nil?
+    raise ArgumentError.new('detail_url required.') if detail_url.nil?
+    raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.nil? || to.nil?
+
+    content = approval_request.approvable.content
+    @approval_request = approval_request
+    @detail_url = detail_url
+    @comment = comment
+
+    mail from: from,
+         to: to,
+         subject: "【#{content.site.name.presence || 'ZOMEKI'}】引き戻し（#{content.name}）"
+  end
 end
