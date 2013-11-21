@@ -25,7 +25,7 @@ cms:
   talk_bin: "/usr/local/bin/open_jtalk"
   talk_dic: "/usr/local/share/open_jtalk/dic"
   talk_voice: "config/voices/mei_normal/mei_normal.htsvoice"
-  talk_opts: "-s 48000 -p 200 -u 0.5 -jm 0.5 -jf 0.5"
+  talk_opts: "-s 48000 -p 300 -u 0.5 -jm 0.5 -jf 0.5"
   talk_strlen: 500
 
 gp_article:
