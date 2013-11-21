@@ -197,9 +197,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     item.publish_page(render_public_as_string(uri, :site => item.content.site), :path => path, :dependent => :ruby)
   end
 
-  def publish(item)
-    item.update_column(:published_at, Core.now)
-    _publish(item) { publish_ruby(item) }
+  def publish
+    @item.update_column(:published_at, Core.now)
+    _publish(@item) { publish_ruby(@item) }
   end
 
   def publish_by_update(item)
