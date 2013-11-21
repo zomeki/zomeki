@@ -19,6 +19,7 @@ ZomekiCMS::Application.routes.draw do
         post :approve
         post :passback
         post :pullback
+        post :publish
       end
       resources :files,
         :controller => 'admin/docs/files'

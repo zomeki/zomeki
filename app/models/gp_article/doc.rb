@@ -3,7 +3,6 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Base::OperationLog
   include Sys::Model::Rel::Unid
-  include Sys::Model::Rel::UnidRelation
   include Sys::Model::Rel::Creator
   include Sys::Model::Rel::EditableGroup
   include Sys::Model::Rel::File
@@ -57,6 +56,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   before_save :make_file_contents_path_relative
   before_save :set_name
+  before_save :set_published_at
   before_save :replace_public
   before_destroy :keep_edition_relation
 
@@ -189,11 +189,6 @@ class GpArticle::Doc < ActiveRecord::Base
     return docs
   end
 
-  def state=(new_state)
-    self.published_at ||= Core.now if new_state == 'public'
-    super
-  end
-
   def raw_tags=(new_raw_tags)
     super (new_raw_tags.nil? ? new_raw_tags : new_raw_tags.to_s.gsub('　', ' '))
   end
@@ -284,15 +279,9 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def publish(content)
     @save_mode = :publish
-    self.state = 'public'
-    self.published_at ||= Core.now
+    self.state = 'public' unless self.state_public?
     return false unless save(:validate => false)
-
-    if (rep = replaced_page)
-      rep.destroy
-    end
-
-    publish_page(content, :path => public_path, :uri => public_uri)
+    publish_page(content, path: public_path, uri: public_uri)
   end
 
   def bread_crumbs(doc_node)
@@ -617,6 +606,10 @@ class GpArticle::Doc < ActiveRecord::Base
            end
     seq = Util::Sequencer.next_id('gp_article_docs', :version => date)
     self.name = Util::String::CheckDigit.check(date + format('%04d', seq))
+  end
+
+  def set_published_at
+    self.published_at ||= Core.now if self.state == 'public'
   end
 
   def set_defaults

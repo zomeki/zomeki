@@ -19,7 +19,7 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def public_docs
-    docs.mobile(::Page.mobile?).public
+    docs.unscoped.mobile(::Page.mobile?).public
   end
 
   def public_node

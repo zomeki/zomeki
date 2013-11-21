@@ -56,10 +56,10 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   private
 
   def public_or_preview_docs(id: nil, name: nil)
-    docs = if Core.publish || Core.mode != 'preview'
-             @content.public_docs
-           else
+    docs = if Core.publish || Core.mode == 'preview'
              @content.preview_docs
+           else
+             @content.public_docs
            end
 
     return docs if id.nil? && name.nil?
