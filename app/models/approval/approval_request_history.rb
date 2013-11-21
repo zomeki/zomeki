@@ -1,7 +1,7 @@
 class Approval::ApprovalRequestHistory < ActiveRecord::Base
   include Sys::Model::Base
 
-  REASON_OPTIONS = [['差し戻し', 'passback'], ['引き戻し', 'pullback']]
+  REASON_OPTIONS = [['承認', 'approve'], ['差し戻し', 'passback'], ['引き戻し', 'pullback']]
 
   belongs_to :request, :class_name => 'Approval::ApprovalRequest'
   validates_presence_of :request_id

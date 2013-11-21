@@ -191,7 +191,7 @@
           </th>
         </tr>
         <tr>
-          <td><%=simple_format history.comment %></td>
+          <td><%=simple_format history.comment.presence || 'コメントなし' %></td>
         </tr>
         <%- end -%>
       </table>
