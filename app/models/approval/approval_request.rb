@@ -30,8 +30,11 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   def approve(user)
     return false unless current_approvers.include?(user)
 
-    current_assignments.find_by_user_id(user.id).update_attribute(:approved_at, Time.now)
-    current_assignments.reload # to flush cache
+    transaction do
+      histories.create(operator: user, reason: 'approve', comment: '')
+      current_assignments.find_by_user_id(user.id).update_attribute(:approved_at, Time.now)
+      current_assignments.reload # to flush cache
+    end
 
     if current_assignments.all?{|a| a.approved_at }
       if current_index == max_index
