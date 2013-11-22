@@ -12,11 +12,12 @@ class CommonMailer < ActionMailer::Base
     raise ArgumentError.new('form_answer required.') unless form_answer.kind_of?(Survey::FormAnswer)
     raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.to_s.blank? || to.to_s.blank?
 
+    content = form_answer.form.content
     @form_answer = form_answer
 
     mail from: from,
          to: to,
-         subject: "【#{form_answer.form.content.site.name.presence || 'ZOMEKI'}】回答が届きました。"
+         subject: "#{content.name}（#{content.site.name}）：回答メール"
   end
 
   def approval_request(approval_request: nil, preview_url: nil, approve_url: nil, from: nil, to: nil)
@@ -32,7 +33,7 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "【#{content.site.name.presence || 'ZOMEKI'}】承認依頼（#{content.name}）"
+         subject: "#{content.name}（#{content.site.name}）：承認依頼メール"
   end
 
   def approved_notification(approval_request: nil, publish_url: nil, from: nil, to: nil)
@@ -46,7 +47,7 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "【#{content.site.name.presence || 'ZOMEKI'}】承認完了（#{content.name}）"
+         subject: "#{content.name}（#{content.site.name}）：承認完了メール"
   end
 
   def passbacked_notification(approval_request: nil, approver: nil, detail_url: nil, comment: '', from: nil, to: nil)
@@ -63,7 +64,7 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "【#{content.site.name.presence || 'ZOMEKI'}】差し戻し（#{content.name}）"
+         subject: "#{content.name}（#{content.site.name}）：差し戻しメール"
   end
 
   def pullbacked_notification(approval_request: nil, detail_url: nil, comment: '', from: nil, to: nil)
@@ -78,6 +79,6 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "【#{content.site.name.presence || 'ZOMEKI'}】引き戻し（#{content.name}）"
+         subject: "#{content.name}（#{content.site.name}）：引き戻しメール"
   end
 end
