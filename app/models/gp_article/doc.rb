@@ -531,6 +531,7 @@ class GpArticle::Doc < ActiveRecord::Base
                                         comment: comment)
       approval_request.passback(approver, comment: comment)
     end
+    update_column(:state, 'draft')
   end
 
   def pullback(comment: '')
@@ -540,6 +541,7 @@ class GpArticle::Doc < ActiveRecord::Base
                                         comment: comment)
       approval_request.pullback(comment: comment)
     end
+    update_column(:state, 'draft')
   end
 
   def validate_word_dictionary
