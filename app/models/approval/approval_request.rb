@@ -58,7 +58,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
     transaction do
       histories.create(operator: approver, reason: 'passback', comment: comment || '')
-      decrement!(:current_index) unless current_index == min_index
+      update_column(:current_index, min_index)
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
       reload # to flush cache
@@ -70,7 +70,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   def pullback(comment: '')
     transaction do
       histories.create(operator: self.requester, reason: 'pullback', comment: comment || '')
-      decrement!(:current_index) unless current_index == min_index
+      update_column(:current_index, min_index)
       current_assignments.destroy_all
       current_user_ids = current_approval.approver_ids
       reload # to flush cache
