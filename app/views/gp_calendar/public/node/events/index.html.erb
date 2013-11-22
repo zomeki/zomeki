@@ -1,3 +1,4 @@
+a
 <div class="calendarEvents calendarMonthlyEvents">
   <h2><%= @date.year %>年<%= @date.month %>月</h2>
 
@@ -17,38 +18,17 @@
               <%= image_tag @content.default_image %>
             <%- end -%>
           <%- else -%>
-            <p class="thumb">
-              <%- if event.doc.nil? %>
-                <%- event.files.each.with_index(1) do |file, index| -%>
-                <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
-                <%- break if @content.image_cnt > 0 && index >= @content.image_cnt -%>
-                <%- end -%>
+          <p class="thumb">
+            <%- unless (ei = event_images(event, count: @content.image_cnt)).blank? -%>
+              <%= ei %>
+            <%- else -%>
+              <%- if @content.default_image.blank? -%>
+                画像がありません。
               <%- else -%>
-                <%- if event.doc.list_image.present? -%>
-                  <%- file = event.files.select {|f| f.id == event.doc.list_image.to_i}.first || event.files.first -%>
-                <%- else -%>
-                  <%- event.files.each do |f| -%>
-                    <%- file = f and break if event.doc.body.include?("file_contents/#{url_encode f.name}") -%>
-                  <%- end -%>
-                <%- end  -%>
-
-                <%- if file -%>
-                  <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" %>
-                <%- else -%>
-                  <%- if @content.default_image.blank? -%>
-                    画像がありません。
-                  <%- else -%>
-                    <%= image_tag @content.default_image %>
-                  <%- end -%>
-                <%- end -%>
-                <%- topfile = file -%>
-
-                <%- event.insert_files.each.with_index(1) do |file, index| -%>
-                <%= image_tag "#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}" if topfile.blank? || file.name != topfile.name %>
-                <%- break if @content.image_cnt > 0 && index >= @content.image_cnt -%>
-                <%- end -%>
-              <%- end  -%>
-            </p>
+                <%= image_tag @content.default_image %>
+              <%- end -%>
+            <%- end -%>
+          </p>
           <%- end -%>
         </td>
         <%- end -%>
