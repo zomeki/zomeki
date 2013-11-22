@@ -33,7 +33,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     transaction do
       histories.create(operator: user, reason: 'approve', comment: '')
       current_assignments.find_by_user_id(user.id).update_attribute(:approved_at, Time.now)
-      current_assignments.reload # to flush cache
+      current_assignments.reload # flush cache
     end
 
     if current_assignments.all?{|a| a.approved_at }
@@ -43,8 +43,8 @@ class Approval::ApprovalRequest < ActiveRecord::Base
         transaction do
           increment!(:current_index)
           current_assignments.destroy_all
-          current_user_ids = current_approval.approver_ids
-          reload # to flush cache
+          current_approver_ids = current_approval.approver_ids
+          reload # flush cache
         end
         yield('progress') if block_given?
       end
@@ -58,10 +58,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
     transaction do
       histories.create(operator: approver, reason: 'passback', comment: comment || '')
-      update_column(:current_index, min_index)
-      current_assignments.destroy_all
-      current_user_ids = current_approval.approver_ids
-      reload # to flush cache
+      reset
     end
 
     return true
@@ -70,10 +67,7 @@ class Approval::ApprovalRequest < ActiveRecord::Base
   def pullback(comment: '')
     transaction do
       histories.create(operator: self.requester, reason: 'pullback', comment: comment || '')
-      update_column(:current_index, min_index)
-      current_assignments.destroy_all
-      current_user_ids = current_approval.approver_ids
-      reload # to flush cache
+      reset
     end
 
     return true
@@ -83,10 +77,19 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     current_index == max_index && current_assignments.all?{|a| a.approved_at }
   end
 
+  def reset
+    transaction do
+      update_column(:current_index, min_index)
+      current_assignments.destroy_all
+      current_approver_ids = current_approval.approver_ids
+      reload # flush cache
+    end
+  end
+
   private
 
   def set_defaults
-    self.current_index = min_index if self.has_attribute?(:current_index) && self.current_index.nil?
-    self.current_approvers = current_approval.approvers if current_approvers.empty?
+    self.current_index = min_index if has_attribute?(:current_index) && current_index.nil?
+    self.current_approver_ids = current_approval.approver_ids if current_approvers.empty?
   end
 end

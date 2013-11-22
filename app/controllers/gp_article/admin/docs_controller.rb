@@ -121,7 +121,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_event_categories
       set_marker_categories
 
-      @item.approval_requests.destroy_all if @item.state_approvable?
+      @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
       @item.send_approval_request_mail if @item.state_approvable?
 
@@ -172,7 +172,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_event_categories
       set_marker_categories
 
-      @item.approval_requests.destroy_all if @item.state_approvable?
+      @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
       @item.send_approval_request_mail if @item.state_approvable?
 
