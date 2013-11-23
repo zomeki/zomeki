@@ -1,7 +1,7 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_VERSION='ruby-2.0.0-p247'
+RUBY_VERSION='ruby-2.0.0-p353'
 RUBY_SOURCE_URL="ftp://ftp.ruby-lang.org/pub/ruby/2.0/$RUBY_VERSION.tar.gz"
 
 echo "#### Install $RUBY_VERSION ####"
