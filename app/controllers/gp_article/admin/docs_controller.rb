@@ -34,15 +34,20 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     if params[:options]
       @items = if params[:category_id]
                  if (category = GpCategory::Category.find_by_id(params[:category_id]))
-                   category.docs
+                   params[:public] ? category.public_docs : category.docs
                  else
-                   []
+                   category.docs.none
                  end
                else
-                 @content.docs
+                 params[:public] ? @content.public_docs : @content.docs
                end
-      render 'index_options', :layout => false
-      return
+
+      if params[:exclude]
+        docs_table = @items.table
+        @items = @items.where(docs_table[:name].not_eq(params[:exclude]))
+      end
+
+      return render('index_options', layout: false)
     end
 
     criteria = params[:criteria] || {}
