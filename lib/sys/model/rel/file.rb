@@ -49,14 +49,4 @@ module Sys::Model::Rel::File
   def image_files
     files.select {|f| f.image_file? }
   end
-
-  def insert_files
-    inserts = []
-    if doc.present?
-      doc.body.scan(/file_contents\/(\S+)"/).each do |iname|
-        inserts.concat files.select {|f| f.image_file? && f.name == iname[0].to_s }
-      end
-    end
-    return inserts.uniq
-  end
 end

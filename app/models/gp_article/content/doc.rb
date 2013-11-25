@@ -11,15 +11,15 @@ class GpArticle::Content::Doc < Cms::Content
   before_create :set_default_settings
 
   def all_docs
-    docs.unscoped
+    docs.unscoped.where(content_id: id)
   end
 
   def preview_docs
-    docs.unscoped.mobile(::Page.mobile?)
+    all_docs.mobile(::Page.mobile?)
   end
 
   def public_docs
-    docs.unscoped.mobile(::Page.mobile?).public
+    all_docs.mobile(::Page.mobile?).public
   end
 
   def public_node

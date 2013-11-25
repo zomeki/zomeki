@@ -65,7 +65,7 @@ class GpCalendar::Content::Event < Cms::Content
   end
 
   def image_cnt
-    setting_extra_value(:show_images, :image_cnt).to_i || 0
+    setting_extra_value(:show_images, :image_cnt).to_i
   end
 
   private

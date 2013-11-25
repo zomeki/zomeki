@@ -315,10 +315,6 @@ class GpArticle::Doc < ActiveRecord::Base
     new_attributes[:id] = nil
     new_attributes[:unid] = nil
     new_attributes[:created_at] = nil
-    new_attributes[:updated_at] = nil
-    new_attributes[:display_updated_at] = nil
-    new_attributes[:published_at] = nil
-    new_attributes[:display_published_at] = nil
     new_attributes[:prev_edition_id] = nil
 
     new_doc = self.class.new(new_attributes)
@@ -326,9 +322,15 @@ class GpArticle::Doc < ActiveRecord::Base
     case dup_for
     when :replace
       new_doc.prev_edition = self
+      new_doc.in_tasks = self.in_tasks
     else
       new_doc.name = nil
       new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
+      new_doc.updated_at = nil
+      new_doc.display_updated_at = nil
+      new_doc.published_at = nil
+      new_doc.display_published_at = nil
+      new_doc.in_tasks = nil
     end
 
     new_doc.in_editable_groups = editable_group.group_ids.split if editable_group
@@ -531,6 +533,7 @@ class GpArticle::Doc < ActiveRecord::Base
                                         comment: comment)
       approval_request.passback(approver, comment: comment)
     end
+    update_column(:state, 'draft')
   end
 
   def pullback(comment: '')
@@ -540,6 +543,7 @@ class GpArticle::Doc < ActiveRecord::Base
                                         comment: comment)
       approval_request.pullback(comment: comment)
     end
+    update_column(:state, 'draft')
   end
 
   def validate_word_dictionary
