@@ -8,6 +8,7 @@ class Page
   cattr_accessor :current_item
   cattr_accessor :current_piece
   cattr_accessor :mobile
+  cattr_accessor :smart_phone
   cattr_accessor :ruby
   cattr_accessor :error
 
@@ -21,17 +22,22 @@ class Page
     @@current_item  = nil
     @@current_piece = nil
     @@mobile        = nil
+    @@smart_phone   = nil
     @@ruby          = nil
     @@error         = nil
   end
-  
+
   def self.mobile?
     return true if @@mobile
-    return nil unless @@site
-    return nil if @@site.mobile_full_uri.blank?
+    return false unless @@site
+    return false if @@site.mobile_full_uri.blank?
     Core.script_uri.index(@@site.mobile_full_uri) == 0
   end
-  
+
+  def self.smart_phone?
+    !!@@smart_phone
+  end
+
   def self.body_id
     return nil unless @@uri
     id = @@uri.gsub(/^\/_.*?\/[0-9]+\//, '/')
