@@ -317,8 +317,6 @@ class GpArticle::Doc < ActiveRecord::Base
     new_attributes[:created_at] = nil
     new_attributes[:updated_at] = nil
     new_attributes[:display_updated_at] = nil
-    new_attributes[:published_at] = nil
-    new_attributes[:display_published_at] = nil
     new_attributes[:prev_edition_id] = nil
 
     new_doc = self.class.new(new_attributes)
