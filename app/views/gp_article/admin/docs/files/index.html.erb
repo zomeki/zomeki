@@ -1,6 +1,6 @@
 <%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true, :id => 'file_form'}) do |f| %>
   <%= error_messages_for :item %>
-  <%= render 'form', f: f, submit_label: 'アップロード' %>
+  <%= render 'form_multiple', f: f, submit_label: 'アップロード' %>
 <% end %>
 
 <%= javascript_tag do %>
