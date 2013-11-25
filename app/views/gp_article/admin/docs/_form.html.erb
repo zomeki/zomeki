@@ -429,7 +429,7 @@ $(document).ready(function () {
       doc_select.html('<option value=""></option>');
     } else {
       doc_select.html('<option value="">更新中...</option>');
-      $.get('<%= gp_article_docs_path(content: @content) %>?options=true&category_id=' + category_id, function (data) {
+      $.get('<%= gp_article_docs_path(content: @content) %>?options=true&public=true&exclude=<%= @item.name %>&category_id=' + category_id, function (data) {
         doc_select.html(data);
       });
     }
