@@ -322,9 +322,15 @@ class GpArticle::Doc < ActiveRecord::Base
     case dup_for
     when :replace
       new_doc.prev_edition = self
+      new_doc.in_tasks = self.in_tasks
     else
       new_doc.name = nil
       new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
+      new_doc.updated_at = nil
+      new_doc.display_updated_at = nil
+      new_doc.published_at = nil
+      new_doc.display_published_at = nil
+      new_doc.in_tasks = nil
     end
 
     new_doc.in_editable_groups = editable_group.group_ids.split if editable_group
