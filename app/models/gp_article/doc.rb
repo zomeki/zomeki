@@ -41,13 +41,13 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
   has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", self.name],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, d.class.name) }
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, d.class.name) }
   has_many :event_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'GpCalendar::Event'],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, 'GpCalendar::Event') }
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, 'GpCalendar::Event') }
   has_many :marker_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'Map::Marker'],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id(c.id).update_column(:categorized_as, 'Map::Marker') }
+           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, 'Map::Marker') }
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
@@ -381,10 +381,12 @@ class GpArticle::Doc < ActiveRecord::Base
     end
 
     new_doc.categories = self.categories
-    new_doc.categorizations.each{|c| c.update_column(:sort_no,
-                                                     self.categorizations.find_by_category_id(c.category_id).try(:sort_no)) }
     new_doc.event_categories = self.event_categories
     new_doc.marker_categories = self.marker_categories
+    self.categorizations.each do |self_c|
+      new_c = new_doc.categorizations.find_by_category_id_and_categorized_as(self_c.category_id, self_c.categorized_as)
+      new_c.update_column(:sort_no, self_c.sort_no)
+    end
 
     return new_doc
   end
