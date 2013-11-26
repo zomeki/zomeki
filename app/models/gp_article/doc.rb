@@ -163,7 +163,7 @@ class GpArticle::Doc < ActiveRecord::Base
                      cats[:category_id].eq(criteria[:category_id])
                    end
 
-      rel = rel.joins(:categorizations).where(conditions).order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
+      rel = rel.joins(:categorizations).where(conditions).uniq.order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
     end
 
     return rel
