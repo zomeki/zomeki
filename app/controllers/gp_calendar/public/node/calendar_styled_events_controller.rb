@@ -1,7 +1,7 @@
 # encoding: utf-8
 class GpCalendar::Public::Node::CalendarStyledEventsController < GpCalendar::Public::Node::BaseController
   def index
-    criteria = {month: @date.strftime('%Y%m')}
+    criteria = {year_month: @date.strftime('%Y%m')}
     @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
 
     start_date = @date.beginning_of_month.beginning_of_week(:sunday)

@@ -1,5 +1,5 @@
 <div class="calendarEvents calendarMonthlyEvents">
-  <h2><%= @date.year %>年<%= @date.month %>月</h2>
+  <h2><%= @date.year %>年<%= "#{@date.month}月" unless @year_only %></h2>
 
   <%= render 'gp_calendar/public/node/shared/pagination', extra_css: 'upperPagination' %>
 

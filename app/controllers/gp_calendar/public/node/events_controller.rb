@@ -3,10 +3,23 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
   skip_filter :render_public_layout, :only => [:file_content]
 
   def index
-    criteria = {month: @date.strftime('%Y%m')}
-    @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
+    year_month = @year_only ? @date.strftime('%Y') : @date.strftime('%Y%m')
 
-    merge_docs_into_events(event_docs(@date.beginning_of_month, @date.end_of_month), @events)
+    criteria = {year_month: year_month}
+    events_table = GpCalendar::Event.arel_table
+    @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
+                               .where(events_table[:started_on].lteq(@max_date).and(events_table[:ended_on].gteq(@min_date)))
+
+    start_date, end_date = if @year_only
+                             boy = @date.beginning_of_year
+                             boy = @min_date if @min_date > boy
+                             eoy = @date.end_of_year
+                             eoy = @max_date if @max_date < eoy
+                             [boy, eoy]
+                           else
+                             [@date.beginning_of_month, @date.end_of_month]
+                           end
+    merge_docs_into_events(event_docs(start_date, end_date), @events)
 
     @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
     @holidays.each do |holiday|
