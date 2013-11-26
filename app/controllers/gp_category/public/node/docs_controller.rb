@@ -12,6 +12,7 @@ class GpCategory::Public::Node::DocsController < Cms::Controller::Public::Base
                      result | ct.public_root_categories.inject([]) {|r, c| r | c.descendants }
                    }
     @docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: categories.map(&:id)).mobile(::Page.mobile?).public
+                          .order('display_published_at DESC, published_at DESC')
                           .paginate(page: params[:page], per_page: @content.doc_docs_number)
     return true if render_feed(@docs)
     return http_error(404) if @docs.current_page > @docs.total_pages
