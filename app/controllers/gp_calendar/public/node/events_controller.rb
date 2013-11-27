@@ -24,7 +24,7 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
     @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
     @holidays.each do |holiday|
       holiday.started_on = @date.year
-      @events << holiday
+      @events << holiday if holiday.started_on
     end
     @events.sort! {|a, b| a.started_on <=> b.started_on}
 
