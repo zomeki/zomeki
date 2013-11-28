@@ -335,6 +335,30 @@
       </tr>
     </table>
 
+    <p class="form">SNS(OGP)</p>
+
+    <table class="show">
+      <tr>
+        <th><%= f.label :ogp_type %></th>
+        <td><%= f.select :ogp_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :ogp_title %></th>
+        <td><%= f.text_field :ogp_title %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :ogp_description %></th>
+        <td>
+          <%= f.text_area :ogp_description, :size => '100x3' %>
+          <div><%= f.check_box :ogp_description_use_body %> <%= f.label :ogp_description_use_body %></div>
+        </td>
+      </tr>
+      <tr>
+        <th><%= f.label :ogp_image %></th>
+        <td><%= f.text_field :ogp_image, :style => 'width: 200px;' %></td>
+      </tr>
+    </table>
+
     <p class="form">編集権限</p>
 
     <%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>

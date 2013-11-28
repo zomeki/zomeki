@@ -33,6 +33,11 @@ ja:
         marker_state: マップ表示
         meta_description: 説明文
         meta_keywords: キーワード
+        ogp_type: タイプ
+        ogp_title: タイトル
+        ogp_description: 説明
+        ogp_description_use_body: 本文を使用（全文）
+        ogp_image: 画像（添付ファイル名）
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
         inquiries/tel: 連絡先（電話番号）
