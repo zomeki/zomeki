@@ -61,7 +61,6 @@ class GpCalendar::Holiday < ActiveRecord::Base
   end
 
   def started_on
-logger.info @started_on
     @started_on
   end
 

@@ -55,7 +55,9 @@ CKEDITOR.editorConfig = function( config ) {
 
   // プラグイン
   config.extraPlugins = 'youtube,audio,video';
-  config.extraAllowedContent = 'audio[*]{*}; video[*]{*}; source[*]{*};';
+
+  // tagの許可
+  config.allowedContent = true;
 };
 
 // スタイルの設定
