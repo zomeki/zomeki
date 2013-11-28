@@ -339,23 +339,23 @@
 
     <table class="show">
       <tr>
-        <th><%= f.label :ogp_type %></th>
-        <td><%= f.select :ogp_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %></td>
+        <th><%= f.label :og_type %></th>
+        <td><%= f.select :og_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %></td>
       </tr>
       <tr>
-        <th><%= f.label :ogp_title %></th>
-        <td><%= f.text_field :ogp_title %></td>
+        <th><%= f.label :og_title %></th>
+        <td><%= f.text_field :og_title %></td>
       </tr>
       <tr>
-        <th><%= f.label :ogp_description %></th>
+        <th><%= f.label :og_description %></th>
         <td>
-          <%= f.text_area :ogp_description, :size => '100x3' %>
-          <div><%= f.check_box :ogp_description_use_body %> <%= f.label :ogp_description_use_body %></div>
+          <%= f.text_area :og_description, :size => '100x3' %>
+          <div><%= f.check_box :og_description_use_body %> <%= f.label :og_description_use_body %></div>
         </td>
       </tr>
       <tr>
-        <th><%= f.label :ogp_image %></th>
-        <td><%= f.text_field :ogp_image, :style => 'width: 200px;' %></td>
+        <th><%= f.label :og_image %></th>
+        <td><%= f.text_field :og_image, :style => 'width: 200px;' %></td>
       </tr>
     </table>
 

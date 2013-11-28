@@ -712,11 +712,11 @@ ActiveRecord::Schema.define(:version => 20131128073500) do
     t.string   "meta_keywords"
     t.string   "list_image"
     t.integer  "prev_edition_id"
-    t.string   "ogp_type"
-    t.string   "ogp_title"
-    t.text     "ogp_description"
-    t.boolean  "ogp_description_use_body"
-    t.string   "ogp_image"
+    t.string   "og_type"
+    t.string   "og_title"
+    t.text     "og_description"
+    t.boolean  "og_description_use_body"
+    t.string   "og_image"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"

@@ -589,8 +589,8 @@ class GpArticle::Doc < ActiveRecord::Base
     prev_edition && state_public?
   end
 
-  def ogp_type_text
-    OGP_TYPE_OPTIONS.detect{|o| o.last == self.ogp_type }.try(:first) || ''
+  def og_type_text
+    OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first) || ''
   end
 
   def target_text
