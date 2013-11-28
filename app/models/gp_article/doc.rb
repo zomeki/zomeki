@@ -593,6 +593,18 @@ class GpArticle::Doc < ActiveRecord::Base
     OGP_TYPE_OPTIONS.detect{|o| o.last == self.ogp_type }.try(:first) || ''
   end
 
+  def target_text
+    TARGET_OPTIONS.detect{|o| o.last == self.target }.try(:first) || ''
+  end
+
+  def event_state_text
+    EVENT_STATE_OPTIONS.detect{|o| o.last == self.event_state }.try(:first) || ''
+  end
+
+  def marker_state_text
+    MARKER_STATE_OPTIONS.detect{|o| o.last == self.marker_state }.try(:first) || ''
+  end
+
   private
 
   def name_validity
