@@ -39,4 +39,23 @@ module GpArticle::GpArticleHelper
       value
     end
   end
+
+  def og_tags(item)
+    return '' if item.nil?
+    %w!type title description image!.map{ |key|
+      next unless item.respond_to?("og_#{key}") && (value = item.send("og_#{key}")).present?
+
+      case key
+      when 'description'
+        value = strip_tags(item.body) if item.og_description_use_body
+        tag :meta, name: 'og:description', content: value.to_s.gsub("\n", ' ')
+      when 'image'
+        if (file = item.image_files.detect{|f| f.name == value })
+          tag :meta, name: 'og:image', content: "#{item.content.public_node.public_full_uri}#{item.name}/file_contents/#{url_encode file.name}"
+        end
+      else
+        tag :meta, name: "og:#{key}", content: value
+      end
+    }.join.html_safe
+  end
 end

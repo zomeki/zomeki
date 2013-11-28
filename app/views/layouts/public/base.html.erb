@@ -22,6 +22,8 @@
   <%- if Page.current_item.try(:respond_to?, :meta_keywords) && (meta_keywords = Page.current_item.meta_keywords).present? -%>
   <meta name="keywords" content="<%= meta_keywords %>" />
   <%- end -%>
+
+  <%= og_tags(Page.current_item) %>
 </head>
 <body <%= Page.body_id %> <%= Page.body_class %>>
   <%= yield %>
