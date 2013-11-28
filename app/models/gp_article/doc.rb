@@ -384,8 +384,8 @@ class GpArticle::Doc < ActiveRecord::Base
     new_doc.categories = self.categories
     new_doc.event_categories = self.event_categories
     new_doc.marker_categories = self.marker_categories
-    self.categorizations.each do |self_c|
-      new_c = new_doc.categorizations.find_by_category_id_and_categorized_as(self_c.category_id, self_c.categorized_as)
+    new_doc.categorizations.each do |new_c|
+      self_c = self.categorizations.find_by_category_id_and_categorized_as(new_c.category_id, new_c.categorized_as)
       new_c.update_column(:sort_no, self_c.sort_no)
     end
 
