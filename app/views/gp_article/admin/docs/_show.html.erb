@@ -36,7 +36,7 @@
           <th><%= @item.locale :href %></th>
           <td>
             <%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %>
-            <span style="<%= 'margin-left: 10px;' unless @item.href.blank? %>"><%= @item.class::TARGET_OPTIONS.detect{|to| to.last == @item.target }.try(:first) %></span>
+            <span style="<%= 'margin-left: 10px;' unless @item.href.blank? %>"><%= @item.target_text %></span>
           </td>
         </tr>
         <tr>
@@ -205,7 +205,7 @@
     <table class="show">
       <tr>
         <th><%= @item.locale :event_state %></th>
-        <td><%= @item.class::EVENT_STATE_OPTIONS.detect{|o| o.last == @item.event_state }.try(:first) %></td>
+        <td><%= @item.event_state_text %></td>
       </tr>
       <tr>
         <th><%= @item.locale :event_started_on %></th>
@@ -227,7 +227,7 @@
     <table class="show">
       <tr>
         <th><%= @item.locale :marker_state %></th>
-        <td><%= @item.class::MARKER_STATE_OPTIONS.detect{|o| o.last == @item.marker_state }.try(:first) %></td>
+        <td><%= @item.marker_state_text %></td>
       </tr>
       <%- @marker_category_types.each do |category_type| -%>
       <tr>
