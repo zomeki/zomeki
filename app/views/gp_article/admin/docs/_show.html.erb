@@ -294,6 +294,30 @@
       </tr>
     </table>
 
+    <p class="form">SNS(OGP)</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :ogp_type %></th>
+        <td><%= @item.ogp_type_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :ogp_title %></th>
+        <td><%= @item.ogp_title %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :ogp_description %></th>
+        <td>
+          <%=simple_format @item.ogp_description %>
+          <div>本文を使用<%= @item.ogp_description_use_body ? 'する' : 'しない' %></div>
+        </td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :ogp_image %></th>
+        <td><%= @item.ogp_image %></td>
+      </tr>
+    </table>
+
     <%= editable_group_view @item %>
     <%= creator_view @item %>
   </div>
