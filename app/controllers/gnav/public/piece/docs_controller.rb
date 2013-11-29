@@ -24,7 +24,7 @@ class Gnav::Public::Piece::DocsController < Sys::Controller::Public::Base
       doc_ids = piece_doc_ids
     end
 
-    @docs = GpArticle::Doc.where(id: doc_ids).order('published_at DESC').limit(@piece.list_count)
+    @docs = GpArticle::Doc.where(id: doc_ids).order('display_published_at DESC, published_at DESC').limit(@piece.list_count)
   end
 
   private
