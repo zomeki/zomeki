@@ -40,14 +40,19 @@ class GpCalendar::Holiday < ActiveRecord::Base
             rel
           end
 
-    if /^\d{6}$/ =~ (month = criteria[:month])
-      begin
-        start_date = Date.new(month.slice(0, 4).to_i, month.slice(4, 2).to_i, 1)
+    if (year_month = criteria[:year_month]) =~ /^(\d{6}|\d{4})$/
+      case year_month
+      when /^\d{6}$/
+        start_date = Date.new(year_month.slice(0, 4).to_i, year_month.slice(4, 2).to_i, 1)
         end_date = start_date.end_of_month
-        fdt = Arel::Nodes::NamedFunction.new("date_format", [holidays[:date], "%m"])
-        rel = rel.where(fdt.eq(start_date.strftime('%m')))
-      rescue ArgumentError => e
-        warn_log("#{self} #{e.message}")
+      when /^\d{4}$/
+        start_date = Date.new(year_month.to_i, 1, 1)
+        end_date = start_date.end_of_year
+      end
+
+      if start_date && end_date
+        rel = rel.where(holidays[:date].lteq(end_date)
+                        .and(holidays[:date].gteq(start_date)))
       end
     end
 
