@@ -8,16 +8,16 @@ class Cms::OAuthUser < ActiveRecord::Base
 
   def self.create_or_update_with_omniauth(auth)
     attrs = {
-      nickname: auth['info']['nickname'],
-      name:     auth['info']['name'],
-      image:    auth['info']['image'],
-      url:      auth['info']['urls'].try('[]', 'Facebook')
+      nickname: auth[:info_nickname],
+      name:     auth[:info_name],
+      image:    auth[:info_image],
+      url:      auth[:info_url]
     }
 
-    if (user = self.find_by_provider_and_uid(auth['provider'], auth['uid']))
+    if (user = self.find_by_provider_and_uid(auth[:provider], auth[:uid]))
       user.update_attributes!(attrs)
     else
-      user = self.create!(attrs.merge(provider: auth['provider'], uid: auth['uid']))
+      user = self.create!(attrs.merge(provider: auth[:provider], uid: auth[:uid]))
     end
 
     return user
