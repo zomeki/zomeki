@@ -2,18 +2,12 @@ module OmniAuth
   module Strategies
     class Facebook
       def client
-        # https://developers.facebook.com/apps にてアプリを登録
-        #
-        # apps = {
-        #   'サイトURL1' => {id: 'App ID 1', secret: 'App Secret 1'},
-        #   'サイトURL2' => {id: 'App ID 2', secret: 'App Secret 2'}
-        # }
-        apps = {
-        }
+        apps = YAML.load_file(File.join(File.dirname(__FILE__), "#{File.basename(__FILE__, '.*')}_facebook_apps.yml"))
 
-        if (app = apps["#{request.base_url}/"])
-          options.client_id = app[:id]
-          options.client_secret = app[:secret]
+        if (app = apps[request.host])
+          options.client_id = app['id']
+          options.client_secret = app['secret']
+          options[:scope] = app['scope'] if app['scope'].present?
         end
 
         super
