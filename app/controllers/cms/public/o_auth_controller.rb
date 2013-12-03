@@ -13,14 +13,14 @@ class Cms::Public::OAuthController < ApplicationController
 
     case oa_auth[:provider]
     when 'facebook'
-      auth = {provider:         oa_auth['provider'],
-              uid:              oa_auth['uid'],
-              info_nickname:    oa_auth['info']['nickname'],
-              info_name:        '',
-              info_image:       oa_auth['info']['image'],
-              info_url:         oa_auth['info']['urls'].try('[]', 'Facebook').to_s,
-              token:            oa_auth.credentials.token,
-              token_expires_at: oa_auth.credentials.expires_at}
+      auth = {provider:              oa_auth['provider'],
+              uid:                   oa_auth['uid'],
+              info_nickname:         oa_auth['info']['nickname'],
+              info_name:             oa_auth['info']['name'],
+              info_image:            oa_auth['info']['image'],
+              info_url:              oa_auth['info']['urls'].try('[]', 'Facebook').to_s,
+              credential_token:      oa_auth.credentials.token,
+              credential_expires_at: oa_auth.credentials.expires_at}
 
       begin
         require 'net/https'
@@ -42,6 +42,29 @@ class Cms::Public::OAuthController < ApplicationController
         o_auth_session[:return_to] = nil
 
         return redirect_to(return_to || request.base_url)
+      else
+        if oa_params['class'].present? && oa_params['id'].present? && oa_params['return_to'].present?
+          item = oa_params['class'].constantize.find(oa_params['id'])
+
+          item.update_attributes(auth)
+
+          return redirect_to(oa_params['return_to'])
+        else
+          return redirect_to(request.base_url)
+        end
+      end
+    when 'twitter'
+      auth = {provider:          oa_auth['provider'],
+              uid:               oa_auth['uid'],
+              info_nickname:     oa_auth['info']['nickname'],
+              info_name:         oa_auth['info']['name'],
+              info_image:        oa_auth['info']['image'],
+              info_url:          oa_auth['info']['urls'].try('[]', 'Twitter').to_s,
+              credential_token:  oa_auth.credentials.token,
+              credential_secret: oa_auth.credentials.secret}
+
+      if oa_params.empty?
+        return redirect_to(request.base_url)
       else
         if oa_params['class'].present? && oa_params['id'].present? && oa_params['return_to'].present?
           item = oa_params['class'].constantize.find(oa_params['id'])
