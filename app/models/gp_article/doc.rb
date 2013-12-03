@@ -22,7 +22,7 @@ class GpArticle::Doc < ActiveRecord::Base
   TARGET_OPTIONS = [['無効', ''], ['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank'], ['添付ファイル', 'attached_file']]
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  OGP_TYPE_OPTIONS = [['website', 'website'], ['article', 'article'], ['blog', 'blog']]
+  OGP_TYPE_OPTIONS = [['article', 'article']]
 
   default_scope where("#{self.table_name}.state != 'archived'")
 
