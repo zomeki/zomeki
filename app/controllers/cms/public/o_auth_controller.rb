@@ -8,30 +8,32 @@ class Cms::Public::OAuthController < ApplicationController
   end
 
   def callback
-    omniauth_params = request.env['omniauth.params']
-    omniauth_auth = request.env['omniauth.auth']
+    oa_params = request.env['omniauth.params']
+    oa_auth = request.env['omniauth.auth']
 
-    case omniauth_auth[:provider]
+    case oa_auth[:provider]
     when 'facebook'
-      if omniauth_params.empty?
-        auth = {provider:      omniauth_auth['provider'],
-                uid:           omniauth_auth['uid'],
-                info_nickname: omniauth_auth['info']['nickname'],
-                info_name:     '',
-                info_image:    omniauth_auth['info']['image'],
-                info_url:      omniauth_auth['info']['urls'].try('[]', 'Facebook') || ''}
+      auth = {provider:         oa_auth['provider'],
+              uid:              oa_auth['uid'],
+              info_nickname:    oa_auth['info']['nickname'],
+              info_name:        '',
+              info_image:       oa_auth['info']['image'],
+              info_url:         oa_auth['info']['urls'].try('[]', 'Facebook').to_s,
+              token:            oa_auth.credentials.token,
+              token_expires_at: oa_auth.credentials.expires_at}
 
-        begin
-          require 'net/https'
-          query = CGI.escape('SELECT name FROM profile WHERE id = me()')
-          path  = "/method/fql.query?format=JSON&access_token=#{omniauth_auth.credentials.token}&query=#{query}"
-          https = Net::HTTP.new('api.facebook.com', 443)
-          https.use_ssl = true
-          auth[:info_name] = JSON.parse(https.get(path).body).first['name'].presence || ''
-        rescue => e
-          warn_log "Failed to get localized user name: #{e.message}"
-        end
+      begin
+        require 'net/https'
+        query = CGI.escape('SELECT name FROM profile WHERE id = me()')
+        path  = "/method/fql.query?format=JSON&access_token=#{oa_auth.credentials.token}&query=#{query}"
+        https = Net::HTTP.new('api.facebook.com', 443)
+        https.use_ssl = true
+        auth[:info_name] = JSON.parse(https.get(path).body).first['name'].to_s
+      rescue => e
+        warn_log "Failed to get localized user name: #{e.message}"
+      end
 
+      if oa_params.empty?
         user = Cms::OAuthUser.create_or_update_with_omniauth(auth)
 
         o_auth_session[:user_id] = user.id
@@ -41,7 +43,15 @@ class Cms::Public::OAuthController < ApplicationController
 
         return redirect_to(return_to || request.base_url)
       else
-        info_log omniauth_params.inspect
+        if oa_params['class'].present? && oa_params['id'].present? && oa_params['return_to'].present?
+          item = oa_params['class'].constantize.find(oa_params['id'])
+
+          item.update_attributes(auth)
+
+          return redirect_to(oa_params['return_to'])
+        else
+          return redirect_to(request.base_url)
+        end
       end
     else
       warn_log "Unknown provider: #{auth[:provider]}"
