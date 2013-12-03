@@ -9,3 +9,4 @@ ja:
         info_nickname: ユーザ名
         info_image: アイコン
         info_name: 名前
+        credential_expires_at: 有効期限
