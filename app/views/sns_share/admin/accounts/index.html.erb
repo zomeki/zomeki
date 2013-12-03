@@ -5,6 +5,7 @@
     <th><%= SnsShare::Account.human_attribute_name :info_image %></th>
     <th><%= SnsShare::Account.human_attribute_name :info_nickname %></th>
     <th><%= SnsShare::Account.human_attribute_name :info_name %></th>
+    <th>ログイン</th>
   </tr>
   <%- @items.each do |item| -%>
   <%- path = case item.provider
@@ -14,11 +15,12 @@
                o_auth_twitter_path(class: item.class.name, id: item.id, return_to: sns_share_accounts_path(content: @content))
              end -%>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: left;"><%= link_to_if path, "#{item.provider.humanize}に#{'再' if item.uid.present?}ログイン", path %></td>
+    <td style="text-align: left;"><%= item.provider.humanize %></td>
     <td style="text-align: left;"><%= item.uid %></td>
     <td style="text-align: left;"><%= image_tag item.info_image if item.info_image.present? %></td>
     <td style="text-align: left;"><%= link_to_if item.info_url.present?, item.info_nickname, item.info_url, target: 'preview' %></td>
     <td style="text-align: left;"><%= item.info_name %></td>
+    <td style="text-align: left;"><%= link_to_if path, "#{'再' if item.uid.present?}ログインする", path %></td>
   </tr>
   <%- end -%>
 </table>
