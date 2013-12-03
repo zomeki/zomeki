@@ -25,7 +25,7 @@ class Cms::Public::OAuthController < ApplicationController
 
       begin
         query = CGI.escape('SELECT name FROM profile WHERE id = me()')
-        path = "/method/fql.query?format=JSON&access_token=#{oa_auth.credentials.token}&query=#{query}"
+        path = "/method/fql.query?format=JSON&access_token=#{auth[:credential_token]}&query=#{query}"
         https = Net::HTTP.new('api.facebook.com', 443)
         https.use_ssl = true
         auth[:info_name] = JSON.parse(https.get(path).body).first['name'].to_s
@@ -66,8 +66,20 @@ class Cms::Public::OAuthController < ApplicationController
       else
         if oa_params['class'].present? && oa_params['id'].present? && oa_params['return_to'].present?
           item = oa_params['class'].constantize.find(oa_params['id'])
-
           item.update_attributes(auth)
+
+#TODO: store page options
+#          begin
+#            fb = RC::Facebook.new(access_token: auth[:credential_token])
+#            if fb.authorized?
+#              res = fb.get('me/accounts')
+#              if res.kind_of?(Hash) && (data = res['data']).present?
+#pp data.map{|d| [d['name'], d['id']] }
+#              end
+#            end
+#          rescue => e
+#            warn_log "Failed to get pages to post: #{e.message}"
+#          end
 
           return redirect_to(oa_params['return_to'])
         else
