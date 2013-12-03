@@ -27,18 +27,39 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   end
 
   def create
-    @item = Sys::File.new(params[:item])
-    @item.tmp_id = @tmp_unid
-    @item.parent_unid = @doc.try(:unid)
+    @item = Sys::File.new
 
-    if (duplicated = @item.duplicated)
-      @item = duplicated
-      @item.attributes = params[:item]
+    files = params[:files].presence || []
+    names = params[:names].presence || []
+    titles = params[:titles].presence || []
+    success = failure = 0
+
+    files.each_with_index do |file, i|
+      attrs = { file: files[i], name: names[i], title: titles[i] }
+      item = Sys::File.new(attrs)
+      item.tmp_id = @tmp_unid
+      item.parent_unid = @doc.try(:unid)
+  
+      if (duplicated = item.duplicated)
+        item = duplicated
+        item.attributes = attrs
+      end
+  
+      item.allowed_type = @content.setting_value(:allowed_attachment_type)
+      item.image_resize = params[:image_resize]
+      if item.creatable? && item.save
+        success += 1
+      else
+        failure += 1
+        item.errors.to_a.each { |msg| @item.errors.add(:base, "#{attrs[:name]}: #{msg}") }
+      end
     end
 
-    @item.allowed_type = @content.setting_value(:allowed_attachment_type)
-    @item.image_resize = params[:image_resize]
-    _create @item
+    flash.now[:notice] = "#{success}件の登録処理が完了しました。（#{I18n.l Time.now}）" if success != 0
+    flash.now[:alert]  = "#{failure}件の登録処理に失敗しました。" if failure != 0
+
+    @items = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid)).paginate(page: params[:page], per_page: 20).order(:name)
+    render :index
   end
 
   def update
