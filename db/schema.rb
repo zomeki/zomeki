@@ -1192,10 +1192,11 @@ ActiveRecord::Schema.define(:version => 20131202120207) do
     t.string   "info_name"
     t.string   "info_image"
     t.string   "info_url"
-    t.string   "token"
-    t.string   "token_expires_at"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.string   "credential_token"
+    t.string   "credential_expires_at"
+    t.string   "credential_secret"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   add_index "sns_share_accounts", ["content_id"], :name => "index_sns_share_accounts_on_content_id"

@@ -6,4 +6,6 @@ ja:
       sns_share/account:
         provider: SNS名
         uid: ユーザID
-        name: ユーザ名
+        info_nickname: ユーザ名
+        info_image: アイコン
+        info_name: 名前
