@@ -1,0 +1,49 @@
+<table class="show">
+  <%- path = case @item.provider
+             when 'facebook'
+               o_auth_facebook_path(class: @item.class.name, id: @item.id, return_to: sns_share_account_path(@content, @item))
+             when 'twitter'
+               o_auth_twitter_path(class: @item.class.name, id: @item.id, return_to: sns_share_account_path(@content, @item))
+             end -%>
+  <tr>
+    <th>ログイン</th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <%- if @item.uid.blank? -%>
+          <td><%= button_to 'ログイン', path if path %></td>
+          <%- else -%>
+          <td><%= button_to '再ログイン', path if path %></td>
+          <td><%= button_to 'ログアウト', logout_sns_share_account_path(@content, @item), :method => :post %></td>
+          <%- end -%>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :provider %></th>
+    <td><%= @item.provider.humanize %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :uid %></th>
+    <td><%= @item.uid %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_nickname %></th>
+    <td><%= link_to_if @item.info_url.present?, @item.info_nickname, @item.info_url, target: 'preview' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_image %></th>
+    <td><%= image_tag @item.info_image if @item.info_image.present? %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_name %></th>
+    <td><%= @item.info_name %></td>
+  </tr>
+  <%- if @item.provider == 'facebook' -%>
+  <tr>
+    <th><%= @item.class.human_attribute_name :credential_expires_at %></th>
+    <td><%= l(Time.at(@item.credential_expires_at.to_i)) if @item.credential_expires_at.present? %></td>
+  </tr>
+  <%- end -%>
+</table>
