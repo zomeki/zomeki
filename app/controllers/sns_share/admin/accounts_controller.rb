@@ -11,4 +11,20 @@ class SnsShare::Admin::AccountsController < Cms::Controller::Admin::Base
     @items = @content.accounts.paginate(page: params[:page], per_page: 30)
     _index @items
   end
+
+  def show
+    _show @item
+  end
+
+  def logout
+    @item.update_attributes(uid: nil,
+                            info_nickname: nil,
+                            info_name: nil,
+                            info_image: nil,
+                            info_url: nil,
+                            credential_token: nil,
+                            credential_expires_at: nil,
+                            credential_secret: nil)
+    redirect_to sns_share_account_path(@content, @item), notice: 'ログアウトしました。'
+  end
 end
