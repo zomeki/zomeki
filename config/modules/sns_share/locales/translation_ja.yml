@@ -1,0 +1,9 @@
+ja:
+  activerecord:
+    models:
+      sns_share/account: アカウント
+    attributes:
+      sns_share/account:
+        provider: SNS名
+        uid: ユーザID
+        name: ユーザ名
