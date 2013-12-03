@@ -1,1 +1,7 @@
 <h2><%= @content.name %> ： <%= SnsShare::Account.model_name.human %>一覧</h2>
+
+<div class="actionMenu">
+  <%- if %w|show|.include?(action_name) -%>
+  <%= link_to '一覧', url_for(action: 'index') %>
+  <%- end -%>
+</div>

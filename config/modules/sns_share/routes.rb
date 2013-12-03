@@ -7,8 +7,12 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/content/base'
 
     ## contents
-    resources :accounts, :only => [:index],
+    resources(:accounts, :only => [:index, :show],
       :controller => 'admin/accounts',
-      :path       => ':content/accounts'
+      :path       => ':content/accounts') do
+      member do
+        post :logout
+      end
+    end
   end
 end
