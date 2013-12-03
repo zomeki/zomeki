@@ -1,4 +1,5 @@
-# encoding: utf-8
+require 'net/https'
+
 class Cms::Public::OAuthController < ApplicationController
   include Cms::Lib::OAuth
 
@@ -23,15 +24,35 @@ class Cms::Public::OAuthController < ApplicationController
               credential_expires_at: oa_auth.credentials.expires_at}
 
       begin
-        require 'net/https'
         query = CGI.escape('SELECT name FROM profile WHERE id = me()')
-        path  = "/method/fql.query?format=JSON&access_token=#{oa_auth.credentials.token}&query=#{query}"
+        path = "/method/fql.query?format=JSON&access_token=#{oa_auth.credentials.token}&query=#{query}"
         https = Net::HTTP.new('api.facebook.com', 443)
         https.use_ssl = true
         auth[:info_name] = JSON.parse(https.get(path).body).first['name'].to_s
       rescue => e
         warn_log "Failed to get localized user name: #{e.message}"
       end
+
+#TODO: extend token expiration
+#      begin
+#        apps = YAML.load_file(Rails.root.join('config/initializers/omniauth_facebook_apps.yml'))
+#        if (app = apps[request.host])
+#          path = "/oauth/access_token?client_id=#{app['id']}&client_secret=#{app['secret']}&grant_type=fb_exchange_token&fb_exchange_token=#{auth[:credential_token]}"
+#          https = Net::HTTP.new('graph.facebook.com', 443)
+#          https.use_ssl = true
+#          new_token = CGI.parse(https.get(path).body)
+#
+#          info_log 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+#          info_log auth[:credential_token]
+#          info_log new_token['access_token'].first.to_s
+#          info_log 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
+#          info_log auth[:credential_expires_at]
+#          info_log new_token['expires'].first.to_s
+#          info_log 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
+#        end
+#      rescue => e
+#        warn_log "Failed to extend expires_at: #{e.message}"
+#      end
 
       if oa_params.empty?
         user = Cms::OAuthUser.create_or_update_with_omniauth(auth)
