@@ -8,8 +8,9 @@ class CreateSnsShareAccounts < ActiveRecord::Migration
       t.string :info_name
       t.string :info_image
       t.string :info_url
-      t.string :token
-      t.string :token_expires_at
+      t.string :credential_token
+      t.string :credential_expires_at
+      t.string :credential_secret
 
       t.timestamps
     end

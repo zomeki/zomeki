@@ -58,6 +58,7 @@ ZomekiCMS::Application.routes.draw do
 
   # OmniAuth
   match "/_auth/facebook"           => "cms/public/o_auth#dummy",   :as => :o_auth_facebook
+  match "/_auth/twitter"            => "cms/public/o_auth#dummy",   :as => :o_auth_twitter
   match "/_auth/:provider/callback" => "cms/public/o_auth#callback" # Used only by OmniAuth
   match "/_auth/failure"            => "cms/public/o_auth#failure"  # Used only by OmniAuth
 

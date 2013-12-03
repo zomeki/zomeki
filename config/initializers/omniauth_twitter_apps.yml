@@ -1,0 +1,10 @@
+# https://dev.twitter.com/apps にてアプリを登録する
+zomeki.example.com:
+  key: 'Consumer key 1'
+  secret: 'Consumer secret 1'
+zomeki.example.net:
+  key: 'Consumer key 2'
+  secret: 'Consumer secret 2'
+zomeki.example.org:
+  key: 'Consumer key 3'
+  secret: 'Consumer secret 3'
