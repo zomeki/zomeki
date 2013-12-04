@@ -717,6 +717,8 @@ ActiveRecord::Schema.define(:version => 20131128073500) do
     t.text     "og_description"
     t.boolean  "og_description_use_body"
     t.string   "og_image"
+    t.integer  "template_id"
+    t.text     "template_values"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -827,6 +829,34 @@ ActiveRecord::Schema.define(:version => 20131128073500) do
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
   add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
   add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
+
+  create_table "gp_template_items", :force => true do |t|
+    t.integer  "template_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.string   "item_type"
+    t.text     "item_options"
+    t.string   "style_attribute"
+    t.integer  "sort_no"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "gp_template_items", ["template_id"], :name => "index_gp_template_items_on_template_id"
+
+  create_table "gp_template_templates", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.text     "body"
+    t.integer  "sort_no"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "gp_template_templates", ["content_id"], :name => "index_gp_template_templates_on_content_id"
 
   create_table "laby_docs", :force => true do |t|
     t.integer  "unid"

@@ -22,6 +22,12 @@
         <th><%= @item.locale :public_full_uri %></th>
         <td colspan="3"><%= @item.public_full_uri %></td>
       </tr>
+      <%- if @item.template -%>
+      <tr>
+        <th><%= @item.locale :template_id %></th>
+        <td><%= @item.template.title %></td>
+      </tr>
+      <%- end -%>
       <tr>
         <th><%= @item.locale :title %></th>
         <td><%= @item.title %></td>
@@ -54,6 +60,9 @@
       </table>
     </div>
 
+    <%- if @item.template -%>
+    <%= render partial: 'gp_template/admin/shared/show', locals: {template: @item.template, template_values: @item.template_values} %>
+    <%- else -%>
     <table class="show">
       <tr>
         <th colspan="2"><%= @item.locale :body %></th>
@@ -74,6 +83,7 @@
       </tr>
       <%- end -%>
     </table>
+    <%- end -%>
 
     <p class="form">記事設定</p>
 

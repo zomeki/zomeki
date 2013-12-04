@@ -145,6 +145,55 @@ $(document).ready(function () {
 <%- end -%>
 <%- end -%>
 
+<%- if @item.name == 'gp_template_content_template_id'
+      content = GpTemplate::Content::Template.find_by_id(@item.value)
+      templates = content ? content.templates.public : []
+      template_ids = @item.extra_values[:template_ids] || []
+      templates_for_option = content ? content.templates.map {|t| [t.title, t.id] } : []
+    -%>
+<table class="show">
+  <tr>
+    <th>利用<%= GpTemplate::Template.model_name.human %></th>
+    <td id="templates">
+      <%- templates.each do |t| -%>
+      <span class="template"><%= check_box_tag "template_#{t.id}", t.id, template_ids.include?(t.id), name: 'template_ids[]' -%> <%= label_tag "template_#{t.id}", t.title -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<br />
+<p class="form">初期値</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpTemplate::Template.model_name.human %></th>
+    <td><%= select_tag 'default_template_id', options_for_select(templates_for_option, @item.default_template_id), include_blank: true %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    var content_id = parseInt(event.target.value);
+    if (isNaN(content_id)) {
+      $('#templates').html('');
+      $('#default_template_id').html('<option value=""></option>');
+    } else {
+      $('#templates').html('更新中...');
+      $('#default_template_id').html('<option value="">更新中...</option>');
+      $.get('<%= gp_template_templates_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#templates').html(data);
+      });
+      $.get('<%= gp_template_templates_path(content: 'CONTENT_ID') %>?options=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#default_template_id').html(data);
+      });
+    }
+  });
+});
+<%- end -%>
+<%- end -%>
+
 <%- if @item.name == 'calendar_relation' -%>
 <table class="show">
   <tr>

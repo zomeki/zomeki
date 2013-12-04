@@ -143,6 +143,22 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value('approval_relation') == 'enabled'
   end
 
+  def template_available?
+    gp_temlate_content_template.present? && templates.present?
+  end
+
+  def gp_temlate_content_template
+    GpTemplate::Content::Template.find_by_id(setting_value(:gp_template_content_template_id))
+  end
+
+  def templates
+    GpTemplate::Template.where(id: setting_extra_value(:gp_template_content_template_id, :template_ids))
+  end
+
+  def default_template
+    GpTemplate::Template.find_by_id(setting_extra_value(:gp_template_content_template_id, :default_template_id))
+  end
+
   private
 
   def set_default_settings

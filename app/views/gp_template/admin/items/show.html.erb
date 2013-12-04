@@ -1,0 +1,30 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :item_type %></th>
+    <td><%= @item.item_type_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :item_options %><br />（種別が選択の時に使用）</th>
+    <td><%=simple_format @item.item_options %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :style_attribute %><br />（style=）</th>
+    <td><%= @item.style_attribute %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>

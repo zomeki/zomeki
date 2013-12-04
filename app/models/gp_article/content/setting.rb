@@ -2,6 +2,8 @@
 class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
     :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
+  set_config :gp_template_content_template_id, :name => 'テンプレート',
+    :options => lambda { GpTemplate::Content::Template.all.map {|t| [t.name, t.id] } }
   set_config :allowed_attachment_type, :name => '添付ファイル/許可する種類',
     :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
   set_config :word_dictionary, :name => "本文/単語変換辞書",
@@ -58,7 +60,15 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   def default_category_id
     extra_values[:default_category_id] || 0
   end
-  
+
+  def template_ids
+    extra_values[:template_ids] || []
+  end
+
+  def default_template_id
+    extra_values[:default_template_id] || 0
+  end
+
   def default_inquiry_setting
     {
       display_fields: ['group_id', 'charge', 'tel', 'fax', 'email'], 
