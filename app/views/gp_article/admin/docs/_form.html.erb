@@ -16,6 +16,12 @@
 
   <div id="tab1">
     <table class="show">
+      <%- if @content.template_available? -%>
+      <tr>
+        <th><%= f.label :template_id %></th>
+        <td><%= f.select :template_id, @content.templates.map {|t| [t.title, t.id] }, include_blank: true %></td>
+      </tr>
+      <%- end -%>
       <tr>
         <th><%= f.label :title %> <span class="note">※</span></th>
         <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
@@ -46,23 +52,29 @@
       </table>
     </div>
 
-    <table class="show">
-      <tr>
-        <th><%= f.label :body %></th>
-      </tr>
-      <tr>
-        <td class="cke_editor_wrapper">
-          <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
-          <%= f.text_area :body, :class => 'body ckeditor' %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
-          <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
-        </td>
-      </tr>
-    </table>
+    <div id="normal_body_form" style="<%= 'display:none;' if @item.template %>">
+      <table class="show">
+        <tr>
+          <th><%= f.label :body %></th>
+        </tr>
+        <tr>
+          <td class="cke_editor_wrapper">
+            <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+            <%= f.text_area :body, :class => 'body ckeditor' %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
+            <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="template_body_form">
+      <%= render partial: 'gp_template/admin/shared/form', locals: {template: @item.template, template_values: @item.template_values} if @item.template %>
+    </div>
 
     <p class="form">添付ファイル</p>
 
@@ -492,4 +504,29 @@ $(document).ready(function () {
   set_copy_date('#item_event_started_on', '#item_event_ended_on');
   set_copy_date('#item_event_ended_on', '#item_event_started_on');
 });
+<%- end -%>
+
+<%- if @content.template_available? -%>
+<%= javascript_tag do -%>
+$(function() {
+  var prevTemplateId;
+  $('#item_template_id').on('click', function() {
+    prevTemplateId = $(this).val();
+  }).on('change', function() {
+    if (!confirm('テンプレートを変更してよろしいですか？')) {
+      $(this).val(prevTemplateId);
+    }
+    if (this.value) {
+      $.post('<%= form_gp_template_template_path(@content.gp_temlate_content_template, id: '_ID_') %>'.replace(/_ID_/, this.value), $('form').serialize(), function(data) {
+        $('#template_body_form').html(data);
+      });
+      $('#normal_body_form').hide();
+      $('#template_body_form').show();
+    } else {
+      $('#normal_body_form').show();
+      $('#template_body_form').hide().html('');
+    }
+  });
+});
+<%- end -%>
 <%- end -%>

@@ -5,7 +5,17 @@
 
 <%= javascript_tag do %>
 function ckeInsertContent(value) {
-  parent.CKEDITOR.instances['item_body'].insertHtml(value);
+  if (parent.CKEDITOR.currentInstance) {
+    parent.CKEDITOR.currentInstance.insertHtml(value);
+  } else {
+    for (var i in parent.CKEDITOR.instances) {
+      var instance = parent.CKEDITOR.instances[i];
+      if (instance.container.isVisible()) {
+        instance.insertHtml(value);
+        break;
+      }
+    }
+  }
 }
 <% end %>
 
@@ -33,7 +43,7 @@ function ckeInsertContent(value) {
     </td>
     <td style="text-align: center;">
       <% if item.image_file? %>
-        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), file_content_path, target: '_blank' %>
+        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), file_content_path, class: 'thumbnail', title: item.title %>
       <% else %>
         <%= link_to 'File', file_content_path, class: item.css_class, onclick: "parent.document.location=$(this).attr('href'); return false;" %>
       <% end %>

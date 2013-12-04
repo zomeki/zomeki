@@ -1,0 +1,25 @@
+ja:
+  activerecord:
+    models:
+      gp_template/content/template: テンプレートコンテンツ
+      gp_template/template: テンプレート
+      gp_template/item: アイテム
+    attributes:
+      gp_template/template:
+        id: ID
+        state: 状態
+        title: テンプレート名
+        body: HTML
+        sort_no: 並び順
+        created_at: 作成日時
+        updated_at: 更新日時
+      gp_template/item:
+        state: 状態
+        name: アイテムID
+        title: アイテム名
+        item_type: 種別
+        item_options: 選択候補
+        style_attribute: スタイルシート
+        sort_no: 並び順
+        created_at: 作成日時
+        updated_at: 更新日時

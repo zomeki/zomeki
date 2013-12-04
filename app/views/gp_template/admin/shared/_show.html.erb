@@ -1,0 +1,21 @@
+<%- return '' unless defined?(template) && defined?(template_values) -%>
+
+<%- template.items.each do |item| -%>
+  <%- if item.item_type == 'rich_text' -%>
+  <table class="show">
+    <tr>
+      <th><%= item.title %></th>
+    </tr>
+    <tr>
+      <td><%=simple_format template_values[item.name] %></td>
+    </tr>
+  </table>
+  <%- else -%>
+  <table class="show">
+    <tr>
+      <th><%= item.title %></th>
+      <td><%=simple_format template_values[item.name] %></td>
+    </tr>
+  </table>
+  <%- end -%>
+<%- end -%>

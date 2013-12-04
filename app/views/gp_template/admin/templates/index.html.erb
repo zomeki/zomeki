@@ -1,0 +1,24 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: center; width: 80px;"><%= GpTemplate::Template.human_attribute_name :id %></th>
+    <th><%= GpTemplate::Template.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 150px;"><%= GpTemplate::Item.model_name.human %></th>
+    <th style="text-align: center; width: 80px;"><%= GpTemplate::Template.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 150px;"><%= GpTemplate::Template.human_attribute_name :created_at %></th>
+    <th style="text-align: center; width: 60px;"><%= GpTemplate::Template.human_attribute_name :state %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_template_template_path(content: @content, id: item.id) %></td>
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to "#{GpTemplate::Item.model_name.human}一覧", gp_template_template_items_path(content: @content, template_id: item.id) %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%=l item.created_at %></td>
+    <td style="text-align: center;"><%= item.status.name %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>
