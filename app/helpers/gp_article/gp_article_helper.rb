@@ -44,7 +44,8 @@ module GpArticle::GpArticleHelper
     return '' if item.nil?
     %w!type title description image!.map{ |key|
       value = item.send("og_#{key}") if item.respond_to?("og_#{key}")
-      value = strip_tags(item.body) if key == 'description' && item.og_description_use_body
+      value = strip_tags(item.body) if key == 'description' &&
+                                       item.respond_to?(:og_description_use_body) && item.og_description_use_body
 
       next if value.blank?
 
