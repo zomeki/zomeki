@@ -130,7 +130,6 @@ module Article::Controller::Cache::NodeAttribute
     _items
   end
 
-
   module_function :sweep_exec?
   module_function :sweep_cache
 end
