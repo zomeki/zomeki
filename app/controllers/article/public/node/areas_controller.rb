@@ -1,12 +1,13 @@
 # encoding: utf-8
 class Article::Public::Node::AreasController < Cms::Controller::Public::Base
+  include Article::Controller::Cache::NodeArea
   include Article::Controller::Feed
-  
+
   def pre_dispatch
     return http_error(404) unless @content = Page.current_node.content
-    
+
     @limit = 50
-    
+
     if params[:name]
       item = Article::Area.new.public
       item.and :content_id, @content.id
@@ -15,21 +16,22 @@ class Article::Public::Node::AreasController < Cms::Controller::Public::Base
       Page.current_item = @item
       Page.title        = @item.title
     end
+    set_cache_path_info
   end
-  
+
   def index
     @items = Article::Area.root_items(:content_id => @content.id, :state => 'public')
   end
 
   def show
     @page  = params[:page]
-    
+
     return show_feed if params[:file] == "feed"
     return http_error(404) unless params[:file] =~ /^(index|more)$/
     @more  = params[:file] == 'more'
     @page  = 1  if !@more && !request.mobile?
     @limit = 10 if !@more
-    
+
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
     doc.and :content_id, @content.id
@@ -55,7 +57,7 @@ class Article::Public::Node::AreasController < Cms::Controller::Public::Base
     @items = []
     return render(:action => :show_group)
   end
-  
+
   def show_group
     @items = @item.public_children
 
@@ -85,14 +87,14 @@ class Article::Public::Node::AreasController < Cms::Controller::Public::Base
       @docs = doc.find(:all, :order => 'published_at DESC')
     end
   end
-  
+
   def show_attr
     @page  = params[:page]
-    
+
     attr = Article::Attribute.new.public
     attr.and :name, params[:attr]
     return http_error(404) unless @attr = attr.find(:first, :order => :sort_no)
-    
+
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
     doc.and :content_id, @content.id
