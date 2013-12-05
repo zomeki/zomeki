@@ -25,8 +25,8 @@
     <td><%= l(Time.at(@item.credential_expires_at.to_i)) if @item.credential_expires_at.present? %></td>
   </tr>
   <tr>
-    <th><%= @item.class.human_attribute_name :facebook_page %></th>
-    <td><%= @item.facebook_page_text %></td>
+    <th><%= f.label :facebook_page %></th>
+    <td><%= f.select :facebook_page, @item.facebook_page_options, include_blank: true %></td>
   </tr>
   <%- end -%>
 </table>

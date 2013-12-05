@@ -13,7 +13,14 @@ class SnsShare::Admin::AccountsController < Cms::Controller::Admin::Base
   end
 
   def show
-    _show @item
+  end
+
+  def edit
+  end
+
+  def update
+    @item.attributes = params[:item]
+    _update @item
   end
 
   def logout
@@ -25,6 +32,6 @@ class SnsShare::Admin::AccountsController < Cms::Controller::Admin::Base
                             credential_token: nil,
                             credential_expires_at: nil,
                             credential_secret: nil)
-    redirect_to sns_share_account_path(@content, @item), notice: 'ログアウトしました。'
+    redirect_to sns_share_accounts_path(@content), notice: 'ログアウトしました。'
   end
 end

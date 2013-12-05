@@ -11,6 +11,8 @@ class CreateSnsShareAccounts < ActiveRecord::Migration
       t.string :credential_token
       t.string :credential_expires_at
       t.string :credential_secret
+      t.text   :facebook_page_options
+      t.string :facebook_page
 
       t.timestamps
     end
