@@ -1238,6 +1238,17 @@ ActiveRecord::Schema.define(:version => 20131119062702) do
 
   add_index "survey_questions", ["form_id"], :name => "index_survey_questions_on_form_id"
 
+  create_table "sys_cache_sweepers", :force => true do |t|
+    t.string   "state",      :limit => 15
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "model"
+    t.text     "uri"
+    t.text     "options"
+  end
+
+  add_index "sys_cache_sweepers", ["model", "uri"], :name => "model", :length => {"model"=>20, "uri"=>30}
+
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -1,12 +1,14 @@
 # encoding: utf-8
 class Article::Public::Node::DocsController < Cms::Controller::Public::Base
+  include Article::Controller::Cache::NodeDoc
   include Article::Controller::Feed
-  
+
   def pre_dispatch
     return http_error(404) unless @content = Page.current_node.content
     #@docs_uri = @content.public_uri('Article::Doc')
+    set_cache_path_info
   end
-  
+
   def index
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
@@ -17,9 +19,9 @@ class Article::Public::Node::DocsController < Cms::Controller::Public::Base
     doc.page params[:page], (request.mobile? ? 20 : 50)
     @docs = doc.find(:all, :order => 'published_at DESC')
     return true if render_feed(@docs)
-    
+
     return http_error(404) if @docs.current_page > 1 && @docs.current_page > @docs.total_pages
-    
+
     prev   = nil
     @items = []
     @docs.each do |doc|
@@ -28,7 +30,7 @@ class Article::Public::Node::DocsController < Cms::Controller::Public::Base
         :date => (date != prev ? doc.published_at.strftime('%Y年%-m月%-d日') : nil),
         :doc  => doc
       }
-      prev = date    
+      prev = date
     end
   end
 
@@ -43,12 +45,12 @@ class Article::Public::Node::DocsController < Cms::Controller::Public::Base
       cond = {:id => params[:doc_id], :content_id => @item.content_id, :name => @item.name}
       return http_error(404) unless @item = Article::Doc.find(:first, :conditions => cond)
     end
-    
+
     Page.current_item = @item
     Page.title        = @item.title
 
     @body = @item.body
-    
+
     if request.mobile?
       if !@item.mobile_body.blank?
         @body = @item.mobile_body
@@ -61,7 +63,7 @@ class Article::Public::Node::DocsController < Cms::Controller::Public::Base
       #while @body =~ /(.*)<table.*?<\/table>/im
       #  @body.gsub!(/(.*)<table.*?<\/table>/im, '\1')
       #end
-      
+
       ## Converts the images.
       #@body.gsub!(/<img.*?>/im) do |m|
       #  '' #remove
@@ -101,7 +103,7 @@ class Article::Public::Node::DocsController < Cms::Controller::Public::Base
         "<a href='tel:#{m.gsub(/\D/, '\1')}'>#{m}</a>"
       end
     end
-    
+
     if Core.mode == 'preview' && !Core.publish
       if params[:doc_id]
         @body = @body.gsub(/(<img[^>]+src=".\/files\/.*?)(".*?>)/i, '\\1' + "?doc_id=#{params[:doc_id]}" + '\\2')
