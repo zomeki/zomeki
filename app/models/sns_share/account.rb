@@ -27,6 +27,7 @@ class SnsShare::Account < ActiveRecord::Base
   private
 
   def provider_existence
-    errors.add(:provider, :invalid) unless SUPPORTED_PROVIDERS.include?(self.provider)
+    return if provider.blank?
+    errors.add(:provider, :invalid) unless SUPPORTED_PROVIDERS.include?(provider)
   end
 end

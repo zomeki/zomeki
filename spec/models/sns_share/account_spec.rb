@@ -12,7 +12,7 @@ describe SnsShare::Account do
   end
 
   it 'is invalid without a provider' do
-    account = FactoryGirl.build(:sns_share_account_1, provider: nil)
+    account = FactoryGirl.build(:sns_share_account_2, provider: nil)
     expect(account).to have(1).error_on(:provider)
   end
 end
