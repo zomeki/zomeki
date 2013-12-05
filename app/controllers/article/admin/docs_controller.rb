@@ -3,6 +3,8 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Recognition
   include Sys::Controller::Scaffold::Publication
+  include Sys::Controller::CacheSweeper::Base
+  include Article::Controller::CacheSweeper
   helper Article::FormHelper
 
   def pre_dispatch
@@ -10,8 +12,11 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     #default_url_options[:content] = @content
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
-    
+
     @recognition_type = @content.setting_value(:recognition_type)
+
+    #TODO: how to sweep cache
+    #reserve_sweeper
   end
 
   def index
@@ -28,9 +33,9 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
   def show
     @item = Article::Doc.new.find(params[:id])
     #return error_auth unless @item.readable?
-    
+
     @item.recognition.type = @recognition_type if @item.recognition
-    
+
     _show @item
   end
 
@@ -45,20 +50,20 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
     })
     @item.in_inquiry = @item.default_inquiry
     @item.in_recognizer_ids = @content.setting_value(:default_recognizers)
-    
+
     ## add tmp_id
     unless params[:_tmp]
       return redirect_to url_for(:action => :new, :_tmp => Util::Sequencer.next_id(:tmp, :md5 => true))
     end
   end
-  
+
   def create
     @item = Article::Doc.new(params[:item])
     @item.content_id = @content.id
     @item.state      = "draft"
     @item.state      = "recognize" if params[:commit_recognize]
     @item.state      = "public"    if params[:commit_public]
-    
+
     @checker = Sys::Lib::Form::Checker.new
     if params[:link_check] == "1"
       @checker.check_link @item.body
@@ -68,16 +73,19 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
         @item.link_checker = @checker
       end
     end
-    
+
     _create @item do
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state == 'recognize'
       publish_by_update(@item) if @item.state == 'public'
+      sweep_cache_for_create @item
     end
   end
 
   def update
     @item = Article::Doc.new.find(params[:id])
+    before_update_for_sweeper @item
+
     @item.attributes = params[:item]
     @item.state      = "draft"
     @item.state      = "recognize" if params[:commit_recognize]
@@ -92,20 +100,25 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
         @item.link_checker = @checker
       end
     end
-    
+
     _update(@item) do
       send_recognition_request_mail(@item) if @item.state == 'recognize'
       publish_by_update(@item) if @item.state == 'public'
       @item.close if !@item.public?
+      sweep_cache_for_update @item
     end
   end
-  
+
   def destroy
     @item = Article::Doc.new.find(params[:id])
-    _destroy @item
+    before_destory_for_sweeper @item
+    _destroy @item do
+      sweep_cache_for_destory @item
+    end
   end
 
   def recognize(item)
+    before_update_for_sweeper item
     _recognize(item) do
       if @item.state == 'recognized'
         send_recognition_success_mail(@item)
@@ -115,9 +128,10 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
           send_recognition_request_mail(@item, users)
         end
       end
+      sweep_cache_for_update @item
     end
   end
-  
+
   def duplicate(item)
     if dupe_item = item.duplicate
       flash[:notice] = '複製処理が完了しました。'
@@ -133,7 +147,7 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
   end
-  
+
   def duplicate_for_replace(item)
     if dupe_item = item.duplicate(:replace)
       flash[:notice] = '複製処理が完了しました。'
@@ -149,17 +163,21 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
   end
-  
+
   def publish_ruby(item)
     uri  = item.public_uri
     uri  = (uri =~ /\?/) ? uri.gsub(/\?/, 'index.html.r?') : "#{uri}index.html.r"
     path = "#{item.public_path}.r"
     item.publish_page(render_public_as_string(uri, :site => item.content.site), :path => path, :dependent => :ruby)
   end
-  
+
   def publish(item)
     item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
-    _publish(item) { publish_ruby(item) }
+    before_update_for_sweeper item
+    _publish(item) do
+      publish_ruby(item)
+      sweep_cache_for_update(item)
+    end
   end
 
   def publish_by_update(item)
@@ -171,7 +189,12 @@ class Article::Admin::DocsController < Cms::Controller::Admin::Base
       flash[:notice] = "公開処理に失敗しました。"
     end
   end
-  
+
+  def close(item)
+    before_update_for_sweeper item
+    _close(item) { sweep_cache_for_update(item) }
+  end
+
 protected
   def send_recognition_request_mail(item, users = nil)
     mail_fr = Core.user.email
@@ -182,7 +205,7 @@ protected
       "１．PC用記事のプレビューにより文書を確認\n#{item.preview_uri(:params => {:doc_id => item.id})}\n\n" +
       "２．次のリンクから承認を実施\n" +
       "#{url_for(:action => :show, :id => item)}\n"
-    
+
     users ||= item.recognizers
     users.each {|user| send_mail(mail_fr, user.email, subject, message) }
   end
@@ -194,12 +217,12 @@ protected
 
     mail_fr = Core.user.email
     mail_to = item.recognition.user.email
-    
+
     subject = "#{item.content.name}（#{item.content.site.name}）：最終承認完了メール"
     message = "「#{item.title}」についての承認が完了しました。\n" +
       "次のＵＲＬをクリックして公開処理を行ってください。\n\n" +
       "#{url_for(:action => :show, :id => item.id)}"
-    
+
     send_mail(mail_fr, mail_to, subject, message)
   end
 end

@@ -1,12 +1,13 @@
 # encoding: utf-8
 class Article::Public::Node::UnitsController < Cms::Controller::Public::Base
   include Article::Controller::Feed
+  include Article::Controller::Cache::NodeUnit
 
   def pre_dispatch
     return http_error(404) unless @content = Page.current_node.content
-    
+
     @limit = 50
-    
+
     if params[:name]
       item = Article::Unit.new.public
       item.and :name_en, params[:name]
@@ -14,21 +15,22 @@ class Article::Public::Node::UnitsController < Cms::Controller::Public::Base
       Page.current_item = @item
       Page.title        = @item.title
     end
+    set_cache_path_info
   end
-  
+
   def index
     @items = Article::Unit.root_item.public_children
   end
 
   def show
     @page  = params[:page]
-    
+
     return show_feed if params[:file] == "feed"
     return http_error(404) unless params[:file] =~ /^(index|more)$/
     @more  = params[:file] == 'more'
     @page  = 1  if !@more && !request.mobile?
     @limit = 10 if !@more
-    
+
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
     doc.and :content_id, @content.id
@@ -38,7 +40,7 @@ class Article::Public::Node::UnitsController < Cms::Controller::Public::Base
     @docs = doc.find(:all, :order => 'published_at DESC')
     return true if render_feed(@docs)
     return http_error(404) if @more == true && @docs.current_page > @docs.total_pages
-    
+
     if @item.level_no == 2
       show_department
       return render :action => :show_department
@@ -54,7 +56,7 @@ class Article::Public::Node::UnitsController < Cms::Controller::Public::Base
     @items = []
     return render(:action => :show_department)
   end
-  
+
   def show_department
     attr = Article::Attribute.new.public
     @items = attr.find(:all, :order => :sort_no)
@@ -86,14 +88,14 @@ class Article::Public::Node::UnitsController < Cms::Controller::Public::Base
       @docs = doc.find(:all, :order => 'published_at DESC')
     end
   end
-  
+
   def show_attr
     @page  = params[:page]
-    
+
     attr = Article::Attribute.new.public
     attr.and :name, params[:attr]
     return http_error(404) unless @attr = attr.find(:first, :order => :sort_no)
-    
+
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
     doc.and :content_id, @content.id
