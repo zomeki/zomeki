@@ -1,6 +1,6 @@
 class SnsShare::Account < ActiveRecord::Base
   include Sys::Model::Base
-  include Cms::Model::Auth::Concept
+  include Cms::Model::Auth::Content
 
   SUPPORTED_PROVIDERS = ['facebook', 'twitter']
 
@@ -11,6 +11,18 @@ class SnsShare::Account < ActiveRecord::Base
 
   validate :provider_existence
   validates :provider, :presence => true, :uniqueness => {:scope => [:content_id]}
+
+  def facebook_page_options=(options)
+    write_attribute(:facebook_page_options, YAML.dump(options.kind_of?(Array) ? options : []))
+  end
+
+  def facebook_page_options
+    YAML.load(read_attribute(:facebook_page_options).presence || '[]')
+  end
+
+  def facebook_page_text
+    facebook_page_options.detect{|o| o.last == facebook_page }.try(:first) || ''
+  end
 
   private
 

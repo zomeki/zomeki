@@ -66,20 +66,21 @@ class Cms::Public::OAuthController < ApplicationController
       else
         if oa_params['class'].present? && oa_params['id'].present? && oa_params['return_to'].present?
           item = oa_params['class'].constantize.find(oa_params['id'])
+          begin
+            fb = RC::Facebook.new(access_token: auth[:credential_token])
+            if fb.authorized?
+              res = fb.get('me/accounts')
+              options = [['自分のタイムライン', 'me']]
+              if res.kind_of?(Hash) && (data = res['data']).kind_of?(Array)
+                options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
+                auth[:facebook_page_options] = options
+              end
+              auth[:facebook_page] = 'me'
+            end
+          rescue => e
+            warn_log "Failed to get pages to post: #{e.message}"
+          end
           item.update_attributes(auth)
-
-#TODO: store page options
-#          begin
-#            fb = RC::Facebook.new(access_token: auth[:credential_token])
-#            if fb.authorized?
-#              res = fb.get('me/accounts')
-#              if res.kind_of?(Hash) && (data = res['data']).present?
-#pp data.map{|d| [d['name'], d['id']] }
-#              end
-#            end
-#          rescue => e
-#            warn_log "Failed to get pages to post: #{e.message}"
-#          end
 
           return redirect_to(oa_params['return_to'])
         else

@@ -7,7 +7,7 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/content/base'
 
     ## contents
-    resources(:accounts, :only => [:index, :show],
+    resources(:accounts, :only => [:index, :show, :edit, :update],
       :controller => 'admin/accounts',
       :path       => ':content/accounts') do
       member do

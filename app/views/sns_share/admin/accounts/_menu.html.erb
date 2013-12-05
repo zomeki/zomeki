@@ -3,5 +3,7 @@
 <div class="actionMenu">
   <%- if %w|show|.include?(action_name) -%>
   <%= link_to '一覧', url_for(action: 'index') %>
+  <span class="separator"></span>
+  <%= link_to '変更', url_for(action: 'edit') %>
   <%- end -%>
 </div>

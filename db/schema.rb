@@ -1195,6 +1195,8 @@ ActiveRecord::Schema.define(:version => 20131202120207) do
     t.string   "credential_token"
     t.string   "credential_expires_at"
     t.string   "credential_secret"
+    t.text     "facebook_page_options"
+    t.string   "facebook_page"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
