@@ -96,13 +96,23 @@ module Cms::Model::Base::Page::Publisher
       #FileUtils.touch([path])
       return true
     end
+
+clean_statics = false
+if clean_statics
+    if File.exist?(path)
+      File.delete(path)
+      info_log "DELETED: #{path}"
+    end
+    @published = true
+else
     if ::File.exist?(path) && ::File.new(path).read == content
       #FileUtils.touch([path])
     else
       Util::File.put(path, :data => content, :mkdir => true)
       @published = true
     end
-    
+end
+
     pub ||= Sys::Publisher.new
     pub.unid         = unid
     pub.dependent    = options[:dependent] ? options[:dependent].to_s : nil

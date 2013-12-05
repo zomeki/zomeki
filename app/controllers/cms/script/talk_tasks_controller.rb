@@ -7,11 +7,20 @@ class Cms::Script::TalkTasksController < Cms::Controller::Script::Publication
       next unless task
       
       begin
+clean_statics = false
+if clean_statics
+        if File.exist?("#{task.path}.mp3")
+          File.delete("#{task.path}.mp3")
+          info_log "DELETED: #{task.path}.mp3"
+        end
+        rs = true
+else
         if ::File.exist?(task.path)
           rs = make_sound(task)
         else
           rs = true
         end
+end
         task.destroy
         raise "MakeSoundError" unless rs
       rescue Exception => e
