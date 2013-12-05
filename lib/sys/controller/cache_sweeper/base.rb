@@ -101,5 +101,4 @@ protected
     end
     swept
   end
-
 end
