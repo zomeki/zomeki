@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131202120207) do
+ActiveRecord::Schema.define(:version => 20131205155239) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
