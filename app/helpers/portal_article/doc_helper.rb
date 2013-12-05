@@ -14,7 +14,7 @@ module PortalArticle::DocHelper
 
   def portal_article_docs_view(docs, list_type = :opened)
     return nil if docs.size == 0
-
+    
     h = ''
     if list_type.to_s == 'list'
       h += %Q(<ul class="docs">)
@@ -27,7 +27,7 @@ module PortalArticle::DocHelper
     end
     return h.html_safe
   end
-
+  
   def portal_article_doc_view(doc, list_type = :opened)
     if list_type.to_s == 'list'
       h = %Q(<li>#{link_to(doc.title, doc.public_full_uri)}#{h(doc.date_and_unit)}</li>)
@@ -40,16 +40,14 @@ module PortalArticle::DocHelper
         time = nil
       end
       thumb = nil
-#      if doc.body =~ /^.*?<img [^>]*src="[^>"]*?".*?>/i
-#        uri   = doc.body.gsub(/^.*?<img [^>]*src="([^>"]+?)".*?>.*/im, '\\1')
-      if doc.body =~ /^.*?<img [^>]*src="([^>"]+?)".*?>/i
-        uri = $1
+      if doc.body =~ /^.*?<img [^>]*src="[^>"]*?".*?>/i
+        uri   = doc.body.gsub(/^.*?<img [^>]*src="([^>"]+?)".*?>.*/im, '\\1')
         if uri =~ /^\.\/files\//
           uri = uri.gsub(/^\.\//, doc.public_uri)
           thumb = %Q(<a href="#{uri}" target="_blank"><img src="#{uri}" style="width: 120px;" alt="" /></a>).html_safe
         end
       end
-
+      
       if doc.body =~ /\[\[\/?summary\]\]/
         summary = doc.summary
         summary = summary.gsub(/(<a [^>]*href=")\.\/([^>"]+?".*?>)/im, '\\1' + doc.public_uri + '\\2')
@@ -59,12 +57,11 @@ module PortalArticle::DocHelper
         end
       else
         summary = doc.body.to_s
-#        summary.sub!(/<[^<>]*>/,"") while /<[^<>]*>/ =~ summary
-        summary = summary.gsub(/<[^<>]*>/,"")
+        summary.sub!(/<[^<>]*>/,"") while /<[^<>]*>/ =~ summary
         summary = truncate(summary, :length => 200)
       end
       summary = summary.html_safe
-
+      
       h  = %Q(<article>)
       h += %Q(<header>)
       h += %Q(<h3 class="docTitle">#{link_to(doc.title, doc.public_uri)}</h3>)

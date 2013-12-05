@@ -11,7 +11,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
     :comment => I18n.t('comments.date_style').html_safe
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
-    :form_type => :text_area, :comment_upper => I18n.t('comments.doc_style').html_safe
+    :comment => I18n.t('comments.doc_style').html_safe
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons

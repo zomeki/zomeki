@@ -47,7 +47,6 @@
         <% end %>
       <%- else -%>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
-        <%= @item.config[:comment_upper] %>
         <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
       <%- end -%>
