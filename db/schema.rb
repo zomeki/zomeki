@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131128073500) do
+ActiveRecord::Schema.define(:version => 20131202120207) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1214,6 +1214,25 @@ ActiveRecord::Schema.define(:version => 20131128073500) do
 
   add_index "simple_captcha_data", ["key"], :name => "idx_key"
 
+  create_table "sns_share_accounts", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "info_nickname"
+    t.string   "info_name"
+    t.string   "info_image"
+    t.string   "info_url"
+    t.string   "credential_token"
+    t.string   "credential_expires_at"
+    t.string   "credential_secret"
+    t.text     "facebook_page_options"
+    t.string   "facebook_page"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "sns_share_accounts", ["content_id"], :name => "index_sns_share_accounts_on_content_id"
+
   create_table "survey_answers", :force => true do |t|
     t.integer  "form_answer_id"
     t.integer  "question_id"
@@ -1272,6 +1291,17 @@ ActiveRecord::Schema.define(:version => 20131128073500) do
   end
 
   add_index "survey_questions", ["form_id"], :name => "index_survey_questions_on_form_id"
+
+  create_table "sys_cache_sweepers", :force => true do |t|
+    t.string   "state",      :limit => 15
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "model"
+    t.text     "uri"
+    t.text     "options"
+  end
+
+  add_index "sys_cache_sweepers", ["model", "uri"], :name => "model", :length => {"model"=>20, "uri"=>30}
 
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"

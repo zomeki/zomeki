@@ -1,0 +1,13 @@
+ja:
+  activerecord:
+    models:
+      sns_share/account: アカウント
+    attributes:
+      sns_share/account:
+        provider: SNS名
+        uid: ユーザID
+        info_nickname: ユーザ名
+        info_image: アイコン
+        info_name: 名前
+        credential_expires_at: 有効期限
+        facebook_page: 投稿先
