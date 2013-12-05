@@ -1,10 +1,14 @@
 # encoding: utf-8
 class Article::Public::Node::RecentDocsController < Cms::Controller::Public::Base
+  include Article::Controller::Cache::NodeRecentDoc
   include Article::Controller::Feed
-  
-  def index
+
+  def pre_dispatch
     @content = Page.current_node.content
-    
+    set_cache_path_info
+  end
+
+  def index
     doc = Article::Doc.new.public
     doc.agent_filter(request.mobile)
     doc.and :content_id, @content.id
@@ -13,9 +17,9 @@ class Article::Public::Node::RecentDocsController < Cms::Controller::Public::Bas
     doc.page params[:page], (request.mobile? ? 20 : 50)
     @docs = doc.find(:all, :order => 'published_at DESC')
     return true if render_feed(@docs)
-    
+
     return http_error(404) if @docs.current_page > @docs.total_pages
-    
+
     prev = nil
     @items = []
     @docs.each do |doc|
@@ -25,7 +29,7 @@ class Article::Public::Node::RecentDocsController < Cms::Controller::Public::Bas
         :date => (date != prev ? doc.published_at.strftime('%Y年%-m月%-d日') : nil),
         :doc  => doc
       }
-      prev = date    
+      prev = date
     end
   end
 end
