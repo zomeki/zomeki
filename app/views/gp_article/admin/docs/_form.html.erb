@@ -19,12 +19,12 @@
       <%- if @content.template_available? -%>
       <tr>
         <th><%= f.label :template_id %></th>
-        <td><%= f.select :template_id, @content.templates.map {|t| [t.title, t.id] }, include_blank: true %></td>
+        <td colspan="3"><%= f.select :template_id, @content.templates.map {|t| [t.title, t.id] }, include_blank: true %></td>
       </tr>
       <%- end -%>
       <tr>
         <th><%= f.label :title %> <span class="note">※</span></th>
-        <td><%= f.text_field :title, :class => 'title', :style => 'width: 500px;' %></td>
+        <td><%= f.text_field :title, :class => 'title', :style => 'width: 440px;' %></td>
         <th>タイトル設定</th>
         <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
       </tr>
