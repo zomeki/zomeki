@@ -5,8 +5,8 @@
 <%= action_menu :index %>
 <%= action_menu :show %>
 <%= action_menu :edit    if safe{@item.editable?} %>
-<%- if @item.main? -%>
-メインサイトは削除できません。
+<%- if @item.last? -%>
+最後のサイトは削除できません。
 <%- else -%>
 <%= action_menu :destroy if safe{@item.deletable?} %>
 <%- end -%>
