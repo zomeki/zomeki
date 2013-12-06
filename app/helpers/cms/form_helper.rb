@@ -105,6 +105,8 @@ module Cms::FormHelper
     when :multiple_select
       select_tag 'item[value]', options_from_collection_for_select(object.config_options.where(id: object.value), :id, :name),
                                 multiple: true, style: 'height: 150px; width: 250px;'
+    when :text_area
+      f.text_area(:value, size: '100x10')
     else
       f.text_field(:value, style: 'width: 400px;')
     end
