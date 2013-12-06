@@ -124,9 +124,6 @@ class Cms::Site < ActiveRecord::Base
 
       conf.concat(<<-EOT)
 <VirtualHost *:80>
-    AddType text/x-component .htc
-    DocumentRoot #{site.public_path}
-    Alias /_common/ "#{Rails.root}/public/_common/"
     ServerName #{domain}
       EOT
 
@@ -138,6 +135,9 @@ class Cms::Site < ActiveRecord::Base
       end
 
       conf.concat(<<-EOT)
+    AddType text/x-component .htc
+    Alias /_common/ "#{Rails.root}/public/_common/"
+    DocumentRoot #{site.public_path}
     Include #{Rails.root}/config/rewrite/base.conf
     Include #{site.config_path}/rewrite.conf
 </VirtualHost>

@@ -9,10 +9,10 @@ NameVirtualHost *:80
 </Directory>
 
 <VirtualHost *:80>
-    AddType text/x-component .htc
-    DocumentRoot /var/share/zomeki/sites/00/00/00/01/00000001/public
-    Alias /_common/ "/var/share/zomeki/public/_common/"
     ServerName zomeki.example.com
+    AddType text/x-component .htc
+    Alias /_common/ "/var/share/zomeki/public/_common/"
+    DocumentRoot /var/share/zomeki/sites/00/00/00/01/00000001/public
     Include /var/share/zomeki/config/rewrite/base.conf
     Include /var/share/zomeki/sites/00/00/00/01/00000001/config/rewrite.conf
 </VirtualHost>
