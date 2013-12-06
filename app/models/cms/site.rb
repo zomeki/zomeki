@@ -39,7 +39,7 @@ class Cms::Site < ActiveRecord::Base
   after_save { save_cms_data_file(:site_image, :site_id => id) }
   after_destroy { destroy_cms_data_file(:site_image) }
 
-  before_destroy :block_main_deletion
+  before_destroy :block_last_deletion
 
   def states
     [['公開','public']]
@@ -195,8 +195,8 @@ class Cms::Site < ActiveRecord::Base
     return true
   end
 
-  def main?
-    self.id == 1
+  def last?
+    self.class.count == 1
   end
 
   def groups_for_option
@@ -211,7 +211,7 @@ protected
     return true
   end
 
-  def block_main_deletion
-    raise "Main site can't be deleted." if self.main?
+  def block_last_deletion
+    raise "Last site can't be deleted." if self.last?
   end
 end
