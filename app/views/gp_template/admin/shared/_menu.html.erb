@@ -1,9 +1,19 @@
 <h2><%= @content.name %><%= defined?(sub) ? " ： #{sub}" : '' %></h2>
-
+<%-
+menus1 = []
+menus1 << action_menu(:new) if Core.user.has_auth?(:designer) && Core.user.has_priv?(:create, item: Core.concept)
+menus1 << action_menu(:index)
+menus1.delete("")
+menus2 = []
+menus2 << action_menu(:show)
+menus2 << action_menu(:edit) if @item.try(:editable?)
+menus2 << action_menu(:destroy) if @item.try(:deletable?)
+menus2.delete("")
+-%>
 <div class="actionMenu">
-  <%= action_menu :new if Core.user.has_auth?(:designer) && Core.user.has_priv?(:create, item: Core.concept) %>
-  <%= action_menu :index %>
-  <%= action_menu :show %>
-  <%= action_menu :edit if @item.try(:editable?) %>
-  <%= action_menu :destroy if @item.try(:deletable?) %>
+  <%=raw menus1.join(' ') %>
+  <%- if menus2.present? -%>
+    <span class="separator"></span>
+    <%=raw menus2.join(' ') %>
+  <%- end -%>
 </div>
