@@ -10,9 +10,17 @@ namespace :zomeki do
 
     desc 'Clean static files'
     task(:clean_statics => :environment) do
+      clean_feeds
       clean_statics('r')
       clean_statics('mp3')
     end
+  end
+end
+
+def clean_feeds
+  Dir["#{Rails.root.join('sites')}/**/index.{atom,rss}"].each do |file|
+    info_log "DELETED: #{file}"
+    File.delete(file)
   end
 end
 
