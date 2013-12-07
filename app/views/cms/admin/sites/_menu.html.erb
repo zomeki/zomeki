@@ -5,7 +5,7 @@
 <%= action_menu :index %>
 <%= action_menu :show %>
 <%= action_menu :edit    if safe{@item.editable?} %>
-<%- unless %w!index edit destroy!.include?(action_name) -%>
+<%- unless %w!index new edit destroy!.include?(action_name) -%>
   <%- if @item.last? -%>
   最後のサイトは削除できません。
   <%- else -%>
