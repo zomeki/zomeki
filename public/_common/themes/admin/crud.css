@@ -86,7 +86,10 @@ table.show td.tableContainer {
 }
 table.show td.tableContainer th {
   background-color: #ddd;
-} 
+}
+table.show td textarea {
+  width: 100%;
+}
 
 /* Form
 ------------------------------------- */
