@@ -15,7 +15,8 @@ class Cms::Content < ActiveRecord::Base
   has_many :nodes, :foreign_key => :content_id, :class_name => 'Cms::Node',
     :dependent => :destroy
 
-  validates_presence_of :concept_id, :state, :model, :code, :name
+  validates_presence_of :concept_id, :state, :model, :name
+  validates :code, :presence => true, :uniqueness => true
 
   after_save :save_settings
 
