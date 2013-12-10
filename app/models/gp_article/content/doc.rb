@@ -3,6 +3,7 @@ class GpArticle::Content::Doc < Cms::Content
   CALENDAR_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   MAP_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   APPROVAL_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  SNS_SHARE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -107,7 +108,7 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def calendar_related?
-    setting_value('calendar_relation') == 'enabled'
+    setting_value(:calendar_relation) == 'enabled'
   end
 
   def map_content_marker
@@ -124,11 +125,11 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def map_related?
-    setting_value('map_relation') == 'enabled'
+    setting_value(:map_relation) == 'enabled'
   end
 
   def inquiry_related?
-    setting_value('inquiry_setting') == 'enabled'
+    setting_value(:inquiry_setting) == 'enabled'
   end
 
   def inquiry_extra_values
@@ -140,7 +141,15 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def approval_related?
-    setting_value('approval_relation') == 'enabled'
+    setting_value(:approval_relation) == 'enabled'
+  end
+
+  def sns_share_content_account
+    SnsShare::Content::Account.find_by_id(setting_extra_value(:sns_share_relation, :sns_share_content_id))
+  end
+
+  def sns_share_related?
+    setting_value(:sns_share_relation) == 'enabled'
   end
 
   def template_available?
@@ -169,5 +178,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:map_relation] = MAP_RELATION_OPTIONS.first.last unless setting_value(:map_relation)
     in_settings[:inquiry_setting] = 'enabled' unless setting_value(:inquiry_setting)
     in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.first.last unless setting_value(:approval_relation)
+    in_settings[:sns_share_relation] = SNS_SHARE_RELATION_OPTIONS.first.last unless setting_value(:sns_share_relation)
   end
 end

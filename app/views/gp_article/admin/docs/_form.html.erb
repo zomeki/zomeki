@@ -349,6 +349,18 @@
 
     <p class="form">SNS(OGP)</p>
 
+    <%- if @content.sns_share_related? -%>
+    <table class="show">
+      <tr>
+        <%- if @content.sns_share_content_account -%>
+        <td>SNSシェア</td>
+        <%- else -%>
+        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
+        <%- end -%>
+      </tr>
+    </table>
+    <%- end -%>
+
     <table class="show">
       <tr>
         <th><%= f.label :og_type %></th>

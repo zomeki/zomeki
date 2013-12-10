@@ -254,3 +254,13 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'sns_share_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'sns_share_content_id',
+                       options_from_collection_for_select(SnsShare::Content::Account.all, :id, :name, @item.extra_values[:sns_share_content_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
