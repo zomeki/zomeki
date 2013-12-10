@@ -36,6 +36,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :approval_relation, :name => '承認フロー',
     :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
     :form_type => :radio_buttons
+  set_config :sns_share_relation, :name => 'SNSシェア',
+    :options => GpArticle::Content::Doc::SNS_SHARE_RELATION_OPTIONS,
+    :form_type => :radio_buttons
 
   def upper_text
     config[:upper_text].to_s
