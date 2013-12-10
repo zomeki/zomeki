@@ -1,6 +1,7 @@
 ja:
   activerecord:
     models:
+      cms/content: "コンテンツ"
       cms/site: "サイト"
 
     attributes:

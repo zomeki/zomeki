@@ -3,15 +3,22 @@
 <% end %>
   <tr>
     <th><%= @item.locale(:concept_id) %></th>
-    <td><%= safe{@item.concept.name} %></td>
-  </tr><tr>
+    <td><%= @item.concept.name %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale(:model) %></th>
     <td><%= @item.model_name(:short) %></td>
-  </tr><tr>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:code) %></th>
+    <td><%= @item.code %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale(:name) %></th>
-    <td><%=hbr @item.name %></td>
-  </tr><tr>
-    <th><%= @item.class.human_attribute_name(:note) %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:note) %></th>
     <td><%= @item.note %></td>
   </tr>
 <% if defined?(container) && container != :tr %>
