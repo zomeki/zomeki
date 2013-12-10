@@ -114,7 +114,7 @@ class GpArticle::Doc < ActiveRecord::Base
             self.joins(:creator => inners)
           end
 
-    rel = rel.where(docs[:content_id].eq(content.id)) if content.is_a?(GpArticle::Content::Doc)
+    rel = rel.where(docs[:content_id].eq(content.id)) if content.kind_of?(GpArticle::Content::Doc)
 
     rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
     rel = rel.where(docs[:state].eq(criteria[:state])) if criteria[:state].present?
@@ -156,10 +156,10 @@ class GpArticle::Doc < ActiveRecord::Base
                       .or(assignments[:user_id].eq(Core.user.id))).uniq
     end
 
-    if criteria[:category_id].present?
+    if criteria[:category_id].kind_of?(Array) || criteria[:category_id].present?
       cats = GpCategory::Categorization.arel_table
 
-      conditions = if criteria[:category_id].is_a?(Array)
+      conditions = if criteria[:category_id].kind_of?(Array)
                      cats[:category_id].in(criteria[:category_id])
                    else
                      cats[:category_id].eq(criteria[:category_id])
