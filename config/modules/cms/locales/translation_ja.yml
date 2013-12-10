@@ -44,6 +44,7 @@ ja:
         state: "状態"
         concept_id: "コンセプト"
         model: "コンテンツ種別"
+        code: "コンテンツID"
         name: "コンテンツ名"
         note: "備考"
 
