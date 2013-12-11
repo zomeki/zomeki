@@ -6,6 +6,7 @@ class GpArticle::Content::Doc < Cms::Content
   INQUIRY_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   INQUIRY_FIELD_OPTIONS = [['課', 'group_id'], ['室・担当', 'charge'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email']]
   FEED_DISPLAY_OPTIONS = [['表示する', 'enabled'], ['表示しない', 'disabled']]
+  TAG_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -84,8 +85,12 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value(:date_style).to_s
   end
 
+  def tag_related?
+    setting_value(:tag_relation) == 'enabled'
+  end
+
   def tag_content_tag
-    Tag::Content::Tag.find_by_id(setting_value(:tag_content_tag_id))
+    Tag::Content::Tag.find_by_id(setting_extra_value(:tag_relation, :tag_content_tag_id))
   end
 
   def save_button_states
@@ -185,5 +190,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:inquiry_setting] = 'enabled' unless setting_value(:inquiry_setting)
     in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.first.last unless setting_value(:approval_relation)
     in_settings[:feed] = FEED_DISPLAY_OPTIONS.first.last unless setting_value(:feed)
+    in_settings[:tag_relation] = TAG_RELATION_OPTIONS.first.last unless setting_value(:tag_relation)
   end
 end

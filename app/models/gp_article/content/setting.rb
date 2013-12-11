@@ -18,8 +18,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons
-  set_config :tag_content_tag_id, :name => '関連ワード',
-    :options => lambda { Tag::Content::Tag.all.map {|t| [t.name, t.id] } }
+  set_config :tag_relation, :name => '関連ワード',
+    :options => GpArticle::Content::Doc::TAG_RELATION_OPTIONS,
+    :form_type => :radio_buttons
   set_config :save_button_states, :name => '保存ボタン',
 #TODO: 暫定として即時公開のみ
     :options => GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },

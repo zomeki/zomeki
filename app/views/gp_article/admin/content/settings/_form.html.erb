@@ -271,3 +271,13 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'tag_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'tag_content_tag_id',
+                       options_from_collection_for_select(Tag::Content::Tag.all, :id, :name, @item.extra_values[:tag_content_tag_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
