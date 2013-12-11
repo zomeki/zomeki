@@ -12,6 +12,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => I18n.t('comments.date_style').html_safe
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :form_type => :text_area, :comment_upper => I18n.t('comments.doc_style').html_safe
+  set_config :feed, :name => "フィード",
+    :options => GpArticle::Content::Doc::FEED_DISPLAY_OPTIONS,
+    :form_type => :radio_buttons
   set_config :calendar_relation, :name => '汎用カレンダー',
     :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
     :form_type => :radio_buttons
@@ -36,6 +39,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :approval_relation, :name => '承認フロー',
     :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
     :form_type => :radio_buttons
+
+  after_initialize :set_defaults
 
   def upper_text
     config[:upper_text].to_s
@@ -74,5 +79,15 @@ class GpArticle::Content::Setting < Cms::ContentSetting
       display_fields: ['group_id', 'charge', 'tel', 'fax', 'email'],
       require_fields: ['group_id', 'tel', 'email'],
     }
+  end
+
+  private
+
+  def set_defaults
+    case name
+    when 'feed'
+      self.value = 'enabled' if value.blank?
+      self.extra_values = { feed_docs_number: '10' } if extra_values.blank?
+    end
   end
 end

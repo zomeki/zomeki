@@ -26,7 +26,7 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
     @item = GpCategory::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
 
-    if ['category_type_style', 'category_style', 'doc_style'].include?(@item.name)
+    if ['category_type_style', 'category_style', 'doc_style', 'feed'].include?(@item.name)
       extra_values = @item.extra_values
 
       case @item.name
@@ -39,6 +39,9 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
       when 'doc_style'
         extra_values[:doc_doc_style] = params[:doc_doc_style]
         extra_values[:doc_docs_number] = params[:doc_docs_number]
+      when 'feed'
+        extra_values[:feed_docs_number] = params[:feed_docs_number]
+        extra_values[:feed_docs_period] = params[:feed_docs_period]
       end
 
       @item.extra_values = extra_values
