@@ -12,10 +12,25 @@ class GpCategory::Content::Setting < Cms::ContentSetting
     :options => GpCategory::Content::CategoryType::CATEGORY_STYLE_OPTIONS
   set_config :doc_style, :name => '新着記事一覧表示形式',
     :options => GpCategory::Content::CategoryType::DOC_STYLE_OPTIONS
+  set_config :feed, :name => "フィード",
+    :options => GpCategory::Content::CategoryType::FEED_DISPLAY_OPTIONS,
+    :form_type => :radio_buttons
+
+  after_initialize :set_defaults
 
   def upper_text
   end
 
   def lower_text
+  end
+
+  private
+
+  def set_defaults
+    case name
+    when 'feed'
+      self.value = 'enabled' if value.blank?
+      self.extra_values = { feed_docs_number: '10' } if extra_values.blank?
+    end
   end
 end
