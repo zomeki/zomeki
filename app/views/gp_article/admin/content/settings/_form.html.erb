@@ -254,3 +254,21 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'feed' -%>
+<table class="show">
+  <tr>
+    <th>表示件数</th>
+    <td>
+      <%= text_field_tag :feed_docs_number, @item.extra_values[:feed_docs_number], class: 'number' %>
+    </td>
+  </tr>
+  <tr>
+    <th>表示期間（当日含む）</th>
+    <td>
+      <%= text_field_tag :feed_docs_period, @item.extra_values[:feed_docs_period], class: 'number' %>
+      （例 公開日時が1週間以内の場合、入力は7　※当日含む）
+    </td>
+  </tr>
+</table>
+<%- end -%>

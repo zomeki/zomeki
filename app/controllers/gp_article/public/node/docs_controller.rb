@@ -9,8 +9,13 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def index
-    @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: 20)
-    return true if render_feed(@docs)
+    @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC')
+    if params[:format].in?('rss', 'atom')
+      @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
+      @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
+      return render_feed(@docs)
+    end
+    @docs = @docs.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|
