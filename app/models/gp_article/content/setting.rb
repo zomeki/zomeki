@@ -32,10 +32,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
     :form_type => :check_boxes
   set_config :inquiry_setting, :name => '連絡先',
-    :options => [['使用する', 'enabled'], ['使用しない', 'disabled']]
-
-  INQUIRY_STATES = [['表示', 'visible'], ['非表示', 'hidden']]
-  INQUIRY_FIELDS = [['課', 'group_id'], ['室・担当', 'charge'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email']]
+    :options => [['使用する', 'enabled'], ['使用しない', 'disabled']],
+    :form_type => :radio_buttons
   set_config :approval_relation, :name => '承認フロー',
     :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
     :form_type => :radio_buttons
@@ -85,6 +83,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def set_defaults
     case name
+    when 'inquiry_setting'
+      self.value = 'enabled' if value.blank?
+      self.extra_values = default_inquiry_setting if extra_values.blank?
     when 'feed'
       self.value = 'enabled' if value.blank?
       self.extra_values = { feed_docs_number: '10' } if extra_values.blank?
