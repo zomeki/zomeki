@@ -60,18 +60,18 @@ class GpCategory::Public::Piece::DocsController < Sys::Controller::Public::Base
   private
 
   def find_public_doc_ids_with_content_ids(content_ids)
-    GpArticle::Doc.mobile(::Page.mobile?).public.select(:id).where(content_id: content_ids).pluck(:id)
+    GpArticle::Doc.mobile(::Page.mobile?).public.select("#{GpArticle::Doc.table_name}.id").where(content_id: content_ids).pluck(:id)
   end
 
   def find_public_doc_ids_with_content_ids_and_category_ids(content_ids, category_ids)
     categorizations = GpCategory::Categorization.arel_table
-    GpArticle::Doc.mobile(::Page.mobile?).public.select(:id).where(content_id: content_ids)
+    GpArticle::Doc.mobile(::Page.mobile?).public.select("#{GpArticle::Doc.table_name}.id").where(content_id: content_ids)
                   .joins(:categorizations).where(categorizations[:category_id].in(category_ids)).pluck(:id)
   end
 
   def find_public_doc_ids_with_category_ids(category_ids)
     categorizations = GpCategory::Categorization.arel_table
-    GpArticle::Doc.mobile(::Page.mobile?).public.select(:id)
+    GpArticle::Doc.mobile(::Page.mobile?).public.select("#{GpArticle::Doc.table_name}.id")
                   .joins(:categorizations).where(categorizations[:category_id].in(category_ids)).pluck(:id)
   end
 end
