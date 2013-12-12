@@ -39,12 +39,12 @@ module GpArticle::Controller::Feed
         xml.description Page.title
 
         docs.each do |doc|
-          next unless doc.published_at
+          next unless doc.display_published_at
           xml.item do
             xml.title        doc.title
             xml.link         doc.public_full_uri
             xml.description  strimwidth(doc.body, 500)
-            xml.pubDate      doc.published_at.rfc822
+            xml.pubDate      doc.display_published_at.rfc822
             doc.categories.each do |category|
               xml.category   category.title
             end
@@ -67,12 +67,12 @@ module GpArticle::Controller::Feed
       xml.link    :rel => 'self', :href => @req_uri, :type => 'application/atom+xml', :title => @feed_name
 
       docs.each do |doc|
-        next unless doc.published_at
+        next unless doc.display_published_at
         
         xml.entry do
           xml.id      "tag:#{Page.site.domain},#{doc.created_at.strftime('%Y')}:#{doc.public_uri}"
           xml.title   doc.title
-          xml.updated doc.published_at.strftime('%Y-%m-%dT%H:%M:%S%z').sub(/([0-9][0-9])$/, ':\1') #.rfc822
+          xml.updated doc.display_published_at.strftime('%Y-%m-%dT%H:%M:%S%z').sub(/([0-9][0-9])$/, ':\1') #.rfc822
           xml.summary(:type => 'html') do |p|
             p.cdata! strimwidth(doc.body, 500)
           end
