@@ -115,7 +115,7 @@
         </td>
       </tr>
       <%- end -%>
-      <%- if @content.setting_value('tag_content_tag_id').present? -%>
+      <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
       <tr>
         <th><%= f.label :raw_tags %></th>
         <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>

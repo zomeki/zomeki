@@ -15,10 +15,12 @@
   <%- unless @docs.empty? -%>
   <section class="categoryType docs">
     <h2>記事一覧</h2>
+    <%- if @content.feed_display? -%>
     <ul class="feed">
       <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
       <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
     </ul>
+    <%- end -%>
     <ul>
       <%- @docs.each do |doc| -%>
       <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>

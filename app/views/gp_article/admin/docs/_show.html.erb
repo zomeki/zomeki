@@ -25,7 +25,7 @@
       <%- if @item.template -%>
       <tr>
         <th><%= @item.locale :template_id %></th>
-        <td><%= @item.template.title %></td>
+        <td colspan="3"><%= @item.template.title %></td>
       </tr>
       <%- end -%>
       <tr>
@@ -94,7 +94,7 @@
         <td><%= @item.categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
       </tr>
       <%- end -%>
-      <%- if @content.setting_value('tag_content_tag_id').present? -%>
+      <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
       <tr>
         <th><%= @item.locale :raw_tags %></th>
         <td><%= @item.raw_tags %></td>
