@@ -4,6 +4,7 @@ FactoryGirl.define do
     concept_id 1
     state 'public'
     model 'Approval::ApprovalFlow'
+    code 'AAF1'
     name '承認フロー１'
     note '承認フロー１のメモ'
   end

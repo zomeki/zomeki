@@ -5,6 +5,7 @@ FactoryGirl.define do
     concept_id 1
     state 'public'
     model 'AdBanner::Banner'
+    code 'AB1'
     name '広告バナー１'
     note '広告バナー１のメモ'
   end
