@@ -19,11 +19,11 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def preview_docs
-    all_docs.mobile(::Page.mobile?)
+    docs.mobile(::Page.mobile?)
   end
 
   def public_docs
-    all_docs.mobile(::Page.mobile?).public
+    docs.mobile(::Page.mobile?).public
   end
 
   def public_node

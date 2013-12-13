@@ -72,7 +72,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
     if Core.publish || Core.mode != 'preview'
       docs.find_by_name(name)
     else
-      docs.find_by_id(id)
+      params[:archive] ? @content.all_docs.find_by_id(id) : docs.find_by_id(id)
     end
   end
 end

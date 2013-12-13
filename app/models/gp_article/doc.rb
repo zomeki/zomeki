@@ -225,7 +225,7 @@ class GpArticle::Doc < ActiveRecord::Base
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 
-  def preview_uri(site: nil, mobile: false, params: {})
+  def preview_uri(site: nil, mobile: false, **params)
     return nil unless public_uri
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
@@ -259,6 +259,10 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def state_public?
     state == 'public'
+  end
+
+  def state_closed?
+    state == 'closed'
   end
 
   def state_archived?
@@ -588,7 +592,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def was_replaced?
-    prev_edition && state_public?
+    prev_edition && (state_public? || state_closed?)
   end
 
   def og_type_text
