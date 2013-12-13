@@ -5,6 +5,7 @@ FactoryGirl.define do
     concept_id 1
     state 'public'
     model 'SnsShare::Account'
+    code 'SSA1'
     name 'SNSシェア１'
     note 'SNSシェア１のメモ'
     created_at time_now
