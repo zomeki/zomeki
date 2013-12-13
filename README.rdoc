@@ -1,4 +1,5 @@
 {<img src="https://travis-ci.org/zomeki/zomeki-development.png?branch=master" alt="Build Status" />}[https://travis-ci.org/zomeki/zomeki-development]
+{<img src="https://gemnasium.com/zomeki/zomeki-development.png" alt="Dependency Status" />}[https://gemnasium.com/zomeki/zomeki-development]
 
 = Copyright
 
