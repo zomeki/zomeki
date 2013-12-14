@@ -68,15 +68,21 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
       docs = @content.public_docs
       name ? docs.find_by_name(name) : docs
     else
-      if id
-        if Core.publish
-          @content.preview_docs.find_by_id(id)
+      if Core.publish
+        case
+        when id
+          nil
+        when name
+          @content.preview_docs.find_by_name(name)
         else
-          @content.all_docs.find_by_id(id)
+          @content.public_docs
         end
       else
-        if Core.publish
-          @content.public_docs
+        case
+        when id
+          @content.all_docs.find_by_id(id)
+        when name
+          nil
         else
           @content.preview_docs
         end
