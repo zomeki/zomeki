@@ -14,14 +14,18 @@ class GpArticle::Content::Doc < Cms::Content
 
   before_create :set_default_settings
 
+  # draft, approvable, approved, public, closed, archived
   def all_docs
-    docs.unscoped.where(content_id: id)
+    docs.unscoped.where(content_id: id).mobile(::Page.mobile?)
   end
 
+  # draft, approvable, approved, public
   def preview_docs
-    docs.mobile(::Page.mobile?)
+    table = docs.arel_table
+    docs.mobile(::Page.mobile?).where(table[:state].not_eq('closed'))
   end
 
+  # public
   def public_docs
     docs.mobile(::Page.mobile?).public
   end
