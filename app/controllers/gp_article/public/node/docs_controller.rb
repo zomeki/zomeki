@@ -1,4 +1,5 @@
-# encoding: utf-8
+require 'will_paginate/array'
+
 class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   include GpArticle::Controller::Feed
   skip_filter :render_public_layout, :only => [:file_content]
@@ -9,8 +10,15 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def index
-    @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: 20)
-    return true if render_feed(@docs)
+    @docs = public_or_preview_docs.order('display_published_at DESC, published_at DESC')
+    if params[:format].in?('rss', 'atom')
+      @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
+      @docs = @docs.reject{|d| d.will_be_replaced? } unless Core.publish
+      @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
+      return render_feed(@docs)
+    end
+    @docs = @docs.reject{|d| d.will_be_replaced? } unless Core.publish
+    @docs = @docs.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     @items = @docs.inject([]) do |result, doc|
@@ -56,18 +64,29 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   private
 
   def public_or_preview_docs(id: nil, name: nil)
-    docs = if Core.publish || Core.mode == 'preview'
-             @content.preview_docs
-           else
-             @content.public_docs
-           end
-
-    return docs if id.nil? && name.nil?
-
-    if Core.publish || Core.mode != 'preview'
-      docs.find_by_name(name)
+    unless Core.mode == 'preview'
+      docs = @content.public_docs
+      name ? docs.find_by_name(name) : docs
     else
-      docs.find_by_id(id)
+      if Core.publish
+        case
+        when id
+          nil
+        when name
+          @content.preview_docs.find_by_name(name)
+        else
+          @content.public_docs
+        end
+      else
+        case
+        when id
+          @content.all_docs.find_by_id(id)
+        when name
+          nil
+        else
+          @content.preview_docs
+        end
+      end
     end
   end
 end

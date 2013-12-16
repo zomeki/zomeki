@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131205155239) do
+ActiveRecord::Schema.define(:version => 20131211084404) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -263,6 +263,7 @@ ActiveRecord::Schema.define(:version => 20131205155239) do
     t.string   "name"
     t.text     "xml_properties", :limit => 2147483647
     t.string   "note"
+    t.string   "code"
   end
 
   create_table "cms_data_file_nodes", :force => true do |t|

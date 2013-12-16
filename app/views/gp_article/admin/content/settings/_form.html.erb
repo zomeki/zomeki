@@ -220,16 +220,15 @@ $(document).ready(function () {
 <%- end -%>
 
 <%- if @item.name == 'inquiry_setting' -%>
-<%- @item.extra_values = @item.default_inquiry_setting if @item.extra_values.blank? -%>
 <table class="show">
   <tr>
     <th>表示初期値</th>
-    <td><%= select_tag 'state', options_for_select(GpArticle::Content::Setting::INQUIRY_STATES, @item.extra_values[:state]), include_blank: true %></td>
+    <td><%= select_tag 'state', options_for_select(GpArticle::Content::Doc::INQUIRY_STATE_OPTIONS, @item.extra_values[:state]), include_blank: true %></td>
   </tr>
   <tr>
     <th>表示項目</th>
     <td>
-      <%- GpArticle::Content::Setting::INQUIRY_FIELDS.each do |name, id| -%>
+      <%- GpArticle::Content::Doc::INQUIRY_FIELD_OPTIONS.each do |name, id| -%>
       <%= check_box_tag "vf_#{id}", id, @item.extra_values[:display_fields].include?(id), name: 'display_fields[]' -%> <%= label_tag "vf_#{id}", name, style: 'padding-right: 20px;' -%>
       <%- end -%>
     </td>
@@ -237,7 +236,7 @@ $(document).ready(function () {
   <tr>
     <th>必須項目</th>
     <td>
-      <%- GpArticle::Content::Setting::INQUIRY_FIELDS.each do |name, id| -%>
+      <%- GpArticle::Content::Doc::INQUIRY_FIELD_OPTIONS.each do |name, id| -%>
       <%= check_box_tag "rf_#{id}", id, @item.extra_values[:require_fields].include?(id), name: 'require_fields[]' -%> <%= label_tag "rf_#{id}", name, style: 'padding-right: 20px;' -%>
       <%- end -%>
     </td>
@@ -251,6 +250,34 @@ $(document).ready(function () {
     <th>コンテンツ</th>
     <td><%= select_tag 'approval_content_id',
                        options_from_collection_for_select(Approval::Content::ApprovalFlow.all, :id, :name, @item.extra_values[:approval_content_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'feed' -%>
+<table class="show">
+  <tr>
+    <th>表示件数</th>
+    <td>
+      <%= text_field_tag :feed_docs_number, @item.extra_values[:feed_docs_number], class: 'number' %>
+    </td>
+  </tr>
+  <tr>
+    <th>表示期間（当日含む）</th>
+    <td>
+      <%= text_field_tag :feed_docs_period, @item.extra_values[:feed_docs_period], class: 'number' %>
+      （例 公開日時が1週間以内の場合、入力は7　※当日含む）
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'tag_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'tag_content_tag_id',
+                       options_from_collection_for_select(Tag::Content::Tag.all, :id, :name, @item.extra_values[:tag_content_tag_id]), include_blank: true %></td>
   </tr>
 </table>
 <%- end -%>

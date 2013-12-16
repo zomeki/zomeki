@@ -34,7 +34,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting', 'approval_relation', 'gp_template_content_template_id'].include?(@item.name)
+    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting', 'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation'].include?(@item.name)
       extra_values = @item.extra_values
 
       case @item.name
@@ -57,6 +57,11 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       when 'gp_template_content_template_id'
         extra_values[:template_ids] = params[:template_ids].to_a.map(&:to_i)
         extra_values[:default_template_id] = params[:default_template_id].to_i
+      when 'feed'
+        extra_values[:feed_docs_number] = params[:feed_docs_number]
+        extra_values[:feed_docs_period] = params[:feed_docs_period]
+      when 'tag_relation'
+        extra_values[:tag_content_tag_id] = params[:tag_content_tag_id].to_i
       end
 
       @item.extra_values = extra_values
