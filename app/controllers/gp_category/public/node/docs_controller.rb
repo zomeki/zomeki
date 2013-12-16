@@ -13,8 +13,13 @@ class GpCategory::Public::Node::DocsController < Cms::Controller::Public::Base
                    }
     @docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: categories.map(&:id)).mobile(::Page.mobile?).public
                           .order('display_published_at DESC, published_at DESC')
-                          .paginate(page: params[:page], per_page: @content.doc_docs_number)
-    return true if render_feed(@docs)
+
+    if params[:format].in?('rss', 'atom')
+      @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
+      @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
+      return render_feed(@docs)
+    end
+    @docs = @docs.paginate(page: params[:page], per_page: @content.doc_docs_number)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     if Page.mobile?

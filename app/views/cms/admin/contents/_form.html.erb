@@ -1,17 +1,28 @@
+<span class="note">※は必須項目です。</span>
+
 <p class="form">基本情報</p>
 
 <table class="show">
   <%= concept_form f %>
   <tr>
-    <th><%= @item.locale :model %></th>
+    <th><%= f.label :model %> <span class="note">※</span></th>
     <td>
-      <% if @item.id %><%= @item.model_name %><% else %>
-      <%= f.select :model, Cms::Lib::Modules.contents, :include_blank => :true %><% end %>
+      <%- if @item.persisted? -%>
+        <%= @item.model_name %>
+      <%- else -%>
+        <%= f.select :model, Cms::Lib::Modules.contents, :include_blank => :true %>
+      <%- end -%>
     </td>
-  </tr><tr>
-    <th><%= @item.locale :name %></th>
+  </tr>
+  <tr>
+    <th><%= f.label :code %> <span class="note">※</span></th>
+    <td><%= f.text_field :code %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :class => 'name' %></td>
-  </tr><tr>
+  </tr>
+  <tr>
     <th><%= f.label :note %></th>
     <td><%= f.text_field :note %></td>
   </tr>

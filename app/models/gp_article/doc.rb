@@ -90,6 +90,7 @@ class GpArticle::Doc < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
   scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
+  scope :display_published_after, lambda {|date| where(arel_table[:display_published_at].gteq(date)) }
 
   def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
@@ -224,7 +225,7 @@ class GpArticle::Doc < ActiveRecord::Base
     @public_full_uri = "#{node.public_full_uri}#{name}/"
   end
 
-  def preview_uri(site: nil, mobile: false, params: {})
+  def preview_uri(site: nil, mobile: false, **params)
     return nil unless public_uri
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
@@ -258,6 +259,10 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def state_public?
     state == 'public'
+  end
+
+  def state_closed?
+    state == 'closed'
   end
 
   def state_archived?
@@ -587,7 +592,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def was_replaced?
-    prev_edition && state_public?
+    prev_edition && (state_public? || state_closed?)
   end
 
   def og_type_text

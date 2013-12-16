@@ -1,12 +1,14 @@
 <div class="contentGpCategoryDoc">
+  <%- if @content.feed_display? -%>
   <ul class="feed">
     <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
     <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
   </ul>
+  <%- end -%>
   <div class="docs">
     <ul>
       <%- @docs.each do |doc| -%>
-      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.doc_doc_style, date_style: @content.date_style %></li>
+      <li class="<%= doc.content.code %>"><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.doc_doc_style, date_style: @content.date_style %></li>
       <%- end -%>
     </ul>
   </div>

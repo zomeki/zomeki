@@ -18,8 +18,13 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
     per_page = (@more ? 30 : @content.category_docs_number)
 
-    @docs = @category.public_docs.paginate(page: params[:page], per_page: per_page)
-    return true if render_feed(@docs)
+    @docs = @category.public_docs
+    if params[:format].in?('rss', 'atom')
+      @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
+      @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
+      return render_feed(@docs)
+    end
+    @docs = @docs.paginate(page: params[:page], per_page: per_page)
     return http_error(404) if @docs.current_page > @docs.total_pages
 
     if Page.mobile?
