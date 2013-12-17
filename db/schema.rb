@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131211084404) do
+ActiveRecord::Schema.define(:version => 20131217022504) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1233,6 +1233,16 @@ ActiveRecord::Schema.define(:version => 20131211084404) do
   end
 
   add_index "sns_share_accounts", ["content_id"], :name => "index_sns_share_accounts_on_content_id"
+
+  create_table "sns_share_shares", :force => true do |t|
+    t.integer  "sharable_id"
+    t.string   "sharable_type"
+    t.integer  "account_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "sns_share_shares", ["sharable_type", "sharable_id"], :name => "index_sns_share_shares_on_sharable_type_and_sharable_id"
 
   create_table "survey_answers", :force => true do |t|
     t.integer  "form_answer_id"
