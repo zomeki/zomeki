@@ -26,7 +26,12 @@
     </td>
     <td style="text-align: left;"><%= image_tag item.info_image if item.info_image.present? %></td>
     <td style="text-align: left;"><%= item.info_nickname %></td>
-    <td style="text-align: left;"><%= item.info_name %></td>
+    <td style="text-align: left;">
+      <%= item.info_name %>
+      <%- if item.provider == 'facebook' -%>
+        <span style="margin-left: 20px;"><%= item.facebook_page_text %></span>
+      <%- end -%>
+    </td>
   </tr>
   <%- end -%>
 </table>
