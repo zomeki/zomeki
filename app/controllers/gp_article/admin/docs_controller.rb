@@ -381,14 +381,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       next if account.credential_token.blank?
 
       begin
+        apps = YAML.load_file(Rails.root.join('config/sns_apps.yml'))[account.provider]
+
         case account.provider
         when 'facebook'
-          fb = RC::Facebook.new(access_token: account.credential_token)
-          if fb.authorized?
-            message = self.class.helpers.strip_tags(@item.body)
-            fb.post("#{account.facebook_page}/feed", message: message)
-          end
+          fb = RC::Facebook.new(access_token: account.credential_token.presence)
+          message = self.class.helpers.strip_tags(@item.body)
+          fb.post("#{account.facebook_page}/feed", message: message)
         when 'twitter'
+          if (app = apps[request.host])
+            tw = RC::Twitter.new(consumer_key: app['key'],
+                                 consumer_secret: app['secret'],
+                                 oauth_token: account.credential_token.presence,
+                                 oauth_token_secret: account.credential_secret.presence)
+            message = self.class.helpers.strip_tags(@item.body)
+            tw.tweet message
+          end
         end
       rescue => e
         warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
