@@ -18,6 +18,7 @@ ja:
         state: 状態
         title: 休日名
         date: 日付
+        repeat: 繰り返し
         started_on: 日付
         description: 概要
         kind: 種別

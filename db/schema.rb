@@ -775,6 +775,7 @@ ActiveRecord::Schema.define(:version => 20131217055237) do
     t.string   "kind"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.boolean  "repeat"
   end
 
   create_table "gp_category_categories", :force => true do |t|

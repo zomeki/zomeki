@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :date %></th>
-    <td><%=i18n_l @item.date, '%m月%d日' %></td>
+    <td><%= @item.repeat ? i18n_l(@item.date, '* %m月%d日') : i18n_l(@item.date, '%Y年%m月%d日') %></td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :description %></th>

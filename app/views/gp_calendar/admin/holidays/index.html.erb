@@ -2,7 +2,7 @@
   <tr>
     <th style="text-align: center; width: 60px;">詳細</th>
     <th style="text-align: center; width: 120px;"><%= GpCalendar::Holiday.human_attribute_name :title %></th>
-    <th style="text-align: center; width: 60px;"><%= GpCalendar::Holiday.human_attribute_name :date %></th>
+    <th style="text-align: center; width: 90px;"><%= GpCalendar::Holiday.human_attribute_name :date %></th>
     <th style="text-align: center; width: 480px;"><%= GpCalendar::Holiday.human_attribute_name :description %></th>
     <th style="text-align: center; width: 60px;"><%= GpCalendar::Holiday.human_attribute_name :kind %></th>
     <th style="text-align: center; width: 60px;"><%= GpCalendar::Holiday.human_attribute_name :state %></th>
@@ -12,7 +12,7 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, gp_calendar_holiday_path(content: @content, id: item.id) %></td>
     <td style="text-align: center;"><%= item.title %></td>
-    <td style="text-align: center;"><%=i18n_l item.date, '%m月%d日' %></td>
+    <td style="text-align: center;"><%= item.repeat ? i18n_l(item.date, '* %m月%d日') : i18n_l(item.date, '%Y年%m月%d日') %></td>
     <td style="text-align: left;"><%= item.description %></td>
     <td style="text-align: center;"><%= item.class::KIND_OPTIONS.detect{|to| to.last == item.kind }.try(:first) %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
