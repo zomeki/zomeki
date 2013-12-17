@@ -29,8 +29,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
 
     rel = self.where(holidays[:content_id].eq(content.id))
     rel = rel.where(holidays[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
-    fdt = Arel::Nodes::NamedFunction.new("date_format", [holidays[:date], "%m%d"])
-    rel = rel.where(fdt.eq(criteria[:date].strftime('%m%d'))) if criteria[:date].present?
+    rel = rel.where("date_format(`date`, '%m%d') = ? and ( (ifnull(`repeat`, 0) = 0 and date_format(`date`, '%Y') = ?) or (`repeat` = 1) )", "#{criteria[:date].strftime('%m%d')}", "#{criteria[:date].strftime('%Y')}") if criteria[:date].present?
     rel = case criteria[:order]
           when 'created_at_desc'
             rel.except(:order).order(holidays[:created_at].desc)
@@ -39,7 +38,6 @@ class GpCalendar::Holiday < ActiveRecord::Base
           else
             rel
           end
-
     if (year_month = criteria[:year_month]) =~ /^(\d{6}|\d{4})$/
       case year_month
       when /^\d{6}$/
@@ -51,8 +49,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
       end
 
       if start_date && end_date
-        rel = rel.where(holidays[:date].lteq(end_date)
-                        .and(holidays[:date].gteq(start_date)))
+        rel = rel.where("(ifnull(`repeat`, 0) = 0 and date_format(`date`, '%Y%m%d') >= ? and date_format(`date`, '%Y%m%d') <= ?) or (`repeat` = 1 and date_format(`date`, '%m%d') >= ? and date_format(`date`, '%m%d') <= ?)", "#{start_date.strftime('%Y%m%d')}", "#{end_date.strftime('%Y%m%d')}", "#{start_date.strftime('%m%d')}", "#{end_date.strftime('%m%d')}")
       end
     end
 
