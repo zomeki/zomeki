@@ -175,7 +175,7 @@ module Cms::Controller::Layout
     body = last_convert_body(body)
     
     ## render the true layout
-    render :text => body.force_encoding('utf-8'), :layout => 'layouts/public/base'
+    render :text => (body ? body.force_encoding('UTF-8') : ''), :layout => 'layouts/public/base'
   end
   
   def last_convert_body(body)
