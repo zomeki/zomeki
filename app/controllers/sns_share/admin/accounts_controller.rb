@@ -31,7 +31,9 @@ class SnsShare::Admin::AccountsController < Cms::Controller::Admin::Base
                             info_url: nil,
                             credential_token: nil,
                             credential_expires_at: nil,
-                            credential_secret: nil)
+                            credential_secret: nil,
+                            facebook_page_options: nil,
+                            facebook_page: nil)
     redirect_to sns_share_accounts_path(@content), notice: 'ログアウトしました。'
   end
 end
