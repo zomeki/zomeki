@@ -398,6 +398,8 @@ class GpArticle::Doc < ActiveRecord::Base
       new_c.update_column(:sort_no, self_c.sort_no)
     end
 
+    new_doc.sns_accounts = self.sns_accounts
+
     return new_doc
   end
 

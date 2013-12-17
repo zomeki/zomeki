@@ -306,6 +306,37 @@
 
     <p class="form">SNS(OGP)</p>
 
+    <%- if @content.sns_share_related? -%>
+    <table class="show">
+      <tr>
+        <%- if @content.sns_share_content_account -%>
+        <th>SNS投稿</th>
+        <td>
+          <%- unless @content.sns_share_content_account.accounts.empty? -%>
+          <table class="noDesign">
+          <%- @content.sns_share_content_account.accounts.each do |account| -%>
+          <tr>
+            <td><%= @item.sns_accounts.include?(account) ? '投稿する' : '投稿しない' %></td>
+            <td><%= account.provider.humanize %></td>
+            <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
+            <td>
+              <%= link_to_if account.info_url.present?, "#{account.info_name} (#{account.info_nickname})", account.info_url, target: 'preview' %>
+              <%- if account.provider == 'facebook' -%>
+                <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
+              <%- end -%>
+            </td>
+          </tr>
+          <%- end -%>
+          </table>
+          <%- end -%>
+        </td>
+        <%- else -%>
+        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
+        <%- end -%>
+      </tr>
+    </table>
+    <%- end -%>
+
     <table class="show">
       <tr>
         <th><%= @item.locale :og_type %></th>
@@ -317,10 +348,7 @@
       </tr>
       <tr>
         <th><%= @item.locale :og_description %></th>
-        <td>
-          <%=simple_format @item.og_description %>
-          <div>本文を使用<%= @item.og_description_use_body ? 'する' : 'しない' %></div>
-        </td>
+        <td><%=simple_format @item.og_description %></td>
       </tr>
       <tr>
         <th><%= @item.locale :og_image %></th>

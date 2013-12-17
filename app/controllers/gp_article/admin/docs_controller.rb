@@ -135,6 +135,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       publish_by_update(@item) if @item.state_public?
 
       @item.fix_tmp_files(params[:_tmp])
+
+      share_to_sns if @item.state_public?
     end
   end
 
@@ -186,9 +188,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       publish_by_update(@item) if @item.state_public?
 
-      @item.close unless @item.public? # DO NOT use "state_public?" here
+      @item.close unless @item.public? # Never use "state_public?" here
 
       release_document
+
+      share_to_sns if @item.state_public?
     end
   end
 
@@ -370,5 +374,25 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                         end
 
     @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
+  end
+
+  def share_to_sns
+    @item.sns_accounts.each do |account|
+      next if account.credential_token.blank?
+
+      begin
+        case account.provider
+        when 'facebook'
+          fb = RC::Facebook.new(access_token: account.credential_token)
+          if fb.authorized?
+            message = self.class.helpers.strip_tags(@item.body)
+            fb.post("#{account.facebook_page}/feed", message: message)
+          end
+        when 'twitter'
+        end
+      rescue => e
+        warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
+      end
+    end
   end
 end
