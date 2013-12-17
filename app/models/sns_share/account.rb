@@ -6,6 +6,8 @@ class SnsShare::Account < ActiveRecord::Base
 
   default_scope order("#{self.table_name}.provider IS NULL, #{self.table_name}.provider")
 
+  has_many :shares, :dependent => :destroy
+
   belongs_to :content, :foreign_key => :content_id, :class_name => 'SnsShare::Content::Account'
   validates_presence_of :content_id
 

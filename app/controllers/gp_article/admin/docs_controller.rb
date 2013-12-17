@@ -28,6 +28,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @params_item_in_maps = if (im = params[:item].try('[]', :in_maps)).kind_of?(Hash)
                              im
                            end
+    @params_share_accounts = params[:share_accounts] if params[:share_accounts].kind_of?(Array)
   end
 
   def index
@@ -122,6 +123,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
     _create(@item, location: location) do
+      set_share_accounts
       set_categories
       set_event_categories
       set_marker_categories
@@ -173,6 +175,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     location = url_for(action: 'edit') if @item.state_draft?
     _update(@item, location: location) do
+      set_share_accounts
       set_categories
       set_event_categories
       set_marker_categories
@@ -269,6 +272,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       send_mail(mail_from, doc.creator.user.email, subject, body)
     end
+  end
+
+  def set_share_accounts
+    share_account_ids = if params[:share_accounts].kind_of?(Array)
+                          params[:share_accounts].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+    @item.sns_account_ids = share_account_ids
   end
 
   def set_categories
