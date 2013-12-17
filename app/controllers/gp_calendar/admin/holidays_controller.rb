@@ -11,7 +11,7 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
   def index
     create_default_holidays(@content)
 
-    @items = @content.holidays.order("date_format(date,'%m%d')").paginate(page: params[:page], per_page: 50)
+    @items = @content.holidays.order("ifnull(`repeat`, 0) desc, ifnull(date_format(`date`,'%Y%m%d'), '00000000')").paginate(page: params[:page], per_page: 50)
     _index @items
   end
 
@@ -26,14 +26,14 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
 
   def create
     @item = @content.holidays.build(params[:item])
-    @item.date = parse_date(params[:item][:date])
+    @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
     _create @item
   end
 
   def update
     @item = @content.holidays.find(params[:id])
     @item.attributes = params[:item]
-    @item.date = parse_date(params[:item][:date])
+    @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
     _update @item
   end
 
