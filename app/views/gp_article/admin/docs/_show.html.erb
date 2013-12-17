@@ -320,7 +320,7 @@
             <td><%= account.provider.humanize %></td>
             <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
             <td>
-              <%= link_to_if account.info_url.present?, "#{account.info_name} (#{account.info_nickname})", account.info_url, target: 'preview' %>
+              <%= link_to_if account.info_url.present?, "#{account.info_name} #{account.info_nickname.presence ? "(#{account.info_nickname})" : ''}", account.info_url, target: 'preview' %>
               <%- if account.provider == 'facebook' -%>
                 <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
               <%- end -%>

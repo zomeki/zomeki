@@ -1,0 +1,26 @@
+# https://developers.facebook.com/apps
+facebook:
+  zomeki.example.com:
+    id: 'App ID 1'
+    secret: 'App Secret 1'
+    scope: 'email'
+  zomeki.example.net:
+    id: 'App ID 2'
+    secret: 'App Secret 2'
+    scope: 'email'
+  zomeki.example.org:
+    id: 'App ID 3'
+    secret: 'App Secret 3'
+    scope: 'email'
+
+# https://dev.twitter.com/apps
+twitter:
+  zomeki.example.com:
+    key: 'Consumer key 1'
+    secret: 'Consumer secret 1'
+  zomeki.example.net:
+    key: 'Consumer key 2'
+    secret: 'Consumer secret 2'
+  zomeki.example.org:
+    key: 'Consumer key 3'
+    secret: 'Consumer secret 3'
