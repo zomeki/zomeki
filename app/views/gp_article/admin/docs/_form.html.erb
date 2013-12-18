@@ -351,9 +351,9 @@
 
     <%- if @content.sns_share_related? -%>
     <table class="show">
+      <%- if @content.sns_share_content_account -%>
       <tr>
-        <%- if @content.sns_share_content_account -%>
-        <th>SNS投稿</th>
+        <th rowspan="2">SNS投稿</th>
         <td>
           <%- unless @content.sns_share_content_account.accounts.empty? -%>
           <table class="noDesign">
@@ -375,10 +375,15 @@
           </table>
           <%- end -%>
         </td>
-        <%- else -%>
-        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
-        <%- end -%>
       </tr>
+      <tr>
+        <td><%= f.radio_buttons :share_to_sns_with, GpArticle::Doc::SHARE_TO_SNS_WITH_OPTIONS %></td>
+      </tr>
+      <%- else -%>
+      <tr>
+        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
+      </tr>
+      <%- end -%>
     </table>
     <%- end -%>
 

@@ -129,7 +129,7 @@ class ActionView::Helpers::FormBuilder
     html = @template.hidden_field(@object_name, method, :value => '')
     choices.each do |label, value|
       html += radio_button(method, value, options)
-      html += %Q(<label for="#{@object_name}_#{method}_#{value}">#{label}</label>).html_safe
+      html += %Q(<label for="#{@object_name}_#{method}_#{value}">#{label}</label> ).html_safe
     end
     html.html_safe
   end

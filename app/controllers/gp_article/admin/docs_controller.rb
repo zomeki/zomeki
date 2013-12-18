@@ -386,7 +386,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
         case account.provider
         when 'facebook'
           fb = RC::Facebook.new(access_token: account.credential_token.presence)
-          message = self.class.helpers.strip_tags(@item.body)
+          message = self.class.helpers.strip_tags(@item.send(@item.share_to_sns_with))
           fb.post("#{account.facebook_page}/feed", message: message)
         when 'twitter'
           if (app = apps[request.host])
@@ -394,7 +394,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                                  consumer_secret: app['secret'],
                                  oauth_token: account.credential_token.presence,
                                  oauth_token_secret: account.credential_secret.presence)
-            message = self.class.helpers.strip_tags(@item.body)
+            message = self.class.helpers.strip_tags(@item.send(@item.share_to_sns_with))
             tw.tweet message
           end
         end
