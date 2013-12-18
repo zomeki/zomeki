@@ -52,5 +52,32 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
     render :show
   end
 
+  # 変換情報の書き込み
+  def convert_setting
+    @item = Tool::ConvertSetting.new(params[:item])
+    if @item.site_url.present? && Tool::ConvertSetting.find_by_site_url(@item.site_url).present?
+      @item = Tool::ConvertSetting.find_by_site_url(@item.site_url)
+    end
+
+    if request.post?
+      # 書き込みの場合
+      if @item.new_record?
+        if @item.save
+          flash[:notice] = "登録処理が完了しました。（#{I18n.l Time.now}）"
+          redirect_to tool_convert_setting_path("item[site_url]" => @item.site_url)
+        else
+          flash.now[:alert] = '登録処理に失敗しました。'
+        end
+      else
+        if @item.update_attributes(params[:item])
+          flash[:notice] = "更新処理が完了しました。（#{I18n.l Time.now}）"
+          redirect_to tool_convert_setting_path("item[site_url]" => @item.site_url) 
+        else
+          flash.now[:alert] = '更新処理に失敗しました。'
+        end
+      end
+    end
+  end
+
 end
 
