@@ -24,6 +24,7 @@ class GpArticle::Doc < ActiveRecord::Base
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   OGP_TYPE_OPTIONS = [['article', 'article']]
+  SHARE_TO_SNS_WITH_OPTIONS = [['SNS(OGP)の説明', 'og_description'], ['記事の内容', 'body']]
 
   default_scope where("#{self.table_name}.state != 'archived'")
 
@@ -654,6 +655,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.marker_state ||= 'hidden'                  if self.has_attribute?(:marker_state)
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
+    self.share_to_sns_with = SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with) && self.share_to_sns_with.nil?
   end
 
   def set_display_attributes
