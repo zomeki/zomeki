@@ -3,7 +3,7 @@ class Util::Convert
   SITE_BASE_DIR = "#{Rails.application.root.to_s}/wget_sites"
 
   def self.download_site(url)
-    system "wget -rqN -P #{SITE_BASE_DIR} #{url}" if url
+    system "wget -rqNE -P #{SITE_BASE_DIR} #{url}" if url
   end
 
   def self.all_site_urls
