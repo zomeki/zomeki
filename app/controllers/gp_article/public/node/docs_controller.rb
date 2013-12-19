@@ -84,7 +84,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
         when name
           nil
         else
-          @content.preview_docs
+          @content.public_docs
         end
       end
     end
