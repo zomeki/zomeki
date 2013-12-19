@@ -3,15 +3,15 @@ facebook:
   zomeki.example.com:
     id: 'App ID 1'
     secret: 'App Secret 1'
-    scope: 'email'
+    scope: 'manage_pages,publish_stream'
   zomeki.example.net:
     id: 'App ID 2'
     secret: 'App Secret 2'
-    scope: 'email'
+    scope: 'manage_pages,publish_stream'
   zomeki.example.org:
     id: 'App ID 3'
     secret: 'App Secret 3'
-    scope: 'email'
+    scope: 'manage_pages,publish_stream'
 
 # https://dev.twitter.com/apps
 twitter:
