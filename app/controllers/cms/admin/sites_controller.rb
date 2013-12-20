@@ -1,4 +1,5 @@
-# encoding: utf-8
+require 'yaml/store'
+
 class Cms::Admin::SitesController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   
@@ -21,7 +22,9 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
   def show
     @item = Cms::Site.new.find(params[:id])
     return error_auth unless @item.readable?
-    
+
+    load_sns_apps
+
     _show @item
   end
 
@@ -48,6 +51,8 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_files(@item)
       update_config
     end
+
+    save_sns_apps
   end
   
   def update
@@ -58,6 +63,8 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_files(@item)
       update_config
     end
+
+    save_sns_apps
   end
   
   def destroy
@@ -166,5 +173,69 @@ protected
   
   def update_config
     Cms::Site.put_virtual_hosts_config
+  end
+
+  private
+
+  def load_sns_apps
+    @sns_apps = {}
+
+    db = YAML::Store.new(Rails.root.join('config/sns_apps.yml'))
+    db.transaction do
+      begin
+        facebook = db['facebook'][request.host]
+        @sns_apps['facebook_app_id'] = facebook['id']
+        @sns_apps['facebook_app_secret'] = facebook['secret']
+      rescue => e
+        warn_log "Failed to load facebook apps: #{e.message}"
+      end
+
+      begin
+        twitter = db['twitter'][request.host]
+        @sns_apps['twitter_consumer_key'] = twitter['key']
+        @sns_apps['twitter_consumer_secret'] = twitter['secret']
+      rescue => e
+        warn_log "Failed to load twitter apps: #{e.message}"
+      end
+    end
+  end
+
+  def save_sns_apps
+    sns_apps = params[:sns_apps]
+
+    db = YAML::Store.new(Rails.root.join('config/sns_apps.yml'))
+    db.transaction do
+      begin
+        facebook = db['facebook']
+        unless facebook[request.host].kind_of?(Hash)
+          facebook[request.host] = {}
+          facebook['default'].each do |key, value|
+            facebook[request.host][key] = value
+          end
+        end
+
+        facebook = facebook[request.host]
+        facebook['id'] = sns_apps['facebook_app_id']
+        facebook['secret'] = sns_apps['facebook_app_secret']
+      rescue => e
+        warn_log "Failed to save facebook apps: #{e.message}"
+      end
+
+      begin
+        twitter = db['twitter']
+        unless twitter[request.host].kind_of?(Hash)
+          twitter[request.host] = {}
+          twitter['default'].each do |key, value|
+            twitter[request.host][key] = value
+          end
+        end
+
+        twitter = twitter[request.host]
+        twitter['key'] = sns_apps['twitter_consumer_key']
+        twitter['secret'] = sns_apps['twitter_consumer_secret']
+      rescue => e
+        warn_log "Failed to save twitter apps: #{e.message}"
+      end
+    end
   end
 end
