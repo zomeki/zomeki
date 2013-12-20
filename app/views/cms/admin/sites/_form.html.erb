@@ -80,6 +80,28 @@ areas      = PortalGroup::Area.root_items(cond)
     </td>
   </tr>
 </table>
+
+<p class="form">SNS設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= label_tag 'sns_apps[facebook_app_id]', 'Facebook App ID' %></th>
+    <td><%= text_field_tag 'sns_apps[facebook_app_id]', @sns_apps['facebook_app_id'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[facebook_app_secret]', 'Facebook App Secret' %></th>
+    <td><%= text_field_tag 'sns_apps[facebook_app_secret]', @sns_apps['facebook_app_secret'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[twitter_consumer_key]', 'Twitter Consumer key' %></th>
+    <td><%= text_field_tag 'sns_apps[twitter_consumer_key]', @sns_apps['twitter_consumer_key'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[twitter_consumer_secret]', 'Twitter Consumer secret' %></th>
+    <td><%= text_field_tag 'sns_apps[twitter_consumer_secret]', @sns_apps['twitter_consumer_secret'], style: 'width: 400px;' %></td>
+  </tr>
+</table>
+
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_category_ids_0,
       :with => :item_portal_group_id, :on => 'change', :url => categories_portal_group_groups_path(0)) %>
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_business_ids_0,
