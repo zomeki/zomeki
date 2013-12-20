@@ -180,10 +180,13 @@ protected
   def load_sns_apps
     @sns_apps = {}
 
+    host = URI.parse(@item.full_uri).host
+    return unless host
+
     db = YAML::Store.new(Rails.root.join('config/sns_apps.yml'))
     db.transaction do
       begin
-        facebook = db['facebook'][request.host]
+        facebook = db['facebook'][host]
         @sns_apps['facebook_app_id'] = facebook['id']
         @sns_apps['facebook_app_secret'] = facebook['secret']
       rescue => e
@@ -191,7 +194,7 @@ protected
       end
 
       begin
-        twitter = db['twitter'][request.host]
+        twitter = db['twitter'][host]
         @sns_apps['twitter_consumer_key'] = twitter['key']
         @sns_apps['twitter_consumer_secret'] = twitter['secret']
       rescue => e
@@ -201,20 +204,23 @@ protected
   end
 
   def save_sns_apps
+    host = URI.parse(@item.full_uri).host
+    return unless host
+
     sns_apps = params[:sns_apps]
 
     db = YAML::Store.new(Rails.root.join('config/sns_apps.yml'))
     db.transaction do
       begin
         facebook = db['facebook']
-        unless facebook[request.host].kind_of?(Hash)
-          facebook[request.host] = {}
+        unless facebook[host].kind_of?(Hash)
+          facebook[host] = {}
           facebook['default'].each do |key, value|
-            facebook[request.host][key] = value
+            facebook[host][key] = value
           end
         end
 
-        facebook = facebook[request.host]
+        facebook = facebook[host]
         facebook['id'] = sns_apps['facebook_app_id']
         facebook['secret'] = sns_apps['facebook_app_secret']
       rescue => e
@@ -223,14 +229,14 @@ protected
 
       begin
         twitter = db['twitter']
-        unless twitter[request.host].kind_of?(Hash)
-          twitter[request.host] = {}
+        unless twitter[host].kind_of?(Hash)
+          twitter[host] = {}
           twitter['default'].each do |key, value|
-            twitter[request.host][key] = value
+            twitter[host][key] = value
           end
         end
 
-        twitter = twitter[request.host]
+        twitter = twitter[host]
         twitter['key'] = sns_apps['twitter_consumer_key']
         twitter['secret'] = sns_apps['twitter_consumer_secret']
       rescue => e
