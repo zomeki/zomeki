@@ -32,6 +32,7 @@ end
   <span class="separator"></span>
   <%= link_to '編集', edit_gp_article_doc_path, disable_with: '編集' if @item.try(:editable?) && !@item.will_be_replaced? %>
   <%= link_to '削除', gp_article_doc_path, :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
+  <%= link_to '更新をキャンセル', gp_article_doc_path, :method => :delete, :confirm => '更新をキャンセルしてよろしいですか？' if @item.try(:deletable?) && @item.will_replace? %>
   <%= link_to :duplicate, {:do => :duplicate}, :confirm => '複製してよろしいですか？' %>
   <%= link_to '承認', approve_gp_article_doc_path, :method => :post, :confirm => '承認してよろしいですか？' if @item.state_approvable? &&
                                                                                                                @item.approvers.include?(Core.user) %>
@@ -44,6 +45,7 @@ end
   <%= link_to "#{GpArticle::Doc.model_name.human}一覧", gp_article_docs_path %>
   <span class="separator"></span>
   <%= link_to '詳細', gp_article_doc_path %>
+  <%= link_to '更新をキャンセル', gp_article_doc_path, :method => :delete, :confirm => '更新をキャンセルしてよろしいですか？' if @item.try(:deletable?) && @item.will_replace? %>
   <span class="separator"></span>
   <%= link_to 'プレビュー(PC)', @item.preview_uri,
               target: 'preview' if @item.terminal_pc_or_smart_phone && @content.public_node && @item.preview_uri.present? %>
