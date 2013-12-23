@@ -5,7 +5,7 @@ cond   = {:site_id => Core.site.id, :parent_id => 0, :level_no => 1, :state => '
 root   = Cms::Concept.find(:all, :conditions => cond, :order => :sort_no)
 
 %>  <tr>
-    <th><%= f.label :concept_id %></th>
+    <th><%= f.label :concept_id, 'コンセプト' %></th>
     <td><%= f.select_with_tree :concept_id, root, :conditions => {:state => 'public'}, :include_blank => true %></td>
   </tr>
 <%
@@ -21,7 +21,7 @@ if defined?(layout) && layout == true
   end
 
 %>  <tr>
-    <th>レイアウト</th>
+    <th><%= f.label :layout_id, 'レイアウト' %></th>
     <td><%= f.select(:layout_id, layouts, :include_blank => '　　　　') %></td>
   </tr>
   <%= observe_field(:item_concept_id, :update => :item_layout_id,
