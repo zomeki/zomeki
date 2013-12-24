@@ -14,7 +14,7 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
       @item.site_url= params[:item][:site_url]
       if @item.site_url.present?
         Thread.fork(@item.site_url) do |site_url|
-          result = Util::Convert.download_site(site_url)
+          result = Tool::Convert.download_site(site_url)
           if result
             puts "#{site_url} download successful completed!"
           else
@@ -30,10 +30,10 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
   # ファイル一覧
   def file_list
     @site_url  = params[:site_url] || ""
-    @root      = "#{Util::Convert::SITE_BASE_DIR}/#{@site_url}"
+    @root      = "#{Tool::Convert::SITE_BASE_DIR}/#{@site_url}"
     @path      = params[:path].to_s
     @full_path = "#{@root}/#{@path}"
-    @base_uri  = ["#{Util::Convert::SITE_BASE_DIR}/", "/"]
+    @base_uri  = ["#{Tool::Convert::SITE_BASE_DIR}/", "/"]
 
     @item = Tool::SiteContent.new(@site_url, @full_path, :root => @root, :base_uri => @base_uri)
     return show    if params[:do] == 'show'
@@ -77,6 +77,19 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
         end
       end
     end
+  end
+
+  # サイトの導入(書き込み)
+  def import_site
+    @item  = []
+    def @item.site_url ; @site_url ; end
+    def @item.site_url=(v) ; @site_url = v ; end
+    def @item.content_id ; @content_id ; end
+    def @item.content_id=(v) ; @content_id = v ; end
+
+    if request.post?
+    end
+
   end
 
 end
