@@ -4,7 +4,7 @@
     <td>
       <select name="site_url" id="site_url" style="width: 400px;">
         <option></option>
-        <% Util::Convert.all_site_urls.each do |site| -%>
+        <% Tool::Convert.all_site_urls.each do |site| -%>
         <option <%= site == @site_url ? "selected=selected" : "" %>><%= site %></option>
         <% end -%>
       </select>
