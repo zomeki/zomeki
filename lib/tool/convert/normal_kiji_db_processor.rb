@@ -12,12 +12,12 @@ class Tool::Convert::NormalKijiDbProcessor < Tool::Convert::DbProcessor
     target.ignore_accessibility_check = @options[:ignore_accessibility_check]
    
     if !target.save
-      puts "upload_article_doc:アップロード失敗:#{file_path}"
+      puts "upload_article_doc:アップロード失敗:#{@page_info.file_path}"
       p target.errors.full_messages
       return nil
     else
-      target.published_at = doc.created_at
-      target.recognized_at = doc.created_at
+      target.published_at = target.created_at
+      target.recognized_at = target.created_at
       target.save
       return target
     end

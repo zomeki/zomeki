@@ -7,6 +7,12 @@ class Tool::Convert::PageParseInfo
   attr_reader :file_path, :uri_path, :options, :html_doc, :host,
               :title, :body
 
+  ### params
+  #   options: {
+  #     # 例
+  #     title_xpath: "//div[@id='id_z1_body']/form/h1",
+  #     body_xpath: "//div[@id='id_z1_width']"
+  #   }
   def initialize(host, file_path, uri_path, options={})
     @host = host
     @file_path = file_path
