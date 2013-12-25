@@ -87,9 +87,15 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
     def @item.content_id ; @content_id ; end
     def @item.content_id=(v) ; @content_id = v ; end
 
-    if request.post?
+    if request.post? && params[:item].present?
+      @item.site_url = params[:item][:site_url]
+      @item.content_id = params[:item][:content_id]
+      if params[:item][:site_url].present? && params[:item][:content_id].present?
+        Tool::Convert.import_site(params[:item])
+        Tool::Convert.process_link
+        redirect_to tool_convert_import_site_url
+      end
     end
-
   end
 
 end

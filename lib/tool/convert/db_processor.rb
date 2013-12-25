@@ -4,6 +4,13 @@ class Tool::Convert::DbProcessor
 
   attr_reader :target
 
+  ### params
+  #   options: {
+  #     content_id: 1,
+  #     creator: {group_id: 1, user_id: 1}
+  #     state: "public",
+  #     ignore_accessibility_check: true
+  #   }
   def initialize(page_info, options={})
     @page_info = page_info
     @options = {
@@ -44,6 +51,10 @@ class Tool::Convert::DbProcessor
     else
       cdoc
     end
+  end
+
+  def target_name
+    @target.nil? ? "" : @target.name
   end
 
 end
