@@ -10,6 +10,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :form_type => :text, :lower_text => "CSV形式（例　対象文字,変換後文字 ）"
   set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
     :comment => I18n.t('comments.date_style').html_safe
+  set_config :wday_style, :name => "#{GpArticle::Doc.model_name.human}曜日形式",
+    :comment => I18n.t('comments.wday_style').html_safe
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :form_type => :text_area, :comment_upper => I18n.t('comments.doc_style').html_safe
   set_config :feed, :name => "フィード",
