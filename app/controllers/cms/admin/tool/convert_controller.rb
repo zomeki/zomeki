@@ -91,9 +91,16 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
       @item.site_url = params[:item][:site_url]
       @item.content_id = params[:item][:content_id]
       if params[:item][:site_url].present? && params[:item][:content_id].present?
-        Tool::Convert.import_site(params[:item])
-        Tool::Convert.process_link
-        redirect_to tool_convert_import_site_url
+        setting = Tool::ConvertSetting.find_by_site_url(params[:item][:site_url])
+        if setting
+          Tool::Convert.import_site(params[:item], setting)
+          Tool::Convert.process_link
+          redirect_to tool_convert_import_site_url
+        else
+          flash.now[:alert] = '選択したサイトURLに対して、変換情報が存在しません。変換画面で追加してください。'
+        end
+      else
+        flash.now[:alert] = 'サイトURLとコンテンツIDを選択してください。'
       end
     end
   end
