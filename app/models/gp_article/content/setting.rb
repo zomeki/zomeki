@@ -43,6 +43,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :sns_share_relation, :name => 'SNSシェア',
     :options => GpArticle::Content::Doc::SNS_SHARE_RELATION_OPTIONS,
     :form_type => :radio_buttons
+  set_config :blog_functions, :name => 'ブログ',
+    :options => GpArticle::Content::Doc::BLOG_FUNCTIONS_OPTIONS,
+    :form_type => :radio_buttons
 
   after_initialize :set_defaults
 
