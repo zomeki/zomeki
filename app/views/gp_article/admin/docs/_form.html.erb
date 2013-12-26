@@ -76,6 +76,31 @@
       <%= render partial: 'gp_template/admin/shared/form', locals: {template: @item.template, template_values: @item.template_values} if @item.template %>
     </div>
 
+    <%- if @content.blog_functions_available? -%>
+    <p class="form">追記を入力する</p>
+
+    <table class="show">
+      <tr>
+        <td><%= link_to_function '開く▼', "toggle_form(this, '#body_more')" %></td>
+      </tr>
+    </table>
+
+    <div id="body_more" style="display: none;">
+      <table class="show">
+        <tr>
+          <th><%= f.label :body_more_link_text %></th>
+          <td><%= f.text_field :body_more_link_text, :style => 'width: 200px;' %></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="cke_editor_wrapper">
+            <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+            <%= f.text_area :body_more, :class => 'body ckeditor' %>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <%- end -%>
+
     <p class="form">添付ファイル</p>
 
     <table class="show">
