@@ -12,6 +12,21 @@
       <%= render partial: 'category_type', collection: node.content.public_category_types, locals: {level: level + 1, css_class: css_class} %>
     </ul>
     <%- end -%>
+
+  <%- when 'Survey::Form' -%>
+    <%- unless node.content.public_forms.empty? -%>
+    <ul class="level<%= level + 1 %> <%= css_class %>">
+      <%= render partial: 'survey_form', collection: node.content.public_forms, locals: {level: level + 1, css_class: css_class} %>
+    </ul>
+    <%- end -%>
+
+  <%- when 'Gnav::MenuItem' -%>
+    <%- unless node.content.menu_items.empty? -%>
+    <ul class="level<%= level + 1 %> <%= css_class %>">
+      <%= render partial: 'gnav_menu_item', collection: node.content.menu_items, locals: {level: level + 1, css_class: css_class} %>
+    </ul>
+    <%- end -%>
+
   <%- end -%>
 
   <%- unless node.public_children_in_route.empty? -%>
