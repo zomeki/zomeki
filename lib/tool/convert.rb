@@ -1,5 +1,7 @@
 # encoding: utf-8
+
 class Tool::Convert
+
   SITE_BASE_DIR = "#{Rails.application.root.to_s}/wget_sites"
 
   def self.download_site(url)
@@ -20,21 +22,19 @@ class Tool::Convert
   #   site_url: 
   #   content_id: 
   # }
-  def self.import_site(params={})
-    return false unless params[:site_url] && params[:content_id]
+  def self.import_site(params={}, convert_setting)
+    return false unless params[:site_url] && params[:content_id] && convert_setting
 
     root = "#{SITE_BASE_DIR}/#{params[:site_url]}"
     host = params[:site_url]
-
-    # TODO dairg xpathsの設定
 
     opts = { 
       html_options: {
         ignore_dir_list: [],
       },
       parse_xpaths: {
-        title_xpath: "//div[@id='id_z1_body']/form/h1",
-        body_xpath: "//div[@id='id_z1_width']"
+        title_xpath: Tool::Convert::Common.convert_to_xpath(convert_setting.title_tag),
+        body_xpath: Tool::Convert::Common.convert_to_xpath(convert_setting.body_tag)
       },
       db_options: {
         content_id: params[:content_id],
