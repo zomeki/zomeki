@@ -193,6 +193,10 @@ class GpArticle::Content::Doc < Cms::Content
     setting_extra_value(:feed, :feed_docs_period)
   end
 
+  def blog_functions_available?
+    setting_value(:blog_functions) == 'enabled'
+  end
+
   private
 
   def set_default_settings
