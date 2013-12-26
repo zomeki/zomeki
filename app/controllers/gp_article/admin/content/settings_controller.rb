@@ -35,7 +35,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
     end
 
     if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting',
-        'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation'].include?(@item.name)
+        'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation',
+        'blog_functions'].include?(@item.name)
       extra_values = @item.extra_values
 
       case @item.name
@@ -65,6 +66,10 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:tag_content_tag_id] = params[:tag_content_tag_id].to_i
       when 'sns_share_relation'
         extra_values[:sns_share_content_id] = params[:sns_share_content_id].to_i
+      when 'blog_functions'
+        extra_values[:comment] = params[:comment]
+        extra_values[:comment_open] = params[:comment_open]
+        extra_values[:comment_notification_mail] = params[:comment_notification_mail]
       end
 
       @item.extra_values = extra_values
