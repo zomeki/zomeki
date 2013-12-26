@@ -291,3 +291,29 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'blog_functions' -%>
+<table class="show">
+  <tr>
+    <th>コメント</th>
+    <td>
+      <%= radio_button_tag 'comment', 'enabled', @item.extra_values[:comment] != 'disabled' %><%= label_tag 'comment_enabled', '使用する' %>
+      <%= radio_button_tag 'comment', 'disabled', @item.extra_values[:comment] == 'disabled' %><%= label_tag 'comment_disabled', '使用しない' %>
+    </td>
+  </tr>
+  <tr>
+    <th>コメント公開</th>
+    <td>
+      <%= radio_button_tag 'comment_open', 'immediate', @item.extra_values[:comment_open] != 'moderate' %><%= label_tag 'comment_open_immediate', '即時公開する' %>
+      <%= radio_button_tag 'comment_open', 'moderate', @item.extra_values[:comment_open] == 'moderate' %><%= label_tag 'comment_open_moderate', '承認後公開する' %>
+    </td>
+  </tr>
+  <tr>
+    <th>コメント通知メール</th>
+    <td>
+      <%= radio_button_tag 'comment_notification_mail', 'enabled', @item.extra_values[:comment_notification_mail] != 'disabled' %><%= label_tag 'comment_notification_mail_enabled', '使用する' %>
+      <%= radio_button_tag 'comment_notification_mail', 'disabled', @item.extra_values[:comment_notification_mail] == 'disabled' %><%= label_tag 'comment_notification_mail_disabled', '使用しない' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>

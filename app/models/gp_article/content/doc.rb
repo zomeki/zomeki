@@ -8,6 +8,7 @@ class GpArticle::Content::Doc < Cms::Content
   FEED_DISPLAY_OPTIONS = [['表示する', 'enabled'], ['表示しない', 'disabled']]
   TAG_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   SNS_SHARE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  BLOG_FUNCTIONS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -206,5 +207,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:feed] = FEED_DISPLAY_OPTIONS.first.last unless setting_value(:feed)
     in_settings[:tag_relation] = TAG_RELATION_OPTIONS.first.last unless setting_value(:tag_relation)
     in_settings[:sns_share_relation] = SNS_SHARE_RELATION_OPTIONS.first.last unless setting_value(:sns_share_relation)
+    in_settings[:blog_functions] = BLOG_FUNCTIONS_OPTIONS.last.last unless setting_value(:blog_functions)
   end
 end
