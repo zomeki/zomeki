@@ -1,0 +1,7 @@
+<%-
+  return '' unless survey_form.sitemap_visible?
+  css_class = "#{css_class + '-' if css_class.present?}#{File.basename(survey_form.name, '.*').camelize(:lower)}"
+-%>
+<li class="level<%= level %> <%= css_class %>">
+  <%= link_to survey_form.title, survey_form.public_uri, class: "level#{level}" %>
+</li>

@@ -10,6 +10,7 @@ class Survey::Form < ActiveRecord::Base
 
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'approvable'], ['即時公開', 'public']]
   CONFIRMATION_OPTIONS = [['あり', true], ['なし', false]]
+  SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
 
@@ -184,11 +185,16 @@ class Survey::Form < ActiveRecord::Base
     "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}#{params.present? ? "?#{params}" : ''}"
   end
 
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
   private
 
   def set_defaults
     self.state        = STATE_OPTIONS.first.last        if self.has_attribute?(:state) && self.state.nil?
     self.confirmation = CONFIRMATION_OPTIONS.first.last if self.has_attribute?(:confirmation) && self.confirmation.nil?
+    self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
     self.sort_no      = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 

@@ -5,6 +5,8 @@ class Gnav::MenuItem < ActiveRecord::Base
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
 
+  SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+
   default_scope order(:sort_no)
 
   # Content
@@ -22,6 +24,8 @@ class Gnav::MenuItem < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
+
+  after_initialize :set_defaults
 
   def public_uri=(uri)
     @public_uri = uri
@@ -85,4 +89,15 @@ class Gnav::MenuItem < ActiveRecord::Base
 
     Cms::Lib::BreadCrumbs.new(crumbs)
   end
+
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
+  private
+
+  def set_defaults
+    self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
+  end
+
 end

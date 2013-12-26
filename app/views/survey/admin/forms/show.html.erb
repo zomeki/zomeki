@@ -24,6 +24,10 @@
     <td><%=raw @item.receipt %></td>
   </tr>
   <tr>
+    <th><%= @item.locale(:sitemap_state) %></th>
+    <td><%= @item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == @item.sitemap_state }.try(:first) %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
