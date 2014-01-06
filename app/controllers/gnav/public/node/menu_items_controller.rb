@@ -19,7 +19,7 @@ class Gnav::Public::Node::MenuItemsController < Cms::Controller::Public::Base
     Page.title = @menu_item.title
 
     @categories = @menu_item.public_categories
-    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.level_no
+    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.try(:level_no).to_i
     @categories.reject! {|c| c.level_no > (@least_level_no + 1) }
 
     render :show_mobile if Page.mobile?

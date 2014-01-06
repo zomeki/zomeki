@@ -21,7 +21,7 @@ class Gnav::Public::Piece::CategoryTypesController < Sys::Controller::Public::Ba
       @categories = piece_categories
     end
 
-    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.level_no
+    @least_level_no = @categories.min{|a, b| a.level_no <=> b.level_no }.try(:level_no).to_i
     @categories.reject! {|c| c.level_no > (@least_level_no + 1) }
   end
 end
