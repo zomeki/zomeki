@@ -34,6 +34,8 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
     @item = Cms::Site.new({
       :state      => 'public',
     })
+
+    @sns_apps = {}
   end
   
   def create
