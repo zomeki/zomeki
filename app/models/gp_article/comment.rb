@@ -19,6 +19,8 @@ class GpArticle::Comment < ActiveRecord::Base
   after_initialize :set_defaults
   after_save :set_display_attributes
 
+  scope :public, where(state: 'public')
+
   def editable?
     doc.editable?
   end

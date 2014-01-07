@@ -56,6 +56,7 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :holds, :as => :holdable, :dependent => :destroy
   has_many :links, :dependent => :destroy
   has_many :approval_requests, :class_name => 'Approval::ApprovalRequest', :as => :approvable, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
 
   has_many :shs_shares, :class_name => 'SnsShare::Share', :as => :sharable, :dependent => :destroy
   has_many :sns_accounts, :class_name => 'SnsShare::Account', :through => :shs_shares, :source => :account
@@ -174,6 +175,10 @@ class GpArticle::Doc < ActiveRecord::Base
     end
 
     return rel
+  end
+
+  def public_comments
+    comments.public
   end
 
   def prev_edition
