@@ -1,0 +1,23 @@
+<h2><%= @content.name %> ： <%= "#{GpArticle::Comment.model_name.human}#{case action_name.to_sym
+                                                                         when :index; '一覧'
+                                                                         when :new;   '登録'
+                                                                         when :edit;  '編集'
+                                                                         end}" %></h2>
+
+<div class="actionMenu">
+  <%- if %w|show edit|.include?(action_name) -%>
+  <%= link_to '一覧', url_for(action: 'index') %>
+  <%- end -%>
+
+  <%- if %w|show|.include?(action_name) -%>
+    <span class="separator"></span>
+
+    <%- if @item.try(:editable?) -%>
+    <%= link_to '編集', url_for(action: 'edit') %>
+    <%- end -%>
+
+    <%- if @item.try(:deletable?) -%>
+    <%= link_to '削除', url_for(action: 'destroy'), :method => :delete, :confirm => '削除してよろしいですか？' %>
+    <%- end -%>
+  <%- end -%>
+</div>

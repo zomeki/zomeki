@@ -6,6 +6,7 @@ ja:
       gp_article/category_type: カテゴリタイプ
       gp_article/category: カテゴリ
       gp_article/tag: 関連ワード
+      gp_article/comment: コメント
     attributes:
       gp_article/doc:
         id: 記事番号
@@ -73,3 +74,13 @@ ja:
         date_style: 日付形式
         more_link_body: 一覧リンク文字
         more_link_url: 一覧リンクURL
+      gp_article/comment:
+        body: 内容
+        author_name: 投稿者名
+        author_email: 投稿者メールアドレス
+        author_url: 投稿者URL
+        posted_at: 受付日時
+        updated_at: 更新日時
+        state: 状態
+        remote_addr: IPアドレス
+        user_agent: ユーザーエージェント

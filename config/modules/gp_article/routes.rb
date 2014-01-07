@@ -26,6 +26,9 @@ ZomekiCMS::Application.routes.draw do
       resources :histories,
         :controller => 'admin/docs/histories', :only => [:index, :show]
     end
+    resources :comments, :only => [:index, :show, :edit, :update, :destroy],
+      :controller => 'admin/comments',
+      :path       => ':content/comments'
 
     ## nodes
     resources :node_docs,

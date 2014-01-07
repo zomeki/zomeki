@@ -1,0 +1,49 @@
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %></th>
+    <td><%= @item.doc.title %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :public_full_uri %></th>
+    <td><%= @item.doc.public_full_uri %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :author_name %></th>
+    <td><%= f.text_field :author_name, :style => 'width: 300px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :author_email %></th>
+    <td><%= f.text_field :author_email, :style => 'width: 300px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :author_url %></th>
+    <td><%= f.text_field :author_url, :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :remote_addr %></th>
+    <td><%= @item.remote_addr %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :user_agent %></th>
+    <td><%= @item.user_agent %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :body %></th>
+    <td><%= f.text_area :body, :size => '100x5' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :posted_at %></th>
+    <td><%= f.text_field :posted_at, :value => value_for_datetimepicker(f.object_name, :posted_at),
+                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  <%= enable_datetimepicker_script %>
+});
+<%- end -%>
