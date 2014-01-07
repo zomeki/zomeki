@@ -1,0 +1,67 @@
+<table class="show">
+  <tr>
+    <th>サイトURL</th>
+    <td>
+      <select name="site_url" id="site_url" style="width: 400px;">
+        <option></option>
+        <% Tool::Convert.all_site_urls.each do |site| -%>
+        <option <%= site == @site_url ? "selected=selected" : "" %>><%= site %></option>
+        <% end -%>
+      </select>
+    </td>
+  </tr>
+</table>
+
+<% if @site_url.present? %>
+<div class="navi">
+  <%= @full_path.gsub(@base_uri[0], @base_uri[1]) %>
+</div>
+<% end %>
+
+<div class="actionMenu">
+  <%
+    path    = (::File.dirname(@path) == '.') ? nil : ::File.dirname(@path)
+    parent  = path ? "#{tool_convert_file_list_path}/#{@site_url}/#{path}" : "#{tool_convert_file_list_path}/#{@site_url}"
+  %>
+  <%= link_to "上へ", parent if @path != "" && !params[:do] && @item.directory? %>
+</div>
+
+<table class="index directories">
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th>ファイル名</th>
+    <th style="width: 80px; text-align: right;">サイズ</th>
+    <th style="width: 120px; text-align: center;">更新日時</th>
+  </tr>
+  
+  <% @dirs.each do |item| %>
+  <tr class="directory">
+    <td style="text-align: center;"><%= link_to :show, "#{tool_convert_file_list_path}/#{item.site_url}/#{item.path}?do=show" %> </td>
+    <td class="name"><%= link_to h(item.name), "#{tool_convert_file_list_path}/#{item.site_url}/#{item.path}" %></td>
+    <td> </td>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+  </tr>
+  <% end %>
+  
+  <% @files.each do |item| %>
+  <tr class="file">
+    <td style="text-align: center;"><%= link_to :show, "#{tool_convert_file_list_path}/#{item.site_url}/#{item.path}?do=show" %> </td>
+    <td class="name"><%= link_to h(item.name), "#{tool_convert_file_list_path}/#{item.site_url}/#{item.path}" %></td>
+    <td style="text-align: right;"><%= number_format item.size(:kb) %> KB</td>
+    <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  (function () {
+    $("#site_url").change(function(){
+      $( "#site_url option:selected" ).each(function() {
+        window.location = "<%= "#{tool_convert_file_list_path}/" %>" + $(this).text();
+        return false;
+      });
+    });
+  })();
+});
+<%- end -%>

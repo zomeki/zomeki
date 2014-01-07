@@ -1,0 +1,22 @@
+<%= form_for :item  do |f| %>
+
+<%# error_messages_for :item %>
+
+<table class="show">
+  <tr>
+    <th>サイトURL<%# @item.locale(:site_url) %></th>
+    <td>
+      <%= f.select :site_url, Tool::Convert.all_site_urls.collect {|s| [ s, s ] }, { include_blank: true }, {style: "width: 400px;"} %>
+    </td>
+  </tr>
+  <tr>
+    <th>記事コンテンツ<%# @item.locale(:content_id) %></th>
+    <td>
+      <%= f.select :content_id, Cms::Content.order("id ASC").all.collect {|c| [ c.name, c.id ] }, { include_blank: true }, {style: "width: 400px;"} %>
+    </td>
+  </tr>
+</table>
+
+<%= submit "書き込み" %>
+
+<% end %>
