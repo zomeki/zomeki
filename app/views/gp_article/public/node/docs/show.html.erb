@@ -45,7 +45,7 @@ end) %></div>
 
 <%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
-<%- if @content.blog_functions_available? -%>
+<%- if @content.blog_functions[:comment] -%>
 <%= render 'comments', item: @item %>
 <%- end -%>
 
