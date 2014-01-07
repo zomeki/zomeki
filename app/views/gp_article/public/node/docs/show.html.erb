@@ -45,6 +45,10 @@ end) %></div>
 
 <%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
+<%- if @content.blog_functions_available? -%>
+<%= render 'comments', item: @item %>
+<%- end -%>
+
 <%- if @item.links_in_body.any?{|l| l[:url] =~ /\.pdf$/i } -%>
 <div class="adobeReader">
   <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>

@@ -1,0 +1,16 @@
+<%- unless item.public_comments.empty? -%>
+<div class="comments">
+  <h2>コメント</h2>
+  <div class="commentsBody">
+    <%- item.public_comments.each do |comment| -%>
+    <div class="comment">
+      <div class="body"><%=simple_format comment.body %></div>
+      <div class="commentNavi">
+        <span class="author"><%= comment.author_name %></span>
+        <span class="date"><%=l comment.updated_at %></span>
+      </div>
+    </div>
+    <%- end -%>
+  </div>
+</div>
+<%- end -%>
