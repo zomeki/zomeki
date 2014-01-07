@@ -1,0 +1,11 @@
+<%= form_for :item, :html => {:method => :post} do |f| %>
+  <table class="show">
+    <tr>
+      <th>サイトURL</th>
+      <td>
+        <%= f.text_field :site_url, {:class => "id", :style => "width: 400px;"} %>
+        <%= f.submit "実行" %>
+      </td>
+    </tr>
+  </table>
+<% end -%>
