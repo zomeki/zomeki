@@ -52,5 +52,6 @@ ZomekiCMS::Application.routes.draw do
     match 'node_docs/:name/file_contents/:basename.:extname' => 'public/node/docs#file_content', :format => false
     match 'node_docs/:name/preview/:id(/index)' => 'public/node/docs#show'
     match 'node_docs/:name/preview/:id/file_contents/:basename.:extname' => 'public/node/docs#file_content', :format => false
+    post 'node_docs/:name/comments' => 'public/node/comments#create', :format => false
   end
 end

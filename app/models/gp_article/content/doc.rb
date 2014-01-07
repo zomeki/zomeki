@@ -197,6 +197,12 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value(:blog_functions) == 'enabled'
   end
 
+  def blog_functions
+    {comment: setting_extra_value(:blog_functions, :comment) == 'enabled',
+     comment_open: setting_extra_value(:blog_functions, :comment_open) == 'immediate',
+     comment_notification_mail: setting_extra_value(:blog_functions, :comment_notification_mail) == 'enabled'}
+  end
+
   private
 
   def set_default_settings

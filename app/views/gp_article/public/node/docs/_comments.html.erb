@@ -12,5 +12,32 @@
     </div>
     <%- end -%>
   </div>
+
+  <h2>コメントの投稿</h2>
+  <%= form_tag "#{item.public_uri}comments", class: 'search' do -%>
+  <div class="commentPost">
+    <table>
+      <tr>
+        <th><%= label_tag 'comment[author_name]', '名前' %></th>
+        <td><%= text_field_tag 'comment[author_name]', nil, :style => 'width: 300px;' %></td>
+      </tr>
+      <tr>
+        <th><%= label_tag 'comment[author_email]', 'メールアドレス' %></th>
+        <td><%= text_field_tag 'comment[author_email]', nil, :style => 'width: 300px;' %></td>
+      </tr>
+      <tr>
+        <th><%= label_tag 'comment[author_url]', 'ホームページ' %></th>
+        <td><%= text_field_tag 'comment[author_url]', nil, :style => 'width: 500px;' %></td>
+      </tr>
+      <tr>
+        <th><%= label_tag 'comment[body]', 'コメント' %></th>
+        <td><%= text_area_tag 'comment[body]', nil, size: '100x5' %></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する', data: {confirm: '送信してもよろしいですか？'} %></td>
+      </tr>
+    </table>
+  </div>
+  <%- end -%>
 </div>
 <%- end -%>
