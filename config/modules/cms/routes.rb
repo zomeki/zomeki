@@ -130,6 +130,11 @@ ZomekiCMS::Application.routes.draw do
     match 'tool_rebuild' => 'admin/tool/rebuild#index', as: 'tool_rebuild'
     match 'tool_search' => 'admin/tool/search#index', as: 'tool_search'
     match 'tool_link_check' => 'admin/tool/link_check#index', as: 'tool_link_check'
+    match 'tool_convert' => 'admin/tool/convert#index', as: 'tool_convert'
+    match "tool_convert_file_list(/:site_url(/*path))" => "admin/tool/convert#file_list",
+      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }
+    match "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting'
+    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site'
   end
 
   ## public

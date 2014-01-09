@@ -43,7 +43,10 @@ module DocHelper
       image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
       }
 
-    return doc_style.gsub(/@title@?/, contents[:title])
+    if Page.mobile?
+      contents[:title]
+    else
+      doc_style.gsub(/@title@?/, contents[:title])
                .gsub(/@subtitle@?/, contents[:subtitle])
                .gsub(/@publish_date@?/, contents[:publish_date])
                .gsub(/@update_date@?/, contents[:update_date])
@@ -52,5 +55,6 @@ module DocHelper
                .gsub(/@category_link@?/, contents[:category_link])
                .gsub(/@category@?/, contents[:category])
                .gsub(/@image@?/, contents[:image]).html_safe
+    end
   end
 end

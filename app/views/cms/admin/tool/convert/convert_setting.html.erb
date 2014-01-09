@@ -1,0 +1,34 @@
+<%= form_for :item  do |f| %>
+
+<%= error_messages_for :item %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:site_url) %></th>
+    <td>
+      <%= f.select :site_url, Tool::Convert.all_site_urls.collect {|s| [ s, s ] }, { include_blank: true }, {id: "site_url", style: "width: 400px;"} %>
+    </td>
+  </tr>
+</table>
+
+<div class="navi"><%= @item.locale(:title_tag) %></div>
+<%= f.text_area :title_tag, {cols: 80, rows: 3} %>
+<div class="navi"><%= @item.locale(:body_tag) %></div>
+<%= f.text_area :body_tag, {cols: 80, rows: 5} %>
+
+<%= submit "書き込み" %>
+
+<% end %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  (function () {
+    $("#site_url").change(function(){
+      $( "#site_url option:selected" ).each(function() {
+        window.location = "<%= "#{tool_convert_setting_path}?item[site_url]=" %>" + $(this).text();
+        return false;
+      });
+    });
+  })();
+});
+<%- end -%>

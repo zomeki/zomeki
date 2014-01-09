@@ -3,6 +3,7 @@ ja:
     models:
       cms/content: "コンテンツ"
       cms/site: "サイト"
+      tool/convert_setting: "変換情報"
 
     attributes:
       cms/concept:
@@ -162,3 +163,7 @@ ja:
         fax: ファクシミリ
         email: メールアドレス
 
+      tool/convert_setting:
+        site_url: サイトURL
+        title_tag: タイトル対象タグ
+        body_tag: 本文対象タグ
