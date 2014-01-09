@@ -1,14 +1,6 @@
 class GpArticle::Comment < ActiveRecord::Base
   include Sys::Model::Base
 
-  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
-
-  belongs_to :doc
-  validates_presence_of :doc_id
-
-  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
-  validates_presence_of :state
-
   attr_accessible :state,
                   :author_name,
                   :author_email,
@@ -16,10 +8,20 @@ class GpArticle::Comment < ActiveRecord::Base
                   :body,
                   :posted_at
 
+  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+
+  scope :public, where(state: 'public')
+
+  belongs_to :doc
+  validates_presence_of :doc_id
+
+  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
+  validates_presence_of :state
+
   after_initialize :set_defaults
   after_save :set_display_attributes
 
-  scope :public, where(state: 'public')
+  validates :author_name, :presence => true, :length => {maximum: 200}
 
   def editable?
     doc.editable?
