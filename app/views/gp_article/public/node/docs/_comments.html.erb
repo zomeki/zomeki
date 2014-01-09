@@ -14,11 +14,11 @@
   </div>
 
   <h2>コメントの投稿</h2>
-  <%= form_tag "#{item.public_uri}comments", class: 'search' do -%>
+  <%= form_tag "#{item.public_uri}comments/confirm" do -%>
   <div class="commentPost">
     <table>
       <tr>
-        <th><%= label_tag 'comment[author_name]', '名前' %></th>
+        <th><%= label_tag 'comment[author_name]', '名前' %> <span class="note">※</span></th>
         <td><%= text_field_tag 'comment[author_name]', nil, :style => 'width: 300px;' %></td>
       </tr>
       <tr>
@@ -34,7 +34,7 @@
         <td><%= text_area_tag 'comment[body]', nil, size: '100x5' %></td>
       </tr>
       <tr>
-        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する', data: {confirm: '送信してもよろしいですか？'} %></td>
+        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する' %></td>
       </tr>
     </table>
   </div>
