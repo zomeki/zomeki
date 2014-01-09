@@ -1564,6 +1564,29 @@ ActiveRecord::Schema.define(:version => 20140107013000) do
 
   add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
 
+  create_table "tool_convert_docs", :force => true do |t|
+    t.string   "name"
+    t.string   "doc_class"
+    t.string   "file_path"
+    t.string   "uri_path"
+    t.string   "host"
+    t.text     "title"
+    t.datetime "published_at"
+    t.text     "body",         :limit => 2147483647
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+  end
+
+  create_table "tool_convert_settings", :force => true do |t|
+    t.string   "site_url"
+    t.text     "title_tag"
+    t.text     "body_tag"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "tool_convert_settings", ["site_url"], :name => "index_tool_convert_settings_on_site_url"
+
   create_table "tool_simple_captcha_data", :force => true do |t|
     t.string   "key",        :limit => 40
     t.string   "value",      :limit => 6
