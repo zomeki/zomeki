@@ -36,6 +36,10 @@ class GpArticle::Content::Doc < Cms::Content
     Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Doc').order(:id).first
   end
 
+  def public_archives_node
+    Cms::Node.where(state: 'public', content_id: id, model: 'GpArticle::Archive').order(:id).first
+  end
+
 #TODO: DEPRECATED
   def doc_node
     return @doc_node if @doc_node
