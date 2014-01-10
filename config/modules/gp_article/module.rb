@@ -9,4 +9,5 @@ Cms::Lib::Modules::ModuleSet.draw :gp_article, '汎用記事' do |mod|
   ## pieces
   mod.piece :docs, '汎用記事一覧'
   mod.piece :recent_tabs, '新着タブ'
+  mod.piece :monthly_archives, '月間アーカイブ'
 end
