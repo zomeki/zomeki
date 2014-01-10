@@ -60,5 +60,7 @@ ZomekiCMS::Application.routes.draw do
     get 'node_docs/:name/comments/new' => 'public/node/comments#new', :format => false
     post 'node_docs/:name/comments/confirm' => 'public/node/comments#confirm', :format => false
     post 'node_docs/:name/comments' => 'public/node/comments#create', :format => false
+    get 'node_archives/:year/:month(/index)' => 'public/node/archives#index'
+    get 'node_archives/:year(/index)' => 'public/node/archives#index'
   end
 end
