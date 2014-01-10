@@ -43,6 +43,8 @@ ZomekiCMS::Application.routes.draw do
       resources :tabs,
         :controller => 'admin/piece/recent_tabs/tabs'
     end
+    resources :piece_monthly_archives,
+      :controller => 'admin/piece/monthly_archives'
   end
 
   ## public
