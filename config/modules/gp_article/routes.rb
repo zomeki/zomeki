@@ -34,6 +34,9 @@ ZomekiCMS::Application.routes.draw do
     resources :node_docs,
       :controller => 'admin/node/docs',
       :path       => ':parent/node_docs'
+    resources :node_archives,
+      :controller => 'admin/node/archives',
+      :path       => ':parent/node_archives'
 
     ## pieces
     resources :piece_docs,
