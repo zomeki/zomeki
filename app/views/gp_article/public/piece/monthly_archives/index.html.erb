@@ -1,0 +1,10 @@
+<%- unless @monthly_num_docs.empty? -%>
+<ul>
+  <%- @monthly_num_docs.each do |key, value| -%>
+  <li>
+    <%= key.split('-').join('年') %>月
+    <%= "(#{value})" if @piece.num_docs_visible? %>
+  </li>
+  <%- end -%>
+</ul>
+<%- end -%>

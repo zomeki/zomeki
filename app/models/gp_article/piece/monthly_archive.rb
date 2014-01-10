@@ -12,6 +12,6 @@ class GpArticle::Piece::MonthlyArchive < Cms::Piece
   end
 
   def num_docs_visible?
-    setting_value(:num_docs_visibility) == 'visible'
+    setting_value(:num_docs_visibility) != 'hidden'
   end
 end
