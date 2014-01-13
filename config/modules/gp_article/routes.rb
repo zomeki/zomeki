@@ -48,6 +48,8 @@ ZomekiCMS::Application.routes.draw do
     end
     resources :piece_monthly_archives,
       :controller => 'admin/piece/monthly_archives'
+    resources :piece_comments,
+      :controller => 'admin/piece/comments'
   end
 
   ## public

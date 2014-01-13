@@ -207,6 +207,20 @@ class GpArticle::Content::Doc < Cms::Content
      comment_notification_mail: setting_extra_value(:blog_functions, :comment_notification_mail) == 'enabled'}
   end
 
+  def comments
+    rel = GpArticle::Comment.joins(:doc)
+
+    docs = GpArticle::Doc.arel_table
+    rel = rel.where(docs[:content_id].eq(self.id))
+
+    return rel
+  end
+
+  def public_comments
+    docs = GpArticle::Doc.arel_table
+    comments.where(docs[:state].eq('public')).public
+  end
+
   private
 
   def set_default_settings
