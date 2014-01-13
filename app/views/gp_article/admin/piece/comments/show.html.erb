@@ -1,0 +1,14 @@
+<%= render(layout: 'gp_article/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :docs_number %></th>
+    <td><%= @item.setting_value(:docs_number) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :authors_visibility %></th>
+    <td><%= @item.authors_visibility_text %></td>
+  </tr>
+</table>
+<%- end -%>

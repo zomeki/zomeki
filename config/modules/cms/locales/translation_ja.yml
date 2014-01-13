@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       cms/content: "コンテンツ"
+      cms/piece: "ピース"
       cms/site: "サイト"
       tool/convert_setting: "変換情報"
 
