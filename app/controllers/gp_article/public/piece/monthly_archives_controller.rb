@@ -9,6 +9,6 @@ class GpArticle::Public::Piece::MonthlyArchivesController < Sys::Controller::Pub
 
   def index
     @monthly_num_docs = @piece.content.public_docs
-                              .group("DATE_FORMAT(display_published_at,'%Y-%m')").count
+                              .group("DATE_FORMAT(display_published_at,'%Y-%m')").order(:display_published_at).count
   end
 end
