@@ -1,5 +1,5 @@
-<%- unless item.public_comments.empty? -%>
 <div class="comments">
+  <%- unless item.public_comments.empty? -%>
   <h2>コメント</h2>
   <div class="commentsBody">
     <%- item.public_comments.each do |comment| -%>
@@ -12,6 +12,7 @@
     </div>
     <%- end -%>
   </div>
+  <%- end -%>
 
   <h2>コメントの投稿</h2>
   <%= form_tag "#{item.public_uri}comments/confirm" do -%>
@@ -40,4 +41,3 @@
   </div>
   <%- end -%>
 </div>
-<%- end -%>

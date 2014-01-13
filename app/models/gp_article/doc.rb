@@ -773,8 +773,11 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def replace_public
-    return unless state_public?
-    prev_edition.try(:update_column, :state, 'archived')
+    return if !state_public? || prev_edition.nil? || prev_edition.state_archived?
+
+    prev_edition.update_column(:state, 'archived')
+    self.comments = prev_edition.comments
+
     if (pe = prev_editions).size > 4 # Include self
       pe.last.destroy
     end
