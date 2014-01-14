@@ -32,6 +32,7 @@ class GpArticle::Public::Node::CommentsController < Cms::Controller::Public::Bas
 
     if simple_captcha_valid?
       if @comment.save
+        CommonMailer.commented_notification(@comment).deliver
         redirect_to @doc.public_full_uri
       else
         render :new

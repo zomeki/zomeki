@@ -81,4 +81,15 @@ class CommonMailer < ActionMailer::Base
          to: to,
          subject: "#{content.name}（#{content.site.name}）：引き戻しメール"
   end
+
+  def commented_notification(comment)
+    @doc = comment.doc
+
+    from = comment.author_name
+    from << " <#{comment.author_email}>" if comment.author_email.present?
+
+    mail from: from,
+         to: @doc.creator.user.email,
+         subject: "#{@doc.content.name}（#{@doc.content.site.name}）：コメント通知メール"
+  end
 end
