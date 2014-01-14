@@ -3,6 +3,7 @@ ja:
     models:
       gp_category/category_type: カテゴリタイプ
       gp_category/category: カテゴリ
+      gp_category/template: テンプレート
     attributes:
       gp_category/category_type:
         name: カテゴリタイプID
@@ -23,6 +24,11 @@ ja:
         docs_order: 記事表示順
       gp_category/categorization:
         sort_no: 並び順
+      gp_category/template:
+        name: テンプレートID
+        title: テンプレート名
+        body: テンプレート
+        updated_at: 更新日時
       gp_category/piece/doc:
         list_count: 表示件数
         date_style: 日付形式
