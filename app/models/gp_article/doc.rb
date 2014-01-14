@@ -661,6 +661,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
     self.share_to_sns_with = SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with) && self.share_to_sns_with.nil?
+    self.body_more_link_text ||= '続きを読む' if self.has_attribute?(:body_more_link_text)
   end
 
   def set_display_attributes
