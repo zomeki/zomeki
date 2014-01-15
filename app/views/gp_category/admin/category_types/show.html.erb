@@ -32,6 +32,10 @@
 <table class="show">
   <%= concept_view @item, :container => :tr %>
   <%= layout_view @item, :container => :tr %>
+  <tr>
+    <th><%= @item.class.human_attribute_name :template_id %></th>
+    <td><%= @item.template.try(:title) %></td>
+  </tr>
 </table>
 
 <%= creator_view @item %>
