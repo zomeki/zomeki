@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140115041809) do
+ActiveRecord::Schema.define(:version => 20140115044318) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -846,6 +846,7 @@ ActiveRecord::Schema.define(:version => 20140115041809) do
     t.string   "sitemap_state"
     t.string   "docs_order"
     t.integer  "template_id"
+    t.integer  "internal_category_type_id"
   end
 
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
