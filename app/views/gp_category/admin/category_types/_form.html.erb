@@ -39,6 +39,10 @@
     <th><%= f.label :template_id %></th>
     <td><%= f.collection_select :template_id, @content.templates, :id, :title, include_blank: true %></td>
   </tr>
+  <tr>
+    <th><%= f.label :internal_category_type_id %></th>
+    <td><%= f.collection_select :internal_category_type_id, @content.category_types.where('id != ?', @item.id), :id, :title, include_blank: true %></td>
+  </tr>
 </table>
 
 <%= creator_form f %>

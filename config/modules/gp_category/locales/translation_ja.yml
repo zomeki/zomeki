@@ -15,6 +15,7 @@ ja:
         sitemap_state: サイトマップ
         docs_order: 記事表示順
         template_id: テンプレート
+        internal_category_type_id: ネストカテゴリタイプ
       gp_category/category:
         name: カテゴリID
         title: カテゴリ名
