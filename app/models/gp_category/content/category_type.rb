@@ -40,6 +40,10 @@ class GpCategory::Content::CategoryType < Cms::Content
     setting_value(:date_style).to_s
   end
 
+  def time_style
+    setting_value(:time_style).to_s
+  end
+
   def category_type_style
     setting_value(:category_type_style).to_s
   end
@@ -93,6 +97,7 @@ class GpCategory::Content::CategoryType < Cms::Content
   def set_default_settings
     in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
+    in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:feed] = 'enabled' unless setting_value(:feed)
   end
 end

@@ -9,7 +9,7 @@
     <%- end -%>
     <ul>
       <%- @docs.each do |doc| -%>
-      <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_type_doc_style, date_style: @content.date_style %></li>
+      <li><%= doc_replace(doc, @content.category_type_doc_style, @content.date_style, @content.time_style) %></li>
       <%- end -%>
     </ul>
   </div>

@@ -10,7 +10,7 @@
     <div class="docs">
       <ul>
         <%- @docs.each do |doc| -%>
-        <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style, @content.time_style) %></li>
         <%- end -%>
       </ul>
     </div>
@@ -29,7 +29,7 @@
     <div class="docs">
       <ul>
         <%- child.public_docs.limit(@content.category_docs_number).each do |doc| -%>
-        <li><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.category_doc_style, date_style: @content.date_style %></li>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style, @content.time_style) %></li>
         <%- end -%>
       </ul>
     </div>
