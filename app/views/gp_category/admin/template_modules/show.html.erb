@@ -1,0 +1,38 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :module_type %></th>
+    <td><%= @item.module_type_text %></td>
+  </tr>
+</table>
+
+<p class="form">記事表示形式</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :wrapper_tag %></th>
+    <td><%= @item.wrapper_tag_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :doc_style %></th>
+    <td>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+      <pre><code><%= @item.doc_style %></code></pre>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :num_docs %></th>
+    <td class="number"><%= @item.num_docs %></td>
+  </tr>
+</table>
+
+<%= render 'doc_style_tags' %>

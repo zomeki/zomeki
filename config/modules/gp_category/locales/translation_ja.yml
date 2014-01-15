@@ -4,6 +4,7 @@ ja:
       gp_category/category_type: カテゴリタイプ
       gp_category/category: カテゴリ
       gp_category/template: テンプレート
+      gp_category/template_module: モジュール
     attributes:
       gp_category/category_type:
         name: カテゴリタイプID
@@ -28,6 +29,14 @@ ja:
         name: テンプレートID
         title: テンプレート名
         body: テンプレート
+        updated_at: 更新日時
+      gp_category/template_module:
+        name: モジュールID
+        title: モジュール名
+        module_type: モジュール種別
+        wrapper_tag: タグ
+        doc_style: 記事表示形式
+        num_docs: 表示件数
         updated_at: 更新日時
       gp_category/piece/doc:
         list_count: 表示件数
