@@ -8,7 +8,7 @@
   <div class="docs">
     <ul>
       <%- @docs.each do |doc| -%>
-      <li class="<%= doc.content.code %>"><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @content.doc_doc_style, date_style: @content.date_style %></li>
+      <li class="<%= doc.content.code %>"><%= doc_replace(doc, @content.doc_doc_style, @content.date_style, @content.time_style) %></li>
       <%- end -%>
     </ul>
   </div>

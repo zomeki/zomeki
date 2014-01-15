@@ -1,7 +1,7 @@
 <%- unless @docs.empty? -%>
 <ul class="docs">
   <%- @docs.each do |doc| -%>
-  <li class="<%= doc.content.code %>"><%= render 'gp_category/public/shared/doc', doc: doc, doc_style: @piece.doc_style, date_style: @piece.date_style %></li>
+  <li class="<%= doc.content.code %>"><%= doc_replace(doc, @piece.doc_style, @piece.date_style) %></li>
   <%- end -%>
 </ul>
 <%- if @piece.more_link_body.present? && @piece.more_link_url.present? -%>

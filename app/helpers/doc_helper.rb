@@ -1,6 +1,6 @@
 # encoding: utf-8
 module DocHelper
-  def doc_replace(doc, doc_style, date_style)
+  def doc_replace(doc, doc_style, date_style, time_style='')
 
     link_to_options = link_to_doc_options(doc)
 
@@ -42,11 +42,24 @@ module DocHelper
                      ''
                    end
 
+    publish_time = if (dpa = doc.display_published_at)
+                     content_tag(:span, dpa.strftime(time_style), class: 'publish_time')
+                   else
+                     ''
+                   end
+    update_time = if (dua = doc.display_updated_at)
+                    content_tag(:span, dua.strftime(time_style), class: 'update_time')
+                  else
+                    ''
+                  end
+
     contents = {
       title: doc_title.blank? ? '' : content_tag(:span, doc_title, class: 'title'),
       subtitle: doc.subtitle.blank? ? '' : content_tag(:span, doc.subtitle, class: 'subtitle'),
       publish_date: publish_date,
       update_date: update_date,
+      publish_time: publish_time,
+      update_time: update_time,
       summary: doc.summary.blank? ? '' : content_tag(:span, doc.summary, class: 'summary'),
       group: doc.creator.blank? ? '' : content_tag(:span, doc.creator.group.name, class: 'group'),
       category_link: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c| link_to c.title, c.public_uri }.join(', ').html_safe, class: 'category'),
@@ -69,6 +82,8 @@ module DocHelper
         '@subtitle@' => contents[:subtitle],
         '@publish_date@' => contents[:publish_date],
         '@update_date@' => contents[:update_date],
+        '@publish_time@' => contents[:publish_time],
+        '@update_time@' => contents[:update_time],
         '@summary@' => contents[:summary],
         '@group@' => contents[:group],
         '@category_link@' => contents[:category_link],

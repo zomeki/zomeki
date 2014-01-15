@@ -23,7 +23,7 @@
     <%- end -%>
     <ul>
       <%- @docs.each do |doc| -%>
-      <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @content.list_style, date_style: @content.date_style %></li>
+      <li><%= doc_replace(doc, @content.list_style, @content.date_style, @content.time_style) %></li>
       <%- end -%>
     </ul>
   </section>

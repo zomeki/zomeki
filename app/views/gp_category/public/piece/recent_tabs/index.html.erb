@@ -16,7 +16,7 @@ var docTabs<%= @piece.id %> = new ArticleDocTabs('<%= @piece.css_id %>');
     <%- @tabs.each do |tab| -%>
     <ul class="<%= tab[:name] %>"<%= ' style="display: none;"'.html_safe unless tab[:current] %>>
       <%- tab[:docs].each do |doc| -%>
-      <li><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %></li>
+      <li><%= doc_replace(doc, @piece.list_style, @piece.date_style) %></li>
       <%- end -%>
     </ul>
     <%- end -%>
