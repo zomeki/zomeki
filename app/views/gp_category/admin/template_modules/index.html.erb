@@ -1,0 +1,19 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= GpCategory::TemplateModule.human_attribute_name :name %></th>
+    <th><%= GpCategory::TemplateModule.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 150px;"><%= GpCategory::TemplateModule.human_attribute_name :updated_at %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_category_template_module_path(content: @content, id: item.id) %></td>
+    <td><%= item.name %></td>
+    <td><%= item.title %></td>
+    <td style="text-align: center;"><%=l item.updated_at %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

@@ -26,6 +26,9 @@ ZomekiCMS::Application.routes.draw do
     resources :templates,
       :controller => 'admin/templates',
       :path       => ':content/templates'
+    resources :template_modules,
+      :controller => 'admin/template_modules',
+      :path       => ':content/template_modules'
 
     ## nodes
     resources :node_category_types,
