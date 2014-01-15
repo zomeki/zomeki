@@ -13,28 +13,42 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     @category = category_type.find_category_by_path_from_root_category(params[:category_names])
     return http_error(404) unless @category.try(:public?)
 
-    Page.current_item = @category
-    Page.title = @category.title
-
-    per_page = (@more ? 30 : @content.category_docs_number)
-
     @docs = @category.public_docs
+
     if params[:format].in?('rss', 'atom')
       @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
       @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
       return render_feed(@docs)
     end
-    @docs = @docs.paginate(page: params[:page], per_page: per_page)
-    return http_error(404) if @docs.current_page > @docs.total_pages
 
-    if Page.mobile?
-      render :show_mobile
+    Page.current_item = @category
+    Page.title = @category.title
+
+    if (template = category_type.template)
+      rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
+          tm = @content.template_modules.find_by_name($1)
+          next unless tm
+
+          docs = @docs.paginate(page: params[:page], per_page: tm.num_docs)
+          view_context.try(tm.module_type, category: @category, template_module: tm, docs: docs)
+        end
+
+      render text: rendered
     else
-      if @more
-        render 'more'
+      per_page = (@more ? 30 : @content.category_docs_number)
+
+      @docs = @docs.paginate(page: params[:page], per_page: per_page)
+      return http_error(404) if @docs.current_page > @docs.total_pages
+
+      if Page.mobile?
+        render :show_mobile
       else
-        if (style = @content.category_style).present?
-          render style
+        if @more
+          render 'more'
+        else
+          if (style = @content.category_style).present?
+            render style
+          end
         end
       end
     end
