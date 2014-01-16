@@ -13,11 +13,11 @@ module DocHelper
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
 
     doc_image = if image_file
-                  image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode image_file.name}")
+                  image_tag("#{doc.public_uri}file_contents/#{url_encode image_file.name}")
                 else
                   unless (img_tags = Nokogiri::HTML.parse(doc.body).css('img[src^="file_contents/"]')).empty?
                     filename = File.basename(img_tags.first.attributes['src'].value)
-                    image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode filename}")
+                    image_tag("#{doc.public_uri}file_contents/#{url_encode filename}")
                   else
                     ''
                   end
@@ -96,5 +96,9 @@ module DocHelper
         '@comment_count@' => contents[:comment_count],
       }).html_safe
     end
+  end
+
+  def file_path_expanded_body(doc)
+    doc.body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? doc.public_uri : doc.preview_uri}file_contents/))
   end
 end
