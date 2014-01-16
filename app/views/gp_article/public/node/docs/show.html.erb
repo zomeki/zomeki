@@ -14,11 +14,14 @@
 <div class="body"><%=raw (
 unless Page.mobile?
   body = @item.template ? template_body(@item.template, @item.template_values, @item.files) : @item.body.to_s 
-  body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? @item.public_uri
-                                                                                  : @item.preview_uri}file_contents/))
+  body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? @item.public_uri : @item.preview_uri}file_contents/))
 else
   @item.body_for_mobile
 end) %></div>
+
+<%- if @content.blog_functions_available? -%>
+<div class="body"><%=raw @item.body_more %></div>
+<%- end -%>
 
 <%- unless Page.mobile? -%>
 <%= render 'cms/public/_partial/maps/view', item: @item %>
