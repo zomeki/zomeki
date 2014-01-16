@@ -13,11 +13,11 @@ module DocHelper
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
 
     doc_image = if image_file
-                  image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode image_file.name}")
+                  image_tag("#{doc.public_uri}file_contents/#{url_encode image_file.name}")
                 else
                   unless (img_tags = Nokogiri::HTML.parse(doc.body).css('img[src^="file_contents/"]')).empty?
                     filename = File.basename(img_tags.first.attributes['src'].value)
-                    image_tag("#{doc.content.public_node.public_uri}#{doc.name}/file_contents/#{url_encode filename}")
+                    image_tag("#{doc.public_uri}file_contents/#{url_encode filename}")
                   else
                     ''
                   end
@@ -66,8 +66,8 @@ module DocHelper
       category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.pluck(:title).join(', '), class: 'category'),
       image_link: doc_image_link.blank? ? '' : content_tag(:span, doc_image_link, class: 'image'),
       image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
-      body_beginning: doc.body.blank? ? '' : content_tag(:span, doc.body.html_safe, class: 'body'),
-      body: "#{doc.body}#{doc.body_more}".blank? ? '' : content_tag(:span, "#{doc.body}#{doc.body_more}".html_safe, class: 'body'),
+      body_beginning: doc.body.blank? ? '' : content_tag(:span, file_path_expanded_body(doc).html_safe, class: 'body'),
+      body: "#{doc.body}#{doc.body_more}".blank? ? '' : content_tag(:span, "#{file_path_expanded_body(doc)}#{doc.body_more}".html_safe, class: 'body'),
       user: doc.creator.user.name.blank? ? '' : content_tag(:span, doc.creator.user.name, class: 'user'),
       comment_count: content_tag(:span, link_to(doc.comments.count, "#{doc.public_uri}#comments"), class: 'comment_count'),
       }
@@ -96,5 +96,9 @@ module DocHelper
         '@comment_count@' => contents[:comment_count],
       }).html_safe
     end
+  end
+
+  def file_path_expanded_body(doc)
+    doc.body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? doc.public_uri : doc.preview_uri}file_contents/))
   end
 end
