@@ -69,7 +69,7 @@ module DocHelper
       body_beginning: doc.body.blank? ? '' : content_tag(:span, doc.body.html_safe, class: 'body'),
       body: "#{doc.body}#{doc.body_more}".blank? ? '' : content_tag(:span, "#{doc.body}#{doc.body_more}".html_safe, class: 'body'),
       user: doc.creator.user.name.blank? ? '' : content_tag(:span, doc.creator.user.name, class: 'user'),
-      comment_count: content_tag(:span, doc.comments.count, class: 'comment_count'),
+      comment_count: content_tag(:span, link_to(doc.comments.count, "#{doc.public_uri}#comments"), class: 'comment_count'),
       }
 
     if Page.mobile?
