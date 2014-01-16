@@ -31,15 +31,17 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
   def new
     return error_auth unless Core.user.root? || Core.user.site_creatable?
 
+    @sns_apps = {}
+
     @item = Cms::Site.new({
       :state      => 'public',
     })
-
-    @sns_apps = {}
   end
   
   def create
     return error_auth unless Core.user.root? || Core.user.site_creatable?
+
+    @sns_apps = {}
 
     @item = Cms::Site.new(params[:item])
     @item.state = 'public'
