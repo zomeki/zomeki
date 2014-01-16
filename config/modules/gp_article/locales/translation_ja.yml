@@ -14,6 +14,7 @@ ja:
         public_full_uri: 記事URL
         title: タイトル
         body: 内容
+        body_more: 追記
         updated_at: 更新日時
         display_published_at: 公開日時
         href: リンクURL
