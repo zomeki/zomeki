@@ -7,11 +7,6 @@ class GpArticle::Public::Piece::CommentsController < Sys::Controller::Public::Ba
   end
 
   def index
-    @comments = (case @item
-                 when GpArticle::Doc
-                   @item.public_comments
-                 else
-                   @piece.content.public_comments
-                 end).order('posted_at DESC')
+    @comments = @piece.content.public_comments.order('posted_at DESC')
   end
 end
