@@ -208,7 +208,8 @@ class GpArticle::Content::Doc < Cms::Content
   def blog_functions
     {comment: setting_extra_value(:blog_functions, :comment) == 'enabled',
      comment_open: setting_extra_value(:blog_functions, :comment_open) == 'immediate',
-     comment_notification_mail: setting_extra_value(:blog_functions, :comment_notification_mail) == 'enabled'}
+     comment_notification_mail: setting_extra_value(:blog_functions, :comment_notification_mail) == 'enabled',
+     footer_style: setting_extra_value(:blog_functions, :footer_style).to_s}
   end
 
   def comments

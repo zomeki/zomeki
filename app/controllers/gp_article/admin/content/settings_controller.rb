@@ -70,6 +70,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:comment] = params[:comment]
         extra_values[:comment_open] = params[:comment_open]
         extra_values[:comment_notification_mail] = params[:comment_notification_mail]
+        extra_values[:footer_style] = params[:footer_style]
       end
 
       @item.extra_values = extra_values
