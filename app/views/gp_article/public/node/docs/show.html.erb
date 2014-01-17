@@ -21,6 +21,7 @@ end) %></div>
 
 <%- if @content.blog_functions_available? -%>
 <div class="body"><%=raw @item.body_more %></div>
+<div class="footer"><%= doc_replace(@item, @content.blog_functions[:footer_style], @content.date_style, @content.time_style) %></div>
 <%- end -%>
 
 <%- unless Page.mobile? -%>
