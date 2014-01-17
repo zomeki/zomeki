@@ -20,13 +20,13 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
 
   def edit
     @item = GpArticle::Content::Setting.config(@content, params[:id])
-    @item.value = YAML.load(@item.value.presence || '[]') if [:check_boxes, :multiple_select].include?(@item.form_type)
+    @item.value = YAML.load(@item.value.presence || '[]') if @item.form_type.in?(:check_boxes, :multiple_select)
   end
 
   def update
     @item = GpArticle::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
-    if [:check_boxes, :multiple_select].include?(@item.form_type)
+    if @item.form_type.in?(:check_boxes, :multiple_select)
       @item.value = YAML.dump(case @item.value
                               when Hash; @item.value.keys
                               when Array; @item.value
@@ -34,9 +34,9 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
                               end)
     end
 
-    if ['gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting',
-        'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation',
-        'blog_functions'].include?(@item.name)
+    if @item.name.in?('gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting',
+                      'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation',
+                      'blog_functions')
       extra_values = @item.extra_values
 
       case @item.name
