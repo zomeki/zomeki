@@ -315,5 +315,12 @@ $(document).ready(function () {
       <%= radio_button_tag 'comment_notification_mail', 'disabled', @item.extra_values[:comment_notification_mail] == 'disabled' %><%= label_tag 'comment_notification_mail_disabled', '使用しない' %>
     </td>
   </tr>
+  <tr>
+    <th>フッター形式</th>
+    <td>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+      <%= text_area_tag :footer_style, @item.extra_values[:footer_style], size: '100x10' %>
+    </td>
+  </tr>
 </table>
 <%- end -%>

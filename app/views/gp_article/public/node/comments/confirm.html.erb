@@ -1,3 +1,5 @@
+<article class="contentGpArticleDoc">
+
 <div class="comments">
   <h2>コメントの投稿</h2>
   <%= form_for(@comment, as: 'comment', url: "#{@doc.public_uri}comments") do |f| -%>
@@ -34,3 +36,5 @@
   </div>
   <%- end -%>
 </div>
+
+<!-- end .contentGpArticleDoc --></article>

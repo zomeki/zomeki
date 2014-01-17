@@ -8,12 +8,12 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
   set_config :word_dictionary, :name => "本文/単語変換辞書",
     :form_type => :text, :lower_text => "CSV形式（例　対象文字,変換後文字 ）"
-  set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
-    :comment => I18n.t('comments.date_style').html_safe
-  set_config :wday_style, :name => "#{GpArticle::Doc.model_name.human}曜日形式",
-    :comment => I18n.t('comments.wday_style').html_safe
   set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :form_type => :text_area, :comment_upper => I18n.t('comments.doc_style').html_safe
+  set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
+    :comment => I18n.t('comments.date_style').html_safe
+  set_config :time_style, :name => "#{GpArticle::Doc.model_name.human}時間形式",
+    :comment => I18n.t('comments.time_style').html_safe
   set_config :feed, :name => "フィード",
     :options => GpArticle::Content::Doc::FEED_DISPLAY_OPTIONS,
     :form_type => :radio_buttons
@@ -98,6 +98,10 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     when 'feed'
       self.value = 'enabled' if value.blank?
       self.extra_values = { feed_docs_number: '10' } if extra_values.blank?
+    when 'blog_functions'
+      ev = self.extra_values
+      ev[:footer_style] = '投稿者：@user@ @publish_time@ コメント(@comment_count@) カテゴリ：@category_link@' if ev[:footer_style].nil?
+      self.extra_values = ev
     end
   end
 end
