@@ -95,6 +95,10 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value(:date_style).to_s
   end
 
+  def time_style
+    setting_value(:time_style).to_s
+  end
+
   def tag_related?
     setting_value(:tag_relation) == 'enabled'
   end
@@ -226,7 +230,7 @@ class GpArticle::Content::Doc < Cms::Content
   def set_default_settings
     in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
-    in_settings[:wday_style] = '%a' unless setting_value(:wday_style)
+    in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:display_dates] = ['published_at'] unless setting_value(:display_dates)
     in_settings[:calendar_relation] = CALENDAR_RELATION_OPTIONS.first.last unless setting_value(:calendar_relation)
     in_settings[:map_relation] = MAP_RELATION_OPTIONS.first.last unless setting_value(:map_relation)
