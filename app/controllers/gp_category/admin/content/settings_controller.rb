@@ -26,7 +26,7 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
     @item = GpCategory::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
 
-    if ['category_type_style', 'category_style', 'doc_style', 'feed'].include?(@item.name)
+    if @item.name.in?('category_type_style', 'category_style', 'doc_style', 'feed')
       extra_values = @item.extra_values
 
       case @item.name
