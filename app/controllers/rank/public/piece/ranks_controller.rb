@@ -27,9 +27,10 @@ class Rank::Public::Piece::RanksController < Sys::Controller::Public::Base
 
     select_col = @piece.ranking_target
     per_page   = @piece.display_count
+    exclusion  = @piece.content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
 
     rank_table = Rank::Rank.arel_table
-    @ranks = @piece.content.ranks.where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F')))).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
+    @ranks = @piece.content.ranks.where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F')))).where(rank_table[:page_path].not_in(exclusion)).select('*').select(rank_table[select_col].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
 
     render :text => '' if @ranks.empty?
   end
