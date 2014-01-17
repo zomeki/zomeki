@@ -98,6 +98,10 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     when 'feed'
       self.value = 'enabled' if value.blank?
       self.extra_values = { feed_docs_number: '10' } if extra_values.blank?
+    when 'blog_functions'
+      ev = self.extra_values
+      ev[:footer_style] = '投稿者：@user@ @publish_time@ コメント(@comment_count@) カテゴリ：@category_link@' if ev[:footer_style].nil?
+      self.extra_values = ev
     end
   end
 end
