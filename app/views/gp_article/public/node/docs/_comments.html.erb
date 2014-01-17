@@ -7,7 +7,10 @@
       <div class="body"><%=simple_format comment.body %></div>
       <div class="commentNavi">
         <span class="author"><%= comment.author_name %></span>
-        <span class="date"><%=l comment.posted_at %></span>
+        <span class="date">
+          <%= comment.posted_at.strftime(localize_wday(@content.date_style, comment.posted_at.wday)) %>
+          <%= comment.posted_at.strftime(@content.time_style) %>
+        </span>
       </div>
     </div>
     <%- end -%>
