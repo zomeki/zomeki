@@ -43,4 +43,14 @@ module GpCategory::GpCategoryHelper
       }.html_safe
     end
   end
+
+  def docs_2(category:, template_module:, docs:)
+    content_tag(:section, class: template_module.name) do
+      docs.inject(''){|tags, doc|
+        tags << content_tag(template_module.wrapper_tag) do
+            doc_replace(doc, template_module.doc_style, @content.date_style, @content.time_style)
+          end
+      }.html_safe
+    end
+  end
 end
