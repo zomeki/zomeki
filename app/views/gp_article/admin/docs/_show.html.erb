@@ -100,6 +100,14 @@
         <td><%= @item.categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
       </tr>
       <%- end -%>
+      <tr>
+        <th><%= @item.locale :feature_1 %></th>
+        <td><%= @item.feature_1_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :feature_2 %></th>
+        <td><%= @item.feature_2_text %></td>
+      </tr>
       <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
       <tr>
         <th><%= @item.locale :raw_tags %></th>

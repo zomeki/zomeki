@@ -41,6 +41,8 @@ ja:
         og_image: 画像（添付ファイル名）
         template_id: テンプレート
         body_more_link_text: 追記リンク表記
+        feature_1: 新着記事表示
+        feature_2: 記事表示
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
         inquiries/tel: 連絡先（電話番号）
