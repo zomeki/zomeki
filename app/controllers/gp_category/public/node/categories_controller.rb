@@ -14,7 +14,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
     return http_error(404) unless @category.try(:public?)
 
     if params[:format].in?('rss', 'atom')
-      docs = @category.public_docs
+      docs = @category.public_docs.order('display_published_at DESC, published_at DESC')
       docs = docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
       docs = docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
       return render_feed(docs)
@@ -38,16 +38,16 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
                          else
                            []
                          end
+          docs = find_public_docs_with_category_ids(category_ids).limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
 
-          docs = find_public_docs_with_category_ids(category_ids).paginate(page: params[:page], per_page: per_page)
-#where tm.module_type_mode
+          docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
           view_context.try(tm.module_type, category: @category, template_module: tm, docs: docs)
         end
 
       render text: rendered
     else
-      @docs = @category.public_docs.paginate(page: params[:page], per_page: per_page)
+      @docs = @category.public_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: per_page)
       return http_error(404) if @docs.current_page > @docs.total_pages
 
       if Page.mobile?
