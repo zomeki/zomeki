@@ -5,7 +5,7 @@ class CreateGpCategoryTemplateModules < ActiveRecord::Migration
       t.string :name
       t.string :title
       t.string :module_type
-      t.string :module_type_mode
+      t.string :module_type_feature
 
       t.string :wrapper_tag
       t.text :doc_style
