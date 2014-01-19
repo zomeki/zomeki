@@ -44,13 +44,20 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_2(category:, template_module:, docs:)
+  def docs_1(category:, template_module:, docs:)
     content_tag(:section, class: template_module.name) do
-      docs.inject(''){|tags, doc|
-        tags << content_tag(template_module.wrapper_tag) do
-            doc_replace(doc, template_module.doc_style, @content.date_style, @content.time_style)
-          end
-      }.html_safe
+      html = docs.inject(''){|tags, doc|
+          tags << content_tag(template_module.wrapper_tag) do
+              doc_replace(doc, template_module.doc_style, @content.date_style, @content.time_style)
+            end
+        }.html_safe
+      template_module.wrapper_tag == 'li' ? content_tag(:ul, html) : html
     end
   end
+
+  def docs_2(category:, template_module:, docs:)
+    docs_1(category: category, template_module: template_module, docs: docs)
+  end
+
+#TODO: docs_3-docs_8
 end
