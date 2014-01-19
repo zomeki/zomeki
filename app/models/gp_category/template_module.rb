@@ -14,9 +14,9 @@ class GpCategory::TemplateModule < ActiveRecord::Base
                                         ['自カテゴリのみ+組織（グループで分類）',                          'docs_6'],
                                         ['自カテゴリ直下のカテゴリ（カテゴリで分類）',                     'docs_7'],
                                         ['自カテゴリ直下のカテゴリ+階層目カテゴリ表示（カテゴリで分類）',  'docs_8']]}
-  MODULE_TYPE_MODE_OPTIONS = [['全記事', 'mode_1'], ['新着記事', 'mode_2'], ['記事', 'mode_3']]
+  MODULE_TYPE_FEATURE_OPTIONS = [['全記事', ''], ['新着記事', 'feature_1'], ['記事', 'feature_2']]
 
-  attr_accessible :name, :title, :module_type, :module_type_mode, :wrapper_tag, :doc_style, :num_docs
+  attr_accessible :name, :title, :module_type, :module_type_feature, :wrapper_tag, :doc_style, :num_docs
 
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCategory::Content::CategoryType'
   validates_presence_of :content_id
@@ -30,8 +30,8 @@ class GpCategory::TemplateModule < ActiveRecord::Base
     MODULE_TYPE_OPTIONS.values.flatten(1).detect{|o| o.last == module_type }.try(:first).to_s
   end
 
-  def module_type_mode_text
-    MODULE_TYPE_MODE_OPTIONS.detect{|o| o.last == module_type_mode }.try(:first).to_s
+  def module_type_feature_text
+    MODULE_TYPE_FEATURE_OPTIONS.detect{|o| o.last == module_type_feature }.try(:first).to_s
   end
 
   def wrapper_tag_text
@@ -42,7 +42,7 @@ class GpCategory::TemplateModule < ActiveRecord::Base
 
   def set_defaults
     self.module_type ||= MODULE_TYPE_OPTIONS.values.flatten(1).first.last if self.has_attribute?(:module_type)
-    self.module_type_mode ||= MODULE_TYPE_MODE_OPTIONS.first.last if self.has_attribute?(:module_type_mode)
+    self.module_type_feature ||= MODULE_TYPE_FEATURE_OPTIONS.first.last if self.has_attribute?(:module_type_feature)
     self.wrapper_tag ||= WRAPPER_TAG_OPTIONS.first.last if self.has_attribute?(:wrapper_tag)
     self.num_docs ||= 10 if self.has_attribute?(:num_docs)
   end

@@ -15,7 +15,7 @@
     <th><%= f.label :module_type %></th>
     <td>
       <%= f.select :module_type, grouped_options_for_select(@item.class::MODULE_TYPE_OPTIONS, @item.module_type) %>
-      <%= f.radio_buttons :module_type_mode, @item.class::MODULE_TYPE_MODE_OPTIONS %>
+      <%= f.radio_buttons :module_type_feature, @item.class::MODULE_TYPE_FEATURE_OPTIONS %>
     </td>
   </tr>
 </table>

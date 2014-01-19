@@ -860,12 +860,12 @@ ActiveRecord::Schema.define(:version => 20140118070949) do
     t.string   "name"
     t.string   "title"
     t.string   "module_type"
-    t.string   "module_type_mode"
+    t.string   "module_type_feature"
     t.string   "wrapper_tag"
     t.text     "doc_style"
     t.integer  "num_docs"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
   add_index "gp_category_template_modules", ["content_id"], :name => "index_gp_category_template_modules_on_content_id"
