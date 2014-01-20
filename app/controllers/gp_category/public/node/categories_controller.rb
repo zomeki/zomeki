@@ -30,19 +30,34 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
           tm = @content.template_modules.find_by_name($1)
           next unless tm
 
-          category_ids = case tm.module_type
-                         when 'docs_1'
-                           [@category.id]
-                         when 'docs_2'
-                           @category.public_descendants.map(&:id)
-                         else
-                           []
-                         end
-          docs = find_public_docs_with_category_ids(category_ids).limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+          case tm.module_type
+          when 'categories_1', 'categories_2', 'categories_3'
+            view_context.try(tm.module_type, template_module: tm, category: @category)
+          when 'docs_1', 'docs_2'
+            docs = case tm.module_type
+                   when 'docs_1'
+                     find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                   when 'docs_2'
+                     find_public_docs_with_category_ids([@category.id])
+                   end
+            docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
-          docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+            docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+            view_context.try(tm.module_type, template_module: tm, docs: docs)
+          when 'docs_3', 'docs_4'
+            docs = case tm.module_type
+                   when 'docs_3'
+                     find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                   when 'docs_4'
+                     find_public_docs_with_category_ids([@category.id])
+                   end
+            docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
-          view_context.try(tm.module_type, category: @category, template_module: tm, docs: docs)
+            categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
+            view_context.try(tm.module_type, template_module: tm, internal_category_type: category_type.internal_category_type, categorizations: categorizations)
+          else
+            ''
+          end
         end
 
       render text: rendered
