@@ -82,5 +82,29 @@ module GpCategory::GpCategoryHelper
     docs_3(template_module: template_module, internal_category_type: internal_category_type, categorizations: categorizations)
   end
 
-#TODO: docs_5-docs_8
+  def docs_5(template_module:, docs:)
+    docs = docs.joins(:creator => :group)
+    group_ids = docs.pluck(Sys::Group.arel_table[:id]).uniq
+    groups = Sys::Group.where(id: group_ids)
+
+    content_tag(:section, class: template_module.name) do
+      groups.inject(''){|tags, group|
+        tags << content_tag(:section, class: group.code) do
+            docs = docs.where(Sys::Group.arel_table[:id].eq(group.id))
+
+            content_tag(:h2, group.name) << content_tag(:ul) do
+                docs.inject(''){|t, d|
+                  t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                }.html_safe
+              end
+          end
+      }.html_safe
+    end
+  end
+
+  def docs_6(template_module:, docs:)
+    docs_5(template_module: template_module, docs: docs)
+  end
+
+#TODO: docs_7-docs_8
 end

@@ -32,18 +32,20 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
           case tm.module_type
           when 'categories_1', 'categories_2', 'categories_3'
-            view_context.try(tm.module_type, template_module: tm, category: @category)
-          when 'docs_1', 'docs_2'
+            view_context.send(tm.module_type, template_module: tm,
+                              category: @category) if view_context.respond_to?(tm.module_type)
+          when 'docs_1', 'docs_2', 'docs_5', 'docs_6'
             docs = case tm.module_type
-                   when 'docs_1'
+                   when 'docs_1', 'docs_5'
                      find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
-                   when 'docs_2'
+                   when 'docs_2', 'docs_6'
                      find_public_docs_with_category_ids([@category.id])
                    end
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-            view_context.try(tm.module_type, template_module: tm, docs: docs)
+            view_context.send(tm.module_type, template_module: tm,
+                              docs: docs) if view_context.respond_to?(tm.module_type)
           when 'docs_3', 'docs_4'
             docs = case tm.module_type
                    when 'docs_3'
@@ -54,7 +56,8 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-            view_context.try(tm.module_type, template_module: tm, internal_category_type: category_type.internal_category_type, categorizations: categorizations)
+            view_context.send(tm.module_type, template_module: tm,
+                              internal_category_type: category_type.internal_category_type, categorizations: categorizations) if view_context.respond_to?(tm.module_type)
           else
             ''
           end
@@ -83,7 +86,9 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
   def find_public_docs_with_category_ids(category_ids)
     categorizations = GpCategory::Categorization.arel_table
-    GpArticle::Doc.mobile(::Page.mobile?).public
-                  .joins(:categorizations).where(categorizations[:category_id].in(category_ids))
+    docs = GpArticle::Doc.mobile(::Page.mobile?).public
+                         .joins(:categorizations).where(categorizations[:categorized_as].eq('GpArticle::Doc')
+                                                        .and(categorizations[:category_id].in(category_ids)))
+    category_ids.size > 1 ? docs.uniq : docs
   end
 end
