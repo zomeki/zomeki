@@ -21,8 +21,12 @@
   end) %></div>
 
   <%- if @content.blog_functions_available? -%>
+    <%- if @item.body_more.present? -%>
   <div class="text-continues"><%=raw @item.body_more %></div>
+    <%- end -%>
+    <%- if @content.blog_functions[:footer_style].present? -%>
   <div class="footer"><%= doc_replace(@item, @content.blog_functions[:footer_style], @content.date_style, @content.time_style) %></div>
+    <%- end -%>
   <%- end -%>
 </div>
 
