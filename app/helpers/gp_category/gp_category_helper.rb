@@ -59,16 +59,16 @@ module GpCategory::GpCategoryHelper
     docs_1(template_module: template_module, docs: docs)
   end
 
-  def docs_3(template_module:, internal_category_type:, categorizations:)
+  def docs_3(template_module:, categories:, categorizations:)
     content_tag(:section, class: template_module.name) do
-      internal_category_type.public_root_categories.inject(''){|tags, root_category|
-        tags << content_tag(:section, class: root_category.name) do
-            cats = categorizations.where(category_id: root_category.public_descendants.map(&:id))
+      categories.inject(''){|tags, category|
+        tags << content_tag(:section, class: category.name) do
+            cats = categorizations.where(category_id: category.public_descendants.map(&:id))
             next if cats.empty?
 
             docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
                                                             .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
-            content_tag(:h2, root_category.title) << content_tag(:ul) do
+            content_tag(:h2, category.title) << content_tag(:ul) do
                 docs.inject(''){|t, d|
                   t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
                 }.html_safe
@@ -78,8 +78,8 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_4(template_module:, internal_category_type:, categorizations:)
-    docs_3(template_module: template_module, internal_category_type: internal_category_type, categorizations: categorizations)
+  def docs_4(template_module:, categories:, categorizations:)
+    docs_3(template_module: template_module, categories: categories, categorizations: categorizations)
   end
 
   def docs_5(template_module:, docs:)
@@ -106,5 +106,24 @@ module GpCategory::GpCategoryHelper
     docs_5(template_module: template_module, docs: docs)
   end
 
-#TODO: docs_7-docs_8
+  def docs_7(template_module:, categories:, categorizations:)
+    content_tag(:section, class: template_module.name) do
+      categories.inject(''){|tags, category|
+        tags << content_tag(:section, class: category.name) do
+            cats = categorizations.where(category_id: category.public_descendants.map(&:id))
+            next if cats.empty?
+
+            docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
+                                                            .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
+            content_tag(:h2, category.title) << content_tag(:ul) do
+                docs.inject(''){|t, d|
+                  t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                }.html_safe
+              end
+          end
+      }.html_safe
+    end
+  end
+
+#TODO: docs_8
 end
