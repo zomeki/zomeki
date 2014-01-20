@@ -56,8 +56,20 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
+            if view_context.respond_to?(tm.module_type) && category_type.internal_category_type
+              view_context.send(tm.module_type, template_module: tm,
+                                categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
+            end
+          when 'docs_7'
+            docs = case tm.module_type
+                   when 'docs_7'
+                     find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                   end
+            docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+
+            categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
             view_context.send(tm.module_type, template_module: tm,
-                              internal_category_type: category_type.internal_category_type, categorizations: categorizations) if view_context.respond_to?(tm.module_type)
+                              categories: @category.children, categorizations: categorizations) if view_context.respond_to?(tm.module_type)
           else
             ''
           end
