@@ -16,7 +16,16 @@ class Rank::Admin::RanksController < Cms::Controller::Admin::Base
     from    = params[:from].presence || '2005-01-01'
     to      = params[:to].presence   || Date.today.strftime('%F')
     exclusion  = @content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
-    @ranks  = @content.ranks.where(rank_table[:date].gteq(from).and(rank_table[:date].lteq(to))).where(rank_table[:page_path].not_in(exclusion)).select('*').select(rank_table[@target].sum.as('accesses')).group(rank_table[:page_path]).order('accesses DESC').paginate(page: params[:page], per_page: per_page)
+    hostname   = URI.parse(Core.site.full_uri).host
+
+    @ranks  = @content.ranks.where(rank_table[:date].gteq(from).and(rank_table[:date].lteq(to)))
+                            .where(rank_table[:hostname].eq(hostname))
+                            .where(rank_table[:page_path].not_in(exclusion))
+                            .select('*')
+                            .select(rank_table[@target].sum.as('accesses'))
+                            .group(rank_table[:page_path])
+                            .order('accesses DESC')
+                            .paginate(page: params[:page], per_page: per_page)
 
     _index @ranks
   end
