@@ -5,7 +5,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
-    @more = (params[:file] == 'more')
+    @more = (params[:file] =~ /^more/)
   end
 
   def show
@@ -44,7 +44,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-            view_context.send(tm.module_type, template_module: tm,
+            view_context.send(tm.module_type, template_module: tm, list_url: "#{@category.public_uri}more_#{tm.module_type}.html",
                               docs: docs) if view_context.respond_to?(tm.module_type)
           when 'docs_3', 'docs_4'
             docs = case tm.module_type
@@ -57,18 +57,18 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
             categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
             if view_context.respond_to?(tm.module_type) && category_type.internal_category_type
-              view_context.send(tm.module_type, template_module: tm,
+              view_context.send(tm.module_type, template_module: tm, list_url: "#{@category.public_uri}more_#{tm.module_type}.html",
                                 categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
             end
-          when 'docs_7'
+          when 'docs_7', 'docs_8'
             docs = case tm.module_type
-                   when 'docs_7'
+                   when 'docs_7', 'docs_8'
                      find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
                    end
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-            view_context.send(tm.module_type, template_module: tm,
+            view_context.send(tm.module_type, template_module: tm, list_url: "#{@category.public_uri}more_#{tm.module_type}.html",
                               categories: @category.children, categorizations: categorizations) if view_context.respond_to?(tm.module_type)
           else
             ''
