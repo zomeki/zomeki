@@ -166,14 +166,13 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if criteria[:category_id].kind_of?(Array) || criteria[:category_id].present?
       cats = GpCategory::Categorization.arel_table
-
-      conditions = if criteria[:category_id].kind_of?(Array)
-                     cats[:category_id].in(criteria[:category_id])
-                   else
-                     cats[:category_id].eq(criteria[:category_id])
-                   end
-
-      rel = rel.joins(:categorizations).where(conditions).uniq.order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
+      conditions = cats[:categorized_as].eq('GpArticle::Doc').and(if criteria[:category_id].kind_of?(Array)
+                                                                    cats[:category_id].in(criteria[:category_id])
+                                                                  else
+                                                                    cats[:category_id].eq(criteria[:category_id])
+                                                                  end)
+      rel = rel.uniq if criteria[:category_id].kind_of?(Array)
+      rel = rel.joins(:categorizations).where(conditions).order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
     end
 
     return rel

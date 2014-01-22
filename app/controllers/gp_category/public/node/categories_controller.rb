@@ -97,10 +97,6 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
   private
 
   def find_public_docs_with_category_ids(category_ids)
-    categorizations = GpCategory::Categorization.arel_table
-    docs = GpArticle::Doc.mobile(::Page.mobile?).public
-                         .joins(:categorizations).where(categorizations[:categorized_as].eq('GpArticle::Doc')
-                                                        .and(categorizations[:category_id].in(category_ids)))
-    category_ids.size > 1 ? docs.uniq : docs
+    GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).except(:order).mobile(::Page.mobile?).public
   end
 end
