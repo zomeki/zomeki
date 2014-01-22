@@ -38,7 +38,11 @@
         <td><%= text_area_tag 'comment[body]', nil, size: '100x5' %></td>
       </tr>
       <tr>
-        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する' %></td>
+        <th>画像認証</th>
+        <td><%= show_simple_captcha(input_html: {required: false}) %></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %></td>
       </tr>
     </table>
   </div>

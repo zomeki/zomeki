@@ -22,8 +22,14 @@
         <th><%= f.label :body, 'コメント' %></th>
         <td><%= f.text_area :body, size: '100x5' %></td>
       </tr>
+      <%- unless @confirmation_required -%>
       <tr>
-        <td colspan="2" style="text-align: center;"><%= submit_tag '確認する' %></td>
+        <th>画像認証</th>
+        <td><%= show_simple_captcha(input_html: {required: false}) %></td>
+      </tr>
+      <%- end -%>
+      <tr>
+        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %></td>
       </tr>
     </table>
   </div>

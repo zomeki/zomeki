@@ -9,6 +9,8 @@ class GpArticle::Public::Node::CommentsController < Cms::Controller::Public::Bas
 
     @doc = @content.public_docs.find_by_name(params[:name])
     return http_error(404) unless @doc
+
+    @confirmation_required = false
   end
 
   def new
@@ -16,8 +18,12 @@ class GpArticle::Public::Node::CommentsController < Cms::Controller::Public::Bas
   end
 
   def confirm
-    @comment = @doc.comments.build(params[:comment])
-    render :new unless @comment.valid?
+    if @confirmation_required
+      @comment = @doc.comments.build(params[:comment])
+      render :new unless @comment.valid?
+    else
+      create
+    end
   end
 
   def create
@@ -39,7 +45,11 @@ class GpArticle::Public::Node::CommentsController < Cms::Controller::Public::Bas
       end
     else
       @comment.errors.add(:base, '画像と文字が一致しません。')
-      render :confirm
+      if @confirmation_required
+        render :confirm
+      else
+        render :new
+      end
     end
   end
 end
