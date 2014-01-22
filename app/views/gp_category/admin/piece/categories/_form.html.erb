@@ -1,0 +1,18 @@
+<%= render(layout: 'gp_category/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :in_settings_category_type_id %></th>
+    <td><%= f.array_select 'in_settings[category_type_id]', @item.category_types_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :in_settings_page_filter %></th>
+    <td><%= f.array_radio_buttons 'in_settings[page_filter]', @item.class::PAGE_FILTER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :in_settings_num_docs_visibility %></th>
+    <td><%= f.array_select 'in_settings[num_docs_visibility]', @item.class::NUM_DOCS_VISIBILITY_OPTIONS, include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
