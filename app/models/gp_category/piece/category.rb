@@ -22,4 +22,8 @@ class GpCategory::Piece::Category < Cms::Piece
   def num_docs_visibility_text
     NUM_DOCS_VISIBILITY_OPTIONS.detect{|o| o.last == setting_value(:num_docs_visibility) }.try(:first).to_s
   end
+
+  def num_docs_visible?
+    setting_value(:num_docs_visibility) != 'hidden'
+  end
 end
