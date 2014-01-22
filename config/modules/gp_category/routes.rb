@@ -35,6 +35,8 @@ ZomekiCMS::Application.routes.draw do
     ## pieces
     resources :piece_category_types,
       :controller => 'admin/piece/category_types'
+    resources :piece_categories,
+      :controller => 'admin/piece/categories'
     resources :piece_docs,
       :controller => 'admin/piece/docs'
     resources(:piece_recent_tabs,
