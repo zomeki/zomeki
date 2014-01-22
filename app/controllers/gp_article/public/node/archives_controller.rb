@@ -21,11 +21,12 @@ class GpArticle::Public::Node::ArchivesController < Cms::Controller::Public::Bas
 
     http_error(404) if @docs.empty?
 
+    header_format = @month ? '%Y年%-m月' : '%Y年'
     @items = @docs.inject([]) do |result, doc|
-        date = doc.display_published_at.strftime('%Y年%-m月')
+        date = doc.display_published_at.strftime(header_format)
 
         unless result.empty?
-          last_date = result.last[:doc].display_published_at.strftime('%Y年%-m月')
+          last_date = result.last[:doc].display_published_at.strftime(header_format)
           date = nil if date == last_date
         end
 
