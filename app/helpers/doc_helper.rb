@@ -99,6 +99,6 @@ module DocHelper
   end
 
   def file_path_expanded_body(doc)
-    doc.body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? doc.public_uri : doc.preview_uri}file_contents/))
+    doc.body.gsub('"file_contents/', %Q("#{doc.public_uri}file_contents/))
   end
 end
