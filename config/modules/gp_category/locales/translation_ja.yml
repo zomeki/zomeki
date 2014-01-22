@@ -38,7 +38,6 @@ ja:
         date_style: 日付形式
       gp_category/piece/category:
         in_settings_category_type_id: 表示カテゴリタイプ
-        in_settings_page_filter: ページ絞り込み
         in_settings_num_docs_visibility: 記事数表示
       gp_category/piece/recent_tab:
         list_count: 表示件数
