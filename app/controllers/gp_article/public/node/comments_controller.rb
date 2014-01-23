@@ -15,6 +15,7 @@ class GpArticle::Public::Node::CommentsController < Cms::Controller::Public::Bas
 
   def new
     @comment = @doc.comments.build
+    render :new_mobile if Page.mobile?
   end
 
   def confirm
