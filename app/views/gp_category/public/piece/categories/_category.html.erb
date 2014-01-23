@@ -1,8 +1,7 @@
 <ul class="level<%= category.level_no + 1 -%>">
   <%- category.public_children.each do |child| -%>
   <li class="<%= child.name -%>">
-    <span><%= link_to child.title, child.public_uri %>
-      <%= "(#{public_docs_with_category_id(child.id).count})" if @piece.num_docs_visible? %></span>
+    <%= link_to child.title, child.public_uri %> <%= "(#{public_docs_with_category_id(child.id).count})" if @piece.num_docs_visible? %>
     <%- unless child.public_children.empty? -%>
     <%= render 'category', category: child %>
     <%- end -%>
