@@ -84,29 +84,28 @@ module GpCategory::GpCategoryHelper
     docs_3(template_module: template_module, list_url: list_url, categories: categories, categorizations: categorizations)
   end
 
-  def docs_5(template_module:, list_url:, docs:)
+  def docs_5(template_module:, docs:)
     docs = docs.joins(:creator => :group)
     group_ids = docs.pluck(Sys::Group.arel_table[:id]).uniq
     groups = Sys::Group.where(id: group_ids)
 
     content_tag(:section, class: template_module.name) do
-      html = groups.inject(''){|tags, group|
-          tags << content_tag(:section, class: group.code) do
-              docs = docs.where(Sys::Group.arel_table[:id].eq(group.id))
+      groups.inject(''){|tags, group|
+        tags << content_tag(:section, class: group.code) do
+            docs = docs.where(Sys::Group.arel_table[:id].eq(group.id))
 
-              content_tag(:h2, group.name) << content_tag(:ul) do
-                  docs.inject(''){|t, d|
-                    t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-                  }.html_safe
-                end
-            end
-        }.html_safe
-      html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
+            content_tag(:h2, group.name) << content_tag(:ul) do
+                docs.inject(''){|t, d|
+                  t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                }.html_safe
+              end
+          end
+      }.html_safe
     end
   end
 
-  def docs_6(template_module:, list_url:, docs:)
-    docs_5(template_module: template_module, list_url: list_url, docs: docs)
+  def docs_6(template_module:, docs:)
+    docs_5(template_module: template_module, docs: docs)
   end
 
   def docs_7(template_module:, categories:, categorizations:)
