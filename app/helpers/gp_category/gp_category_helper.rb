@@ -44,7 +44,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_1(template_module:, list_url:, docs:)
+  def docs_1(template_module:, category:, docs:)
     content_tag(:section, class: template_module.name) do
       html = docs.inject(''){|tags, doc|
           tags << content_tag(template_module.wrapper_tag) do
@@ -52,12 +52,12 @@ module GpCategory::GpCategoryHelper
             end
         }.html_safe
       html = template_module.wrapper_tag == 'li' ? content_tag(:ul, html) : html
-      html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
+      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
     end
   end
 
-  def docs_2(template_module:, list_url:, docs:)
-    docs_1(template_module: template_module, list_url: list_url, docs: docs)
+  def docs_2(template_module:, category:, docs:)
+    docs_1(template_module: template_module, category: category, docs: docs)
   end
 
   def docs_3(template_module:, categories:, categorizations:)
@@ -84,7 +84,7 @@ module GpCategory::GpCategoryHelper
     docs_3(template_module: template_module, categories: categories, categorizations: categorizations)
   end
 
-  def docs_5(template_module:, docs:)
+  def docs_5(template_module:, category:, docs:)
     docs = docs.joins(:creator => :group)
     group_ids = docs.pluck(Sys::Group.arel_table[:id]).uniq
     groups = Sys::Group.where(id: group_ids)
@@ -104,8 +104,8 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_6(template_module:, docs:)
-    docs_5(template_module: template_module, docs: docs)
+  def docs_6(template_module:, category:, docs:)
+    docs_5(template_module: template_module, category: category, docs: docs)
   end
 
   def docs_7(template_module:, categories:, categorizations:)

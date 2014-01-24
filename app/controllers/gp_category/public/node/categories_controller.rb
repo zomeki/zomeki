@@ -45,7 +45,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
             docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
             view_context.send(tm.module_type, template_module: tm,
-                              docs: docs) if view_context.respond_to?(tm.module_type)
+                              category: @category, docs: docs) if view_context.respond_to?(tm.module_type)
           when 'docs_3', 'docs_4'
             docs = case tm.module_type
                    when 'docs_3'
