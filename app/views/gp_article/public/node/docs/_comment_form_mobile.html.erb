@@ -1,27 +1,27 @@
 <%= form_tag "#{item.public_uri}comments/confirm" do -%>
 <div class="commentPost">
-  <div>
-    <p><%= label_tag 'comment[author_name]', '名前' %> <span class="note">※</span></p>
-    <p><%= text_field_tag 'comment[author_name]', nil, :style => 'width: 300px;' %></p>
+  <div class="commentItem">
+    <%= label_tag 'comment[author_name]', '名前' %> <span class="note">※</span>
+    <%= text_field_tag 'comment[author_name]', nil, :style => 'width: 300px;' %>
   </div>
-  <div>
-    <p><%= label_tag 'comment[author_email]', 'メールアドレス' %></p>
-    <p><%= text_field_tag 'comment[author_email]', nil, :style => 'width: 300px;' %></p>
+  <div class="commentItem">
+    <%= label_tag 'comment[author_email]', 'メールアドレス' %>
+    <%= text_field_tag 'comment[author_email]', nil, :style => 'width: 300px;' %>
   </div>
-  <div>
-    <p><%= label_tag 'comment[author_url]', 'ホームページ' %></p>
-    <p><%= text_field_tag 'comment[author_url]', nil, :style => 'width: 500px;' %></p>
+  <div class="commentItem">
+    <%= label_tag 'comment[author_url]', 'ホームページ' %>
+    <%= text_field_tag 'comment[author_url]', nil, :style => 'width: 500px;' %>
   </div>
-  <div>
-    <p><%= label_tag 'comment[body]', 'コメント' %></p>
-    <p><%= text_area_tag 'comment[body]', nil, size: '100x5' %></p>
+  <div class="commentItem">
+    <%= label_tag 'comment[body]', 'コメント' %>
+    <%= text_area_tag 'comment[body]', nil, size: '100x5' %>
   </div>
-  <div>
-    <p>画像認証</p>
-    <p><%= show_simple_captcha(input_html: {required: false}) %></p>
+  <div class="commentItem">
+    画像認証
+    <%= show_simple_captcha(input_html: {required: false}) %>
   </div>
-  <div>
-    <p style="text-align: center;"><%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %></p>
+  <div class="commentItem">
+    <%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %>
   </div>
 </div>
 <%- end -%>

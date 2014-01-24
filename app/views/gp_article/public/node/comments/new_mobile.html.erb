@@ -5,30 +5,30 @@
   <%= form_for(@comment, as: 'comment', url: "#{@doc.public_uri}comments/confirm") do |f| -%>
   <%= f.error_messages %>
   <div class="commentPost">
-    <div>
-      <p><%= f.label :author_name, '名前' %> <span class="note">※</span></p>
-      <p><%= f.text_field :author_name, :style => 'width: 300px;' %></p>
+    <div class="commentItem">
+      <%= f.label :author_name, '名前' %> <span class="note">※</span>
+      <%= f.text_field :author_name, :style => 'width: 300px;' %>
     </div>
-    <div>
-      <p><%= f.label :author_email, 'メールアドレス' %></p>
-      <p><%= f.text_field :author_email, :style => 'width: 300px;' %></p>
+    <div class="commentItem">
+      <%= f.label :author_email, 'メールアドレス' %>
+      <%= f.text_field :author_email, :style => 'width: 300px;' %>
     </div>
-    <div>
-      <p><%= f.label :author_url, 'ホームページ' %></p>
-      <p><%= f.text_field :author_url, :style => 'width: 500px;' %></p>
+    <div class="commentItem">
+      <%= f.label :author_url, 'ホームページ' %>
+      <%= f.text_field :author_url, :style => 'width: 500px;' %>
     </div>
-    <div>
-      <p><%= f.label :body, 'コメント' %></p>
-      <p><%= f.text_area :body, size: '100x5' %></p>
+    <div class="commentItem">
+      <%= f.label :body, 'コメント' %>
+      <%= f.text_area :body, size: '100x5' %>
     </div>
     <%- unless @confirmation_required -%>
-    <div>
-      <p>画像認証</p>
-      <p><%= show_simple_captcha(input_html: {required: false}) %></p>
+    <div class="commentItem">
+      画像認証
+      <%= show_simple_captcha(input_html: {required: false}) %>
     </div>
     <%- end -%>
-    <div>
-      <p style="text-align: center;"><%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %></p>
+    <div class="commentItem">
+      <%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %>
     </div>
   </div>
   <%- end -%>
