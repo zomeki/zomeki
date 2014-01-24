@@ -6,25 +6,25 @@
   <%= f.error_messages %>
   <div class="commentPost">
     <div class="commentItem">
-      <%= f.label :author_name, '名前' %> <span class="note">※</span>
-      <%= f.text_field :author_name, :style => 'width: 300px;' %>
+      <div class="itemLabel"><%= f.label :author_name, '名前' %> <span class="note">※</span></div>
+      <div class="itemContent"><%= f.text_field :author_name, :style => 'width: 300px;' %></div>
     </div>
     <div class="commentItem">
-      <%= f.label :author_email, 'メールアドレス' %>
-      <%= f.text_field :author_email, :style => 'width: 300px;' %>
+      <div class="itemLabel"><%= f.label :author_email, 'メールアドレス' %></div>
+      <div class="itemContent"><%= f.text_field :author_email, :style => 'width: 300px;' %></div>
     </div>
     <div class="commentItem">
-      <%= f.label :author_url, 'ホームページ' %>
-      <%= f.text_field :author_url, :style => 'width: 500px;' %>
+      <div class="itemLabel"><%= f.label :author_url, 'ホームページ' %></div>
+      <div class="itemContent"><%= f.text_field :author_url, :style => 'width: 500px;' %></div>
     </div>
     <div class="commentItem">
-      <%= f.label :body, 'コメント' %>
-      <%= f.text_area :body, size: '100x5' %>
+      <div class="itemLabel"><%= f.label :body, 'コメント' %></div>
+      <div class="itemContent"><%= f.text_area :body, size: '100x5' %></div>
     </div>
     <%- unless @confirmation_required -%>
     <div class="commentItem">
-      画像認証
-      <%= show_simple_captcha(input_html: {required: false}) %>
+      <div class="itemLabel">画像認証</div>
+      <div class="itemContent"><%= show_simple_captcha(input_html: {required: false}) %></div>
     </div>
     <%- end -%>
     <div class="commentItem">
