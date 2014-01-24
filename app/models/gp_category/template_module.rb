@@ -13,7 +13,7 @@ class GpCategory::TemplateModule < ActiveRecord::Base
                                         ['自カテゴリ以下全て+組織 （グループで分類）',                     'docs_5'],
                                         ['自カテゴリのみ+組織（グループで分類）',                          'docs_6'],
                                         ['自カテゴリ直下のカテゴリ（カテゴリで分類）',                     'docs_7'],
-                                        ['自カテゴリ直下のカテゴリ+階層目カテゴリ表示（カテゴリで分類）',  'docs_8']]}
+                                        ['自カテゴリ直下のカテゴリ+1階層目カテゴリ表示（カテゴリで分類）', 'docs_8']]}
   MODULE_TYPE_FEATURE_OPTIONS = [['全記事', ''], ['新着記事', 'feature_1'], ['記事', 'feature_2']]
 
   attr_accessible :name, :title, :module_type, :module_type_feature, :wrapper_tag, :doc_style, :num_docs
