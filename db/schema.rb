@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140107013000) do
+ActiveRecord::Schema.define(:version => 20140118070949) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -739,6 +739,8 @@ ActiveRecord::Schema.define(:version => 20140107013000) do
     t.string   "share_to_sns_with"
     t.text     "body_more"
     t.string   "body_more_link_text"
+    t.boolean  "feature_1"
+    t.boolean  "feature_2"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -845,11 +847,39 @@ ActiveRecord::Schema.define(:version => 20140107013000) do
     t.datetime "updated_at"
     t.string   "sitemap_state"
     t.string   "docs_order"
+    t.integer  "template_id"
+    t.integer  "internal_category_type_id"
   end
 
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
   add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
   add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
+
+  create_table "gp_category_template_modules", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "name"
+    t.string   "title"
+    t.string   "module_type"
+    t.string   "module_type_feature"
+    t.string   "wrapper_tag"
+    t.text     "doc_style"
+    t.integer  "num_docs"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "gp_category_template_modules", ["content_id"], :name => "index_gp_category_template_modules_on_content_id"
+
+  create_table "gp_category_templates", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "name"
+    t.string   "title"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "gp_category_templates", ["content_id"], :name => "index_gp_category_templates_on_content_id"
 
   create_table "gp_template_items", :force => true do |t|
     t.integer  "template_id"
