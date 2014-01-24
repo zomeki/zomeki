@@ -112,18 +112,7 @@ module GpCategory::GpCategoryHelper
   def docs_7(template_module:, list_url:, categories:, categorizations:)
     content_tag(:section, class: template_module.name) do
       html = categories.inject(''){|tags, category|
-          tags << content_tag(:section, class: category.name) do
-              cats = categorizations.where(category_id: category.public_descendants.map(&:id))
-              next if cats.empty?
-
-              docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
-                                                              .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
-              content_tag(:h2, category.title) << content_tag(:ul) do
-                  docs.inject(''){|t, d|
-                    t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-                  }.html_safe
-                end
-            end
+          tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
         }.html_safe
       html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
     end
@@ -131,7 +120,37 @@ module GpCategory::GpCategoryHelper
 
   def docs_8(template_module:, list_url:, categories:, categorizations:)
     content_tag(:section, class: template_module.name) do
-#TODO: つぎここ
+      html = categories.inject(''){|tags, category|
+          tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
+        }.html_safe
+      html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
+    end
+  end
+
+  def category_section(category, template_module:, categorizations:, with_child_categories:)
+    content_tag(:section, class: category.name) do
+      cats = categorizations.where(category_id: category.public_descendants.map(&:id))
+      next if cats.empty?
+
+      docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
+                                                      .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
+      html = content_tag(:h2, category.title) << content_tag(:ul) do
+          docs.inject(''){|t, d|
+            t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+          }.html_safe
+        end
+
+      if with_child_categories && category.children.present?
+        html << content_tag(:section) do
+            content_tag(:ul) do
+              category.children.inject(''){|tags, child|
+                tags << content_tag(:li, link_to(child.title, child.public_uri))
+              }.html_safe
+            end
+          end
+      else
+        html
+      end
     end
   end
 end
