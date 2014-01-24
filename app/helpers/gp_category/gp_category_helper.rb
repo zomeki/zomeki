@@ -109,21 +109,19 @@ module GpCategory::GpCategoryHelper
     docs_5(template_module: template_module, list_url: list_url, docs: docs)
   end
 
-  def docs_7(template_module:, list_url:, categories:, categorizations:)
+  def docs_7(template_module:, categories:, categorizations:)
     content_tag(:section, class: template_module.name) do
-      html = categories.inject(''){|tags, category|
-          tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
-        }.html_safe
-      html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
+      categories.inject(''){|tags, category|
+        tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
+      }.html_safe
     end
   end
 
-  def docs_8(template_module:, list_url:, categories:, categorizations:)
+  def docs_8(template_module:, categories:, categorizations:)
     content_tag(:section, class: template_module.name) do
-      html = categories.inject(''){|tags, category|
-          tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
-        }.html_safe
-      html << content_tag(:div, link_to('一覧へ', list_url), class: 'more')
+      categories.inject(''){|tags, category|
+        tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
+      }.html_safe
     end
   end
 
@@ -139,6 +137,7 @@ module GpCategory::GpCategoryHelper
             t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
           }.html_safe
         end
+      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
 
       if with_child_categories && category.children.present?
         html << content_tag(:section) do
