@@ -5,7 +5,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
   def pre_dispatch
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
-    @more = (params[:file] =~ /^more/)
+    @more = (params[:file] == 'more')
   end
 
   def show
