@@ -44,7 +44,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
             docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
 
             docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-            view_context.send(tm.module_type, template_module: tm, list_url: "#{@category.public_uri}more_#{tm.module_type}.html",
+            view_context.send(tm.module_type, template_module: tm,
                               docs: docs) if view_context.respond_to?(tm.module_type)
           when 'docs_3', 'docs_4'
             docs = case tm.module_type
