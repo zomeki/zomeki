@@ -25,6 +25,8 @@ class GpArticle::Doc < ActiveRecord::Base
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   OGP_TYPE_OPTIONS = [['article', 'article']]
   SHARE_TO_SNS_WITH_OPTIONS = [['SNS(OGP)の説明', 'og_description'], ['記事の内容', 'body']]
+  FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
+  FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
 
   default_scope where("#{self.table_name}.state != 'archived'")
 
@@ -164,14 +166,13 @@ class GpArticle::Doc < ActiveRecord::Base
 
     if criteria[:category_id].kind_of?(Array) || criteria[:category_id].present?
       cats = GpCategory::Categorization.arel_table
-
-      conditions = if criteria[:category_id].kind_of?(Array)
-                     cats[:category_id].in(criteria[:category_id])
-                   else
-                     cats[:category_id].eq(criteria[:category_id])
-                   end
-
-      rel = rel.joins(:categorizations).where(conditions).uniq.order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
+      conditions = cats[:categorized_as].eq('GpArticle::Doc').and(if criteria[:category_id].kind_of?(Array)
+                                                                    cats[:category_id].in(criteria[:category_id])
+                                                                  else
+                                                                    cats[:category_id].eq(criteria[:category_id])
+                                                                  end)
+      rel = rel.uniq if criteria[:category_id].kind_of?(Array)
+      rel = rel.joins(:categorizations).where(conditions).order(cats[:sort_no].eq(nil), cats[:sort_no].asc)
     end
 
     return rel
@@ -607,19 +608,27 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def og_type_text
-    OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first) || ''
+    OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
   end
 
   def target_text
-    TARGET_OPTIONS.detect{|o| o.last == self.target }.try(:first) || ''
+    TARGET_OPTIONS.detect{|o| o.last == self.target }.try(:first).to_s
   end
 
   def event_state_text
-    EVENT_STATE_OPTIONS.detect{|o| o.last == self.event_state }.try(:first) || ''
+    EVENT_STATE_OPTIONS.detect{|o| o.last == self.event_state }.try(:first).to_s
   end
 
   def marker_state_text
-    MARKER_STATE_OPTIONS.detect{|o| o.last == self.marker_state }.try(:first) || ''
+    MARKER_STATE_OPTIONS.detect{|o| o.last == self.marker_state }.try(:first).to_s
+  end
+
+  def feature_1_text
+    FEATURE_1_OPTIONS.detect{|o| o.last == self.feature_1 }.try(:first).to_s
+  end
+
+  def feature_2_text
+    FEATURE_2_OPTIONS.detect{|o| o.last == self.feature_2 }.try(:first).to_s
   end
 
   private
@@ -660,8 +669,10 @@ class GpArticle::Doc < ActiveRecord::Base
     self.marker_state ||= 'hidden'                  if self.has_attribute?(:marker_state)
     self.terminal_pc_or_smart_phone = true if self.has_attribute?(:terminal_pc_or_smart_phone) && self.terminal_pc_or_smart_phone.nil?
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
-    self.share_to_sns_with = SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with) && self.share_to_sns_with.nil?
+    self.share_to_sns_with ||= SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with)
     self.body_more_link_text ||= '続きを読む' if self.has_attribute?(:body_more_link_text)
+    self.feature_1 = FEATURE_1_OPTIONS.first.last if self.has_attribute?(:feature_1) && self.feature_1.nil?
+    self.feature_2 = FEATURE_2_OPTIONS.first.last if self.has_attribute?(:feature_2) && self.feature_2.nil?
   end
 
   def set_display_attributes

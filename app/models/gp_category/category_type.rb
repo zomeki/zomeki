@@ -19,7 +19,9 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
-  belongs_to :layout,  :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+  belongs_to :layout, :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+  belongs_to :template
+  belongs_to :internal_category_type, :class_name => self.name
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'

@@ -1,0 +1,5 @@
+<%= form_for(@item, :as => :item, :url => gp_category_template_modules_path) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', :f => f %>
+  <%= submit :create %>
+<% end %>

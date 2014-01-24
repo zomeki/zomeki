@@ -1,0 +1,44 @@
+<span class="note">※は必須項目です。</span>
+
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td><%= f.text_field :name %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :module_type %></th>
+    <td>
+      <%= f.select :module_type, grouped_options_for_select(@item.class::MODULE_TYPE_OPTIONS, @item.module_type) %>
+      <%= f.radio_buttons :module_type_feature, @item.class::MODULE_TYPE_FEATURE_OPTIONS %>
+    </td>
+  </tr>
+</table>
+
+<p class="form">記事表示形式</p>
+<span class="note">※記事のみに適用されます。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :wrapper_tag %></th>
+    <td><%= f.select :wrapper_tag, @item.class::WRAPPER_TAG_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :doc_style %></th>
+    <td>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+      <%= f.text_area :doc_style, size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :num_docs %></th>
+    <td><%= f.text_field :num_docs, class: 'number' %></td>
+  </tr>
+</table>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>
