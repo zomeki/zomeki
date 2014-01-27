@@ -39,7 +39,7 @@ module GpCategory::GpCategoryHelper
   end
 
   def categories_3(template_module: nil, categories: nil)
-    return if categories.public_children.empty?
+    return if categories.empty?
 
     content_tag(:ul) do
       categories.inject(''){|lis, child|
