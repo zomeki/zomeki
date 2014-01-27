@@ -21,23 +21,29 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
     @category_type = @content.public_category_types.find_by_name(params[:name])
     return http_error(404) unless @category_type
 
+    if params[:format].in?('rss', 'atom')
+      case @content.category_type_style
+      when 'all_docs'
+        category_ids = @category_type.public_categories.pluck(:id)
+        @docs = find_public_docs_with_category_ids(category_ids).order('display_published_at DESC, published_at DESC')
+        @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
+        @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
+        return render_feed(@docs)
+      else
+        return http_error(404)
+      end
+    end
+
     Page.current_item = @category_type
     Page.title = @category_type.title
 
     case @content.category_type_style
     when 'all_docs'
-      category_ids = @category_type.public_categories.map(&:id)
-      @docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
-                            .order('display_published_at DESC, published_at DESC')
-      if params[:format].in?('rss', 'atom')
-        @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
-        @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
-        return render_feed(@docs)
-      end
+      category_ids = @category_type.public_categories.pluck(:id)
+      @docs = find_public_docs_with_category_ids(category_ids).order('display_published_at DESC, published_at DESC')
       @docs = @docs.paginate(page: params[:page], per_page: @content.category_type_docs_number)
       return http_error(404) if @docs.current_page > @docs.total_pages
     else
-      return http_error(404) if params[:format].in?('rss', 'atom')
       return http_error(404) if params[:page].to_i > 1
     end
 
@@ -48,5 +54,11 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
         render style
       end
     end
+  end
+
+  private
+
+  def find_public_docs_with_category_ids(category_ids)
+    GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).except(:order).mobile(::Page.mobile?).public
   end
 end
