@@ -95,7 +95,12 @@ module Cms::FormHelper
     object = f.object || instance_variable_get("@#{f.object_name}")
     case object.form_type
     when :select
-      f.select(:value, object.config_options, include_blank: true)
+      options = if (co = object.config_options).kind_of?(Proc)
+                  co.call(object.content)
+                else
+                  co
+                end
+      f.select(:value, options, include_blank: true)
     when :text
       f.text_area(:value, style: 'width: 600px; height: 120px;')
     when :check_boxes

@@ -60,6 +60,7 @@ class Cms::ContentSetting < ActiveRecord::Base
            else
              config[:options]
            end
+    opts = opts.call(content) if opts.is_a?(Proc)
     if opts
       case config[:form_type]
       when :check_boxes
@@ -68,7 +69,7 @@ class Cms::ContentSetting < ActiveRecord::Base
         ids = YAML.load(value.presence || '[]')
         config_options.where(id: ids).map(&:name).join(', ')
       else
-        opts.detect{|o| o.last.to_s == value.to_s }.try(:first)
+        opts.detect{|o| o.last.to_s == value.to_s }.try(:first).to_s
       end
     else
       value.presence
