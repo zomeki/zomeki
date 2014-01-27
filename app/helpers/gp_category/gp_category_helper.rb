@@ -18,7 +18,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def categories_1(template_module:, category:)
+  def categories_1(template_module: nil, category: nil)
     return if category.public_children.empty?
 
     content_tag(:ul) do
@@ -28,7 +28,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def categories_2(template_module:, category:)
+  def categories_2(template_module: nil, category: nil)
     return if category.public_children.empty?
 
     content_tag(:ul) do
@@ -38,7 +38,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def categories_3(template_module:, category:)
+  def categories_3(template_module: nil, category: nil)
     return if category.public_children.empty?
 
     content_tag(:ul) do
@@ -48,7 +48,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_1(template_module:, category:, docs:)
+  def docs_1(template_module: nil, category: nil, docs: nil)
     content_tag(:section, class: template_module.name) do
       html = docs.inject(''){|tags, doc|
           tags << content_tag(template_module.wrapper_tag) do
@@ -60,11 +60,11 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_2(template_module:, category:, docs:)
+  def docs_2(template_module: nil, category: nil, docs: nil)
     docs_1(template_module: template_module, category: category, docs: docs)
   end
 
-  def docs_3(template_module:, categories:, categorizations:)
+  def docs_3(template_module: nil, categories: nil, categorizations: nil)
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << content_tag(:section, class: category.name) do
@@ -84,11 +84,11 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_4(template_module:, categories:, categorizations:)
+  def docs_4(template_module: nil, categories: nil, categorizations: nil)
     docs_3(template_module: template_module, categories: categories, categorizations: categorizations)
   end
 
-  def docs_5(template_module:, category:, docs:)
+  def docs_5(template_module: nil, category: nil, docs: nil)
     docs = docs.joins(:creator => :group)
     group_ids = docs.pluck(Sys::Group.arel_table[:id]).uniq
     groups = Sys::Group.where(id: group_ids)
@@ -108,11 +108,11 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_6(template_module:, category:, docs:)
+  def docs_6(template_module: nil, category: nil, docs: nil)
     docs_5(template_module: template_module, category: category, docs: docs)
   end
 
-  def docs_7(template_module:, categories:, categorizations:)
+  def docs_7(template_module: nil, categories: nil, categorizations: nil)
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
@@ -120,7 +120,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_8(template_module:, categories:, categorizations:)
+  def docs_8(template_module: nil, categories: nil, categorizations: nil)
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
@@ -128,7 +128,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def category_section(category, template_module:, categorizations:, with_child_categories:)
+  def category_section(category, template_module: nil, categorizations: nil, with_child_categories: nil)
     content_tag(:section, class: category.name) do
       cats = categorizations.where(category_id: category.public_descendants.map(&:id))
       next if cats.empty?
