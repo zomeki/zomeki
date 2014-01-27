@@ -39,7 +39,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
             case tm.module_type
             when 'categories_1', 'categories_2', 'categories_3'
               view_context.send(tm.module_type, template_module: tm,
-                                category: @category) if view_context.respond_to?(tm.module_type)
+                                categories: @category.public_children) if view_context.respond_to?(tm.module_type)
             when 'docs_1', 'docs_2', 'docs_5', 'docs_6'
               docs = case tm.module_type
                      when 'docs_1', 'docs_5'
