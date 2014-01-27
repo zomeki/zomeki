@@ -25,7 +25,7 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
 
     per_page = (@more ? 30 : @content.category_docs_number)
 
-    if (template = category_type.template)
+    if (template = @category.inherited_template)
       if @more
         @docs = @category.public_docs.order('display_published_at DESC, published_at DESC')
                                      .paginate(page: params[:page], per_page: per_page)

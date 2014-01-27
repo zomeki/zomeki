@@ -25,6 +25,7 @@ ja:
         description: 説明
         sitemap_state: サイトマップ
         docs_order: 記事表示順
+        template_id: テンプレート
       gp_category/categorization:
         sort_no: 並び順
       gp_category/template:
