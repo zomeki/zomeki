@@ -2,14 +2,7 @@
 
 require 'will_paginate/array'
 
-class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Public::Base
-  include GpArticle::Controller::Feed
-
-  def pre_dispatch
-    @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
-    return http_error(404) unless @content
-  end
-
+class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::Node::BaseController
   def index
     if (template = @content.index_template)
       rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
@@ -139,11 +132,5 @@ class GpCategory::Public::Node::CategoryTypesController < Cms::Controller::Publi
         render style
       end
     end
-  end
-
-  private
-
-  def find_public_docs_with_category_ids(category_ids)
-    GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).except(:order).mobile(::Page.mobile?).public
   end
 end
