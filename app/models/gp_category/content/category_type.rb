@@ -94,6 +94,10 @@ class GpCategory::Content::CategoryType < Cms::Content
     setting_extra_value(:feed, :feed_docs_period)
   end
 
+  def index_template
+    templates.find_by_id(setting_value(:index_template_id))
+  end
+
   private
 
   def set_default_settings
