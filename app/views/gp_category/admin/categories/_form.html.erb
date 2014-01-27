@@ -39,6 +39,10 @@
 
 <table class="show">
   <%= concept_and_layout_form f %>
+  <tr>
+    <th><%= f.label :template_id %></th>
+    <td><%= f.collection_select :template_id, @content.templates, :id, :title, include_blank: true %></td>
+  </tr>
 </table>
 
 <%= creator_form f %>

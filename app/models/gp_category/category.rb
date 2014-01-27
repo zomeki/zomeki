@@ -18,6 +18,7 @@ class GpCategory::Category < ActiveRecord::Base
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
   belongs_to :layout,  :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+  belongs_to :template
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
@@ -145,6 +146,12 @@ class GpCategory::Category < ActiveRecord::Base
   def unique_sort_key
     ancestors.inject('') {|k, a| k.concat('__%032d_%32s_%032d_%032d_%032d_%032d_%32s' % [a.category_type.sort_no.to_i, a.category_type.name.to_s,
                                                                                          a.category_type_id.to_i, a.parent_id.to_i, a.level_no.to_i, a.sort_no.to_i, a.name.to_s]) }
+  end
+
+  def inherited_template
+    return self.template if self.template
+    return parent.inherited_template if parent
+    category_type.template
   end
 
   private
