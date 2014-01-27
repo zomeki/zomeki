@@ -14,6 +14,14 @@ class GpCategory::Content::Setting < Cms::ContentSetting
     :options => GpCategory::Content::CategoryType::CATEGORY_STYLE_OPTIONS
   set_config :doc_style, :name => '新着記事一覧表示形式',
     :options => GpCategory::Content::CategoryType::DOC_STYLE_OPTIONS
+  set_config :index_template_id, :name => 'index設定',
+    :options => lambda {->(content=nil) do
+        if content
+          GpCategory::Content::CategoryType.find(content).templates.map{|t| [t.title, t.id] }
+        else
+          []
+        end
+      end}
   set_config :feed, :name => "フィード",
     :options => GpCategory::Content::CategoryType::FEED_DISPLAY_OPTIONS,
     :form_type => :radio_buttons
