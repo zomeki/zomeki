@@ -1,13 +1,5 @@
 # encoding: utf-8
-class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::Base
-  include GpArticle::Controller::Feed
-
-  def pre_dispatch
-    @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
-    return http_error(404) unless @content
-    @more = (params[:file] == 'more')
-  end
-
+class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node::BaseController
   def show
     category_type = @content.category_types.find_by_name(params[:category_type_name])
     @category = category_type.find_category_by_path_from_root_category(params[:category_names])
@@ -99,11 +91,5 @@ class GpCategory::Public::Node::CategoriesController < Cms::Controller::Public::
         end
       end
     end
-  end
-
-  private
-
-  def find_public_docs_with_category_ids(category_ids)
-    GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).except(:order).mobile(::Page.mobile?).public
   end
 end
