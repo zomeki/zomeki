@@ -93,7 +93,7 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
             end
           end
 
-        render text: rendered
+        render text: vc.content_tag(:div, rendered.html_safe, class: 'contentGpCategory contentGpCategoryCategory')
       end
     else
       @docs = @category.public_docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: per_page)
