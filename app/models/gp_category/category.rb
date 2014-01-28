@@ -102,6 +102,13 @@ class GpCategory::Category < ActiveRecord::Base
     Cms::Lib::BreadCrumbs.new(crumbs)
   end
 
+  def docs_with_categorization
+    # There are 3 way to categorize (GpArticle::Doc, GpCalendar::Event, Map::Marker)
+    t = categorizations.table
+    docs_without_categorization.where(t[:categorized_as].eq('GpArticle::Doc'))
+  end
+  alias_method_chain :docs, :categorization
+
   def public_docs
     docs.order(inherited_docs_order).mobile(::Page.mobile?).public
   end
