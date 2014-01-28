@@ -15,7 +15,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
             if vc.respond_to?(tm.module_type)
               @content.public_category_types.inject(''){|tags, category_type|
                 tags << vc.content_tag(:section, class: category_type.name) do
-                    html = vc.content_tag(:h2, category_type.title)
+                    html = vc.content_tag(:h2, vc.link_to(category_type.title, category_type.public_uri))
                     html << vc.send(tm.module_type, template_module: tm,
                                     categories: category_type.public_root_categories)
                   end
@@ -148,10 +148,13 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
           case tm.module_type
           when 'categories_1', 'categories_2', 'categories_3'
             if vc.respond_to?(tm.module_type)
-              vc.content_tag(:section, class: @category_type.name) do
-                vc.send(tm.module_type, template_module: tm,
-                        categories: @category_type.public_root_categories)
-              end
+              @category_type.public_root_categories.inject(''){|tags, category|
+                tags << vc.content_tag(:section, class: category.name) do
+                    html = vc.content_tag(:h2, vc.link_to(category.title, category.public_uri))
+                    html << vc.send(tm.module_type, template_module: tm,
+                                    categories: category.public_children)
+                  end
+              }
             end
           when 'docs_1', 'docs_2'
             if vc.respond_to?(tm.module_type)
@@ -221,7 +224,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
           end
         end
 
-      render text: rendered
+      render text: vc.content_tag(:div, rendered.html_safe, class: 'contentGpCategoryCategoryType')
     else
       case @content.category_type_style
       when 'all_docs'
