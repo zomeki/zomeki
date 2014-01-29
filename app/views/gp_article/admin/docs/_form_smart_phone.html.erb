@@ -4,72 +4,44 @@
 
 <div class="tabs">
   <ul>
-    <li><a href="#tab8">オプション</a></li>
-    <li><a href="#tab7">携帯</a></li>
-    <li style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
-    <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
-    <li style="<%= 'display: none;' unless @content.approval_related? %>"><a href="#tab4">承認</a></li>
-    <li style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
-    <li><a href="#tab2">公開日</a></li>
     <li><a href="#tab1">記事</a></li>
+    <li><a href="#tab2">公開日</a></li>
+    <li style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
+    <li style="<%= 'display: none;' unless @content.approval_related? %>"><a href="#tab4">承認</a></li>
+    <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
+    <li style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
+    <li><a href="#tab7">携帯</a></li>
+    <li><a href="#tab8">オプション</a></li>
   </ul>
 
   <div id="tab1">
-    <table class="show">
-      <%- if @content.template_available? -%>
-      <tr>
-        <th><%= f.label :template_id %></th>
-        <td colspan="3"><%= f.select :template_id, @content.templates.map {|t| [t.title, t.id] }, include_blank: true %></td>
-      </tr>
-      <%- end -%>
-      <tr>
-        <th><%= f.label :title %> <span class="note">※</span></th>
-        <td><%= f.text_field :title, :class => 'title', :style => 'width: 440px;' %></td>
-        <th>タイトル設定</th>
-        <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
-      </tr>
-    </table>
+     <div><%= f.label :title %> <span class="note">※</span><br />
+       <%= f.text_field :title, :class => 'title', :style => 'width: 290px;' %></div>
+     <div>タイトル設定<br />
+       <%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></div>
 
     <div id="title_settings" style="display: none;">
-      <table class="show">
-        <tr>
-          <th><%= f.label :href %></th>
-          <td><%= f.text_field :href, :style => 'width: 500px;' %></td>
-          <td><%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :subtitle %></th>
-          <td colspan="2"><%= f.text_area :subtitle, :size => '100x2' %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :summary %></th>
-          <td colspan="2"><%= f.text_area :summary, :size => '100x5' %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :list_image %></th>
-          <td colspan="2"><%= f.text_field :list_image, :style => 'width: 200px;' %></td>
-        </tr>
-      </table>
+      <div><%= f.label :href %><br />
+        <%= f.text_field :href, :style => 'width: 290px;' %><br />
+        <%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %></div>
+      <div><%= f.label :subtitle %><br />
+        <%= f.text_area :subtitle, :size => '100x2', :style => 'width: 290px;' %></div>
+      <div><%= f.label :summary %><br />
+        <%= f.text_area :summary, :size => '100x5', :style => 'width: 290px;' %></div>
+      <div><%= f.label :list_image %><br />
+        <%= f.text_field :list_image, :style => 'width: 200px;' %></div>
     </div>
 
     <div id="normal_body_form" style="<%= 'display:none;' if @item.template %>">
-      <table class="show">
-        <tr>
-          <th><%= f.label :body %></th>
-        </tr>
-        <tr>
-          <td class="cke_editor_wrapper">
-            <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
-            <%= f.text_area :body, :class => 'body ckeditor' %>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
-            <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
-          </td>
-        </tr>
-      </table>
+      <div><%= f.label :body %></div>
+      <div class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :body, :class => 'body ckeditor' %>
+      </div>
+      <div>
+        <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
+        <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
+      </div>
     </div>
 
     <div id="template_body_form">
@@ -79,35 +51,21 @@
     <%- if @content.blog_functions_available? -%>
     <p class="form">追記を入力する</p>
 
-    <table class="show">
-      <tr>
-        <td><%= link_to_function '開く▼', "toggle_form(this, '#body_more')" %></td>
-      </tr>
-    </table>
+    <div><%= link_to_function '開く▼', "toggle_form(this, '#body_more')" %></div>
 
     <div id="body_more" style="display: none;">
-      <table class="show">
-        <tr>
-          <th><%= f.label :body_more_link_text %></th>
-          <td><%= f.text_field :body_more_link_text, :style => 'width: 200px;' %></td>
-        </tr>
-        <tr>
-          <td colspan="2" class="cke_editor_wrapper">
-            <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
-            <%= f.text_area :body_more, :class => 'body ckeditor' %>
-          </td>
-        </tr>
-      </table>
+      <div><%= f.label :body_more_link_text %><br />
+        <%= f.text_field :body_more_link_text, :style => 'width: 200px;' %></div>
+      <div class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :body_more, :class => 'body ckeditor' %>
+      </div>
     </div>
     <%- end -%>
 
     <p class="form">添付ファイル</p>
 
-    <table class="show">
-      <tr>
-        <td><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></td>
-      </tr>
-    </table>
+    <div><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></div>
 
     <div id="inline_files" style="display: none;">
       <%= hidden_field_tag :_tmp, inline_id %>
@@ -116,69 +74,56 @@
 
     <p class="form">記事設定</p>
 
-    <table class="show">
-      <%- @visible_category_types.each do |category_type| -%>
-      <tr>
-        <th><%= category_type.title %></th>
-        <td>
-          <div id="category_type_<%= category_type.id %>_categories">
-            <%= render 'category', category_type: category_type, category: nil,
-                                   categories_for_option: category_type.categories_for_option %>
-            <%- if (pc = @params_categories[category_type.id.to_s]).kind_of?(Array) -%>
-              <%- pc.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
-              <%= render 'category', category_type: category_type, category: category,
-                                     categories_for_option: category_type.categories_for_option %>
-              <%- end -%>
-            <%- else -%>
-              <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
-              <%= render 'category', category_type: category_type, category: category,
-                                     categories_for_option: category_type.categories_for_option %>
-              <%- end -%>
-            <%- end -%>
-            <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
-          </div>
-        </td>
-      </tr>
+    <%- @visible_category_types.each do |category_type| -%>
+    <div><%= category_type.title %></div>
+    <div id="category_type_<%= category_type.id %>_categories">
+      <%= render 'category', category_type: category_type, category: nil,
+                             categories_for_option: category_type.categories_for_option %>
+      <%- if (pc = @params_categories[category_type.id.to_s]).kind_of?(Array) -%>
+        <%- pc.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: category_type.categories_for_option %>
+        <%- end -%>
+      <%- else -%>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: category_type.categories_for_option %>
+        <%- end -%>
       <%- end -%>
+      <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+    </div>
+    <%- end -%>
+
+    <div><%= f.label :feature_1 %><br />
+      <%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %></div>
+    <div><%= f.label :feature_2 %><br />
+      <%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %></div>
+
+    <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
+    <div><%= f.label :raw_tags %><br />
+      <%= f.text_field :raw_tags, :style => 'width: 700px;' %></div>
+    <%- end -%>
+
+    <div><%= f.label :in_rel_doc_ids %></div>
+    <table class="noDesign">
       <tr>
-        <th><%= f.label :feature_1 %></th>
-        <td><%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %></td>
+        <td style="width: 100px;"><%= GpCategory::CategoryType.model_name.human %></td>
+        <td style="width: 200px;"><%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></td>
+        <td style="width: 100px;"><%= GpCategory::Category.model_name.human %></td>
+        <td><%= select_tag 'rel_category', '', include_blank: true %></td>
       </tr>
       <tr>
-        <th><%= f.label :feature_2 %></th>
-        <td><%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %></td>
-      </tr>
-      <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
-      <tr>
-        <th><%= f.label :raw_tags %></th>
-        <td><%= f.text_field :raw_tags, :style => 'width: 700px;' %></td>
-      </tr>
-      <%- end -%>
-      <tr>
-        <th><%= f.label :in_rel_doc_ids %></th>
-        <td>
-          <table class="noDesign">
-            <tr>
-              <td style="width: 100px;"><%= GpCategory::CategoryType.model_name.human %></td>
-              <td style="width: 200px;"><%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></td>
-              <td style="width: 100px;"><%= GpCategory::Category.model_name.human %></td>
-              <td><%= select_tag 'rel_category', '', include_blank: true %></td>
-            </tr>
-            <tr>
-              <td><%= GpArticle::Doc.model_name.human %></td>
-              <td colspan="2"><%= select_tag 'rel_doc', '', include_blank: true %></td>
-              <td><%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></td>
-            </tr>
-          </table>
-          <hr />
-          <div id="rel_docs">
-            <%- @item.rel_docs.each do |doc| -%>
-            <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
-            <%- end -%>
-          </div>
-        </td>
+        <td><%= GpArticle::Doc.model_name.human %></td>
+        <td colspan="2"><%= select_tag 'rel_doc', '', include_blank: true %></td>
+        <td><%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></td>
       </tr>
     </table>
+    <hr />
+    <div id="rel_docs">
+      <%- @item.rel_docs.each do |doc| -%>
+      <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
+      <%- end -%>
+    </div>
   </div>
   <div id="tab2">
     <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
@@ -554,7 +499,7 @@ $(document).ready(function () {
   });
 
   $('.tabs').tabs({
-    active: ($('.tabs > ul > li').length - 1),
+    active: 0,
     show: function (event, ui) {
         if ((typeof me) !== 'undefined' && me) {
           var lat = $('#centerDispLat').val();
@@ -567,7 +512,6 @@ $(document).ready(function () {
         }
       }
   });
-  $('.tabs .ui-tabs-nav > li').css('float', 'right');
 
   set_copy_date('#item_event_started_on', '#item_event_ended_on');
   set_copy_date('#item_event_ended_on', '#item_event_started_on');
