@@ -87,6 +87,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def new
     @item = @content.docs.build
+    render 'new_smart_phone', layout: 'admin/gp_article_smart_phone' if Page.smart_phone?
   end
 
   def create
