@@ -1,11 +1,24 @@
 @charset "UTF-8";
 
+@import "navi.css";
+
 body {
   /* fix font-size bug on iOS Safari */
   -webkit-text-size-adjust: 100%;
 }
 input[type="text"], select, textarea {
   width: 200px !important;
+}
+ul, ol, dl {
+  margin: 0;
+}
+ul {
+  list-style-type: none;
+  list-style-position: outside;
+}
+li {
+  margin-left: 20px;
+  line-height: 1.4;
 }
 * {
   font-size: 10px !important;
@@ -22,6 +35,14 @@ input[type="text"], select, textarea {
 .notice {
   margin: 5px 5px;
   color: #009632;
+}
+
+.submitters {
+  margin: 10px;
+}
+
+.iframe-wrapper {
+  overflow: auto;
 }
 
 .tabs .ui-tabs-nav {
