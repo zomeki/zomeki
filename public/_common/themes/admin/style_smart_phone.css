@@ -11,8 +11,17 @@ input[type="text"], select, textarea {
   font-size: 10px !important;
 }
 
+.alert {
+  margin: 5px 5px;
+  color: #f00;
+}
 .note {
+  margin: 5px 5px;
   color: #e00;
+}
+.notice {
+  margin: 5px 5px;
+  color: #009632;
 }
 
 .tabs .ui-tabs-nav {
