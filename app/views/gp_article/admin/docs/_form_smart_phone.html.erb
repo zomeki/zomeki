@@ -105,20 +105,16 @@
     <%- end -%>
 
     <div><%= f.label :in_rel_doc_ids %></div>
-    <table class="noDesign">
-      <tr>
-        <td style="width: 100px;"><%= GpCategory::CategoryType.model_name.human %></td>
-        <td style="width: 200px;"><%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></td>
-        <td style="width: 100px;"><%= GpCategory::Category.model_name.human %></td>
-        <td><%= select_tag 'rel_category', '', include_blank: true %></td>
-      </tr>
-      <tr>
-        <td><%= GpArticle::Doc.model_name.human %></td>
-        <td colspan="2"><%= select_tag 'rel_doc', '', include_blank: true %></td>
-        <td><%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></td>
-      </tr>
-    </table>
+    <div><%= GpCategory::CategoryType.model_name.human %><br />
+      <%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></div>
+    <div><%= GpCategory::Category.model_name.human %><br />
+      <%= select_tag 'rel_category', '', include_blank: true %></div>
+    <div><%= GpArticle::Doc.model_name.human %></div>
+    <div><%= select_tag 'rel_doc', '', include_blank: true %><br />
+      <%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></div>
+
     <hr />
+
     <div id="rel_docs">
       <%- @item.rel_docs.each do |doc| -%>
       <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
