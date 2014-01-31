@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>title</title>
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+
+  <%= stylesheet_link_tag '/_common/themes/admin/style_smart_phone.css' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+  <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
+  <%= yield %>
+</body>
+</html>

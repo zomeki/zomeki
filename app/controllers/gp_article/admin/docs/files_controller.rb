@@ -17,7 +17,11 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   def index
     @item = Sys::File.new
     @items = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid)).paginate(page: params[:page], per_page: 20).order(:name)
-    _index @items
+    if Page.smart_phone?
+      render 'index_smart_phone', layout: 'admin/gp_article_files_smart_phone'
+    else
+      _index @items
+    end
   end
 
   def show
