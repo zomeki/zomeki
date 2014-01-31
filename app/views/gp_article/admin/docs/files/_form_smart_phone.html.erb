@@ -1,0 +1,30 @@
+<%- if @item.new_record? -%>
+<div><%= f.label :file %><br />
+  <%= f.file_field :file, style: 'width: 500px;' %></div>
+<div>画像リサイズ <span class="note">※長辺の長さ</span><br />
+  <%= select_tag :image_resize, options_for_select(Sys::Model::Base::File::IMAGE_RESIZE_OPTIONS), include_blank: true %></div>
+<%- end -%>
+<div><%= f.label :name %> <span class="note">※半角英数字のみ</span><br />
+  <%= f.text_field :name, class: 'string', size: 55 %></div>
+<div><%= f.label :title %> <span class="note">※日本語でわかりやすく</span><br />
+  <%= f.text_field :title, class: 'string', size: 55 %></div>
+<div><%= f.submit(submit_label) %></div>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_file').on('change', function (event) {
+    var name = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+    $('#item_name').val(name.replace(/[^0-9a-z\.\-_\\+@#]/ig, ''));
+    $('#item_title').val(name.replace(/(.*)\.[a-z]+$/i, '$1'));
+  });
+
+  $('#file_form').on('submit', function (event) {
+    var item_name = $('#item_name').val();
+    if ($('.item_name[item_name="' + item_name + '"]').length > 0) {
+      if (!confirm("この保存ファイル名は既に存在しています。\n上書きしてもよろしいですか？")) {
+        return false;
+      }
+    }
+  });
+});
+<%- end -%>

@@ -1,10 +1,18 @@
 @charset "UTF-8";
 
+body {
+  /* fix font-size bug on iOS Safari */
+  -webkit-text-size-adjust: 100%;
+}
 input[type="text"], select, textarea {
   width: 200px !important;
 }
 * {
-  font-size: .9em !important;
+  font-size: 10px !important;
+}
+
+.note {
+  color: #e00;
 }
 
 .tabs .ui-tabs-nav {
