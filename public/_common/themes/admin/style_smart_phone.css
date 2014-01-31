@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+input[type="text"], select, textarea {
+  width: 200px !important;
+}
+* {
+  font-size: .9em !important;
+}
+
 .tabs .ui-tabs-nav {
   background: transparent;
   border-width: 0;
