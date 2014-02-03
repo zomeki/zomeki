@@ -138,7 +138,6 @@ module GpCategory::GpCategoryHelper
             t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
           }.html_safe
         end
-      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
 
       if with_child_categories && category.children.present?
         html << content_tag(:section) do
@@ -148,9 +147,9 @@ module GpCategory::GpCategoryHelper
               }.html_safe
             end
           end
-      else
-        html
       end
+
+      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
     end
   end
 end
