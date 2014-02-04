@@ -1,7 +1,8 @@
 @charset "UTF-8";
-
 @import "navi.css";
 
+/* Elements
+--------------------------------------------------------- */
 body {
   /* fix font-size bug on iOS Safari */
   -webkit-text-size-adjust: 100%;
@@ -45,6 +46,8 @@ li {
   overflow: auto;
 }
 
+/* Tabs
+--------------------------------------------------------- */
 .tabs .ui-tabs-nav {
   background: transparent;
   border-width: 0;
@@ -81,4 +84,31 @@ li {
 }
 .tabs .ui-tabs-panel {
   padding: .5em 0;
+}
+
+/* etc.
+--------------------------------------------------------- */
+p.form, p.managerForm {
+  margin: 20px 0px 10px 0px;
+  padding: 0px 5px 0px 0px;
+  font-size: 110%;
+  font-weight: bold;
+  line-height: 1.6;
+}
+p.form {
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+p.managerForm {
+  border-bottom: 1px solid #bf1400;
+  color: #bf1400;
+}
+
+.inlineForm {
+  margin: 0px 0px 2px 0px;
+  padding: 2px;
+  border: 1px solid #ccc;
+}
+form .note {
+  color: #e00;
 }
