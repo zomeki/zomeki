@@ -15,25 +15,37 @@
   </ul>
 
   <div id="tab1">
-     <div><%= f.label :title %> <span class="note">※</span><br />
-       <%= f.text_field :title, :class => 'title', :style => 'width: 290px;' %></div>
-     <div>タイトル設定<br />
-       <%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></div>
+    <div>
+      <div class="label"><%= f.label :title %> <span class="note">※</span></div>
+      <%= f.text_field :title, :class => 'title', :style => 'width: 290px;' %>
+    </div>
+    <div>
+      <div class="label">タイトル設定</div>
+      <%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %>
+    </div>
 
     <div id="title_settings" style="display: none;">
-      <div><%= f.label :href %><br />
+      <div>
+        <div class="label"><%= f.label :href %></div>
         <%= f.text_field :href, :style => 'width: 290px;' %><br />
-        <%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %></div>
-      <div><%= f.label :subtitle %><br />
-        <%= f.text_area :subtitle, :size => '100x2', :style => 'width: 290px;' %></div>
-      <div><%= f.label :summary %><br />
-        <%= f.text_area :summary, :size => '100x5', :style => 'width: 290px;' %></div>
-      <div><%= f.label :list_image %><br />
-        <%= f.text_field :list_image, :style => 'width: 200px;' %></div>
+        <%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %>
+      </div>
+      <div>
+        <div class="label"><%= f.label :subtitle %></div>
+        <%= f.text_area :subtitle, :size => '100x2', :style => 'width: 290px;' %>
+      </div>
+      <div>
+        <div class="label"><%= f.label :summary %></div>
+        <%= f.text_area :summary, :size => '100x5', :style => 'width: 290px;' %>
+      </div>
+      <div>
+        <div class="label"><%= f.label :list_image %></div>
+        <%= f.text_field :list_image, :style => 'width: 200px;' %>
+      </div>
     </div>
 
     <div id="normal_body_form" style="<%= 'display:none;' if @item.template %>">
-      <div><%= f.label :body %></div>
+      <div class="label"><%= f.label :body %></div>
       <div class="cke_editor_wrapper">
         <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
         <%= f.text_area :body, :class => 'body ckeditor' %>
@@ -45,7 +57,8 @@
     </div>
 
     <div id="template_body_form">
-      <%= render partial: 'gp_template/admin/shared/form', locals: {template: @item.template, template_values: @item.template_values} if @item.template %>
+      <%= render partial: 'gp_template/admin/shared/form',
+                  locals: {template: @item.template, template_values: @item.template_values} if @item.template %>
     </div>
 
     <%- if @content.blog_functions_available? -%>
@@ -54,8 +67,10 @@
     <div><%= link_to_function '開く▼', "toggle_form(this, '#body_more')" %></div>
 
     <div id="body_more" style="display: none;">
-      <div><%= f.label :body_more_link_text %><br />
-        <%= f.text_field :body_more_link_text, :style => 'width: 200px;' %></div>
+      <div>
+        <div class="label"><%= f.label :body_more_link_text %></div>
+        <%= f.text_field :body_more_link_text, :style => 'width: 200px;' %>
+      </div>
       <div class="cke_editor_wrapper">
         <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
         <%= f.text_area :body_more, :class => 'body ckeditor' %>
@@ -75,7 +90,7 @@
     <p class="form">記事設定</p>
 
     <%- @visible_category_types.each do |category_type| -%>
-    <div><%= category_type.title %></div>
+    <div class="label"><%= category_type.title %></div>
     <div id="category_type_<%= category_type.id %>_categories">
       <%= render 'category', category_type: category_type, category: nil,
                              categories_for_option: category_type.categories_for_option %>
@@ -94,22 +109,32 @@
     </div>
     <%- end -%>
 
-    <div><%= f.label :feature_1 %><br />
-      <%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %></div>
-    <div><%= f.label :feature_2 %><br />
-      <%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %></div>
+    <div>
+      <div class="label"><%= f.label :feature_1 %></div>
+      <%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %>
+    </div>
+    <div>
+      <div class="label"><%= f.label :feature_2 %></div>
+      <%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %>
+    </div>
 
     <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
-    <div><%= f.label :raw_tags %><br />
-      <%= f.text_field :raw_tags, :style => 'width: 700px;' %></div>
+    <div>
+      <div class="label"><%= f.label :raw_tags %></div>
+      <%= f.text_field :raw_tags, :style => 'width: 700px;' %>
+    </div>
     <%- end -%>
 
-    <div><%= f.label :in_rel_doc_ids %></div>
-    <div><%= GpCategory::CategoryType.model_name.human %><br />
-      <%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %></div>
-    <div><%= GpCategory::Category.model_name.human %><br />
-      <%= select_tag 'rel_category', '', include_blank: true %></div>
-    <div><%= GpArticle::Doc.model_name.human %></div>
+    <div class="label"><%= f.label :in_rel_doc_ids %></div>
+    <div>
+      <div class="label"><%= GpCategory::CategoryType.model_name.human %></div>
+      <%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %>
+    </div>
+    <div>
+      <div class="label"><%= GpCategory::Category.model_name.human %></div>
+      <%= select_tag 'rel_category', '', include_blank: true %>
+    </div>
+    <div class="label"><%= GpArticle::Doc.model_name.human %></div>
     <div><%= select_tag 'rel_doc', '', include_blank: true %><br />
       <%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></div>
 
