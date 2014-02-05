@@ -1,6 +1,6 @@
 <%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true, :id => 'file_form'}) do |f| %>
   <%= error_messages_for :item %>
-  <%= render 'form_smart_phone', f: f, submit_label: 'アップロード' %>
+  <%= render 'form_multiple_smart_phone', f: f, submit_label: 'アップロード' %>
 <% end %>
 
 <%= javascript_tag do %>
@@ -25,9 +25,9 @@ function ckeInsertContent(value) {
     <th style="text-align: center;">番号</th>
     <th style="text-align: center;">添付</th>
     <th style="text-align: center;">サムネイル</th>
-    <th style="text-align: center;">画像の貼付</th>
+    <th style="text-align: center;">画像<br />貼付</th>
     <th>添付ファイル名</th>
-    <th style="text-align: center;">サイズ（幅x高さ）</th>
+    <th style="text-align: center;">サイズ<br />（幅x高さ）</th>
   </tr>
 
   <% @items.each do |item| %>
