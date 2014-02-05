@@ -10,19 +10,29 @@ CKEDITOR.editorConfig = function( config ) {
 
   // ツールバーの設定
   // http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html#.toolbar_Full
-  config.toolbar = [
-    { name: 'document',    items : [ 'Source','-','DocProps','Preview','-','Templates' ] },
-    { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-    { name: 'styles',      items : [ 'FontSize','Font','Format','Styles' ] },
-    { name: 'editing',     items : [ 'Find','Replace','-','SelectAll' ] },
-    { name: 'tools',       items : [ 'Maximize', 'ShowBlocks' ] },
-    '/',
-    { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-    { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
-    { name: 'links',       items : [ 'ZomekiLink','ZomekiUnlink','ZomekiAnchor' ] },
-    { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube','Audio','Video' ] }
-
-  ];
+  if (zomeki && zomeki.Page && zomeki.Page.smart_phone) {
+    config.toolbar = [
+      { name: 'styles',      items : [ 'Format' ] },
+      { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike' ] },
+      '/',
+      { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight' ] },
+      { name: 'links',       items : [ 'ZomekiLink','ZomekiUnlink' ] },
+      { name: 'insert',      items : [ 'Image' ] }
+    ];
+  } else {
+    config.toolbar = [
+      { name: 'document',    items : [ 'Source','-','DocProps','Preview','-','Templates' ] },
+      { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+      { name: 'styles',      items : [ 'FontSize','Font','Format','Styles' ] },
+      { name: 'editing',     items : [ 'Find','Replace','-','SelectAll' ] },
+      { name: 'tools',       items : [ 'Maximize', 'ShowBlocks' ] },
+      '/',
+      { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+      { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
+      { name: 'links',       items : [ 'ZomekiLink','ZomekiUnlink','ZomekiAnchor' ] },
+      { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube','Audio','Video' ] }
+    ];
+  }
 
   // 外部CSSを読み込み
   var css = [config.contentsCss];
