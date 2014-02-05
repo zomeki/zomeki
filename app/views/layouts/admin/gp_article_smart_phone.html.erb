@@ -14,6 +14,7 @@
   <%= javascript_include_tag '/_common/js/jquery-ui-timepicker-addon.js' %>
 
   <%= stylesheet_link_tag '/_common/themes/admin/style_smart_phone.css' %>
+  <%= javascript_include_tag '/_common/js/zomeki_admin/zomeki.js' %>
   <%= javascript_include_tag '/_common/js/zomeki_admin/form.js' %>
   <%= javascript_include_tag '/_common/js/zomeki_admin/navi.js' %>
 
@@ -22,6 +23,13 @@
   <%= csrf_meta_tags %>
 </head>
 <body style="margin: 0; padding: 0;">
+  <%= javascript_tag do -%>
+  $(function () {
+    if (zomeki && zomeki.Page) {
+      zomeki.Page.smart_phone = <%= Page.smart_phone? ? 'true' : 'false' %>;
+    }
+  });
+  <%- end -%>
   <div style="background-image: url(/_common/themes/admin/images/header_re.gif); width: 100%;"><%= image_tag '/_common/themes/admin/images/header_logo.gif' %></div>
   <div style="padding: 10px;"><%= Core.user_group.try(:name) %> <%= Core.user.try(:name_with_account ) %></div>
   <div style="padding-bottom: 10px; text-align: right;"><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>/logout">ログアウト</a></div>
