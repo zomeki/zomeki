@@ -32,7 +32,7 @@ item.build_default_inquiry
         <td>
           <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
           <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
-          <%= f2.select_with_tree :group_id, groups, 
+          <%= f2.select_with_tree :group_id, groups,
             :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
           <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
         </td>
@@ -53,7 +53,7 @@ item.build_default_inquiry
       <%- if item.inquiry_display_field?(:fax) -%>
       <tr>
         <th><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></th>
-        <td><%= f2.text_field :fax, :class => 'number' %></div></td>
+        <td><%= f2.text_field :fax, :class => 'number' %></td>
       </tr>
       <%- end -%>
       <%- if item.inquiry_display_field?(:email) -%>
