@@ -16,36 +16,36 @@
 
   <div id="tab1">
     <div>
-      <div class="label"><%= f.label :title %> <span class="note">※</span></div>
+      <div class="label1"><%= f.label :title %> <span class="note">※</span></div>
       <%= f.text_field :title, :class => 'title', :style => 'width: 290px;' %>
     </div>
     <div>
-      <div class="label">タイトル設定</div>
+      <div class="label1">タイトル設定</div>
       <%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %>
     </div>
 
     <div id="title_settings" style="display: none;">
       <div>
-        <div class="label"><%= f.label :href %></div>
+        <div class="label1"><%= f.label :href %></div>
         <%= f.text_field :href, :style => 'width: 290px;' %><br />
         <%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %>
       </div>
       <div>
-        <div class="label"><%= f.label :subtitle %></div>
+        <div class="label1"><%= f.label :subtitle %></div>
         <%= f.text_area :subtitle, :size => '100x2', :style => 'width: 290px;' %>
       </div>
       <div>
-        <div class="label"><%= f.label :summary %></div>
+        <div class="label1"><%= f.label :summary %></div>
         <%= f.text_area :summary, :size => '100x5', :style => 'width: 290px;' %>
       </div>
       <div>
-        <div class="label"><%= f.label :list_image %></div>
+        <div class="label1"><%= f.label :list_image %></div>
         <%= f.text_field :list_image, :style => 'width: 200px;' %>
       </div>
     </div>
 
     <div id="normal_body_form" style="<%= 'display:none;' if @item.template %>">
-      <div class="label"><%= f.label :body %></div>
+      <div class="label1"><%= f.label :body %></div>
       <div class="cke_editor_wrapper">
         <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
         <%= f.text_area :body, :class => 'body ckeditor' %>
@@ -68,7 +68,7 @@
 
     <div id="body_more" style="display: none;">
       <div>
-        <div class="label"><%= f.label :body_more_link_text %></div>
+        <div class="label1"><%= f.label :body_more_link_text %></div>
         <%= f.text_field :body_more_link_text, :style => 'width: 200px;' %>
       </div>
       <div class="cke_editor_wrapper">
@@ -90,7 +90,7 @@
     <p class="form">記事設定</p>
 
     <%- @visible_category_types.each do |category_type| -%>
-    <div class="label"><%= category_type.title %></div>
+    <div class="label1"><%= category_type.title %></div>
     <div id="category_type_<%= category_type.id %>_categories">
       <%= render 'category', category_type: category_type, category: nil,
                              categories_for_option: category_type.categories_for_option %>
@@ -110,33 +110,35 @@
     <%- end -%>
 
     <div>
-      <div class="label"><%= f.label :feature_1 %></div>
+      <div class="label1"><%= f.label :feature_1 %></div>
       <%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %>
     </div>
     <div>
-      <div class="label"><%= f.label :feature_2 %></div>
+      <div class="label1"><%= f.label :feature_2 %></div>
       <%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %>
     </div>
 
     <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
     <div>
-      <div class="label"><%= f.label :raw_tags %></div>
+      <div class="label1"><%= f.label :raw_tags %></div>
       <%= f.text_field :raw_tags, :style => 'width: 700px;' %>
     </div>
     <%- end -%>
 
-    <div class="label"><%= f.label :in_rel_doc_ids %></div>
+    <div class="label1"><%= f.label :in_rel_doc_ids %></div>
     <div>
-      <div class="label"><%= GpCategory::CategoryType.model_name.human %></div>
+      <div class="label2"><%= GpCategory::CategoryType.model_name.human %></div>
       <%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %>
     </div>
     <div>
-      <div class="label"><%= GpCategory::Category.model_name.human %></div>
+      <div class="label2"><%= GpCategory::Category.model_name.human %></div>
       <%= select_tag 'rel_category', '', include_blank: true %>
     </div>
-    <div class="label"><%= GpArticle::Doc.model_name.human %></div>
-    <div><%= select_tag 'rel_doc', '', include_blank: true %><br />
-      <%= button_tag '追加', type: 'button', id: 'add_rel_doc' %></div>
+    <div>
+      <div class="label2"><%= GpArticle::Doc.model_name.human %></div>
+      <%= select_tag 'rel_doc', '', include_blank: true %><br />
+      <%= button_tag '追加', type: 'button', id: 'add_rel_doc' %>
+    </div>
 
     <hr />
 
@@ -150,111 +152,100 @@
     <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
     <p class="form" style="margin-top: 0;">表示日時設定</p>
 
-    <table class="show">
-      <%- if @content.display_dates(:published_at) -%>
-      <tr>
-        <th>公開日時</th>
-        <td><%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
-                             :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-      </tr>
-      <%- end -%>
-      <%- if @content.display_dates(:updated_at) -%>
-      <tr>
-        <th>最終更新日時</th>
-        <td><%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
-                             :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-      </tr>
-      <%- end -%>
-    </table>
+    <%- if @content.display_dates(:published_at) -%>
+    <div>
+      <div class="label1">公開日時</div>
+      <%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
+                       :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <%- end -%>
+    <%- if @content.display_dates(:updated_at) -%>
+    <div>
+      <div class="label1">最終更新日時</div>
+      <%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
+                       :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <%- end -%>
     <%- end -%>
 
     <p class="form">公開日時設定</p>
 
-    <table class="show">
-      <tr>
-        <th>公開開始日時</th>
-        <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-      </tr>
-      <tr>
-        <th>公開終了日時</th>
-        <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1">公開開始日時</div>
+      <%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <div>
+      <div class="label1">公開終了日時</div>
+      <%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
   </div>
   <div id="tab3">
-    <%= render 'cms/admin/_partial/many_inquiries/form', {f: f, item: @item, content: @content} %>
+    <%= render 'cms/admin/_partial/many_inquiries/form_smart_phone', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab4">
     <%- if @content.approval_content_approval_flow -%>
-    <table class="show">
-      <tr>
-        <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
-          <%- unless approval_flows.empty? -%>
-          <table class="approval noDesign">
-            <%- approval_flows.each do |approval_flow| -%>
-            <tr>
-              <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
-              <td><%= approval_flow.approvals.map{|a|
-                approvers = a.approvers.pluck(:name).join('、')
-                content_tag(:span, approvers, style: 'padding: 4px;')
-                }.join(' ＞ ').html_safe %></td>
-            </tr>
-            <%- end -%>
-          </table>
+    <div>
+      <div class="label1"><%= Approval::ApprovalFlow.model_name.human %></div>
+      <%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
+        <%- unless approval_flows.empty? -%>
+        <table class="approval noDesign">
+          <%- approval_flows.each do |approval_flow| -%>
+          <tr>
+            <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+            <td><%= approval_flow.approvals.map{|a|
+              approvers = a.approvers.pluck(:name).join('、')
+              content_tag(:span, approvers, style: 'padding: 4px;')
+              }.join(' ＞ ').html_safe %></td>
+          </tr>
           <%- end -%>
-        </td>
-      </tr>
-    </table>
+        </table>
+      <%- end -%>
+    </div>
     <%- else -%>
     <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
     <%- end -%>
   </div>
   <div id="tab5">
-    <table class="show">
-      <%- if @content.gp_calendar_content_event -%>
-      <tr>
-        <th><%= f.label :event_state %></th>
-        <td><%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %></td>
-      </tr>
-      <%- end -%>
-      <tr>
-        <th><%= f.label :event_started_on %></th>
-        <td><%= f.text_field :event_started_on, :value => value_for_datepicker(f.object_name, :event_started_on),
-                                                :style => 'width: 150px;', :class => 'datepicker' %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :event_ended_on %></th>
-        <td><%= f.text_field :event_ended_on, :value => value_for_datepicker(f.object_name, :event_ended_on),
-                                              :style => 'width: 150px;', :class => 'datepicker' %></td>
-      </tr>
-      <%- @event_category_types.each do |category_type| -%>
-      <tr>
-        <th><%= category_type.title %></th>
-        <td>
-          <div id="event_category_type_<%= category_type.id %>_categories">
-            <%= render 'category', category_type: category_type, category: nil,
-                                   categories_for_option: @content.event_category_type_categories_for_option(category_type),
-                                   prefix: 'event_' %>
-            <%- if (pec = @params_event_categories[category_type.id.to_s]).kind_of?(Array) -%>
-              <%- pec.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
-              <%= render 'category', category_type: category_type, category: category,
-                                     categories_for_option: @content.event_category_type_categories_for_option(category_type),
-                                     prefix: 'event_' %>
-              <%- end -%>
-            <%- else -%>
-            <%- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
-              <%= render 'category', category_type: category_type, category: category,
-                                     categories_for_option: @content.event_category_type_categories_for_option(category_type),
-                                     prefix: 'event_' %>
-              <%- end -%>
-            <%- end -%>
-            <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
-          </div>
-        </td>
-      </tr>
-      <%- end -%>
-    </table>
+    <%- if @content.gp_calendar_content_event -%>
+    <div>
+      <div class="label1"><%= f.label :event_state %></div>
+      <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
+    </div>
+    <%- end -%>
+    <div>
+      <div class="label1"><%= f.label :event_started_on %></div>
+      <%= f.text_field :event_started_on, :value => value_for_datepicker(f.object_name, :event_started_on),
+                                          :style => 'width: 150px;', :class => 'datepicker' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :event_ended_on %></div>
+      <%= f.text_field :event_ended_on, :value => value_for_datepicker(f.object_name, :event_ended_on),
+                                        :style => 'width: 150px;', :class => 'datepicker' %>
+    </div>
+    <%- @event_category_types.each do |category_type| -%>
+    <div>
+      <div class="label1"><%= category_type.title %></div>
+      <div id="event_category_type_<%= category_type.id %>_categories">
+        <%= render 'category', category_type: category_type, category: nil,
+                               categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                               prefix: 'event_' %>
+        <%- if (pec = @params_event_categories[category_type.id.to_s]).kind_of?(Array) -%>
+          <%- pec.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+          <%= render 'category', category_type: category_type, category: category,
+                                 categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                 prefix: 'event_' %>
+          <%- end -%>
+        <%- else -%>
+        <%- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
+          <%= render 'category', category_type: category_type, category: category,
+                                 categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                 prefix: 'event_' %>
+          <%- end -%>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+      </div>
+    </div>
+    <%- end -%>
   </div>
   <div id="tab6">
     <table class="show">
@@ -294,139 +285,117 @@
     <%= google_map_form f %>
   </div>
   <div id="tab7">
-    <table class="show">
-      <tr>
-        <th><%= f.label :mobile_title %></th>
-        <td><%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %></td>
-      </tr>
-      <tr>
-        <th colspan="2"><%= f.label :mobile_body %></th>
-      </tr>
-      <tr>
-        <td colspan="2" class="cke_editor_wrapper">
-          <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
-          <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
-        </td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1"><%= f.label :mobile_title %></div>
+      <%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :mobile_body %></div>
+    </div>
+    <div>
+      <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+      <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
+    </div>
   </div>
   <div id="tab8">
     <p class="form" style="margin-top: 0;">基本設定</p>
 
-    <table class="show">
-      <tr>
-        <th><%= f.label :name %></th>
-        <td>
-          <%- if @item.prev_edition -%>
-          <%= @item.name %><%= f.hidden_field :name %>
-          <%- else -%>
-          <%= f.text_field :name, :style => 'width: 200px;' %>
-          <%- end -%>
-        </td>
-      </tr>
-      <tr>
-        <th>表示端末</th>
-        <td>
-          <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
-          <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
-        </td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1"><%= f.label :name %></div>
+      <%- if @item.prev_edition -%>
+      <%= @item.name %><%= f.hidden_field :name %>
+      <%- else -%>
+      <%= f.text_field :name, :style => 'width: 200px;' %>
+      <%- end -%>
+    </div>
+    <div>
+      <div class="label1">表示端末</div>
+      <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
+      <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
+    </div>
 
     <p class="form">metaタグ（検索エンジン用）</p>
 
-    <table class="show">
-      <tr>
-        <th><%= f.label :meta_description %></th>
-        <td><%= f.text_area :meta_description, :size => '100x3' %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :meta_keywords %></th>
-        <td><%= f.text_field :meta_keywords, :style => 'width: 700px;' %></td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1"><%= f.label :meta_description %></div>
+      <%= f.text_area :meta_description, :size => '100x3' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :meta_keywords %></div>
+      <%= f.text_field :meta_keywords, :style => 'width: 700px;' %>
+    </div>
 
     <p class="form">SNS(OGP)</p>
 
     <%- if @content.sns_share_related? -%>
-    <table class="show">
       <%- if @content.sns_share_content_account -%>
-      <tr>
-        <th rowspan="2">SNS投稿</th>
-        <td>
-          <%- unless @content.sns_share_content_account.accounts.empty? -%>
-          <table class="noDesign">
-          <%- @content.sns_share_content_account.accounts.each do |account| -%>
-          <tr>
-            <td><%= check_box_tag 'share_accounts[]', account.id, (@params_share_accounts ? @params_share_accounts.include?(account.id.to_s)
-                                                                                          : @item.sns_accounts.include?(account)) , id: "share_accounts_#{account.id}" %>
-              <%= label_tag "share_accounts_#{account.id}", '投稿する' %></td>
-            <td><%= account.provider.humanize %></td>
-            <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
-            <td>
-              <%= link_to_if account.info_url.present?, "#{account.info_name}#{account.info_nickname.presence ? " (#{account.info_nickname})" : ''}", account.info_url, target: 'preview' %>
-              <%- if account.provider == 'facebook' -%>
-                <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
-              <%- end -%>
-            </td>
-          </tr>
-          <%- end -%>
-          </table>
-          <%- end -%>
-        </td>
-      </tr>
-      <tr>
-        <td><%= f.radio_buttons :share_to_sns_with, GpArticle::Doc::SHARE_TO_SNS_WITH_OPTIONS %></td>
-      </tr>
+      <div>
+        <div class="label1">SNS投稿</div>
+        <%- unless @content.sns_share_content_account.accounts.empty? -%>
+        <table class="noDesign">
+        <%- @content.sns_share_content_account.accounts.each do |account| -%>
+        <tr>
+          <td><%= check_box_tag 'share_accounts[]', account.id, (@params_share_accounts ? @params_share_accounts.include?(account.id.to_s)
+                                                                                        : @item.sns_accounts.include?(account)) , id: "share_accounts_#{account.id}" %>
+            <%= label_tag "share_accounts_#{account.id}", '投稿する' %></td>
+          <td><%= account.provider.humanize %></td>
+          <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
+          <td>
+            <%= link_to_if account.info_url.present?, "#{account.info_name}#{account.info_nickname.presence ? " (#{account.info_nickname})" : ''}", account.info_url, target: 'preview' %>
+            <%- if account.provider == 'facebook' -%>
+              <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
+            <%- end -%>
+          </td>
+        </tr>
+        <%- end -%>
+        </table>
+        <%- end -%>
+      </div>
+      <div>
+        <%= f.radio_buttons :share_to_sns_with, GpArticle::Doc::SHARE_TO_SNS_WITH_OPTIONS %>
+      </div>
       <%- else -%>
-      <tr>
-        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
-      </tr>
+      <div>
+        <%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %>
+      </div>
       <%- end -%>
-    </table>
     <%- end -%>
 
-    <table class="show">
-      <tr>
-        <th><%= f.label :og_type %></th>
-        <td><%= f.select :og_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :og_title %></th>
-        <td><%= f.text_field :og_title %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :og_description %></th>
-        <td><%= f.text_area :og_description, :size => '100x3' %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :og_image %></th>
-        <td><%= f.text_field :og_image, :style => 'width: 200px;' %></td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1"><%= f.label :og_type %></div>
+      <%= f.select :og_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_title %></div>
+      <%= f.text_field :og_title %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_description %></div>
+      <%= f.text_area :og_description, :size => '100x3' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_image %></div>
+      <%= f.text_field :og_image, :style => 'width: 200px;' %>
+    </div>
 
     <p class="form">編集権限</p>
 
     <%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
-    <table class="show">
-      <tr>
-        <th><%= f.label :in_editable_groups %></th>
-        <td>
-          <div id="editable_groups">
-            <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
-            <%- Sys::Group.where(id: (@params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups
-                                                                                      : @item.in_editable_groups)).each do |group| -%>
-            <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
-            <%- end -%>
-            <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
-          </div>
-          <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL',
-                                 @params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups.include?('ALL')
-                                                                                 : @item.editable_group.try(:all?),
-                                 id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
-        </td>
-      </tr>
-    </table>
+    <div>
+      <div class="label1"><%= f.label :in_editable_groups %></div>
+      <div id="editable_groups">
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
+        <%- Sys::Group.where(id: (@params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups
+                                                                                  : @item.in_editable_groups)).each do |group| -%>
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
+      </div>
+      <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL',
+                             @params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups.include?('ALL')
+                                                                             : @item.editable_group.try(:all?),
+                             id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
+    </div>
 
     <%= creator_form f %>
   </div>
