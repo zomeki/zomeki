@@ -39,11 +39,57 @@ li {
 }
 
 .submitters {
-  margin: 10px;
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+  background-color: #EDEDED;
+  text-align: center;
 }
 
 .iframe-wrapper {
   overflow: auto;
+}
+
+/* outline
+--------------------------------------------------------- */
+#contentHeader {
+  margin: 20px 5px;
+}
+#contentHeader h2 {
+  padding-left: 8px;
+  border-left: 3px solid #000;
+}
+#content .actionMenu span.separator {
+  display: inline-block;
+  margin: 0px 4px 0px 2px;
+  border-left: 1px solid #ccc;
+}
+#content .actionMenu a {
+  display: inline-block;
+  margin: 0px 2px;
+  padding: 3px 8px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: #ddd 0px 1px 2px;
+  -moz-box-shadow: #ddd 0px 1px 2px;
+  box-shadow: #ddd 0px 1px 2px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#fdfdfd));
+  background-image: -webkit-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -moz-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -ms-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -o-linear-gradient(#ffffff, #fdfdfd);
+  background-image: linear-gradient(#ffffff, #fdfdfd);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffffff, endColorstr=#fdfdfd);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#ffffff', endColorstr='#fdfdfd')";
+  _background-color: #fff;
+  behavior: url(/_common/js/PIE.htc);
+  position: relative;
+  text-decoration: none;
+  color: #000;
+}
+#content .actionMenu a:hover,
+#content .actionMenu a:focus,
+#content .actionMenu a.current {
+  background-color: #fce1de;
+  background-image: none !important;
 }
 
 /* Tabs
