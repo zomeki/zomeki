@@ -45,6 +45,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   def logout
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
+    cookies.delete :cms_site
     reset_session
     redirect_to('action' => 'login')
   end
