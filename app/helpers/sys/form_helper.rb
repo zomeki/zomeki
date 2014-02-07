@@ -6,7 +6,14 @@ module Sys::FormHelper
     locals = {:f => form, :item => item}
     render :partial => 'sys/admin/_partial/creators/form', :locals => locals
   end
-  
+
+  def creator_form_smart_phone(form)
+    item = form.object
+    item ||= instance_variable_get("@#{form.object_name}")
+    locals = {:f => form, :item => item}
+    render :partial => 'sys/admin/_partial/creators/form_smart_phone', :locals => locals
+  end
+
   def creator_view(item)
     locals = {:item => item}
     render :partial => 'sys/admin/_partial/creators/view', :locals => locals
