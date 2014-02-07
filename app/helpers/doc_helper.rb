@@ -75,7 +75,7 @@ module DocHelper
     if Page.mobile?
       contents[:title]
     else
-      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| truncate(strip_tags(doc.body), length: $1.to_i) }
+      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
         '@title@' => contents[:title],
