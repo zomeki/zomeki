@@ -1,0 +1,100 @@
+<%-
+def inquiry_require_label(item, field)
+  if item.inquiry_require_field?(field)
+    %Q(<span class="note">※</span>).html_safe
+  end
+end
+item.build_default_inquiry
+-%>
+
+<div>
+  <%- item.inquiry_states.each do |(label, value)| -%>
+    <%= radio_button_tag :inquiry_state, value, item.inquiries[0].state == value, :class => 'status' %>
+    <%= label_tag :"inquiry_state_#{value}", label -%>
+  <%- end -%>
+</div>
+
+<div id="inquiryForms">
+<%- item.inquiries.each_with_index do |inquiry, i| -%>
+  <%= f.fields_for :inquiries, inquiry do |f2| -%>
+    <div class="inquiryForm">
+    <p class="form">連絡先<%= i+1 if i != 0 %></p>
+    <%= f2.hidden_field :state, :class => "inquiryState" -%>
+    <%= f2.hidden_field :_destroy -%>
+    <%- if item.inquiry_display_field?(:group_id) -%>
+    <div>
+      <div class="label1"><%= f2.label :group_id -%> <%= inquiry_require_label(item, :group_id) -%></div>
+      <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
+      <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
+      <%= f2.select_with_tree :group_id, groups,
+        :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
+      <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:charge) -%>
+    <div>
+      <div class="label1"><%= f2.label :charge -%> <%= inquiry_require_label(item, :charge) -%></div>
+      <%= f2.text_field :charge, :class => 'name' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:tel) -%>
+    <div>
+      <div class="label1"><%= f2.label :tel -%> <%= inquiry_require_label(item, :tel) -%></div>
+      <%= f2.text_field :tel, :class => 'number' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:fax) -%>
+    <div>
+      <div class="label1"><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></div>
+      <%= f2.text_field :fax, :class => 'number' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:email) -%>
+    <div>
+      <div class="label1"><%= f2.label :email -%> <%= inquiry_require_label(item, :email) -%></div>
+      <%= f2.text_field :email, :class => 'email' %>
+    </div>
+    <%- end -%>
+    <%= button_tag '削除する', :type => :button, :class => 'deleteInquiry', :style => "margin: 10px 0; display: #{i == 0 ? 'none' : 'block'}"   -%>
+    </div>
+  <%- end -%>
+<%- end -%>
+</div>
+
+<hr />
+<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' -%>
+
+<script type="text/javascript">
+ $(function(){
+   $(document).on('click', '.deleteInquiry', function(e) {
+     if (!confirm('削除してよろしいですか？')) { return; }
+     $(this).siblings('input[id$=_destroy]').val(true);
+     $(this).closest('.inquiryForm').hide();
+   });
+   $('#addInquiryForm').on('click', function(e) {
+     var no  = $('.inquiryForm').size();
+     var elm = $('.inquiryForm:last').clone();
+     elm.find('input, select').each(function() {
+       $(this).attr({
+         id: this.id.replace(/(\d+)/, no),
+         name: this.name.replace(/(\d+)/, no),
+         value: ''
+       });
+     });
+     elm.find('select option').each(function() {
+       $(this).attr({selected: false});
+     });
+     elm.find('p.form').show().html('連絡先' + String(no+1));
+     elm.find('[id^=item_inquiries_attributes][id$=group_id]').show();
+     elm.find('[id^=inquiryGroupLabel]').hide();
+     elm.find('.deleteInquiry').show();
+     elm.show();
+     $('#inquiryForms').append(elm);
+   });
+   $('form').on('submit', function(e) {
+     var state = $('input[name=inquiry_state]:checked').val();
+     if (state == undefined) { state = 'hidden'; }
+     $('input.inquiryState').val(state);
+   });
+ });
+</script>
