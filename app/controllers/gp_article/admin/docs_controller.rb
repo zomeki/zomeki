@@ -91,6 +91,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def create
+    failed_template = Page.smart_phone? ? 'new_smart_phone' : 'new'
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
     @item = @content.docs.build(params[:item])
@@ -106,24 +107,24 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       check_results = @item.check_links_in_body
       self.class.helpers.large_flash(flash, :key => :link_check_result,
                                      :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
-      return render(:action => :new) if params[:link_check_in_body]
+      return render(failed_template) if params[:link_check_in_body]
     end
 
     if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
       self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
                                      :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(:action => :new) if params[:accessibility_check]
+      return render(failed_template) if params[:accessibility_check]
     end
 
     @item.concept = @content.concept
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
-    return render(:action => :new) unless @item.errors.empty?
+    return render(failed_template) unless @item.errors.empty?
 
     location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
-    _create(@item, location: location) do
+    _create(@item, location: location, failed_template: failed_template) do
       set_share_accounts
       set_categories
       set_event_categories
@@ -147,6 +148,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def update
+    failed_template = Page.smart_phone? ? 'new_smart_phone' : 'edit'
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
     @item.attributes = params[:item]
@@ -162,23 +164,23 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       check_results = @item.check_links_in_body
       self.class.helpers.large_flash(flash, :key => :link_check_result,
                                      :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
-      return render(:action => :edit) if params[:link_check_in_body]
+      return render(failed_template) if params[:link_check_in_body]
     end
 
     if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
       check_results = Util::AccessibilityChecker.check @item.body
       self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
                                      :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(:action => :edit) if params[:accessibility_check]
+      return render(failed_template) if params[:accessibility_check]
     end
 
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
-    return render(:action => :edit) unless @item.errors.empty?
+    return render(failed_template) unless @item.errors.empty?
 
     location = url_for(action: 'edit') if @item.state_draft?
-    _update(@item, location: location) do
+    _update(@item, location: location, failed_template: failed_template) do
       set_share_accounts
       set_categories
       set_event_categories
