@@ -6,14 +6,12 @@
     <td ><%= text_field_tag 's_email', params[:s_email], :style => 'width: 350px;' %></td>
 
     <th>メール分類</th>
-    <td ><%= select_tag('s_letter_type', '<option></option>' + options_for_select(
-        Newsletter::Member.new.letter_types,
-        params[:s_letter_type].to_s ))%></td>
+    <td ><%= select_tag 's_letter_type',
+                        options_for_select(Newsletter::Member.new.letter_types, params[:s_letter_type]), include_blank: true %></td>
 
     <th>状態</th>
-    <td ><%= select_tag('s_state', '<option></option>' + options_for_select(
-        [['有効','enabled'], ['無効','disabled']],
-        params[:s_state].to_s ))%></td>
+    <td ><%= select_tag 's_state', 
+                        options_for_select([['有効', 'enabled'], ['無効', 'disabled']], params[:s_state]), include_blank: true %></td>
 
 
     <td class="submitters">
