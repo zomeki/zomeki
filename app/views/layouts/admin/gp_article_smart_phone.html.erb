@@ -30,10 +30,13 @@
   <%- end -%>
   <div id="container">
     <header id="header">
-      <div id="headerContainer" style="height: 30px;">
+      <div id="headerContainer" style="height: 40px;">
         <div style="background-image: url(/_common/themes/admin/images/header_re.gif); float: left; width: 100%;">
-          <h1 style="float: left; height: 30px;"><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>"><%= image_tag '/_common/themes/admin/images/header_logo.gif', style: 'height: 30px;' %></a></h1>
-          <div style="color: #fff; float: right; line-height: 30px;"><%= Core.user_group.try(:name) %> <%= Core.user.try(:name_with_account ) %></div>
+          <div style="float: left; height: 40px;"><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>"><%= image_tag '/_common/themes/admin/images/header_logo.gif', style: 'height: 40px;' %></a></div>
+          <div style="color: #fff; float: right; height: 40px; line-height: 20px;">
+            <span class="user"><%= Core.user_group.try(:name) %> <%= Core.user.try(:name_with_account ) %></span><br />
+            <a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>/logout" class="logout" style="color: #fff; float: right; text-decoration: none;">ログアウト</a>
+          </div>
         </div>
       <!-- /#headerContainer --></div>
     <!-- /#header --></header>
