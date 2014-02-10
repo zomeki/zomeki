@@ -91,7 +91,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def create
-    failed_template = Page.smart_phone? ? 'new_smart_phone' : 'new'
+    failed_template = Page.smart_phone? ? {template: "#{controller_path}/new_smart_phone", layout: 'admin/gp_article_smart_phone'}
+                                        : {action: 'new'}
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
     @item = @content.docs.build(params[:item])
@@ -148,7 +149,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def update
-    failed_template = Page.smart_phone? ? 'new_smart_phone' : 'edit'
+    failed_template = Page.smart_phone? ? {template: "#{controller_path}/edit_smart_phone", layout: 'admin/gp_article_smart_phone'}
+                                        : {action: 'edit'}
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
     @item.attributes = params[:item]
