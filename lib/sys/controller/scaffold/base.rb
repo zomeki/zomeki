@@ -32,10 +32,11 @@ protected
         format.xml  { render(:xml => item.to_xml(:dasherize => false), :status => status, :location => location) }
       end
     else
+      failed_template = params[:failed_template] || :new
       flash.now[:alert] = '登録処理に失敗しました。'
       respond_to do |format|
-        format.html { render(:action => :new) }
-        format.xml  { render(:xml => item.errors, :status => :unprocessable_entity) }
+        format.html { render failed_template }
+        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -51,9 +52,10 @@ protected
         format.xml  { head :ok }
       end
     else
+      failed_template = params[:failed_template] || :edit
       flash.now[:alert] = '更新処理に失敗しました。'
       respond_to do |format|
-        format.html { render :action => :edit }
+        format.html { render failed_template }
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
       end
     end
