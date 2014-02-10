@@ -58,11 +58,6 @@ li {
   padding-left: 8px;
   border-left: 3px solid #000;
 }
-#content .actionMenu span.separator {
-  display: inline-block;
-  margin: 0px 4px 0px 2px;
-  border-left: 1px solid #ccc;
-}
 #content .actionMenu a {
   display: inline-block;
   margin: 0px 2px;
@@ -90,6 +85,10 @@ li {
 #content .actionMenu a.current {
   background-color: #fce1de;
   background-image: none !important;
+}
+#content .actionMenu span.separator {
+  margin: 0px 4px 0px 2px;
+  border-left: 1px solid #ccc;
 }
 
 /* Tabs
