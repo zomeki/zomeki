@@ -3,7 +3,7 @@ module GpCategory::GpCategoryHelper
     GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_id).except(:order).mobile(::Page.mobile?).public
   end
 
-  def category_li(category, depth_limit: 100, depth: 1)
+  def category_li(category, depth_limit: 1000, depth: 1)
     content_tag(:li) do
       result = link_to(category.title, category.public_uri)
       if category.public_children.empty? || depth >= depth_limit
@@ -29,13 +29,6 @@ module GpCategory::GpCategoryHelper
   end
 
   def categories_2(template_module: nil, categories: nil)
-    return if categories.empty?
-
-    content_tag(:ul) do
-      categories.inject(''){|lis, child|
-        lis << category_li(child, depth_limit: 1)
-      }.html_safe
-    end
   end
 
   def categories_3(template_module: nil, categories: nil)
@@ -43,7 +36,7 @@ module GpCategory::GpCategoryHelper
 
     content_tag(:ul) do
       categories.inject(''){|lis, child|
-        lis << category_li(child, depth_limit: 2)
+        lis << category_li(child, depth_limit: 1)
       }.html_safe
     end
   end

@@ -31,8 +31,15 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
 
             case tm.module_type
             when 'categories_1', 'categories_2', 'categories_3'
-              vc.send(tm.module_type, template_module: tm,
-                      categories: @category.public_children) if vc.respond_to?(tm.module_type)
+              if vc.respond_to?(tm.module_type)
+                @category.public_children.inject(''){|tags, child|
+                  tags << vc.content_tag(:section, class: child.name) do
+                      html = vc.content_tag(:h2, vc.link_to(child.title, child.public_uri))
+                      html << vc.send(tm.module_type, template_module: tm,
+                                      categories: child.public_children)
+                    end
+                }
+              end
             when 'docs_1', 'docs_2'
               if vc.respond_to?(tm.module_type)
                 docs = case tm.module_type
