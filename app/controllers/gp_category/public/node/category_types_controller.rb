@@ -151,16 +151,8 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               @category_type.public_root_categories.inject(''){|tags, category|
                 tags << vc.content_tag(:section, class: category.name) do
                     html = vc.content_tag(:h2, vc.link_to(category.title, category.public_uri))
-                    case tm.module_type
-                    when 'categories_1'
-                      html << vc.send(tm.module_type, template_module: tm,
-                                      categories: category.public_children)
-                    when 'categories_2'
-                      html
-                    when 'categories_3'
-                      html << vc.send('categories_2', template_module: tm,
-                                      categories: category.public_children)
-                    end
+                    html << vc.send(tm.module_type, template_module: tm,
+                                    categories: category.public_children)
                   end
               }
             end
