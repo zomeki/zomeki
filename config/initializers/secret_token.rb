@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-ZomekiCMS::Application.config.secret_token = '8e11a1a00a111363ee68ed8c2468cfbcbc1cbb40be4eaf70cac123ae8b23a41f5b1c24a0f69b1ba3b8a59883c8404c0e23af6387dd805eede0d935d66b7d1f0a'
+ZomekiCMS::Application.config.secret_token = '76df77a812bc5c40352e435c745e20e64a671ec06f19dbbb3f85b6d33fd38e49859cd7e676720715bbf470358473edfb133574d9decb5f4d4617b35b4998940d'

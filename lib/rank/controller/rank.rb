@@ -9,7 +9,7 @@ module Rank::Controller::Rank
        content.setting_value(:password).blank? ||
        content.setting_value(:web_property_id).blank?
       flash[:alert] = "ユーザー・パスワード・トラッキングIDを設定してください。"
-      return true
+      return
     end
 
     begin
@@ -29,7 +29,7 @@ module Rank::Controller::Rank
       results = copy
 
       first_date = Date.today.strftime("%Y%m%d")
-      results.each.with_index(1) do |result, i|
+      results.each do |result|
         rank = Rank::Rank.where(content_id: content.id)
                          .where(page_title: result.page_title)
                          .where(hostname:   result.hostname)
@@ -48,16 +48,99 @@ module Rank::Controller::Rank
     rescue Garb::AuthenticationRequest::AuthError => e
       logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
       flash[:alert] = "認証エラーです。 （#{content.setting_value(:username)} ）"
-      return false
     rescue => e
       logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
       flash[:alert] = "取り込みに失敗しました。"
-      return false
     end
-
-    return true
   end
 
+  def calc_access(content)
+    begin
+      Rank::Total.where(content_id: content.id).delete_all
+
+      t = Date.today
+      ranking_terms.each do |termname, term|
+        case term
+        when 'all'
+          from = Date.new(2005, 1, 1)
+          to   = t
+        when 'previous_days'
+          from = t.yesterday
+          to   = t.yesterday
+        when 'last_weeks'
+          wday = t.wday == 0 ? 7 : t.wday
+          from = t - (6 + wday).days
+          to   = t - wday.days
+        when 'last_months'
+          from = (t - 1.month).beginning_of_month
+          to   = (t - 1.month).end_of_month
+        when 'this_weeks'
+          from = t.yesterday - 7.days
+          to   = t.yesterday
+        end
+
+        rank_table = Rank::Rank.arel_table
+        results = Rank::Rank.select('*')
+                            .select(rank_table[:pageviews].sum.as('pageviews'))
+                            .select(rank_table[:visitors].sum.as('visitors'))
+                            .where(content_id: content.id)
+                            .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
+                            .group(:hostname, :page_path)
+
+        category = 0
+
+        ActiveRecord::Base.transaction do
+          results.each do |result|
+            rank = Rank::Total.create!(content_id:  content.id,
+                                       term:        term,
+                                       category_id: category,
+                                       page_title:  result.page_title,
+                                       hostname:    result.hostname,
+                                       page_path:   result.page_path,
+                                       pageviews:   result.pageviews,
+                                       visitors:    result.visitors)
+          end
+        end
+      end
+
+      logger.info "Makeup : #{content.id}"
+      flash[:notice] = "集計が完了しました。"
+    rescue => e
+      logger.warn "Error  : #{content.id}: #{e}"
+      flash[:alert] = "集計に失敗しました。"
+    end
+  end
+
+  def rank_datas(content, term, target, per_page, category_id=0)
+    hostname = URI.parse(Core.site.full_uri).host
+    exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
+
+    rank_table = Rank::Total.arel_table
+    Rank::Total.select('*')
+               .select(rank_table[target].as('accesses'))
+               .where(content_id:  content.id)
+               .where(term:        term)
+               .where(category_id: category_id)
+               .where(hostname:    hostname)
+               .where(rank_table[:page_path].not_in(exclusion))
+               .order('accesses DESC')
+               .paginate(page: params[:page], per_page: per_page)
+  end
+
+  def ranking_targets
+    return Rank::Rank::TARGETS
+  end
+
+  def ranking_terms
+    return [['すべて', 'all']] + Rank::Rank::TERMS
+  end
+
+  def param_check(ary, str)
+    str = ary.first[1] if str.blank? || !ary.flatten.include?(str)
+    str
+  end
+
+private
   def get_data(profile, limit, offset, start_date)
     start_date = Date.new(start_date.year, start_date.month, start_date.day) unless start_date.nil?
     start_date = Date.new(2005,01,01) if start_date.blank? || start_date < Date.new(2005,01,01)
@@ -65,5 +148,4 @@ module Rank::Controller::Rank
     res = Rank::GoogleAnalytics.results(profile, :limit => limit, :offset => offset, :start_date => start_date)
     return res
   end
-
 end
