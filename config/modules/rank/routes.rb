@@ -11,6 +11,7 @@ ZomekiCMS::Application.routes.draw do
       :path        => ":content/content_settings" do
         collection do
           post :import
+          post :makeup
         end
       end
 
