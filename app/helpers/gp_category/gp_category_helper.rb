@@ -41,7 +41,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_1(template_module: nil, category: nil, docs: nil, header: false)
+  def docs_1(template_module: nil, ct_or_c: nil, docs: nil)
     content_tag(:section, class: template_module.name) do
       html = docs.inject(''){|tags, doc|
           tags << content_tag(template_module.wrapper_tag) do
@@ -49,13 +49,16 @@ module GpCategory::GpCategoryHelper
             end
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
-      html = content_tag(:h2, category.title) << html if header
-      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
+      if ct_or_c
+        html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}more.html"), class: 'more')
+      else
+        html
+      end
     end
   end
 
-  def docs_2(template_module: nil, category: nil, docs: nil, header: false)
-    docs_1(template_module: template_module, category: category, docs: docs, header: header)
+  def docs_2(template_module: nil, ct_or_c: nil, docs: nil)
+    docs_1(template_module: template_module, ct_or_c: ct_or_c, docs: docs)
   end
 
   def docs_3(template_module: nil, categories: nil, categorizations: nil)
