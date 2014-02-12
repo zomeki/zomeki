@@ -21,26 +21,20 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   end
               }
             end
-          when 'docs_1', 'docs_2'
+          when 'docs_1'
             if vc.respond_to?(tm.module_type)
-              @content.public_category_types.inject(''){|tags, category_type|
-                tags << vc.content_tag(:section, class: category_type.name) do
-                    html = vc.content_tag(:h2, category_type.title)
-                    html << category_type.public_root_categories.inject(''){|ts, category|
-                              docs = case tm.module_type
-                                     when 'docs_1'
-                                       find_public_docs_with_category_ids(category.public_descendants.map(&:id))
-                                     when 'docs_2'
-                                       find_public_docs_with_category_ids([category.id])
-                                     end
-                              docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
-
-                              docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-                              ts << vc.send(tm.module_type, template_module: tm,
-                                            category: category, docs: docs, header: true)
-                            }.html_safe
-                  end
+              category_ids = @content.public_category_types.inject([]){|ids, category_type|
+                ids.concat(category_type.public_root_categories.inject([]){|is, category|
+                  is.concat(category.public_descendants.map(&:id))
+                })
               }
+
+              docs = find_public_docs_with_category_ids(category_ids)
+              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+
+              docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+              vc.send(tm.module_type, template_module: tm,
+                      ct_or_c: nil, docs: docs)
             end
           when 'docs_3', 'docs_4'
             if vc.respond_to?(tm.module_type)
@@ -156,21 +150,18 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   end
               }
             end
-          when 'docs_1', 'docs_2'
+          when 'docs_1'
             if vc.respond_to?(tm.module_type)
-              @category_type.public_root_categories.inject(''){|tags, category|
-                docs = case tm.module_type
-                       when 'docs_1'
-                         find_public_docs_with_category_ids(category.public_descendants.map(&:id))
-                       when 'docs_2'
-                         find_public_docs_with_category_ids([category.id])
-                       end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+              category_ids = @category_type.public_root_categories.inject([]){|ids, category|
+                ids.concat(category.public_descendants.map(&:id))
+              }
 
-                docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-                tags << vc.send(tm.module_type, template_module: tm,
-                                category: category, docs: docs, header: true)
-              }.html_safe
+              docs = find_public_docs_with_category_ids(category_ids)
+              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+
+              docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+              vc.send(tm.module_type, template_module: tm,
+                      ct_or_c: @category_type, docs: docs)
             end
           when 'docs_3', 'docs_4'
             if vc.respond_to?(tm.module_type)

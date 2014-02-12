@@ -48,11 +48,11 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
                        when 'docs_2'
                          find_public_docs_with_category_ids([@category.id])
                        end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
                 vc.send(tm.module_type, template_module: tm,
-                        category: @category, docs: docs)
+                        ct_or_c: @category, docs: docs)
               end
             when 'docs_3', 'docs_4'
               if vc.respond_to?(tm.module_type) && category_type.internal_category_type
