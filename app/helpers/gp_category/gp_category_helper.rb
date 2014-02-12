@@ -61,7 +61,7 @@ module GpCategory::GpCategoryHelper
     docs_1(template_module: template_module, ct_or_c: ct_or_c, docs: docs)
   end
 
-  def docs_3(template_module: nil, categories: nil, categorizations: nil)
+  def docs_3(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << content_tag(:section, class: category.name) do
@@ -70,12 +70,15 @@ module GpCategory::GpCategoryHelper
 
             docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
                                                             .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
-            html = content_tag(:h2, category.title) << content_tag(:ul) do
-                docs.inject(''){|t, d|
-                  t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-                }.html_safe
-              end
-            html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
+            html = content_tag(:h2, category.title)
+            doc_tags = docs.inject(''){|t, d|
+                         t << content_tag(template_module.wrapper_tag,
+                                          doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                       }.html_safe
+            doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
+            html << doc_tags
+
+            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{category.name}.html"), class: 'more')
           end
       }.html_safe
     end
