@@ -36,31 +36,6 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               vc.send(tm.module_type, template_module: tm,
                       ct_or_c: nil, docs: docs)
             end
-          when 'docs_3', 'docs_4'
-            if vc.respond_to?(tm.module_type)
-              @content.public_category_types.inject(''){|tags, category_type|
-                tags << vc.content_tag(:section, class: category_type.name) do
-                    html = vc.content_tag(:h2, category_type.title)
-                    html << category_type.public_root_categories.inject(''){|ts, category|
-                              docs = case tm.module_type
-                                     when 'docs_3'
-                                       find_public_docs_with_category_ids(category.public_descendants.map(&:id))
-                                     when 'docs_4'
-                                       find_public_docs_with_category_ids([category.id])
-                                     end
-                              docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
-
-                              categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-                              ts << if category_type.internal_category_type
-                                      vc.send(tm.module_type, template_module: tm,
-                                              categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
-                                    else
-                                      ''
-                                    end
-                            }.html_safe
-                  end
-              }
-            end
           when 'docs_5', 'docs_6'
             if vc.respond_to?(tm.module_type)
               @content.public_category_types.inject(''){|tags, category_type|
@@ -163,25 +138,19 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               vc.send(tm.module_type, template_module: tm,
                       ct_or_c: @category_type, docs: docs)
             end
-          when 'docs_3', 'docs_4'
-            if vc.respond_to?(tm.module_type)
-              @category_type.public_root_categories.inject(''){|tags, category|
-                docs = case tm.module_type
-                       when 'docs_3'
-                         find_public_docs_with_category_ids(category.public_descendants.map(&:id))
-                       when 'docs_4'
-                         find_public_docs_with_category_ids([category.id])
-                       end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+          when 'docs_3'
+            if vc.respond_to?(tm.module_type) && @category_type.internal_category_type
+              category_ids = @category_type.public_root_categories.inject([]){|ids, category|
+                ids.concat(category.public_descendants.map(&:id))
+              }
 
-                categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-                tags << if @category_type.internal_category_type
-                          vc.send(tm.module_type, template_module: tm,
-                                  categories: @category_type.internal_category_type.public_root_categories, categorizations: categorizations)
-                        else
-                          ''
-                        end
-              }.html_safe
+              docs = find_public_docs_with_category_ids(category_ids)
+              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+
+              categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
+              vc.send(tm.module_type, template_module: tm,
+                      ct_or_c: @category_type,
+                      categories: @category_type.internal_category_type.public_root_categories, categorizations: categorizations)
             end
           when 'docs_5', 'docs_6'
             if vc.respond_to?(tm.module_type)
