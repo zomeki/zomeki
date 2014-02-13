@@ -7,11 +7,11 @@ class Rank::Piece::Rank < Cms::Piece
   end
 
   def ranking_targets
-  	return [['PV', 'pageviews'], ['訪問者数', 'visitors']]
+  	return Rank::Rank::TARGETS
   end
 
   def ranking_terms
-  	return [['前日', 'previous_days'], ['先週（月曜日〜日曜日）', 'last_weeks'], ['先月', 'last_months'], ['週間（前日から一週間）', 'this_weeks']]
+    return Rank::Rank::TERMS
   end
 
   def show_counts
