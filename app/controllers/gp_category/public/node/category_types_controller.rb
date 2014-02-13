@@ -36,21 +36,6 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               vc.send(tm.module_type, template_module: tm,
                       ct_or_c: nil, docs: docs)
             end
-          when 'docs_7', 'docs_8'
-            if vc.respond_to?(tm.module_type)
-              category_ids = @content.public_category_types.inject([]){|ids, category_type|
-                ids.concat(category_type.public_root_categories.inject([]){|is, category|
-                  is.concat(category.public_descendants.map(&:id))
-                })
-              }
-
-              docs = find_public_docs_with_category_ids(category_ids)
-              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
-
-              categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-              vc.send(tm.module_type, template_module: tm,
-                      category_types: @content.public_category_types, categorizations: categorizations)
-            end
           else
             ''
           end
