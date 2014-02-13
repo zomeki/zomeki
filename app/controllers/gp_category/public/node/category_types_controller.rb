@@ -36,25 +36,6 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               vc.send(tm.module_type, template_module: tm,
                       ct_or_c: nil, docs: docs)
             end
-          when 'docs_5', 'docs_6'
-            if vc.respond_to?(tm.module_type)
-              @content.public_category_types.inject(''){|tags, category_type|
-                tags << vc.content_tag(:section, class: category_type.name) do
-                    html = vc.content_tag(:h2, category_type.title)
-
-                    docs = case tm.module_type
-                           when 'docs_5', 'docs_6'
-                             find_public_docs_with_category_ids(category_type.public_categories.pluck(:id))
-                           end
-                    docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
-
-                    docs = docs.joins(:creator => :group)
-                    groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
-                    html << vc.send(tm.module_type, template_module: tm,
-                                    groups: groups, docs: docs)
-                  end
-              }
-            end
           when 'docs_7', 'docs_8'
             if vc.respond_to?(tm.module_type)
               @content.public_category_types.inject(''){|tags, category_type|
@@ -152,17 +133,19 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                       ct_or_c: @category_type,
                       categories: @category_type.internal_category_type.public_root_categories, categorizations: categorizations)
             end
-          when 'docs_5', 'docs_6'
+          when 'docs_5'
             if vc.respond_to?(tm.module_type)
-              docs = case tm.module_type
-                     when 'docs_5', 'docs_6'
-                       find_public_docs_with_category_ids(@category_type.public_categories.pluck(:id))
-                     end
-              docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+              category_ids = @category_type.public_root_categories.inject([]){|ids, category|
+                ids.concat(category.public_descendants.map(&:id))
+              }
+
+              docs = find_public_docs_with_category_ids(category_ids)
+              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
               docs = docs.joins(:creator => :group)
               groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
               vc.send(tm.module_type, template_module: tm,
+                      ct_or_c: @category_type,
                       groups: groups, docs: docs)
             end
           when 'docs_7', 'docs_8'
