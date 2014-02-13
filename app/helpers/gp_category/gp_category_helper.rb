@@ -136,11 +136,13 @@ module GpCategory::GpCategoryHelper
 
       docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
                                                       .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
-      html = content_tag(:h2, category.title) << content_tag(:ul) do
-          docs.inject(''){|t, d|
-            t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-          }.html_safe
-        end
+      html = content_tag(:h2, category.title)
+      doc_tags = docs.inject(''){|t, d|
+                   t << content_tag(template_module.wrapper_tag,
+                                    doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                 }.html_safe
+      doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
+      html << doc_tags
 
       if with_child_categories && category.children.present?
         html << content_tag(:section) do
