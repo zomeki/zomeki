@@ -82,28 +82,34 @@ module Sys::Model::Base::File
     self.image_width  = nil
     self.image_height = nil
 
-    if file.content_type =~ %r<^image/>i
-      begin
-        image = case file
-                when ActionDispatch::Http::UploadedFile
-                  Magick::Image.read(file.path).first
-                when Sys::Lib::File::NoUploadedFile
-                  Magick::Image.from_blob(file.read).shift
-                else
-                  raise %Q!"#{file.class}" is not supported.!
-                end
-        if image_resize.present?
-          image.resize_to_fit!(image_resize.to_i)
-          image.write(file.path)
-        end
-        if %w!GIF JPEG PNG!.include?(image.format)
-          self.image_is = 1
-          self.image_width  = image.columns
-          self.image_height = image.rows
-        end
-      rescue => e
-        warn_log(e.message)
+    begin
+      image = case file
+              when ActionDispatch::Http::UploadedFile
+                Magick::Image.read(file.path).first
+              when Sys::Lib::File::NoUploadedFile
+                Magick::Image.from_blob(file.read).shift
+              else
+                raise %Q!"#{file.class}" is not supported.!
+              end
+      if image.format.in?(%w!GIF JPEG PNG!)
+        # Overwrite browser declaration
+        self.mime_type = case image.format
+                         when 'GIF'
+                           'image/gif'
+                         when 'JPEG'
+                           'image/jpeg'
+                         when 'PNG'
+                           'image/png'
+                         end
+        image.auto_orient!
+        image.resize_to_fit!(image_resize.to_i) if image_resize.present?
+        image.write(file.path)
+        self.image_is = 1
+        self.image_width  = image.columns
+        self.image_height = image.rows
       end
+    rescue => e
+      warn_log("#{self.mime_type}: #{e.message}")
     end
 
     @file_content = file.read
