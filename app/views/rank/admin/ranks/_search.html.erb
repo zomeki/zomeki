@@ -1,17 +1,10 @@
+<% blank_opt  = '<option value="">すべて</option>'.html_safe %>
 <%= form_tag '', :method => 'get', :class => 'search' do -%>
 <table>
   <tr>
     <td>期間指定</td>
-    <td><%= text_field_tag 'from', params[:from], :style => 'width: 100px;', :class => 'js-date' %></td>
-    <td>〜</td>
-    <td><%= text_field_tag 'to', params[:to], :style => 'width: 100px;', :class => 'js-date' %></td>
+    <td><%= select_tag('term', options_for_select(@terms, params[:term])) %></td>
     <td><%= submit_tag '適用' %></td>
   </tr>
 </table>
 <%- end -%>
-
-<%= javascript_tag do %>
-$(function() {
-  $('.js-date').datepicker({ dateFormat: 'yy-mm-dd' });
-});
-<% end %>

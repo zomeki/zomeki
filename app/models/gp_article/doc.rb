@@ -221,6 +221,10 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def public_uri
     return @public_uri if @public_uri
+    unless content
+      warn_log "No content: #{self.inspect}"
+      return ''
+    end
     return '' unless node = content.doc_node
     @public_uri = "#{node.public_uri}#{name}/"
   end

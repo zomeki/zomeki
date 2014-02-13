@@ -8,6 +8,7 @@ class Rank::Script::RanksController < ApplicationController
     contents = Rank::Content::Rank.all
     contents.each do |content|
       get_access(content, Time.now - span)
+      calc_access(content)
     end
     render(:text => "OK")
   end

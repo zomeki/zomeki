@@ -36,6 +36,11 @@ class Rank::Admin::Content::SettingsController < Cms::Controller::Admin::Base
     redirect_to :action => :index
   end
 
+  def makeup
+    calc_access(@content)
+    redirect_to :action => :index
+  end
+
   def flash_clear
     flash[:alert ] = nil
     flash[:notice] = nil

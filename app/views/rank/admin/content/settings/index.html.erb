@@ -15,8 +15,11 @@
 
 </table>
 
-<%= form_tag 'content_settings/import', method: :post do %>
 <div class="submitters">
+<%= form_tag 'content_settings/import', method: :post, style: 'display: inline' do %>
   <%= submit_tag 'ランキング一括取込', name: :submit_import, style: 'width: 140px' %>
-</div>
 <% end %>
+<%= form_tag 'content_settings/makeup', method: :post, style: 'display: inline' do %>
+  <%= submit_tag 'ランキング集計', name: :submit_makeup, style: 'width: 140px' %>
+<% end %>
+</div>
