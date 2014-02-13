@@ -80,15 +80,25 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
         @docs = find_public_docs_with_category_ids(category_ids)
 
         unless @more
-          return http_error(404) unless @category_type.internal_category_type
+          prefix, code_or_name = @file.split('_', 2)
+          return http_error(404) unless prefix.in?('c', 'g')
 
-          internal_category = @category_type.internal_category_type.public_root_categories.find_by_name(@file)
-          return http_error(404) unless internal_category
+          case prefix
+          when 'c'
+            return http_error(404) unless @category_type.internal_category_type
 
-          categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorized_as: 'GpArticle::Doc',
-                                                             categorizable_id: @docs.pluck(:id),
-                                                             category_id: internal_category.public_descendants.map(&:id))
-          @docs = GpArticle::Doc.where(id: categorizations.pluck(:categorizable_id))
+            internal_category = @category_type.internal_category_type.public_root_categories.find_by_name(code_or_name)
+            return http_error(404) unless internal_category
+
+            categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorized_as: 'GpArticle::Doc',
+                                                               categorizable_id: @docs.pluck(:id),
+                                                               category_id: internal_category.public_descendants.map(&:id))
+            @docs = GpArticle::Doc.where(id: categorizations.pluck(:categorizable_id))
+          when 'g'
+            @docs = @docs.joins(:creator => :group).where(Sys::Group.arel_table[:code].eq(code_or_name))
+          else
+            return http_error(404)
+          end
         end
 
         @docs = @docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: per_page)
