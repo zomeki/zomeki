@@ -12,7 +12,7 @@ class Rank::Public::Piece::RanksController < Sys::Controller::Public::Base
 
     @term   = @piece.ranking_term
     @target = @piece.ranking_target
-    @ranks  = rank_datas(@piece.content, @term, @target, @piece.display_count)
+    @ranks  = rank_datas(@piece.content, @term, @target, @piece.display_count, @piece.content.setting_value(:category_option))
 
     render :text => '' if @ranks.empty?
   end

@@ -17,30 +17,32 @@ module Rank::Controller::Rank
       profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == content.setting_value(:web_property_id)}
 
       limit = 1000
-      results = get_data(profile, limit, nil, start_date)
+      results = google_analytics(profile, limit, nil, start_date)
       repeat_times = results.total_results / limit
 
       copy = results.to_a
       if(repeat_times != 0)
         repeat_times.times do |x|
-          copy += get_data(profile, limit, (x+1)*limit + 1, start_date).to_a
+          copy += google_analytics(profile, limit, (x+1)*limit + 1, start_date).to_a
         end
       end
       results = copy
 
       first_date = Date.today.strftime("%Y%m%d")
-      results.each do |result|
-        rank = Rank::Rank.where(content_id: content.id)
-                         .where(page_title: result.page_title)
-                         .where(hostname:   result.hostname)
-                         .where(page_path:  result.page_path)
-                         .where(date:       result.date)
-                         .first_or_create
-        rank.pageviews = result.pageviews
-        rank.visitors  = result.unique_pageviews
-        rank.save!
+      ActiveRecord::Base.transaction do
+        results.each_with_index do |result,i|
+          rank = Rank::Rank.where(content_id: content.id)
+                           .where(page_title: result.page_title)
+                           .where(hostname:   result.hostname)
+                           .where(page_path:  result.page_path)
+                           .where(date:       result.date)
+                           .first_or_create
+          rank.pageviews = result.pageviews
+          rank.visitors  = result.unique_pageviews
+          rank.save!
 
-        first_date = result.date if first_date > result.date
+          first_date = result.date if first_date > result.date
+        end
       end
 
       logger.info "Success: #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}"
@@ -79,26 +81,28 @@ module Rank::Controller::Rank
           to   = t.yesterday
         end
 
-        rank_table = Rank::Rank.arel_table
-        results = Rank::Rank.select('*')
-                            .select(rank_table[:pageviews].sum.as('pageviews'))
-                            .select(rank_table[:visitors].sum.as('visitors'))
-                            .where(content_id: content.id)
-                            .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
-                            .group(:hostname, :page_path)
-
         category = 0
 
         ActiveRecord::Base.transaction do
-          results.each do |result|
-            rank = Rank::Total.create!(content_id:  content.id,
-                                       term:        term,
-                                       category_id: category,
-                                       page_title:  result.page_title,
-                                       hostname:    result.hostname,
-                                       page_path:   result.page_path,
-                                       pageviews:   result.pageviews,
-                                       visitors:    result.visitors)
+          rank_table = Rank::Rank.arel_table
+          Rank::Rank.select('*')
+                    .select(rank_table[:pageviews].sum.as('pageviews'))
+                    .select(rank_table[:visitors].sum.as('visitors'))
+                    .where(content_id: content.id)
+                    .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
+                    .group(:hostname, :page_path)
+                    .find_each do |result|
+
+            content_category(result.page_path)
+
+            Rank::Total.create!(content_id:  content.id,
+                                term:        term,
+                                category_id: category,
+                                page_title:  result.page_title,
+                                hostname:    result.hostname,
+                                page_path:   result.page_path,
+                                pageviews:   result.pageviews,
+                                visitors:    result.visitors)
           end
         end
       end
@@ -111,20 +115,26 @@ module Rank::Controller::Rank
     end
   end
 
-  def rank_datas(content, term, target, per_page, category_id=0)
-    hostname = URI.parse(Core.site.full_uri).host
+  def rank_datas(content, term, target, per_page, category = nil)
+    hostname   = URI.parse(Core.site.full_uri).host
     exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
-
     rank_table = Rank::Total.arel_table
-    Rank::Total.select('*')
-               .select(rank_table[target].as('accesses'))
-               .where(content_id:  content.id)
-               .where(term:        term)
-               .where(category_id: category_id)
-               .where(hostname:    hostname)
-               .where(rank_table[:page_path].not_in(exclusion))
-               .order('accesses DESC')
-               .paginate(page: params[:page], per_page: per_page)
+
+    ranks = Rank::Total.select('*')
+                       .select(rank_table[target].as('accesses'))
+                       .where(content_id: content.id)
+                       .where(term:       term)
+                       .where(hostname:   hostname)
+                       .where(rank_table[:page_path].not_in(exclusion))
+
+    if category == 'on'
+      category_ids = Page.current_item.categories.map(&:id)
+      ranks = ranks.where(rank_table[:category].in(category_ids))
+    end
+
+    ranks = ranks.order('accesses DESC')
+                 .paginate(page: params[:page], per_page: per_page)
+
   end
 
   def ranking_targets
@@ -141,11 +151,21 @@ module Rank::Controller::Rank
   end
 
 private
-  def get_data(profile, limit, offset, start_date)
+  def google_analytics(profile, limit, offset, start_date)
     start_date = Date.new(start_date.year, start_date.month, start_date.day) unless start_date.nil?
     start_date = Date.new(2005,01,01) if start_date.blank? || start_date < Date.new(2005,01,01)
 
-    res = Rank::GoogleAnalytics.results(profile, :limit => limit, :offset => offset, :start_date => start_date)
-    return res
+    Rank::GoogleAnalytics.results(profile, :limit => limit, :offset => offset, :start_date => start_date)
   end
+
+  def content_category(paths)
+    return
+
+    path = paths.split('/')
+    begin
+    cont = Cms::Node.find_by_parent_id_and_name(1, path[1]).content
+    rescue
+    end
+  end
+
 end
