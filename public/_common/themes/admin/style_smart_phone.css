@@ -1,0 +1,165 @@
+@charset "UTF-8";
+@import "navi.css";
+
+/* Elements
+--------------------------------------------------------- */
+body {
+  /* fix font-size bug on iOS Safari */
+  -webkit-text-size-adjust: 100%;
+}
+input[type="text"], select, textarea {
+  width: 200px !important;
+}
+ul, ol, dl {
+  margin: 0;
+}
+ul {
+  list-style-type: none;
+  list-style-position: outside;
+}
+li {
+  margin-left: 20px;
+  line-height: 1.4;
+}
+* {
+  font-size: 10px !important;
+}
+
+.alert {
+  margin: 5px 5px;
+  color: #f00;
+}
+.note {
+  margin: 5px 5px;
+  color: #e00;
+}
+.notice {
+  margin: 5px 5px;
+  color: #009632;
+}
+
+.submitters {
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+  background-color: #EDEDED;
+  text-align: center;
+}
+
+.iframe-wrapper {
+  overflow: auto;
+}
+
+/* outline
+--------------------------------------------------------- */
+#contentHeader {
+  margin: 20px 5px;
+}
+#contentHeader h2 {
+  padding-left: 8px;
+  border-left: 3px solid #000;
+}
+#content .actionMenu a {
+  display: inline-block;
+  margin: 0px 2px;
+  padding: 3px 8px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: #ddd 0px 1px 2px;
+  -moz-box-shadow: #ddd 0px 1px 2px;
+  box-shadow: #ddd 0px 1px 2px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#fdfdfd));
+  background-image: -webkit-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -moz-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -ms-linear-gradient(#ffffff, #fdfdfd);
+  background-image: -o-linear-gradient(#ffffff, #fdfdfd);
+  background-image: linear-gradient(#ffffff, #fdfdfd);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffffff, endColorstr=#fdfdfd);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#ffffff', endColorstr='#fdfdfd')";
+  _background-color: #fff;
+  behavior: url(/_common/js/PIE.htc);
+  position: relative;
+  text-decoration: none;
+  color: #000;
+}
+#content .actionMenu a:hover,
+#content .actionMenu a:focus,
+#content .actionMenu a.current {
+  background-color: #fce1de;
+  background-image: none !important;
+}
+#content .actionMenu span.separator {
+  margin: 0px 4px 0px 2px;
+  border-left: 1px solid #ccc;
+}
+
+/* Tabs
+--------------------------------------------------------- */
+.tabs .ui-tabs-nav {
+  background: transparent;
+  border-width: 0;
+  padding: 0;
+}
+.tabs .ui-tabs-nav li {
+  border-bottom: 1px solid #ab0100 !important;
+  border-radius: 0;
+  font-size: 12px;
+  padding-left: 1px;
+  position: static;
+  text-align: center;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+}
+/*
+.tabs .ui-tabs-nav li:first-child {
+  border-radius: 6px 0 0 6px;
+  -moz-border-radius: 6px 0 0 6px;
+  -webkit-border-radius: 6px 0 0 6px;
+}
+.tabs .ui-tabs-nav li:last-child {
+  border-radius: 0 6px 6px 0;
+  -moz-border-radius: 0 6px 6px 0;
+  -webkit-border-radius: 0 6px 6px 0;
+}
+*/
+.tabs .ui-tabs-nav li.ui-tabs-active {
+  border-bottom: 1px solid #d4ccb0 !important;
+}
+.tabs .ui-tabs-nav li a {
+  padding: .5em 0;
+  width: 73px;
+}
+.tabs .ui-tabs-panel {
+  padding: .5em 0;
+}
+
+/* etc.
+--------------------------------------------------------- */
+p.form, p.managerForm {
+  margin: 20px 0px 10px 0px;
+  padding: 0px 5px 0px 0px;
+  font-size: 110%;
+  font-weight: bold;
+  line-height: 1.6;
+}
+p.form {
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+div.label1 {
+  margin: 10px 0 5px 0;
+  padding-left: 5px;
+  border-left: 3px solid #000;
+  font-weight: bold;
+}
+p.managerForm {
+  border-bottom: 1px solid #bf1400;
+  color: #bf1400;
+}
+
+.inlineForm {
+  margin: 0px 0px 2px 0px;
+  padding: 2px;
+  border: 1px solid #ccc;
+}
+form .note {
+  color: #e00;
+}
