@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title><%= Core.title %></title>
+  <%= javascript_include_tag '/_common/js/jquery.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
+  <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+
+  <%= stylesheet_link_tag '/_common/css/jquery-ui-themes/smoothness/jquery-ui.min.css' %>
+  <%= javascript_include_tag '/_common/js/jquery-ui.min.js' %>
+  <%= stylesheet_link_tag '/_common/css/jquery-ui-timepicker-addon.css' %>
+  <%= javascript_include_tag '/_common/js/jquery-ui-timepicker-addon.js' %>
+
+  <%= stylesheet_link_tag '/_common/themes/admin/style_smart_phone.css' %>
+  <%= javascript_include_tag '/_common/js/zomeki_admin/zomeki.js' %>
+
+  <%= stylesheet_link_tag '/_common/css/simple_tabs.css' %>
+  <%= javascript_include_tag '/_common/js/simple_tabs.js' %>
+  <%= csrf_meta_tags %>
+</head>
+<body style="margin: 0; padding: 0;">
+  <%= javascript_tag do -%>
+  $(function () {
+    if (zomeki && zomeki.Page) {
+      zomeki.Page.smart_phone = <%= Page.smart_phone? ? 'true' : 'false' %>;
+    }
+  });
+  <%- end -%>
+  <div id="container">
+    <header id="header">
+      <div id="headerContainer" style="height: 40px;">
+        <div style="background-image: url(/_common/themes/admin/images/header_re.gif); float: left; width: 100%;">
+          <div style="float: left; height: 40px;"><a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>"><%= image_tag '/_common/themes/admin/images/header_logo.gif', style: 'height: 40px;' %></a></div>
+          <div style="color: #fff; float: right; height: 40px; line-height: 20px;">
+            <span class="user"><%= Core.user_group.try(:name) %> <%= Core.user.try(:name_with_account ) %></span><br />
+            <a href="/<%= ZomekiCMS::ADMIN_URL_PREFIX %>/logout" class="logout" style="color: #fff; float: right; text-decoration: none;">ログアウト</a>
+          </div>
+        </div>
+      <!-- /#headerContainer --></div>
+    <!-- /#header --></header>
+    <div id="main" style="clear: both;">
+      <div id="content">
+        <div id="contentContainer">
+          <div id="contentHeader"><%= yield :content_header %></div>
+          <div id="contentBody">
+            <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+            <% if flash[:alert] %><div class="alert"><%= flash[:alert] %></div><% end %>
+            <%= yield %>
+          </div>
+          <div id="contentFooter"></div>
+        <!-- /#contentContainer --></div>
+      <!-- /#content --></div>
+    <!-- /#main --></div>
+    <footer id="footer">
+      <div id="footerContainer">
+      <!-- /#footerContainer --></div>
+    <!-- /#footer --></footer>
+  <!-- /#container --></div>
+</body>
+</html>

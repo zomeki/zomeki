@@ -1,0 +1,10 @@
+<%= render 'menu_smart_phone' %>
+<%= render 'gp_article/admin/docs/replacement_notification' %>
+
+<%= form_for(@item, :as => :item, :url => gp_article_doc_path, :html => { method: 'put' }) do |f| %>
+  <%= error_messages_for :item %>
+  <%=raw large_flash(flash, :key => :link_check_result) %>
+  <%=raw large_flash(flash, :key => :accessibility_check_result) %>
+  <%= render 'form_smart_phone', :f => f %>
+  <%= submit @item.state_options %>
+<% end %>

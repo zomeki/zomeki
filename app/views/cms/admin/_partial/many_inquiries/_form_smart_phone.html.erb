@@ -7,16 +7,12 @@ end
 item.build_default_inquiry
 -%>
 
-<table class="show">
-<tr>
-  <td>
-    <%- item.inquiry_states.each do |(label, value)| -%>
-      <%= radio_button_tag :inquiry_state, value, item.inquiries[0].state == value, :class => 'status' %>
-      <%= label_tag :"inquiry_state_#{value}", label -%>
-    <%- end -%>
-  </td>
-</tr>
-</table>
+<div>
+  <%- item.inquiry_states.each do |(label, value)| -%>
+    <%= radio_button_tag :inquiry_state, value, item.inquiries[0].state == value, :class => 'status' %>
+    <%= label_tag :"inquiry_state_#{value}", label -%>
+  <%- end -%>
+</div>
 
 <div id="inquiryForms">
 <%- item.inquiries.each_with_index do |inquiry, i| -%>
@@ -25,44 +21,40 @@ item.build_default_inquiry
     <p class="form">連絡先<%= i+1 if i != 0 %></p>
     <%= f2.hidden_field :state, :class => "inquiryState" -%>
     <%= f2.hidden_field :_destroy -%>
-    <table class="show">
-      <%- if item.inquiry_display_field?(:group_id) -%>
-      <tr>
-        <th><%= f2.label :group_id -%> <%= inquiry_require_label(item, :group_id) -%></th>
-        <td>
-          <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
-          <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
-          <%= f2.select_with_tree :group_id, groups,
-            :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
-          <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
-        </td>
-      </tr>
-      <%- end -%>
-      <%- if item.inquiry_display_field?(:charge) -%>
-      <tr>
-        <th><%= f2.label :charge -%> <%= inquiry_require_label(item, :charge) -%></th>
-        <td><%= f2.text_field :charge, :class => 'name' %></td>
-      </tr>
-      <%- end -%>
-      <%- if item.inquiry_display_field?(:tel) -%>
-      <tr>
-        <th><%= f2.label :tel -%> <%= inquiry_require_label(item, :tel) -%></th>
-        <td><%= f2.text_field :tel, :class => 'number' %></td>
-      </tr>
-      <%- end -%>
-      <%- if item.inquiry_display_field?(:fax) -%>
-      <tr>
-        <th><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></th>
-        <td><%= f2.text_field :fax, :class => 'number' %></td>
-      </tr>
-      <%- end -%>
-      <%- if item.inquiry_display_field?(:email) -%>
-      <tr>
-        <th><%= f2.label :email -%> <%= inquiry_require_label(item, :email) -%></th>
-        <td><%= f2.text_field :email, :class => 'email' %></td>
-      </tr>
-      <%- end -%>
-    </table>
+    <%- if item.inquiry_display_field?(:group_id) -%>
+    <div>
+      <div class="label1"><%= f2.label :group_id -%> <%= inquiry_require_label(item, :group_id) -%></div>
+      <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
+      <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
+      <%= f2.select_with_tree :group_id, groups,
+        :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
+      <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:charge) -%>
+    <div>
+      <div class="label1"><%= f2.label :charge -%> <%= inquiry_require_label(item, :charge) -%></div>
+      <%= f2.text_field :charge, :class => 'name' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:tel) -%>
+    <div>
+      <div class="label1"><%= f2.label :tel -%> <%= inquiry_require_label(item, :tel) -%></div>
+      <%= f2.text_field :tel, :class => 'number' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:fax) -%>
+    <div>
+      <div class="label1"><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></div>
+      <%= f2.text_field :fax, :class => 'number' %>
+    </div>
+    <%- end -%>
+    <%- if item.inquiry_display_field?(:email) -%>
+    <div>
+      <div class="label1"><%= f2.label :email -%> <%= inquiry_require_label(item, :email) -%></div>
+      <%= f2.text_field :email, :class => 'email' %>
+    </div>
+    <%- end -%>
     <%= button_tag '削除する', :type => :button, :class => 'deleteInquiry', :style => "margin: 10px 0; display: #{i == 0 ? 'none' : 'block'}"   -%>
     </div>
   <%- end -%>

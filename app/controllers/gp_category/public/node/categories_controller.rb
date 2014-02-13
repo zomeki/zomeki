@@ -31,8 +31,15 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
 
             case tm.module_type
             when 'categories_1', 'categories_2', 'categories_3'
-              vc.send(tm.module_type, template_module: tm,
-                      categories: @category.public_children) if vc.respond_to?(tm.module_type)
+              if vc.respond_to?(tm.module_type)
+                @category.public_children.inject(''){|tags, child|
+                  tags << vc.content_tag(:section, class: child.name) do
+                      html = vc.content_tag(:h2, vc.link_to(child.title, child.public_uri))
+                      html << vc.send(tm.module_type, template_module: tm,
+                                      categories: child.public_children)
+                    end
+                }
+              end
             when 'docs_1', 'docs_2'
               if vc.respond_to?(tm.module_type)
                 docs = case tm.module_type
@@ -41,11 +48,11 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
                        when 'docs_2'
                          find_public_docs_with_category_ids([@category.id])
                        end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
                 vc.send(tm.module_type, template_module: tm,
-                        category: @category, docs: docs)
+                        ct_or_c: @category, docs: docs)
               end
             when 'docs_3', 'docs_4'
               if vc.respond_to?(tm.module_type) && category_type.internal_category_type
@@ -55,10 +62,11 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
                        when 'docs_4'
                          find_public_docs_with_category_ids([@category.id])
                        end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
                 vc.send(tm.module_type, template_module: tm,
+                        ct_or_c: @category,
                         categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
               end
             when 'docs_5', 'docs_6'
