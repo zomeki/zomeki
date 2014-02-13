@@ -77,11 +77,12 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
                        when 'docs_6'
                          find_public_docs_with_category_ids([@category.id])
                        end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.detect{|c| c.name == tm.module_type_feature }
+                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 docs = docs.joins(:creator => :group)
                 groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
                 vc.send(tm.module_type, template_module: tm,
+                        ct_or_c: @category,
                         groups: groups, docs: docs)
               end
             when 'docs_7', 'docs_8'

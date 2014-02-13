@@ -84,29 +84,33 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_4(template_module: nil, categories: nil, categorizations: nil)
-    docs_3(template_module: template_module, categories: categories, categorizations: categorizations)
+  def docs_4(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
+    docs_3(template_module: template_module, ct_or_c: ct_or_c, categories: categories, categorizations: categorizations)
   end
 
-  def docs_5(template_module: nil, groups: nil, docs: nil)
+  def docs_5(template_module: nil, ct_or_c: nil, groups: nil, docs: nil)
     content_tag(:section, class: template_module.name) do
       groups.inject(''){|tags, group|
         tags << content_tag(:section, class: group.code) do
             docs = docs.where(Sys::Group.arel_table[:id].eq(group.id))
                        .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
 
-            content_tag(:h2, group.name) << content_tag(:ul) do
-                docs.inject(''){|t, d|
-                  t << content_tag(:li, doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-                }.html_safe
-              end
+            html = content_tag(:h2, group.name)
+            doc_tags = docs.inject(''){|t, d|
+                         t << content_tag(template_module.wrapper_tag,
+                                          doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                       }.html_safe
+            doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
+            html << doc_tags
+
+            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{group.code}.html"), class: 'more')
           end
       }.html_safe
     end
   end
 
-  def docs_6(template_module: nil, groups: nil, docs: nil)
-    docs_5(template_module: template_module, groups: groups, docs: docs)
+  def docs_6(template_module: nil, ct_or_c: nil, groups: nil, docs: nil)
+    docs_5(template_module: template_module, ct_or_c: ct_or_c, groups: groups, docs: docs)
   end
 
   def docs_7(template_module: nil, categories: nil, categorizations: nil)
