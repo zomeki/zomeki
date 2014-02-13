@@ -24,20 +24,10 @@ li {
 * {
   font-size: 10px !important;
 }
-
-.alert {
-  margin: 5px 5px;
-  color: #f00;
-}
 .note {
   margin: 5px 5px;
   color: #e00;
 }
-.notice {
-  margin: 5px 5px;
-  color: #009632;
-}
-
 .submitters {
   padding: 20px;
   border: 1px solid #CCCCCC;
@@ -89,6 +79,93 @@ li {
 #content .actionMenu span.separator {
   margin: 0px 4px 0px 2px;
   border-left: 1px solid #ccc;
+}
+
+/* common
+--------------------------------------------------------- */
+/* Alert.
+----------------------------------------------- */
+.alert {
+ margin: 5px;
+ color: #f00;
+}
+
+/* Error.
+----------------------------------------------- */
+.field_with_errors {
+  margin: 1px;
+  padding: 1px;
+  border: 1px solid #f00;
+  display: inline;
+}
+#errorExplanation {
+  border: 2px solid #e61400;
+  margin: 5px;
+}
+#errorExplanation h2 {
+  margin: 0px !important;
+  padding: 5px !important;
+  background-color: #e61400 !important;
+  color: #fff !important;
+}
+#errorExplanation p {
+  margin: 0;
+  padding: 5px;
+  color: #333;
+  font-weight: bold;
+}
+#errorExplanation ul {
+  padding: 0px 0px 5px 0px;
+  list-style-type: square;
+}
+#errorExplanation ul li {
+  margin-left: 30px;
+  padding-left: 0px;
+  font-size: 12px;
+}
+
+/* Notice.
+----------------------------------------------- */
+.notice {
+  margin: 5px;
+  color: #009632;
+}
+#noticeExplanation {
+ /* width: 600px;
+  width: 100%; */
+  border: 2px solid #4bf;
+  margin: 5px;
+}
+#noticeExplanation h2 {
+  margin: 0px !important;
+  padding: 5px !important;
+  background-color: #06b !important;
+  color: #fff !important;
+}
+#noticeExplanation p {
+  margin: 0;
+  padding: 5px;
+  color: #333;
+  font-weight: bold;
+}
+#noticeExplanation ul {
+  padding: 0;
+  list-style-type: square;
+}
+#noticeExplanation ul li {
+  margin-left: 30px;
+  padding-left: 0px;
+  font-size: 12px;
+}
+#noticeExplanation ul li .succeeded {
+  color: #06f;
+}
+#noticeExplanation ul li .failed {
+  color: #e00;
+}
+#noticeExplanation .checkbox {
+  margin: 0px 10px 5px 10px;
+  text-align: right;
 }
 
 /* Tabs
