@@ -18,9 +18,22 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
     per_page = (@more ? 30 : @content.category_docs_number)
 
     if (template = @category.inherited_template)
-      if @more
-        @docs = @category.public_docs.order('display_published_at DESC, published_at DESC')
-                                     .paginate(page: params[:page], per_page: per_page)
+      if @file
+        @docs = find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+
+        unless @more
+          return http_error(404) unless category_type.internal_category_type
+
+          internal_category = category_type.internal_category_type.public_root_categories.find_by_name(@file)
+          return http_error(404) unless internal_category
+
+          categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorized_as: 'GpArticle::Doc',
+                                                             categorizable_id: @docs.pluck(:id),
+                                                             category_id: internal_category.public_descendants.map(&:id))
+          @docs = GpArticle::Doc.where(id: categorizations.pluck(:categorizable_id))
+        end
+
+        @docs = @docs.order('display_published_at DESC, published_at DESC').paginate(page: params[:page], per_page: per_page)
         return http_error(404) if @docs.current_page > @docs.total_pages
         render :more
       else
