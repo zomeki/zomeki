@@ -14,6 +14,10 @@ value_form = case @item.form_type
                f.password_field(:value, style: 'width: 400px;')
              when :date
                f.text_field(:value, style: 'width: 106px;', class: 'js-date')
+             when :check_boxes
+               f.check_boxes(:value, @item.config_options)
+             when :radio_buttons
+               f.radio_buttons(:value, @item.config_options)
              else
                f.text_field(:value, style: 'width: 400px;')
              end
