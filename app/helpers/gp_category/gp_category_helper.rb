@@ -78,7 +78,7 @@ module GpCategory::GpCategoryHelper
             doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
             html << doc_tags
 
-            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{category.name}.html"), class: 'more')
+            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}c_#{category.name}.html"), class: 'more')
           end
       }.html_safe
     end
@@ -103,7 +103,7 @@ module GpCategory::GpCategoryHelper
             doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
             html << doc_tags
 
-            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{group.code}.html"), class: 'more')
+            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}g_#{group.code}.html"), class: 'more')
           end
       }.html_safe
     end
