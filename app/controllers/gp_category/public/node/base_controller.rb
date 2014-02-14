@@ -5,7 +5,8 @@ class GpCategory::Public::Node::BaseController < Cms::Controller::Public::Base
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
     @file = params[:file] unless params[:file] == 'index'
-    @more = (@file == 'more')
+    @more = (@file =~ /^more($|_)/)
+    @more_suffix = @file.split('_', 2)[1] if @more
   end
 
   private

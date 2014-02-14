@@ -79,7 +79,9 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
         }
         @docs = find_public_docs_with_category_ids(category_ids)
 
-        unless @more
+        if @more
+          @docs = @docs.where(@more_suffix, true) if @docs.columns.any?{|c| c.name == @more_suffix }
+        else
           prefix, code_or_name = @file.split('_', 2)
           return http_error(404) unless prefix.in?('c', 'g')
 
