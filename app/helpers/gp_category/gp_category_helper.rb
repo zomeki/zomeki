@@ -50,7 +50,8 @@ module GpCategory::GpCategoryHelper
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
       if ct_or_c
-        html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}more.html"), class: 'more')
+        file = "more#{"_#{template_module.module_type_feature}" if template_module.module_type_feature.present?}"
+        html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{file}.html"), class: 'more')
       else
         html
       end
@@ -154,7 +155,8 @@ module GpCategory::GpCategoryHelper
           end
       end
 
-      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}more.html"), class: 'more')
+      file = "more#{"_#{template_module.module_type_feature}" if template_module.module_type_feature.present?}"
+      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}#{file}.html"), class: 'more')
     end
   end
 end
