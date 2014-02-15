@@ -58,32 +58,30 @@ module Rank::Controller::Rank
 
   def calc_access(content)
     begin
-      Rank::Total.where(content_id: content.id).delete_all
+      ActiveRecord::Base.transaction do
+        Rank::Total.where(content_id: content.id).delete_all
 
-      t = Date.today
-      ranking_terms.each do |termname, term|
-        case term
-        when 'all'
-          from = Date.new(2005, 1, 1)
-          to   = t
-        when 'previous_days'
-          from = t.yesterday
-          to   = t.yesterday
-        when 'last_weeks'
-          wday = t.wday == 0 ? 7 : t.wday
-          from = t - (6 + wday).days
-          to   = t - wday.days
-        when 'last_months'
-          from = (t - 1.month).beginning_of_month
-          to   = (t - 1.month).end_of_month
-        when 'this_weeks'
-          from = t.yesterday - 7.days
-          to   = t.yesterday
-        end
+        t = Date.today
+        ranking_terms.each do |termname, term|
+          case term
+          when 'all'
+            from = Date.new(2005, 1, 1)
+            to   = t
+          when 'previous_days'
+            from = t.yesterday
+            to   = t.yesterday
+          when 'last_weeks'
+            wday = t.wday == 0 ? 7 : t.wday
+            from = t - (6 + wday).days
+            to   = t - wday.days
+          when 'last_months'
+            from = (t - 1.month).beginning_of_month
+            to   = (t - 1.month).end_of_month
+          when 'this_weeks'
+            from = t.yesterday - 7.days
+            to   = t.yesterday
+          end
 
-        category = 0
-
-        ActiveRecord::Base.transaction do
           rank_table = Rank::Rank.arel_table
           Rank::Rank.select('*')
                     .select(rank_table[:pageviews].sum.as('pageviews'))
@@ -93,16 +91,38 @@ module Rank::Controller::Rank
                     .group(:hostname, :page_path)
                     .find_each do |result|
 
-            content_category(result.page_path)
-
             Rank::Total.create!(content_id:  content.id,
                                 term:        term,
-                                category_id: category,
                                 page_title:  result.page_title,
                                 hostname:    result.hostname,
                                 page_path:   result.page_path,
                                 pageviews:   result.pageviews,
                                 visitors:    result.visitors)
+          end
+        end
+      end
+
+      ActiveRecord::Base.transaction do
+        Rank::Category.where(content_id: content.id).delete_all
+
+        category_ids = GpCategory::CategoryType.public.inject([]) do |ids, ct|
+          ids.concat(ct.public_root_categories.inject([]) do |id, c|
+            id.concat(c.public_descendants.map(&:id))
+          end)
+        end
+
+        GpCategory::Category.public.each do |c|
+          category_ids << c.public_descendants.map(&:id)
+        end
+        category_ids = category_ids.flatten.uniq
+
+        docs = GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_ids).mobile(::Page.mobile?).public
+        docs.each do |doc|
+          doc.categories.each do |c|
+            Rank::Category.where(content_id:  content.id)
+                          .where(page_path:   doc.public_uri)
+                          .where(category_id: c)
+                          .first_or_create
           end
         end
       end
@@ -128,13 +148,24 @@ module Rank::Controller::Rank
                        .where(rank_table[:page_path].not_in(exclusion))
 
     if category == 'on'
-      category_ids = Page.current_item.categories.map(&:id)
-      ranks = ranks.where(rank_table[:category].in(category_ids))
+      category_ids = []
+      @item = Page.current_item
+      case @item
+        when GpCategory::CategoryType
+          category_ids = @item.categories.map(&:id)
+        when GpCategory::Category
+          category_ids << @item.id
+      end
+
+      if category_ids.size > 0
+        ranks = ranks.where(Rank::Category.select(:id)
+                                          .where(content_id:  content.id)
+                                          .where(page_path:   rank_table[:page_path])
+                                          .where(category_id: category_ids).exists)
+      end
     end
 
-    ranks = ranks.order('accesses DESC')
-                 .paginate(page: params[:page], per_page: per_page)
-
+    ranks = ranks.order('accesses DESC').paginate(page: params[:page], per_page: per_page)
   end
 
   def ranking_targets
@@ -156,16 +187,6 @@ private
     start_date = Date.new(2005,01,01) if start_date.blank? || start_date < Date.new(2005,01,01)
 
     Rank::GoogleAnalytics.results(profile, :limit => limit, :offset => offset, :start_date => start_date)
-  end
-
-  def content_category(paths)
-    return
-
-    path = paths.split('/')
-    begin
-    cont = Cms::Node.find_by_parent_id_and_name(1, path[1]).content
-    rescue
-    end
   end
 
 end
