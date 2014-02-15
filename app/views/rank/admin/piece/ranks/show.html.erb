@@ -26,5 +26,9 @@
     <th><%= @item.locale :more_link_url %></th>
     <td><%= @item.setting_value(:more_link_url) %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :category_option %></th>
+    <td><%= @item.show_label(:category_option, @item.category_options) %></td>
+  </tr>
 </table>
 <%- end -%>
