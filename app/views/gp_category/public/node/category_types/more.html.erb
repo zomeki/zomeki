@@ -1,10 +1,10 @@
-<div class="contentGpCategory contentGpCategoryCategory">
+<div class="contentGpCategory contentGpCategoryCategoryType">
   <%- unless @docs.empty? -%>
-  <section class="category">
+  <section class="categoryType">
     <div class="docs">
       <ul>
         <%- @docs.each do |doc| -%>
-        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style) %></li>
+        <li><%= doc_replace(doc, @content.category_type_doc_style, @content.date_style) %></li>
         <%- end -%>
       </ul>
     </div>
