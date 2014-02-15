@@ -16,7 +16,7 @@ class Cms::Content < ActiveRecord::Base
     :dependent => :destroy
 
   validates_presence_of :concept_id, :state, :model, :name
-  validates :code, :presence => true, :uniqueness => true
+  validates :code, :presence => true, :uniqueness => {:scope => [:site_id]}
 
   after_save :save_settings
 
