@@ -26,5 +26,9 @@
     <th><%= @item.locale :more_link_url %></th>
     <td><%= f.array_text_field 'in_settings[more_link_url]', class: 'name' %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :category_option %></th>
+    <td><%= f.array_radio_buttons 'in_settings[category_option]', @item.category_options %></td>
+  </tr>
 </table>
 <%- end -%>

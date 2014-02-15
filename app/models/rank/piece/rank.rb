@@ -14,8 +14,16 @@ class Rank::Piece::Rank < Cms::Piece
     return Rank::Rank::TERMS
   end
 
+  def ranking_terms
+    return Rank::Rank::TERMS
+  end
+
   def show_counts
     return [['表示する', 1], ['表示しない', 0]]
+  end
+
+  def category_options
+    return [['表示する', 'on'], ['表示しない', 'off']]
   end
 
   def show_label(key, values)
@@ -48,6 +56,10 @@ class Rank::Piece::Rank < Cms::Piece
 
   def more_link_url
     setting_value(:more_link_url).to_s
+  end
+
+  def category_option
+    setting_value(:category_option).to_s
   end
 
   def ranks
