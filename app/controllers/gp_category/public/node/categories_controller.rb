@@ -19,10 +19,25 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
 
     if (template = @category.inherited_template)
       if @file
-        @docs = find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+        more_options = @more_suffix.to_s.split('_')
+
+        @docs = case
+                when 'l1'.in?(more_options)
+                  find_public_docs_with_category_id(@category.id)
+                else
+                  find_public_docs_with_category_id(@category.public_descendants.map(&:id))
+                end
 
         if @more
-          @docs = @docs.where(@more_suffix, true) if @docs.columns.any?{|c| c.name == @more_suffix }
+          feature = case
+                    when 'f1'.in?(more_options)
+                      'feature_1'
+                    when 'f2'.in?(more_options)
+                      'feature_2'
+                    else
+                      ''
+                    end
+          @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
         else
           prefix, code_or_name = @file.split('_', 2)
           return http_error(404) unless prefix.in?('c', 'g')
@@ -69,9 +84,9 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
               if vc.respond_to?(tm.module_type)
                 docs = case tm.module_type
                        when 'docs_1'
-                         find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
                        when 'docs_2'
-                         find_public_docs_with_category_ids([@category.id])
+                         find_public_docs_with_category_id(@category.id)
                        end
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
@@ -83,9 +98,9 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
               if vc.respond_to?(tm.module_type) && category_type.internal_category_type
                 docs = case tm.module_type
                        when 'docs_3'
-                         find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
                        when 'docs_4'
-                         find_public_docs_with_category_ids([@category.id])
+                         find_public_docs_with_category_id(@category.id)
                        end
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
@@ -98,9 +113,9 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
               if vc.respond_to?(tm.module_type)
                 docs = case tm.module_type
                        when 'docs_5'
-                         find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
                        when 'docs_6'
-                         find_public_docs_with_category_ids([@category.id])
+                         find_public_docs_with_category_id(@category.id)
                        end
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
@@ -112,7 +127,7 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
               end
             when 'docs_7', 'docs_8'
               if view_context.respond_to?(tm.module_type)
-                docs = find_public_docs_with_category_ids(@category.public_descendants.map(&:id))
+                docs = find_public_docs_with_category_id(@category.public_descendants.map(&:id))
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
