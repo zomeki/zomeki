@@ -119,13 +119,16 @@ module Rank::Controller::Rank
         end
 
         GpCategory::Category.public.each do |c|
-          category_ids << c.public_descendants.map(&:id)
-          unless c.public_uri.blank?
-            Rank::Category.where(content_id:  content.id)
-                          .where(page_path:   c.public_uri)
-                          .where(category_id: c.id)
-                          .first_or_create
+          ids = c.public_descendants.map(&:id)
+          category_ids << ids
+          ids.each do |id|
+            unless c.public_uri.blank?
+              Rank::Category.where(content_id:  content.id)
+                            .where(page_path:   c.public_uri)
+                            .where(category_id: id)
+                            .first_or_create
             end
+          end
         end
         category_ids = category_ids.flatten.uniq
 
