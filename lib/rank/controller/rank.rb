@@ -106,13 +106,26 @@ module Rank::Controller::Rank
         Rank::Category.where(content_id: content.id).delete_all
 
         category_ids = GpCategory::CategoryType.public.inject([]) do |ids, ct|
-          ids.concat(ct.public_root_categories.inject([]) do |id, c|
-            id.concat(c.public_descendants.map(&:id))
-          end)
+          cct = ids.concat( ct.public_root_categories.inject([]){ |id, c| id.concat(c.public_descendants.map(&:id)) } )
+          ids.each do |id|
+            unless ct.public_uri.blank?
+              Rank::Category.where(content_id:  content.id)
+                            .where(page_path:   ct.public_uri)
+                            .where(category_id: id)
+                            .first_or_create
+            end
+          end
+          cct
         end
 
         GpCategory::Category.public.each do |c|
           category_ids << c.public_descendants.map(&:id)
+          unless c.public_uri.blank?
+            Rank::Category.where(content_id:  content.id)
+                          .where(page_path:   c.public_uri)
+                          .where(category_id: c.id)
+                          .first_or_create
+            end
         end
         category_ids = category_ids.flatten.uniq
 
