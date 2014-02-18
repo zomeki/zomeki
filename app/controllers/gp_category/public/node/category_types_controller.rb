@@ -29,7 +29,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                 })
               }
 
-              docs = find_public_docs_with_category_ids(category_ids)
+              docs = find_public_docs_with_category_id(category_ids)
               docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
               docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
@@ -58,7 +58,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
       case @content.category_type_style
       when 'all_docs'
         category_ids = @category_type.public_categories.pluck(:id)
-        @docs = find_public_docs_with_category_ids(category_ids).order('display_published_at DESC, published_at DESC')
+        @docs = find_public_docs_with_category_id(category_ids).order('display_published_at DESC, published_at DESC')
         @docs = @docs.display_published_after(@content.feed_docs_period.to_i.days.ago) if @content.feed_docs_period.present?
         @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
         return render_feed(@docs)
@@ -77,10 +77,20 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
         category_ids = @category_type.public_root_categories.inject([]){|ids, category|
           ids.concat(category.public_descendants.map(&:id))
         }
-        @docs = find_public_docs_with_category_ids(category_ids)
+        @docs = find_public_docs_with_category_id(category_ids)
 
         if @more
-          @docs = @docs.where(@more_suffix, true) if @docs.columns.any?{|c| c.name == @more_suffix }
+          more_options = @more_suffix.to_s.split('_')
+
+          feature = case
+                    when 'f1'.in?(more_options)
+                      'feature_1'
+                    when 'f2'.in?(more_options)
+                      'feature_2'
+                    else
+                      ''
+                    end
+          @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
         else
           prefix, code_or_name = @file.split('_', 2)
           return http_error(404) unless prefix.in?('c', 'g')
@@ -129,7 +139,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   ids.concat(category.public_descendants.map(&:id))
                 }
 
-                docs = find_public_docs_with_category_ids(category_ids)
+                docs = find_public_docs_with_category_id(category_ids)
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
@@ -142,7 +152,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   ids.concat(category.public_descendants.map(&:id))
                 }
 
-                docs = find_public_docs_with_category_ids(category_ids)
+                docs = find_public_docs_with_category_id(category_ids)
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
@@ -156,7 +166,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   ids.concat(category.public_descendants.map(&:id))
                 }
 
-                docs = find_public_docs_with_category_ids(category_ids)
+                docs = find_public_docs_with_category_id(category_ids)
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 docs = docs.joins(:creator => :group)
@@ -171,7 +181,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                   ids.concat(category.public_descendants.map(&:id))
                 }
 
-                docs = find_public_docs_with_category_ids(category_ids)
+                docs = find_public_docs_with_category_id(category_ids)
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
                 categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
@@ -189,7 +199,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
       case @content.category_type_style
       when 'all_docs'
         category_ids = @category_type.public_categories.pluck(:id)
-        @docs = find_public_docs_with_category_ids(category_ids).order('display_published_at DESC, published_at DESC')
+        @docs = find_public_docs_with_category_id(category_ids).order('display_published_at DESC, published_at DESC')
         @docs = @docs.paginate(page: params[:page], per_page: @content.category_type_docs_number)
         return http_error(404) if @docs.current_page > @docs.total_pages
       else

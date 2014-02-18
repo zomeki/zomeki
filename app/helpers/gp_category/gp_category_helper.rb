@@ -3,6 +3,25 @@ module GpCategory::GpCategoryHelper
     GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_id).except(:order).mobile(::Page.mobile?).public
   end
 
+  def more_link(template_module: nil, ct_or_c: nil)
+    options = []
+
+    case template_module.module_type
+    when 'docs_2', 'docs_4', 'docs_6'
+      options << 'l1'
+    end
+
+    case template_module.module_type_feature
+    when 'feature_1'
+      options << 'f1'
+    when 'feature_2'
+      options << 'f2'
+    end
+
+    file = "more#{"_#{options.join('_')}" unless options.empty?}"
+    "#{ct_or_c.public_uri}#{file}.html"
+  end
+
   def category_li(category, depth_limit: 1000, depth: 1)
     content_tag(:li) do
       result = link_to(category.title, category.public_uri)
@@ -50,8 +69,7 @@ module GpCategory::GpCategoryHelper
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
       if ct_or_c
-        file = "more#{"_#{template_module.module_type_feature}" if template_module.module_type_feature.present?}"
-        html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}#{file}.html"), class: 'more')
+        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
       else
         html
       end
@@ -155,8 +173,7 @@ module GpCategory::GpCategoryHelper
           end
       end
 
-      file = "more#{"_#{template_module.module_type_feature}" if template_module.module_type_feature.present?}"
-      html << content_tag(:div, link_to('一覧へ', "#{category.public_uri}#{file}.html"), class: 'more')
+      html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: category)), class: 'more')
     end
   end
 end
