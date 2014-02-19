@@ -15,38 +15,36 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
     Page.current_item = @category
     Page.title = @category.title
 
-    per_page = (@file ? 30 : @content.category_docs_number)
+    per_page = (@more ? 30 : @content.category_docs_number)
 
     if (template = @category.inherited_template)
-      if @file
-        more_options = @more_suffix.to_s.split('_')
-
+      if @more
         @docs = case
-                when 'l1'.in?(more_options)
+                when 'l1'.in?(@more_options)
                   find_public_docs_with_category_id(@category.id)
                 else
                   find_public_docs_with_category_id(@category.public_descendants.map(&:id))
                 end
 
-        if @more
-          feature = case
-                    when 'f1'.in?(more_options)
-                      'feature_1'
-                    when 'f2'.in?(more_options)
-                      'feature_2'
-                    else
-                      ''
-                    end
-          @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
-        else
-          prefix, code_or_name = @file.split('_', 2)
-          return http_error(404) unless prefix.in?('c', 'g')
+        feature = case
+                  when 'f1'.in?(@more_options)
+                    'feature_1'
+                  when 'f2'.in?(@more_options)
+                    'feature_2'
+                  else
+                    ''
+                  end
+        @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
+
+        filter = @more_options.detect{|o| o =~ /^(c|g)_/i }
+        if filter
+          prefix, code_or_name = filter.split('_', 2)
 
           case prefix
           when 'c'
             return http_error(404) unless category_type.internal_category_type
 
-            internal_category = category_type.internal_category_type.public_root_categories.find_by_name(@file)
+            internal_category = category_type.internal_category_type.public_root_categories.find_by_name(code_or_name)
             return http_error(404) unless internal_category
 
             categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorized_as: 'GpArticle::Doc',
@@ -55,8 +53,6 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
             @docs = GpArticle::Doc.where(id: categorizations.pluck(:categorizable_id))
           when 'g'
             @docs = @docs.joins(:creator => :group).where(Sys::Group.arel_table[:code].eq(code_or_name))
-          else
-            return http_error(404)
           end
         end
 

@@ -3,9 +3,7 @@ module GpCategory::GpCategoryHelper
     GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_id).except(:order).mobile(::Page.mobile?).public
   end
 
-  def more_link(template_module: nil, ct_or_c: nil)
-    options = []
-
+  def more_link(*options, template_module: nil, ct_or_c: nil)
     case template_module.module_type
     when 'docs_2', 'docs_4', 'docs_6'
       options << 'l1'
@@ -18,7 +16,7 @@ module GpCategory::GpCategoryHelper
       options << 'f2'
     end
 
-    file = "more#{"_#{options.join('_')}" unless options.empty?}"
+    file = "more#{"_#{options.join('_-_')}" unless options.empty?}"
     "#{ct_or_c.public_uri}#{file}.html"
   end
 
@@ -97,7 +95,7 @@ module GpCategory::GpCategoryHelper
             doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
             html << doc_tags
 
-            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}c_#{category.name}.html"), class: 'more')
+            html << content_tag(:div, link_to('一覧へ', more_link("c_#{category.name}", template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
           end
       }.html_safe
     end
@@ -122,7 +120,7 @@ module GpCategory::GpCategoryHelper
             doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
             html << doc_tags
 
-            html << content_tag(:div, link_to('一覧へ', "#{ct_or_c.public_uri}g_#{group.code}.html"), class: 'more')
+            html << content_tag(:div, link_to('一覧へ', more_link("g_#{group.code}", template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
           end
       }.html_safe
     end
