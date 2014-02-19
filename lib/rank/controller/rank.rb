@@ -114,16 +114,15 @@ module Rank::Controller::Rank
 
         category_ids = []
         categories.each do |cc|
-          cc.public_descendants.each do |cd|
-            category_ids << cd.id
-
-            unless cd.public_uri.blank?
-              Rank::Category.where(content_id:  content.id)
-                            .where(page_path:   cd.public_uri)
-                            .where(category_id: cc.id)
-                            .first_or_create
-            end
-          end
+          category_ids << cc.public_descendants.map(&:id)
+#          cc.public_descendants.each do |cd|
+#            unless cd.public_uri.blank?
+#              Rank::Category.where(content_id:  content.id)
+#                            .where(page_path:   cd.public_uri)
+#                            .where(category_id: cc.id)
+#                            .first_or_create
+#            end
+#          end
         end
         category_ids = category_ids.flatten.uniq
 
