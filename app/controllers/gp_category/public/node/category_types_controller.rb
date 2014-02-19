@@ -70,30 +70,28 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
     Page.current_item = @category_type
     Page.title = @category_type.title
 
-    per_page = (@file ? 30 : @content.category_type_docs_number)
+    per_page = (@more ? 30 : @content.category_type_docs_number)
 
     if (template = @category_type.template)
-      if @file
+      if @more
         category_ids = @category_type.public_root_categories.inject([]){|ids, category|
           ids.concat(category.public_descendants.map(&:id))
         }
         @docs = find_public_docs_with_category_id(category_ids)
 
-        if @more
-          more_options = @more_suffix.to_s.split('_')
+        feature = case
+                  when 'f1'.in?(@more_options)
+                    'feature_1'
+                  when 'f2'.in?(@more_options)
+                    'feature_2'
+                  else
+                    ''
+                  end
+        @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
 
-          feature = case
-                    when 'f1'.in?(more_options)
-                      'feature_1'
-                    when 'f2'.in?(more_options)
-                      'feature_2'
-                    else
-                      ''
-                    end
-          @docs = @docs.where(feature, true) if @docs.columns.any?{|c| c.name == feature }
-        else
+        filter = @more_options.detect{|o| o =~ /^(c|g)_/i }
+        if filter
           prefix, code_or_name = @file.split('_', 2)
-          return http_error(404) unless prefix.in?('c', 'g')
 
           case prefix
           when 'c'
@@ -108,8 +106,6 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
             @docs = GpArticle::Doc.where(id: categorizations.pluck(:categorizable_id))
           when 'g'
             @docs = @docs.joins(:creator => :group).where(Sys::Group.arel_table[:code].eq(code_or_name))
-          else
-            return http_error(404)
           end
         end
 
