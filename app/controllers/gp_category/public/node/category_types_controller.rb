@@ -70,7 +70,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
     Page.current_item = @category_type
     Page.title = @category_type.title
 
-    per_page = (@more ? 30 : @content.category_type_docs_number)
+    per_page = (@file ? 30 : @content.category_type_docs_number)
 
     if (template = @category_type.template)
       if @file

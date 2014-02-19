@@ -15,7 +15,7 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
     Page.current_item = @category
     Page.title = @category.title
 
-    per_page = (@more ? 30 : @content.category_docs_number)
+    per_page = (@file ? 30 : @content.category_docs_number)
 
     if (template = @category.inherited_template)
       if @file
