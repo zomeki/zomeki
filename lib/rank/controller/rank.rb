@@ -165,7 +165,7 @@ module Rank::Controller::Rank
         when GpCategory::CategoryType
           category_ids = @item.categories.map(&:id)
         when GpCategory::Category
-          category_ids << @item.id
+          category_ids = @item.descendants.map(&:id)
       end
 
       if category_ids.size > 0
