@@ -105,14 +105,24 @@ module Rank::Controller::Rank
       ActiveRecord::Base.transaction do
         Rank::Category.where(content_id: content.id).delete_all
 
-        category_ids = GpCategory::CategoryType.public.inject([]) do |ids, ct|
-          ids.concat(ct.public_root_categories.inject([]) do |id, c|
-            id.concat(c.public_descendants.map(&:id))
-          end)
+        categories = []
+        GpCategory::CategoryType.public.each do |ct|
+          categories << ct.public_root_categories
         end
+        categories << GpCategory::Category.public
+        categories = categories.flatten.uniq
 
-        GpCategory::Category.public.each do |c|
-          category_ids << c.public_descendants.map(&:id)
+        category_ids = []
+        categories.each do |cc|
+          category_ids << cc.public_descendants.map(&:id)
+#          cc.public_descendants.each do |cd|
+#            unless cd.public_uri.blank?
+#              Rank::Category.where(content_id:  content.id)
+#                            .where(page_path:   cd.public_uri)
+#                            .where(category_id: cc.id)
+#                            .first_or_create
+#            end
+#          end
         end
         category_ids = category_ids.flatten.uniq
 
@@ -154,7 +164,7 @@ module Rank::Controller::Rank
         when GpCategory::CategoryType
           category_ids = @item.categories.map(&:id)
         when GpCategory::Category
-          category_ids << @item.id
+          category_ids = @item.descendants.map(&:id)
       end
 
       if category_ids.size > 0
