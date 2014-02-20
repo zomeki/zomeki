@@ -91,7 +91,7 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
 
         filter = @more_options.detect{|o| o =~ /^(c|g)_/i }
         if filter
-          prefix, code_or_name = @file.split('_', 2)
+          prefix, code_or_name = filter.split('_', 2)
 
           case prefix
           when 'c'
