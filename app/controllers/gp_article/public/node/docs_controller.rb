@@ -37,7 +37,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
 
   def show
     @item = public_or_preview_docs(id: params[:id], name: params[:name])
-    return http_error(404) unless @item
+    return http_error(404) if @item.nil? || @item.filename_base != params[:filename_base]
 
     Page.current_item = @item
     Page.title = unless Page.mobile?
