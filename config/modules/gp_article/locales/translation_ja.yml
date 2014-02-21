@@ -10,7 +10,8 @@ ja:
     attributes:
       gp_article/doc:
         id: 記事番号
-        name: 記事URL
+        name: ディレクトリ名
+        filename_base: ファイル名
         public_full_uri: 記事URL
         title: タイトル
         body: 内容
