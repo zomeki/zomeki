@@ -215,35 +215,32 @@ class GpArticle::Doc < ActiveRecord::Base
     "#{content.public_path}/docs/#{_name}/index.html"
   end
 
-  def public_uri=(uri)
-    @public_uri = uri
-  end
-
-  def public_uri
-    return @public_uri if @public_uri
+  def public_uri(without_filename: false)
     unless content
       warn_log "No content: #{self.inspect}"
       return ''
     end
-    return '' unless node = content.doc_node
-    @public_uri = "#{node.public_uri}#{name}/"
+    return '' unless node = content.public_node
+    uri = "#{node.public_uri}#{name}/"
+    without_filename ? uri : "#{uri}#{filename_base}.html"
   end
 
-  def public_full_uri=(uri)
-    @public_full_uri = uri
+  def public_full_uri(without_filename: false)
+    unless content
+      warn_log "No content: #{self.inspect}"
+      return ''
+    end
+    return '' unless node = content.public_node
+    uri = "#{node.public_full_uri}#{name}/"
+    without_filename ? uri : "#{uri}#{filename_base}.html"
   end
 
-  def public_full_uri
-    return @public_full_uri if @public_full_uri
-    return '' unless node = content.doc_node
-    @public_full_uri = "#{node.public_full_uri}#{name}/"
-  end
-
-  def preview_uri(site: nil, mobile: false, **params)
-    return nil unless public_uri
+  def preview_uri(site: nil, mobile: false, without_filename: false, **params)
+    return nil unless public_uri(without_filename: true)
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}preview/#{id}/#{params.present? ? "?#{params}" : ''}"
+    filename = without_filename ? '' : "#{filename_base}.html"
+    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
   end
 
   def state_options
@@ -451,7 +448,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def backlinks
-    links.engine.where(links.table[:url].matches("%#{self.public_uri.sub(/\/$/, '')}%"))
+    links.engine.where(links.table[:url].matches("%#{self.public_uri(without_filename: true).sub(/\/$/, '')}%"))
   end
 
   def backlinked_docs
@@ -677,6 +674,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.body_more_link_text ||= '続きを読む' if self.has_attribute?(:body_more_link_text)
     self.feature_1 = FEATURE_1_OPTIONS.first.last if self.has_attribute?(:feature_1) && self.feature_1.nil?
     self.feature_2 = FEATURE_2_OPTIONS.first.last if self.has_attribute?(:feature_2) && self.feature_2.nil?
+    self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
   end
 
   def set_display_attributes
