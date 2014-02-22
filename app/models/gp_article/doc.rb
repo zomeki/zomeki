@@ -74,6 +74,8 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :body, :length => {maximum: 300000}
   validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
+  validates :name, :presence => true
+  validates :filename_base, :presence => true
   validate :name_validity
 
   validate :validate_inquiry
@@ -212,7 +214,7 @@ class GpArticle::Doc < ActiveRecord::Base
     else
       _name = ::File.join(name[0..0], name[0..1], name[0..2], name)
     end
-    "#{content.public_path}/docs/#{_name}/index.html"
+    "#{content.public_path}/docs/#{_name}/#{filename_base}.html"
   end
 
   def public_uri(without_filename: false)
@@ -222,7 +224,7 @@ class GpArticle::Doc < ActiveRecord::Base
     end
     return '' unless node = content.public_node
     uri = "#{node.public_uri}#{name}/"
-    without_filename ? uri : "#{uri}#{filename_base}.html"
+    without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
   end
 
   def public_full_uri(without_filename: false)
@@ -232,14 +234,14 @@ class GpArticle::Doc < ActiveRecord::Base
     end
     return '' unless node = content.public_node
     uri = "#{node.public_full_uri}#{name}/"
-    without_filename ? uri : "#{uri}#{filename_base}.html"
+    without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
   end
 
   def preview_uri(site: nil, mobile: false, without_filename: false, **params)
     return nil unless public_uri(without_filename: true)
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
-    filename = without_filename ? '' : "#{filename_base}.html"
+    filename = without_filename || filename_base == 'index' ? '' : "#{filename_base}.html"
     "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
   end
 
