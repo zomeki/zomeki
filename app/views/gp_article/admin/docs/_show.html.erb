@@ -293,8 +293,12 @@
 
     <table class="show">
       <tr>
-        <th><%= @item.locale :name %></th>
-        <td><%= @item.name %></td>
+        <th><%= @item.locale :filename_base %></th>
+        <td>
+          <%= @item.name %>
+          /
+          <%= @item.filename_base %>.html
+        </td>
       </tr>
       <tr>
         <th>表示端末</th>
