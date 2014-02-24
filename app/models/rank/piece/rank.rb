@@ -14,10 +14,6 @@ class Rank::Piece::Rank < Cms::Piece
     return Rank::Rank::TERMS
   end
 
-  def ranking_terms
-    return Rank::Rank::TERMS
-  end
-
   def show_counts
     return [['表示する', 1], ['表示しない', 0]]
   end
