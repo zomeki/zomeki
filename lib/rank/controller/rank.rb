@@ -205,7 +205,7 @@ module Rank::Controller::Rank
   end
 
   def gp_categories
-    GpCategory::Content::CategoryType.all.map{|co| [co.name, co.id] }
+    GpCategory::Content::CategoryType.where(site_id: Core.site.id).map{|co| [co.name, co.id] }
   end
 
   def category_types(gp_category)
