@@ -24,6 +24,11 @@ ZomekiCMS::Application.routes.draw do
       :controller  => "admin/ranks",
       :path        => ":content/ranks/:target"
 
+    resources :ranks, :only => [:index],
+      :controller  => "admin/ranks",
+      :action      => "remote",
+      :path        => ":content/ranks/remote/:gp_category(/:category_type)(/:category)"
+
     ## nodes
     resources :node_previous_days,
       :controller => 'admin/node/previous_days',
