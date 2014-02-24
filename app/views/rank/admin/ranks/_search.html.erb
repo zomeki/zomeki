@@ -1,10 +1,34 @@
-<% blank_opt  = '<option value="">すべて</option>'.html_safe %>
 <%= form_tag '', :method => 'get', :class => 'search' do -%>
 <table>
   <tr>
     <td>期間指定</td>
     <td><%= select_tag('term', options_for_select(@terms, params[:term])) %></td>
+    <td><%= select_tag('gp_category', options_for_select(@gp_categories, @gp_category)) %></td>
+    <td><%= select_tag('category_type', options_for_select(@category_types, @category_type)) %></td>
+    <td><%= select_tag('category', options_for_select(@categories, @category)) %></td>
     <td><%= submit_tag '適用' %></td>
   </tr>
 </table>
+<%- end -%>
+
+<%= javascript_tag do -%>
+$('#gp_category').on('change', function (event) {
+  var gp_category_id = parseInt(event.target.value);
+  var category_type = $('#category_type');
+  var category = $('#category');
+    category.html('<option value="">すべて</option>');
+    category_type.html('<option value="">更新中...</option>');
+    $.get('<%= rank_ranks_path(content: @content) %>/remote/' + gp_category_id, function (data) {
+      category_type.html(data);
+    });
+});
+$('#category_type').on('change', function (event) {
+  var gp_category_id = parseInt($('#gp_category').value);
+  var category_type_id = parseInt(event.target.value);
+  var category = $('#category');
+    category.html('<option value="">更新中...</option>');
+    $.get('<%= rank_ranks_path(content: @content) %>/remote/' + gp_category_id + '/' + category_type_id, function (data) {
+      category.html(data);
+    });
+});
 <%- end -%>
