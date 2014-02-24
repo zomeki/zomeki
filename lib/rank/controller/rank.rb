@@ -169,7 +169,7 @@ module Rank::Controller::Rank
     end
 
     if category.to_i > 0
-      category_ids << category
+      category_ids = GpCategory::Category.find_by_id(category.to_i).descendants.map(&:id)
     elsif category_type.to_i > 0
       category_ids = categories(category_type.to_i).map{|ca| [ca.last] }
     elsif gp_category.to_i > 0
@@ -186,7 +186,6 @@ module Rank::Controller::Rank
                                         .where(content_id:  content.id)
                                         .where(page_path:   rank_table[:page_path])
                                         .where(category_id: category_ids).exists)
-logger.info ranks.to_sql
     end
 
     ranks = ranks.order('accesses DESC').paginate(page: params[:page], per_page: per_page)
