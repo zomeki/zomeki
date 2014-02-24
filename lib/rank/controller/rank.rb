@@ -145,7 +145,7 @@ module Rank::Controller::Rank
     end
   end
 
-  def rank_datas(content, term, target, per_page, category = nil)
+  def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil)
     hostname   = URI.parse(Core.site.full_uri).host
     exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
     rank_table = Rank::Total.arel_table
@@ -157,8 +157,8 @@ module Rank::Controller::Rank
                        .where(hostname:   hostname)
                        .where(rank_table[:page_path].not_in(exclusion))
 
-    if category == 'on'
-      category_ids = []
+    category_ids = []
+    if category_option == 'on'
       @item = Page.current_item
       case @item
         when GpCategory::CategoryType
@@ -166,13 +166,27 @@ module Rank::Controller::Rank
         when GpCategory::Category
           category_ids = @item.descendants.map(&:id)
       end
+    end
 
-      if category_ids.size > 0
-        ranks = ranks.where(Rank::Category.select(:id)
-                                          .where(content_id:  content.id)
-                                          .where(page_path:   rank_table[:page_path])
-                                          .where(category_id: category_ids).exists)
+    if category.to_i > 0
+      category_ids << category
+    elsif category_type.to_i > 0
+      category_ids = categories(category_type.to_i).map{|ca| [ca.last] }
+    elsif gp_category.to_i > 0
+      gp_categories.each do |gc|
+        category_types(gc.last.to_i).each do |ct|
+          category_ids << categories(ct.last.to_i).map{|ca| [ca.last] } # .flatten.uniq
+        end
       end
+    end
+    category_ids = category_ids.flatten.uniq
+
+    if category_ids.size > 0
+      ranks = ranks.where(Rank::Category.select(:id)
+                                        .where(content_id:  content.id)
+                                        .where(page_path:   rank_table[:page_path])
+                                        .where(category_id: category_ids).exists)
+logger.info ranks.to_sql
     end
 
     ranks = ranks.order('accesses DESC').paginate(page: params[:page], per_page: per_page)
@@ -189,6 +203,18 @@ module Rank::Controller::Rank
   def param_check(ary, str)
     str = ary.first[1] if str.blank? || !ary.flatten.include?(str)
     str
+  end
+
+  def gp_categories
+    GpCategory::Content::CategoryType.all.map{|co| [co.name, co.id] }
+  end
+
+  def category_types(gp_category)
+    GpCategory::Content::CategoryType.find_by_id(gp_category).category_types_for_option
+  end
+
+  def categories(category_type)
+    GpCategory::CategoryType.find(category_type).categories_for_option
   end
 
 private
