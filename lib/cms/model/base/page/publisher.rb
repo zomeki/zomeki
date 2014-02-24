@@ -80,22 +80,21 @@ module Cms::Model::Base::Page::Publisher
   end
   
   def publish_page(content, options = {})
-    @published = nil
+    @published = false
     return false if content.nil?
     save(:validate => false) if unid.nil? # path for Article::Unit
     return false if unid.nil?
-    
-    path = (options[:path] || public_path).gsub(/\/$/, "/index.html")
-    hash = content ? Digest::MD5.new.update(content).to_s : nil
-    
+
+    content = content.gsub(%r!zdel_.+?/!i, '')
+
+    path = (options[:path] || public_path).gsub(/\/$/, '/index.html')
+    hash = Digest::MD5.new.update(content).to_s
+
     cond = options[:dependent] ? ['dependent = ?', options[:dependent].to_s] : ['dependent IS NULL']
     pub  = publishers.find(:first, :conditions => cond)
-    
+
     return true if mobile_page?
-    if hash != nil && pub != nil && hash == pub.content_hash && ::File.exist?(path)
-      #FileUtils.touch([path])
-      return true
-    end
+    return true if hash && pub && hash == pub.content_hash && ::File.exist?(path)
 
 clean_statics = false
 if clean_statics
