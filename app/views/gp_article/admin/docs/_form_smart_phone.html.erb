@@ -301,15 +301,13 @@
     <p class="form" style="margin-top: 0;">基本設定</p>
 
     <div>
-      <div class="label1"><%= f.label :name %></div>
+      <div class="label1"><%= f.label :filename_base %></div>
       <%- if @item.prev_edition -%>
       <%= @item.name %><%= f.hidden_field :name %>
       <%- else -%>
       <%= f.text_field :name, :style => 'width: 200px;' %>
       <%- end -%>
-    </div>
-    <div>
-      <div class="label"><%= f.label :filename_base %></div>
+
       <%= f.text_field :filename_base, :style => 'width: 200px;' %>.html
     </div>
     <div>

@@ -349,18 +349,16 @@
 
     <table class="show">
       <tr>
-        <th><%= f.label :name %></th>
+        <th><%= f.label :filename_base %></th>
         <td>
           <%- if @item.prev_edition -%>
           <%= @item.name %><%= f.hidden_field :name %>
           <%- else -%>
           <%= f.text_field :name, :style => 'width: 200px;' %>
           <%- end -%>
+
+          <%= f.text_field :filename_base, :style => 'width: 200px;' %>.html
         </td>
-      </tr>
-      <tr>
-        <th><%= f.label :filename_base %></th>
-        <td><%= f.text_field :filename_base, :style => 'width: 200px;' %>.html</td>
       </tr>
       <tr>
         <th>表示端末</th>
