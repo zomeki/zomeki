@@ -1,7 +1,11 @@
 class Organization::Content::Group < Cms::Content
+  HOLD_DOC_URL_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+
   default_scope where(model: 'Organization::Group')
 
   has_many :groups, :foreign_key => :content_id, :class_name => 'Organization::Group', :dependent => :destroy
+
+  before_create :set_default_settings
 
   def refresh_groups
     return unless root_sys_group
@@ -30,5 +34,10 @@ class Organization::Content::Group < Cms::Content
     sys_group.children.each do |child|
       copy_from_sys_group(child) unless child.children.empty?
     end
+  end
+
+  def set_default_settings
+    in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
+    in_settings[:hold_doc_url] = HOLD_DOC_URL_OPTIONS.last.last unless setting_value(:hold_doc_url)
   end
 end
