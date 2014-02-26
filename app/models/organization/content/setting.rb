@@ -1,0 +1,23 @@
+class Organization::Content::Setting < Cms::ContentSetting
+  set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
+    :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
+  set_config :hold_doc_url, :name => '汎用記事URL保持許可',
+    :options => Organization::Content::Group::HOLD_DOC_URL_OPTIONS,
+    :form_type => :radio_buttons
+  set_config :doc_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
+    :form_type => :text_area
+
+  def upper_text
+    case name
+    when 'doc_style'
+      ActionController::Base.helpers.link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400})"
+    end
+  end
+
+  def lower_text
+    case name
+    when 'doc_style'
+      ActionController::Base.helpers.render file: 'app/views/gp_article/admin/shared/_doc_style_tags.html.erb'
+    end
+  end
+end

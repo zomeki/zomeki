@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140221050927) do
+ActiveRecord::Schema.define(:version => 20140225075920) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1011,6 +1011,25 @@ ActiveRecord::Schema.define(:version => 20140221050927) do
     t.text     "name"
     t.text     "email"
   end
+
+  create_table "organization_groups", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "layout_id"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "sys_group_code"
+    t.string   "sitemap_state"
+    t.string   "docs_order"
+    t.integer  "sort_no"
+    t.text     "business_outline"
+    t.text     "contact_information"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "organization_groups", ["sys_group_code"], :name => "index_organization_groups_on_sys_group_code"
 
   create_table "portal_article_categories", :force => true do |t|
     t.integer  "unid"

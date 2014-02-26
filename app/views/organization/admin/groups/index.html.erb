@@ -1,0 +1,36 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= Organization::Group.human_attribute_name :name %></th>
+    <th><%= Organization::Group.human_attribute_name :title %></th>
+    <th><%= Organization::Group.human_attribute_name :title_en %></th>
+    <th><%= Organization::Group.human_attribute_name :sys_group_code %></th>
+    <th style="text-align: center; width: 60px;"><%= Organization::Group.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 150px;"><%= Organization::Group.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 60px;"><%= Organization::Group.human_attribute_name :state %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;">
+      <%- if @parent_sys_group -%>
+      <%= link_to :show, organization_group_group_path(content: @content,
+                                                       group_id: @parent_sys_group.code,
+                                                       id: item.id) %>
+      <%- else -%>
+      <%= link_to :show, organization_group_path(content: @content, id: item.id) %>
+      <%- end -%>
+    </td>
+    <td><%= item.name %></td>
+    <td><%= link_to item.sys_group.name,
+                    organization_group_groups_path(content: @content, group_id: item.sys_group_code) %></td>
+    <td><%= item.sys_group.name_en %></td>
+    <td><%= item.sys_group_code %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%=l item.updated_at %></td>
+    <td style="text-align: center;"><%= item.status.name %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>
