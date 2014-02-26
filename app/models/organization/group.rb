@@ -1,8 +1,11 @@
 class Organization::Group < ActiveRecord::Base
   include Sys::Model::Base
+  include Sys::Model::Rel::Unid
+  include Sys::Model::Rel::Creator
   include Cms::Model::Auth::Content
 
-  attr_accessible :state, :name, :sys_group_code, :sitemap_state, :docs_order, :sort_no
+  attr_accessible :state, :name, :sys_group_code, :sitemap_state, :docs_order, :sort_no,
+                  :concept_id, :layout_id, :in_creator
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
@@ -10,6 +13,10 @@ class Organization::Group < ActiveRecord::Base
                         ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
+
+  # Page
+  belongs_to :concept, :class_name => 'Cms::Concept'
+  belongs_to :layout,  :class_name => 'Cms::Layout'
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'Organization::Content::Group'

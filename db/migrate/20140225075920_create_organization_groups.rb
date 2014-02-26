@@ -1,6 +1,10 @@
 class CreateOrganizationGroups < ActiveRecord::Migration
   def change
     create_table :organization_groups do |t|
+      t.integer :unid
+      t.belongs_to :concept
+      t.belongs_to :layout
+
       t.belongs_to :content
       t.string :state
       t.string :name

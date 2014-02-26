@@ -34,3 +34,12 @@
     <td><%= @item.sort_no %></td>
   </tr>
 </table>
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_view @item, :container => :tr %>
+  <%= layout_view @item, :container => :tr %>
+</table>
+
+<%= creator_view @item %>

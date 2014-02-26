@@ -1013,6 +1013,9 @@ ActiveRecord::Schema.define(:version => 20140225075920) do
   end
 
   create_table "organization_groups", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "layout_id"
     t.integer  "content_id"
     t.string   "state"
     t.string   "name"
