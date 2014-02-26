@@ -1,0 +1,9 @@
+<%= form_for(:item, :url => @parent_sys_group ? organization_group_group_path(content: @content,
+                                                                              group_id: @parent_sys_group.code,
+                                                                              id: @item.id)
+                                              : organization_group_path(content: @content, id: @item.id),
+                    :html => {method: 'put'}) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', f: f %>
+  <%= submit :update %>
+<% end %>

@@ -1,0 +1,59 @@
+<span class="note">※は必須項目です。</span>
+
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td><%= f.text_field :name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.sys_group.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title_en) %></th>
+    <td><%= @item.sys_group.name_en %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:sys_group_code) %></th>
+    <td><%= @item.sys_group_code %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sitemap_state %></th>
+    <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :docs_order %></th>
+    <td><%= f.select :docs_order, @item.class::DOCS_ORDER_OPTIONS, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_and_layout_form f %>
+</table>
+
+<p class="form">組織情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :business_outline %></th>
+    <td><%= f.text_area :business_outline, :size => '100x5' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :contact_information %></th>
+    <td><%= f.text_area :contact_information, :size => '100x5' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

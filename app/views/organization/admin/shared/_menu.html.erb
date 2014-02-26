@@ -1,0 +1,28 @@
+<h2><%= @content.name %><%= @item ? " ： #{@item.sys_group.name}" : '' %><%= defined?(sub) ? " ： #{sub}" : '' %></h2>
+
+<%- if @parent_sys_group -%>
+<div class="navi">
+  <%- @parent_sys_group.parents_tree.reject{|g| g == @content.root_sys_group }.each_with_index do |g, i| -%>
+  <%- if i > 0 -%>
+  <span class="separator">&gt;</span>
+  <%- end -%>
+  <%= link_to g.name, organization_group_groups_path(content: @content, group_id: g.code) %>
+  <%- end -%>
+</div>
+<%- end -%>
+
+<div class="actionMenu">
+  <%- if action_name.in?(%w|show edit update|) -%>
+  <%= link_to '一覧', url_for(action: 'index') %>
+  <%- end -%>
+
+  <%- if action_name.in?(%w|edit update|) -%>
+  <span class="separator"></span>
+  <%= link_to '詳細', url_for(action: 'show') %>
+  <%- end -%>
+
+  <%- if action_name == 'show' -%>
+  <span class="separator"></span>
+  <%= link_to '編集', url_for(action: 'edit') if @item.try(:editable?) %>
+  <%- end -%>
+</div>

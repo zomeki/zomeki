@@ -1,0 +1,58 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.sys_group.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:title_en) %></th>
+    <td><%= @item.sys_group.name_en %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:sys_group_code) %></th>
+    <td><%= @item.sys_group_code %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:sitemap_state) %></th>
+    <td><%= @item.sitemap_state_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:docs_order) %></th>
+    <td><%= @item.docs_order_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:sort_no) %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>
+
+<p class="form">ページ設定</p>
+
+<table class="show">
+  <%= concept_view @item, :container => :tr %>
+  <%= layout_view @item, :container => :tr %>
+</table>
+
+<p class="form">組織情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:business_outline) %></th>
+    <td><%=simple_format @item.business_outline %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:contact_information) %></th>
+    <td><%=simple_format @item.contact_information %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
