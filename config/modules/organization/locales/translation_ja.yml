@@ -1,0 +1,15 @@
+ja:
+  activerecord:
+    models:
+      organization/group: 組織
+    attributes:
+      organization/group:
+        name: 組織ID
+        title: 組織名
+        title_en: 組織名（英語表記）
+        sys_group_code: グループID
+        sort_no: 並び順
+        state: 状態
+        sitemap_state: サイトマップ
+        docs_order: 記事表示順
+        updated_at: 更新日時
