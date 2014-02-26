@@ -6,6 +6,10 @@ class Organization::Content::Setting < Cms::ContentSetting
     :form_type => :radio_buttons
   set_config :doc_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :form_type => :text_area
+  set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
+    :comment => I18n.t('comments.date_style').html_safe
+  set_config :time_style, :name => "#{GpArticle::Doc.model_name.human}時間形式",
+    :comment => I18n.t('comments.time_style').html_safe
 
   def upper_text
     case name
