@@ -74,7 +74,6 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :body, :length => {maximum: 300000}
   validates :mobile_body, :length => {maximum: 300000}
   validates :state, :presence => true
-  validates :name, :presence => true
   validates :filename_base, :presence => true
   validate :name_validity
 
