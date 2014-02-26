@@ -1023,8 +1023,10 @@ ActiveRecord::Schema.define(:version => 20140225075920) do
     t.string   "sitemap_state"
     t.string   "docs_order"
     t.integer  "sort_no"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.text     "business_outline"
+    t.text     "contact_information"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
   add_index "organization_groups", ["sys_group_code"], :name => "index_organization_groups_on_sys_group_code"

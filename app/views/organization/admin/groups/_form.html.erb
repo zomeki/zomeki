@@ -43,4 +43,17 @@
   <%= concept_and_layout_form f %>
 </table>
 
+<p class="form">組織情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :business_outline %></th>
+    <td><%= f.text_area :business_outline, :size => '100x5' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :contact_information %></th>
+    <td><%= f.text_area :contact_information, :size => '100x5' %></td>
+  </tr>
+</table>
+
 <%= creator_form f %>

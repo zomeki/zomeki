@@ -42,4 +42,17 @@
   <%= layout_view @item, :container => :tr %>
 </table>
 
+<p class="form">組織情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:business_outline) %></th>
+    <td><%=simple_format @item.business_outline %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:contact_information) %></th>
+    <td><%=simple_format @item.contact_information %></td>
+  </tr>
+</table>
+
 <%= creator_view @item %>

@@ -12,6 +12,8 @@ class CreateOrganizationGroups < ActiveRecord::Migration
       t.string :sitemap_state
       t.string :docs_order
       t.integer :sort_no
+      t.text :business_outline
+      t.text :contact_information
 
       t.timestamps
     end
