@@ -37,7 +37,9 @@ class Organization::Content::Group < Cms::Content
   end
 
   def set_default_settings
-    in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
     in_settings[:hold_doc_url] = HOLD_DOC_URL_OPTIONS.last.last unless setting_value(:hold_doc_url)
+    in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
+    in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
+    in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
   end
 end
