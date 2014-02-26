@@ -17,5 +17,10 @@ ZomekiCMS::Application.routes.draw do
       resources :groups, :only => [:index, :show, :edit, :update],
         :controller => 'admin/groups'
     end
+
+    ## nodes
+    resources :node_groups,
+      :controller => 'admin/node/groups',
+      :path       => ':parent/node_groups'
   end
 end
