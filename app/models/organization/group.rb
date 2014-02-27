@@ -13,6 +13,8 @@ class Organization::Group < ActiveRecord::Base
                         ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
+  scope :public, where(state: 'public')
+  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
 
   # Page
   belongs_to :concept, :class_name => 'Cms::Concept'
@@ -36,6 +38,55 @@ class Organization::Group < ActiveRecord::Base
 
   def docs_order_text
     DOCS_ORDER_OPTIONS.detect{|o| o.last == self.docs_order }.try(:first).to_s
+  end
+
+  def public?
+    state == 'public'
+  end
+
+  def public_uri
+    return '' unless content.public_node
+    "#{content.public_node.public_uri}#{path_from_root}/"
+  end
+
+  def public_full_uri
+    return '' unless content.public_node
+    "#{content.public_node.public_full_uri}#{path_from_root}/"
+  end
+
+  def parent
+    content.groups.where(sys_group_code: sys_group.parent.code).first
+  end
+
+  def ancestors(groups=[])
+    parent.ancestors(groups) if parent
+    groups << self
+  end
+
+  def path_from_root
+    ancestors.map(&:name).join('/')
+  end
+
+  def children
+    sys_group_codes = sys_group.children.pluck(:code)
+    content.groups.where(sys_group_code: sys_group_codes)
+  end
+
+  def public_children
+    children.public
+  end
+
+  def descendants(groups=[])
+    groups << self
+    children.each{|c| c.descendants(groups) } unless children.empty?
+    return groups
+  end
+
+  def public_descendants(groups=[])
+    return groups unless self.public?
+    groups << self
+    children.each{|c| c.public_descendants(groups) } unless children.empty?
+    return groups
   end
 
   private
