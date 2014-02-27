@@ -20,6 +20,7 @@ class Tag::Admin::Content::SettingsController < Cms::Controller::Admin::Base
 
   def edit
     @item = Tag::Content::Setting.config(@content, params[:id])
+    _show @item
   end
 
   def update

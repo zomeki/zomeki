@@ -20,6 +20,7 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
 
   def edit
     @item = GpCategory::Content::Setting.config(@content, params[:id])
+    _show @item
   end
 
   def update
