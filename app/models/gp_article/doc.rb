@@ -132,7 +132,13 @@ class GpArticle::Doc < ActiveRecord::Base
                     .or(docs[:body].matches("%#{criteria[:free_word]}%"))
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
     rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
-    rel = rel.where(groups[:id].eq(criteria[:group_id])) if criteria[:group_id].present?
+    if criteria[:group_id].present?
+      rel = rel.where(if criteria[:group_id].kind_of?(Array)
+                        groups[:id].in(criteria[:group_id])
+                      else
+                        groups[:id].eq(criteria[:group_id])
+                      end)
+    end
     rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
                     .or(users[:name_en].matches("%#{criteria[:user]}%"))) if criteria[:user].present?
 
