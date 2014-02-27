@@ -3,14 +3,8 @@
 <ul>
   <%- @group.public_children.each do |child| -%>
   <li>
-    <%= link_to child.sys_group.name, child.public_uri %>
-    <%- unless child.children.empty? -%>
-    <ul>
-      <%- child.children.each do |gc| -%>
-      <%= group_li(gc) %>
-      <%- end -%>
-    </ul>
-    <%- end -%>
+    <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
+    <div class="information"><%=simple_format child.business_outline %></div>
   </li>
   <%- end -%>
 </ul>
