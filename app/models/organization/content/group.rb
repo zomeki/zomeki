@@ -55,6 +55,10 @@ class Organization::Content::Group < Cms::Content
     setting_value(:time_style).to_s
   end
 
+  def num_docs
+    setting_value(:num_docs).to_i
+  end
+
   private
 
   def copy_from_sys_group(sys_group)
@@ -67,5 +71,6 @@ class Organization::Content::Group < Cms::Content
     in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
     in_settings[:date_style] = '%Y年%m月%d日' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
+    in_settings[:num_docs] = '10' unless setting_value(:num_docs)
   end
 end
