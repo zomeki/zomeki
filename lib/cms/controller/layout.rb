@@ -80,7 +80,12 @@ module Cms::Controller::Layout
         :smart_phone_body => '[[content]]'
       })
     end
-    
+
+    if params[:filename_base] =~ /^more($|_)/i &&
+       Page.current_item.respond_to?(:more_layout) && Page.current_item.more_layout
+      Page.layout = Page.current_item.more_layout
+    end
+
     body = Page.layout.body_tag(request).clone.to_s
     
     ## render the piece

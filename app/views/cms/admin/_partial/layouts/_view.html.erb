@@ -11,6 +11,12 @@
       <% end %>
     </td>
   </tr>
+  <%- if defined?(more) && more -%>
+  <tr>
+    <th>一覧レイアウト</th>
+    <td><%= @item.more_layout.try(:title) %></td>
+  </tr>
+  <%- end -%>
 <% if defined?(container) && container != :tr %>
 </table>
 <% end %>

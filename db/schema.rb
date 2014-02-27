@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140225075920) do
+ActiveRecord::Schema.define(:version => 20140227170156) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1027,6 +1027,7 @@ ActiveRecord::Schema.define(:version => 20140225075920) do
     t.text     "contact_information"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.integer  "more_layout_id"
   end
 
   add_index "organization_groups", ["sys_group_code"], :name => "index_organization_groups_on_sys_group_code"
