@@ -23,4 +23,11 @@ ZomekiCMS::Application.routes.draw do
       :controller => 'admin/node/groups',
       :path       => ':parent/node_groups'
   end
+
+  ## public
+  scope "_public/#{mod}", :module => mod, :as => '' do
+    match 'node_groups(/(:filename_base))' => 'public/node/groups#index'
+    match 'node_groups/*group_names/:filename_base.:format' => 'public/node/groups#show'
+    match 'node_groups/*group_names' => 'public/node/groups#show'
+  end
 end

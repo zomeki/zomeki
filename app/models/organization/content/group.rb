@@ -7,6 +7,10 @@ class Organization::Content::Group < Cms::Content
 
   before_create :set_default_settings
 
+  def public_node
+    Cms::Node.where(state: 'public', content_id: id, model: 'Organization::Group').order(:id).first
+  end
+
   def refresh_groups
     return unless root_sys_group
 
@@ -26,14 +30,28 @@ class Organization::Content::Group < Cms::Content
               .where(parent_id: 0, level_no: 1).first
   end
 
+  def find_group_by_path_from_root(path_from_root)
+    group_names = path_from_root.split('/')
+    return nil if group_names.empty?
+
+    sys_group_codes = root_sys_group.children.pluck(:code)
+    group = groups.where(sys_group_code: sys_group_codes, name: group_names.shift).first
+    return nil unless group
+
+    group_names.inject(group) {|result, item|
+      result.children.where(name: item).first
+    }
+  end
+
   private
 
   def copy_from_sys_group(sys_group)
-    groups.where(sys_group_code: sys_group.code).first_or_create(name: sys_group.name_en)
-
-    sys_group.children.each do |child|
-      copy_from_sys_group(child) unless child.children.empty?
+    group = groups.where(sys_group_code: sys_group.code).first_or_create(name: sys_group.name_en)
+    unless group.persisted?
+      group.name = "#{sys_group.name_en}_#{sys_group.code}"
+      group.save
     end
+    sys_group.children.each{|c| copy_from_sys_group(c) } unless sys_group.children.empty?
   end
 
   def set_default_settings
