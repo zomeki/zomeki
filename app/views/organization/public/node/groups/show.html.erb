@@ -1,23 +1,24 @@
 <div class="contentOrganization contentOrganizationGroup">
-<%- unless @docs.empty? -%>
-<h2>新着記事</h2>
-<ul>
-  <%- @docs.each do |doc| -%>
-  <li><%= doc_replace(doc, @content.doc_style, @content.date_style, @content.time_style) %></li>
+  <%- unless @docs.empty? -%>
+  <h2>新着記事</h2>
+  <ul>
+    <%- @docs.each do |doc| -%>
+    <li><%= doc_replace(doc, @content.doc_style, @content.date_style, @content.time_style) %></li>
+    <%- end -%>
+  </ul>
+  <div class="more"><%= link_to '一覧へ', "#{@group.public_uri}more.html" %></div>
   <%- end -%>
-</ul>
-<%- end -%>
 
-<%- if false -%>
-<%- unless @group.public_children.empty? -%>
-<ul>
-  <%- @group.public_children.each do |child| -%>
-  <li>
-    <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
-    <div class="information"><%=simple_format child.business_outline %></div>
-  </li>
+  <%- if false -%>
+  <%- unless @group.public_children.empty? -%>
+  <ul>
+    <%- @group.public_children.each do |child| -%>
+    <li>
+      <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
+      <div class="information"><%=simple_format child.business_outline %></div>
+    </li>
+    <%- end -%>
+  </ul>
   <%- end -%>
-</ul>
-<%- end -%>
-<%- end -%>
+  <%- end -%>
 </div>
