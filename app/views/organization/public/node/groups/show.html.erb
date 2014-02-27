@@ -1,5 +1,6 @@
 <div class="contentOrganization contentOrganizationGroup">
 <%- unless @docs.empty? -%>
+<h2>新着記事</h2>
 <ul>
   <%- @docs.each do |doc| -%>
   <li><%= doc_replace(doc, @content.doc_style, @content.date_style, @content.time_style) %></li>
