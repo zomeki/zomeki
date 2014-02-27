@@ -10,7 +10,8 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
   end
 
   def show
-    @group = @content.find_group_by_path_from_root(params[:group_names])
+#    @group = @content.find_group_by_path_from_root(params[:group_names])
+    @group = @content.groups.where(name: params[:group_names]).first
     return http_error(404) unless @group.try(:public?)
 
     Page.current_item = @group
