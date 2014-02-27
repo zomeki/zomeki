@@ -21,6 +21,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
   def edit
     @item = GpArticle::Content::Setting.config(@content, params[:id])
     @item.value = YAML.load(@item.value.presence || '[]') if @item.form_type.in?(:check_boxes, :multiple_select)
+    _show @item
   end
 
   def update

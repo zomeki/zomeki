@@ -64,7 +64,7 @@ class Cms::ContentSetting < ActiveRecord::Base
     if opts
       case config[:form_type]
       when :check_boxes
-        YAML.load(value.presence || '[]').map{|v| opts.detect{|o| o.last == v }.try(:first) }.compact.join(', ')
+        YAML.load(value.presence || '[]').map{|v| opts.detect{|o| o.last.to_s == v }.try(:first) }.compact.join(', ')
       when :multiple_select
         ids = YAML.load(value.presence || '[]')
         config_options.where(id: ids).map(&:name).join(', ')
