@@ -1,0 +1,12 @@
+<div class="contentOrganization contentOrganizationGroup">
+<%- unless @group.public_children.empty? -%>
+<ul>
+  <%- @group.public_children.each do |child| -%>
+  <li>
+    <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
+    <div class="information"><%=simple_format child.business_outline %></div>
+  </li>
+  <%- end -%>
+</ul>
+<%- end -%>
+</div>
