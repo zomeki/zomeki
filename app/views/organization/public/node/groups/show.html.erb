@@ -1,4 +1,12 @@
 <div class="contentOrganization contentOrganizationGroup">
+<%- unless @docs.empty? -%>
+<ul>
+  <%- @docs.each do |doc| -%>
+  <li><%= doc_replace(doc, @content.doc_style, @content.date_style, @content.time_style) %></li>
+  <%- end -%>
+</ul>
+<%- end -%>
+
 <%- unless @group.public_children.empty? -%>
 <ul>
   <%- @group.public_children.each do |child| -%>

@@ -15,5 +15,14 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
 
     Page.current_item = @group
     Page.title = @group.sys_group.name
+
+    @docs = find_public_docs_with_group_id(@group.sys_group.id).order(@group.docs_order)
+                                 .paginate(page: params[:page], per_page: 10)
+  end
+
+  private
+
+  def find_public_docs_with_group_id(group_id)
+    GpArticle::Doc.all_with_content_and_criteria(nil, group_id: group_id).mobile(::Page.mobile?).public
   end
 end
