@@ -6,7 +6,7 @@ class Organization::Group < ActiveRecord::Base
 
   attr_accessible :state, :name, :sys_group_code, :sitemap_state, :docs_order, :sort_no,
                   :business_outline, :contact_information,
-                  :concept_id, :layout_id, :in_creator
+                  :concept_id, :layout_id, :more_layout_id, :in_creator
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
@@ -19,7 +19,8 @@ class Organization::Group < ActiveRecord::Base
 
   # Page
   belongs_to :concept, :class_name => 'Cms::Concept'
-  belongs_to :layout,  :class_name => 'Cms::Layout'
+  belongs_to :layout, :class_name => 'Cms::Layout'
+  belongs_to :more_layout, :class_name => 'Cms::Layout'
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'Organization::Content::Group'
