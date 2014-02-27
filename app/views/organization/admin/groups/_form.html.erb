@@ -46,11 +46,17 @@
 <table class="show">
   <tr>
     <th><%= f.label :business_outline %></th>
-    <td><%= f.text_area :business_outline, :size => '100x5' %></td>
+    <td class="cke_editor_wrapper">
+      <%= init_ckeditor %>
+      <%= f.text_area :business_outline, :class => 'body ckeditor' %>
+    </td>
   </tr>
   <tr>
     <th><%= f.label :contact_information %></th>
-    <td><%= f.text_area :contact_information, :size => '100x5' %></td>
+    <td class="cke_editor_wrapper">
+      <%= init_ckeditor %>
+      <%= f.text_area :contact_information, :class => 'body ckeditor' %>
+    </td>
   </tr>
 </table>
 
