@@ -1,6 +1,4 @@
 class Organization::Content::Setting < Cms::ContentSetting
-  set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
-    :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
   set_config :hold_doc_url, :name => '汎用記事URL保持許可',
     :options => Organization::Content::Group::HOLD_DOC_URL_OPTIONS,
     :form_type => :radio_buttons
