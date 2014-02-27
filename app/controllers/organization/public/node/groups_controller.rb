@@ -17,7 +17,8 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
     Page.current_item = @group
     Page.title = @group.sys_group.name
 
-    @docs = find_public_docs_with_group_id(@group.sys_group.id).order(@group.docs_order)
+    sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
+    @docs = find_public_docs_with_group_id(sys_group_ids).order(@group.docs_order)
                                  .paginate(page: params[:page], per_page: 10)
   end
 
