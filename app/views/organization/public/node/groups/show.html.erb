@@ -7,6 +7,7 @@
 </ul>
 <%- end -%>
 
+<%- if false -%>
 <%- unless @group.public_children.empty? -%>
 <ul>
   <%- @group.public_children.each do |child| -%>
@@ -16,5 +17,6 @@
   </li>
   <%- end -%>
 </ul>
+<%- end -%>
 <%- end -%>
 </div>
