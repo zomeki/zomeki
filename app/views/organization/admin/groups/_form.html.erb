@@ -7,21 +7,19 @@
     <th><%= f.label :state %></th>
     <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS %></td>
   </tr>
+<%- if false -%>
   <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name %></td>
   </tr>
+<%- end -%>
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%= @item.name %></td>
+  </tr>
   <tr>
     <th><%= @item.locale(:title) %></th>
     <td><%= @item.sys_group.name %></td>
-  </tr>
-  <tr>
-    <th><%= @item.locale(:title_en) %></th>
-    <td><%= @item.sys_group.name_en %></td>
-  </tr>
-  <tr>
-    <th><%= @item.locale(:sys_group_code) %></th>
-    <td><%= @item.sys_group_code %></td>
   </tr>
   <tr>
     <th><%= f.label :sitemap_state %></th>
