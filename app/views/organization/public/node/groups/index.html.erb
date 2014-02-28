@@ -4,9 +4,9 @@
     <%- @groups.each do |group| -%>
     <li>
       <%= link_to group.sys_group.name, group.public_uri %>
-      <%- unless group.children.empty? -%>
+      <%- unless group.public_children.empty? -%>
       <ul>
-        <%- group.children.each do |child| -%>
+        <%- group.public_children.each do |child| -%>
         <%= group_li(child) %>
         <%- end -%>
       </ul>
