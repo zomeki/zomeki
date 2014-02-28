@@ -21,8 +21,10 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
     per_page = (@more ? 30 : @content.num_docs)
 
     sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
-    @docs = find_public_docs_with_group_id(sys_group_ids).order(@group.docs_order)
-                                                         .paginate(page: params[:page], per_page: per_page)
+    @docs = find_public_docs_with_group_id(sys_group_ids)
+              .where(content_id: @content.gp_article_content_doc_ids)
+              .order(@group.docs_order)
+              .paginate(page: params[:page], per_page: per_page)
 
     render 'more' if @more
   end
