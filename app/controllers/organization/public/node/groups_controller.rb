@@ -6,8 +6,8 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
   end
 
   def index
-    sys_group_codes = @content.root_sys_group.public_children.pluck(:code)
-    @groups = @content.groups.where(sys_group_code: sys_group_codes)
+    sys_group_codes = @content.root_sys_group.children.pluck(:code)
+    @groups = @content.groups.public.where(sys_group_code: sys_group_codes)
   end
 
   def show
