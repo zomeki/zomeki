@@ -1,4 +1,4 @@
-<div class="contentOrganization contentOrganizationGroup">
+<div class="contentOrganization contentOrganizationGroup<%= @group.parent ? 'Unit' : 'Department' %>">
   <%- unless @docs.empty? -%>
   <div class="articleHeader"><h2>新着情報一覧</h2></div>
   <ul>
