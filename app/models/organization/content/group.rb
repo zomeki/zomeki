@@ -61,6 +61,10 @@ class Organization::Content::Group < Cms::Content
     setting_value(:num_docs).to_i
   end
 
+  def gp_article_content_doc_ids
+    YAML.load(setting_value(:gp_article_content_doc_ids).presence || '[]').map{|i| i.to_i }
+  end
+
   private
 
   def copy_from_sys_group(sys_group)
