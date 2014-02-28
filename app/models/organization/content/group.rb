@@ -45,6 +45,10 @@ class Organization::Content::Group < Cms::Content
     }
   end
 
+  def hold_doc_url?
+    setting_value(:hold_doc_url) == 'enabled'
+  end
+
   def doc_style
     setting_value(:doc_style).to_s
   end

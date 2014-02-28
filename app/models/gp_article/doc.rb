@@ -228,7 +228,11 @@ class GpArticle::Doc < ActiveRecord::Base
       return ''
     end
     return '' unless node = content.public_node
-    uri = "#{node.public_uri}#{name}/"
+    uri = if content.under_group? && content.organization_content_group
+            group = content.organization_content_group.groups.where(sys_group_code: creator.group.code).first
+            "#{group.public_uri}#{name}/" if group
+          end
+    url ||= "#{node.public_uri}#{name}/"
     without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
   end
 
@@ -238,7 +242,11 @@ class GpArticle::Doc < ActiveRecord::Base
       return ''
     end
     return '' unless node = content.public_node
-    uri = "#{node.public_full_uri}#{name}/"
+    uri = if content.under_group? && content.organization_content_group
+            group = content.organization_content_group.groups.where(sys_group_code: creator.group.code).first
+            "#{group.public_full_uri}#{name}/" if group
+          end
+    url ||= "#{node.public_full_uri}#{name}/"
     without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
   end
 
