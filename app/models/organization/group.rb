@@ -93,6 +93,27 @@ class Organization::Group < ActiveRecord::Base
     return groups
   end
 
+  def bread_crumbs(public_node)
+    crumbs = []
+
+    if (node = content.try(:public_node))
+      c = node.bread_crumbs.crumbs.first
+#      ancestors.each{|a| c << [a.sys_group.name, "#{node.public_uri}#{a.path_from_root}/"] }
+      ancestors.each{|a| c << [a.sys_group.name, "#{node.public_uri}#{a.name}/"] }
+      crumbs << c
+    end
+
+    if crumbs.empty?
+      public_node.routes.each do |route|
+        c = []
+        route.each{|r| c << [r.title, r.public_uri] }
+        crumbs << c
+      end
+    end
+
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
   private
 
   def set_defaults
