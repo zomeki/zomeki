@@ -325,4 +325,13 @@ $(document).ready(function () {
 </table>
 <%- end -%>
 
+<%- if @item.name == 'organization_content_group_id' -%>
+<table class="show">
+  <tr>
+    <th>記事URLを組織で保持</th>
+    <td><%= check_box_tag :under_group, "1", @item.extra_values[:under_group] %> <%= label_tag :under_group, '組織に保持する' %></td>
+  </tr>
+</table>
+<%- end -%>
+
 <%= render 'gp_article/admin/shared/doc_style_tags' %>
