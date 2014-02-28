@@ -15,11 +15,13 @@ class Organization::Content::Group < Cms::Content
     return unless root_sys_group
 
     root_sys_group.children.each do |child|
+      next if (root_sys_group.sites & child.sites).empty?
       copy_from_sys_group(child)
     end
 
     groups.each do |group|
-      group.destroy if group.sys_group.nil?
+      group.destroy if group.sys_group.nil? ||
+                       (root_sys_group.sites & group.sys_group.sites).empty?
     end
   end
 
@@ -63,7 +65,12 @@ class Organization::Content::Group < Cms::Content
 
   def copy_from_sys_group(sys_group)
     group = groups.where(sys_group_code: sys_group.code).first_or_create(name: sys_group.code)
-    sys_group.children.each{|c| copy_from_sys_group(c) } unless sys_group.children.empty?
+    unless sys_group.children.empty?
+      sys_group.children.each do |child|
+        next if (sys_group.sites & child.sites).empty?
+        copy_from_sys_group(child)
+      end
+    end
   end
 
   def set_default_settings
