@@ -657,7 +657,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     errors.add(:name, :invalid) if self.name && self.name !~ /^[\-\w]*$/
 
-    if (doc = self.class.find_by_name_and_state(self.name, self.state))
+    if (doc = self.class.find_by_name_and_state_and_content_id(self.name, self.state, self.content.id))
       unless doc.id == self.id || state_archived?
         errors.add(:name, :taken) unless state_public? && prev_edition.try(:state_public?)
       end
