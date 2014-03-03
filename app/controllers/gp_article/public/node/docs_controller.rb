@@ -5,30 +5,9 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   skip_filter :render_public_layout, :only => [:file_content]
 
   def pre_dispatch
-    if (org_content = Page.current_node.content).kind_of?(Organization::Content::Group)
-      settings = GpArticle::Content::Setting.arel_table
-      doc_contents = GpArticle::Content::Doc.joins(:settings)
-                                            .where(settings[:name].eq('organization_content_group_id').and(settings[:value].eq(org_content.id)))
-                                            .where(site_id: org_content.site.id)
-      doc_content_ids = doc_contents.map{|d| d.id if d.under_group? }.compact
-#TODO: Revert flatted groups
-#      if (sys_group = org_content.find_group_by_path_from_root(params[:group_names]).try(:sys_group))
-      if (sys_group = org_content.groups.where(name: params[:group_names]).first.try(:sys_group))
-        conditions = {content_id: doc_content_ids, name: params[:name], filename_base: params[:filename_base]}
-        conditions.delete(:filename_base) if action_name == 'file_content'
-
-        creators = Sys::Creator.arel_table
-        docs = GpArticle::Doc.joins(:creator).where(creators[:group_id].eq(sys_group.id))
-                             .mobile(Page.mobile?).public
-                             .where(conditions)
-        if docs.count.zero?
-          return http_error(404)
-        else
-          @content = doc_contents.first
-        end
-      else
-        return http_error(404)
-      end
+    if (organization_content = Page.current_node.content).kind_of?(Organization::Content::Group)
+      return http_error(404) unless organization_content.article_related?
+      @content = organization_content.related_article_content
     else
       @content = GpArticle::Content::Doc.find_by_id(Page.current_node.content.id)
     end
