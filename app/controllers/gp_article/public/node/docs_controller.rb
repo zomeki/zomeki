@@ -10,6 +10,12 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
       @content = organization_content.related_article_content
     else
       @content = GpArticle::Content::Doc.find_by_id(Page.current_node.content.id)
+      # Block if organization relation available
+      if (organization_content = @content.organization_content_group) &&
+          organization_content.article_related? &&
+          organization_content.related_article_content == @content
+        return http_error(404)
+      end
     end
 
     return http_error(404) unless @content

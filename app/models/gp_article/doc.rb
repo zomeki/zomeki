@@ -225,8 +225,8 @@ class GpArticle::Doc < ActiveRecord::Base
   def public_uri(without_filename: false)
     return '' unless node = content.public_node
     uri = if (organization_content = content.organization_content_group) &&
-            organization_content.article_related? &&
-            organization_content.related_article_content == content
+              organization_content.article_related? &&
+              organization_content.related_article_content == content
 
             group = organization_content.groups.where(sys_group_code: creator.group.code).first
             "#{group.public_uri}#{name}/" if group
