@@ -1,5 +1,5 @@
 class Organization::Content::Group < Cms::Content
-  HOLD_DOC_URL_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  ARTICLE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'Organization::Group')
 
@@ -45,8 +45,12 @@ class Organization::Content::Group < Cms::Content
     }
   end
 
-  def hold_doc_url?
-    setting_value(:hold_doc_url) == 'enabled'
+  def article_related?
+    setting_value(:article_relation) == 'enabled'
+  end
+
+  def related_article_content
+    GpArticle::Content::Doc.find_by_id(setting_extra_value(:article_relation, :gp_article_content_doc_id))
   end
 
   def doc_style
@@ -65,10 +69,6 @@ class Organization::Content::Group < Cms::Content
     setting_value(:num_docs).to_i
   end
 
-  def gp_article_content_doc_ids
-    YAML.load(setting_value(:gp_article_content_doc_ids).presence || '[]').map{|i| i.to_i }
-  end
-
   private
 
   def copy_from_sys_group(sys_group)
@@ -82,7 +82,7 @@ class Organization::Content::Group < Cms::Content
   end
 
   def set_default_settings
-    in_settings[:hold_doc_url] = HOLD_DOC_URL_OPTIONS.last.last unless setting_value(:hold_doc_url)
+    in_settings[:article_relation] = ARTICLE_RELATION_OPTIONS.last.last unless setting_value(:article_relation)
     in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
     in_settings[:date_style] = '%Y年%m月%d日' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)

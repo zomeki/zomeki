@@ -33,6 +33,18 @@ class Organization::Admin::Content::SettingsController < Cms::Controller::Admin:
                               else []
                               end)
     end
+
+    if @item.name.in?('article_relation')
+      extra_values = @item.extra_values
+
+      case @item.name
+      when 'article_relation'
+        extra_values[:gp_article_content_doc_id] = params[:gp_article_content_doc_id].to_i
+      end
+
+      @item.extra_values = extra_values
+    end
+
     _update @item
   end
 end

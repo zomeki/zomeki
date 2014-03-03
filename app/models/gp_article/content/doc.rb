@@ -230,10 +230,6 @@ class GpArticle::Content::Doc < Cms::Content
     Organization::Content::Group.find_by_id(setting_value(:organization_content_group_id))
   end
 
-  def under_group?
-    !!setting_extra_value(:organization_content_group_id, :under_group)
-  end
-
   private
 
   def set_default_settings

@@ -223,13 +223,12 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_uri(without_filename: false)
-    unless content
-      warn_log "No content: #{self.inspect}"
-      return ''
-    end
     return '' unless node = content.public_node
-    uri = if content.under_group? && content.organization_content_group
-            group = content.organization_content_group.groups.where(sys_group_code: creator.group.code).first
+    uri = if (organization_content = content.organization_content_group) &&
+            organization_content.article_related? &&
+            organization_content.related_article_content == content
+
+            group = organization_content.groups.where(sys_group_code: creator.group.code).first
             "#{group.public_uri}#{name}/" if group
           end
     uri ||= "#{node.public_uri}#{name}/"
@@ -237,13 +236,12 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_full_uri(without_filename: false)
-    unless content
-      warn_log "No content: #{self.inspect}"
-      return ''
-    end
     return '' unless node = content.public_node
-    uri = if content.under_group? && content.organization_content_group
-            group = content.organization_content_group.groups.where(sys_group_code: creator.group.code).first
+    uri = if (organization_content = content.organization_content_group) &&
+            organization_content.article_related? &&
+            organization_content.related_article_content == content
+
+            group = organization_content.groups.where(sys_group_code: creator.group.code).first
             "#{group.public_full_uri}#{name}/" if group
           end
     uri ||= "#{node.public_full_uri}#{name}/"

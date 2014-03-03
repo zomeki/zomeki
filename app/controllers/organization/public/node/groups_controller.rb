@@ -21,11 +21,20 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
 
     per_page = (@more ? 30 : @content.num_docs)
 
-    sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
-    @docs = find_public_docs_with_group_id(sys_group_ids)
-              .where(content_id: @content.gp_article_content_doc_ids)
-              .order(@group.docs_order)
-              .paginate(page: params[:page], per_page: per_page)
+    settings = GpArticle::Content::Setting.arel_table
+    article_contents = GpArticle::Content::Doc.joins(:settings)
+                                              .where(settings[:name].eq('organization_content_group_id')
+                                                                        .and(settings[:value].eq(@content.id)))
+                                              .where(site_id: @content.site.id)
+    @docs = if article_contents.empty?
+              GpArticle::Doc.none
+            else
+              sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
+              find_public_docs_with_group_id(sys_group_ids)
+                .where(content_id: article_contents.pluck(:id))
+                .order(@group.docs_order)
+                .paginate(page: params[:page], per_page: per_page)
+            end
 
     render 'more' if @more
   end
