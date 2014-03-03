@@ -29,8 +29,10 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
     @docs = if article_contents.empty?
               GpArticle::Doc.none
             else
-              sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
-              find_public_docs_with_group_id(sys_group_ids)
+#TODO: Revert flatted groups
+#              sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
+#              find_public_docs_with_group_id(sys_group_ids)
+              find_public_docs_with_group_id(@group.sys_group.id)
                 .where(content_id: article_contents.pluck(:id))
                 .order(@group.docs_order)
                 .paginate(page: params[:page], per_page: per_page)
