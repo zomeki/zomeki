@@ -1,6 +1,6 @@
 class Organization::Content::Setting < Cms::ContentSetting
-  set_config :hold_doc_url, :name => '汎用記事URL保持許可',
-    :options => Organization::Content::Group::HOLD_DOC_URL_OPTIONS,
+  set_config :article_relation, :name => '汎用記事URL保持許可',
+    :options => Organization::Content::Group::ARTICLE_RELATION_OPTIONS,
     :form_type => :radio_buttons
   set_config :doc_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
     :form_type => :text_area
@@ -9,9 +9,6 @@ class Organization::Content::Setting < Cms::ContentSetting
   set_config :time_style, :name => "#{GpArticle::Doc.model_name.human}時間形式",
     :comment => I18n.t('comments.time_style').html_safe
   set_config :num_docs, :name => "#{GpArticle::Doc.model_name.human}表示件数"
-  set_config :gp_article_content_doc_ids, :name => '汎用記事',
-    :options => lambda { GpArticle::Content::Doc.all.map{|d| [d.name, d.id] } },
-    :form_type => :check_boxes
   set_config :gp_category_content_category_type_ids, :name => '汎用カテゴリタイプ',
     :options => lambda { GpCategory::Content::CategoryType.all.map{|ct| [ct.name, ct.id] } },
     :form_type => :check_boxes

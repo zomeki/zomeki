@@ -47,7 +47,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => GpArticle::Content::Doc::BLOG_FUNCTIONS_OPTIONS,
     :form_type => :radio_buttons
   set_config :organization_content_group_id, :name => '組織',
-    :options => lambda { Organization::Content::Group.all.map{|g| [g.name, g.id] if g.hold_doc_url? }.compact }
+    :options => lambda { Organization::Content::Group.all.map{|g| [g.name, g.id] } }
 
   after_initialize :set_defaults
 
