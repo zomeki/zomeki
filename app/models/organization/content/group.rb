@@ -69,6 +69,11 @@ class Organization::Content::Group < Cms::Content
     setting_value(:num_docs).to_i
   end
 
+  def category_contents
+    ids = YAML.load(setting_value(:gp_category_content_category_type_ids).presence || '[]')
+    GpCategory::Content::CategoryType.where(id: ids)
+  end
+
   private
 
   def copy_from_sys_group(sys_group)
