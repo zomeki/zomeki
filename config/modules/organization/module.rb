@@ -4,4 +4,7 @@ Cms::Lib::Modules::ModuleSet.draw :organization, '組織' do |mod|
 
   ## directories
   mod.directory :groups, '組織ページ'
+
+  ## pieces
+  mod.piece :categorized_docs, '汎用カテゴリ記事一覧'
 end
