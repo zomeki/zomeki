@@ -22,6 +22,10 @@ ZomekiCMS::Application.routes.draw do
     resources :node_groups,
       :controller => 'admin/node/groups',
       :path       => ':parent/node_groups'
+
+    ## pieces
+    resources :piece_categorized_docs,
+      :controller => 'admin/piece/categorized_docs'
   end
 
   ## public
