@@ -16,5 +16,12 @@ namespace :zomeki do
         end
       end
     end
+
+    namespace :tasks do
+      desc 'Exec tasks'
+      task(:exec => :environment) do
+        Script.run('sys/script/tasks/exec')
+      end
+    end
   end
 end

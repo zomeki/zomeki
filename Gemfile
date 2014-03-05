@@ -22,6 +22,7 @@ gem 'render_component_vho', '~> 3.2.1'
 gem 'rest-more', '~> 2.0.4'
 gem 'rmagick', '~> 2.13.2'
 gem 'will_paginate', '~> 3.0.4'
+gem 'whenever', :require => false
 
 gem 'hpricot', '0.8.6'
 gem 'tamtam', '0.0.3'
