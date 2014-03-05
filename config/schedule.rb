@@ -19,7 +19,9 @@
 
 # Learn more: http://github.com/javan/whenever
 
-#set :environment, 'development'
+# set :environment, 'development'
+
+env :PATH, ENV['PATH']
 
 # 記事の公開/非公開処理を行います。
 every '0-45/15 * * * *' do
