@@ -1,6 +1,20 @@
 # encoding: utf-8
 namespace :zomeki do
   namespace :cms do
+    desc 'Clean static files'
+    task(:clean_statics => :environment) do
+      clean_feeds
+      clean_statics('r')
+      clean_statics('mp3')
+    end
+
+    namespace :feeds do
+      desc 'Read feeds'
+      task(:read => :environment) do
+        Script.run('cms/script/feeds/read')
+      end
+    end
+
     namespace :link_check do
       desc 'Check links.'
       task(:check => :environment) do
@@ -8,11 +22,18 @@ namespace :zomeki do
       end
     end
 
-    desc 'Clean static files'
-    task(:clean_statics => :environment) do
-      clean_feeds
-      clean_statics('r')
-      clean_statics('mp3')
+    namespace :nodes do
+      desc 'Publish nodes'
+      task(:publish => :environment) do
+        Script.run('cms/script/nodes/publish')
+      end
+    end
+
+    namespace :talks do
+      desc 'Exec talk tasks'
+      task(:exec => :environment) do
+        Script.run('cms/script/talk_tasks/exec')
+      end
     end
   end
 end
