@@ -1,8 +1,8 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_VERSION='ruby-2.0.0-p353'
-RUBY_SOURCE_URL="ftp://ftp.ruby-lang.org/pub/ruby/2.0/$RUBY_VERSION.tar.gz"
+RUBY_VERSION='ruby-2.1.1'
+RUBY_SOURCE_URL="ftp://ftp.ruby-lang.org/pub/ruby/2.1/$RUBY_VERSION.tar.gz"
 
 echo "#### Install $RUBY_VERSION ####"
 if [ -f $DONE_FLAG ]; then exit; fi
@@ -22,6 +22,8 @@ centos() {
   rm -rf $RUBY_VERSION.tar.gz $RUBY_VERSION
   wget $RUBY_SOURCE_URL
   tar zxf $RUBY_VERSION.tar.gz && cd $RUBY_VERSION && ./configure && make && make install
+
+  gem install bundler
 }
 
 others() {

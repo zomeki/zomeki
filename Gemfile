@@ -22,6 +22,7 @@ gem 'render_component_vho', '~> 3.2.1'
 gem 'rest-more', '~> 2.0.4'
 gem 'rmagick', '~> 2.13.2'
 gem 'will_paginate', '~> 3.0.4'
+gem 'whenever', :require => false
 
 gem 'hpricot', '0.8.6'
 gem 'tamtam', '0.0.3'
@@ -59,6 +60,10 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.13'
   gem 'factory_girl_rails', '~> 4.2.1', require: false
   gem 'email_spec', '~> 1.4.0'
-  gem 'rails_best_practices'
+end
+
+group :development do
   gem 'i18n_generators'
+  gem 'rails_best_practices'
+  gem 'spring'
 end
