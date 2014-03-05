@@ -54,7 +54,7 @@ echo "
     mysql> SET PASSWORD FOR zomeki@localhost = PASSWORD('newpass');
     また、変更時には /var/share/zomeki/config/database.yml も合わせて変更してください。
     # vi /var/share/zomeki/config/database.yml
-３．OS の zomeki ユーザに cron が登録されています。運用時には有効化してください。
+３．OS の zomeki ユーザに cron が登録されています。
     # crontab -u zomeki -e
 "
 EOF

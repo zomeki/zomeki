@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 DONE_FLAG = "/tmp/#{$0}_done"
 
 puts '#### Install MySQL ####'
