@@ -13,8 +13,9 @@
   <tr>
     <td><%= text_field_tag 'criteria[free_word]', params[:criteria].try('[]', :free_word), :style => 'width: 400px;' %></td>
     <td><%-
-          top = Core.site.groups.find_by_parent_id(0)
-          options = top ? top.children.inject([]){|r, c| r.concat(c.descendants_for_option) } : []
+          belongings = Cms::SiteBelonging.arel_table
+          groups = Sys::Group.joins(:site_belongings).where(parent_id: 1).where(belongings[:site_id].eq(Core.site.id))
+          options = groups.inject([]){|r, c| r.concat(c.descendants_for_option) }
         -%>
         <%= select_tag 'criteria[group_id]',
                        options_for_select(options, params[:criteria].try('[]', :group_id)), include_blank: true %></td>
