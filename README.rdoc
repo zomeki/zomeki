@@ -9,10 +9,10 @@ See COPYING
 
 == 想定環境
 
-OS:: CentOS 6.4 / Ubuntu 12.04
+OS:: CentOS 6.5 / Ubuntu 12.04
 Webサーバ:: Apache 2.2
 DBシステム:: MySQL 5.1
-Ruby:: 2.0
+Ruby:: 2.1
 Rails:: 3.2
 
 == 自動スクリプト

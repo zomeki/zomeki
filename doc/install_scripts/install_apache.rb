@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 DONE_FLAG = "/tmp/#{$0}_done"
 
 PASSENGER_VERSION = '4.0.37'
