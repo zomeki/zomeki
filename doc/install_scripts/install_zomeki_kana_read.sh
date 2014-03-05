@@ -13,7 +13,7 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
-  yum install -y glibc-devel.i686 libstdc++-devel.i686
+  yum install -y glibc-devel.i686 libstdc++-devel.i686 sox
 
   cd /usr/local/src
   rm -rf hts_engine_API-1.07.tar.gz hts_engine_API-1.07
@@ -32,11 +32,6 @@ centos() {
   wget http://downloads.sourceforge.net/open-jtalk/open_jtalk_dic_utf_8-1.06.tar.gz
   tar zxf open_jtalk_dic_utf_8-1.06.tar.gz
   mkdir /usr/local/share/open_jtalk && mv open_jtalk_dic_utf_8-1.06 /usr/local/share/open_jtalk/dic
-
-  cd /usr/local/src
-  rm -rf sox-14.4.1.tar.gz sox-14.4.1
-  wget http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1.tar.gz/download
-  tar zxf sox-14.4.1.tar.gz && cd sox-14.4.1 && ./configure && make && make install
 
   cd /usr/local/src
   rm -rf lame-3.99.5.tar.gz lame-3.99.5
