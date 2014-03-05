@@ -187,7 +187,7 @@ MySQLをインストールします
 
 必要なパッケージをインストールします。
 
-  # yum install -y glibc-devel.i686 libstdc++-devel.i686
+  # yum install -y glibc-devel.i686 libstdc++-devel.i686 sox
 
 hts_engine APIをインストールします。
 
@@ -209,12 +209,6 @@ Dictionaryをインストールします。
   # wget http://downloads.sourceforge.net/open-jtalk/open_jtalk_dic_utf_8-1.06.tar.gz
   # tar zxf open_jtalk_dic_utf_8-1.06.tar.gz
   # mkdir /usr/local/share/open_jtalk && mv open_jtalk_dic_utf_8-1.06 /usr/local/share/open_jtalk/dic
-
-SoXをインストールします。
-
-  # cd /usr/local/src
-  # wget http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1.tar.gz/download
-  # tar zxf sox-14.4.1.tar.gz && cd sox-14.4.1 && ./configure && make && make install
 
 LAMEをインストールします。
 
