@@ -24,7 +24,7 @@ centos() {
 
   git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
   chown -R zomeki:zomeki /var/share/zomeki
-  cd /var/share/zomeki && gem install bundler && bundle install --without development test
+  su - zomeki -c 'cd /var/share/zomeki && bundle install --path vendor/bundle --without development test'
 
   cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.
 }

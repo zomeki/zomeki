@@ -13,21 +13,7 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
-cat <<EOF > cron_jobs.txt
-# 記事の公開/非公開処理を行います。
-#0-45/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
-
-# トップページや中間ページを静的ファイルとして書き出します。
-#3-48/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/nodes/publish')"
-
-# 音声ファイルを静的ファイルとして書き出します。
-#6-51/15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/talk_tasks/exec')"
-
-# 新着記事ポータルで設定したAtomフィードを取り込みます。
-#0 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/feeds/read')"
-EOF
-
- crontab -u zomeki cron_jobs.txt
+  su - zomeki -c 'cd /var/share/zomeki && bundle exec whenever --update-crontab'
 }
 
 others() {
