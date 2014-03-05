@@ -154,10 +154,11 @@ class GpArticle::Doc < ActiveRecord::Base
 
       rel = unless Core.user.has_auth?(:manager)
               rel.includes(:editable_group).where(creators[:group_id].eq(Core.user.group.id)
+                                                  .or(editable_groups[:all].eq(true)
                                                   .or(editable_groups[:group_ids].eq(Core.user.group.id.to_s)
                                                   .or(editable_groups[:group_ids].matches("#{Core.user.group.id} %")
                                                   .or(editable_groups[:group_ids].matches("% #{Core.user.group.id} %")
-                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id}"))))))
+                                                  .or(editable_groups[:group_ids].matches("% #{Core.user.group.id}")))))))
             else
               rel
             end
