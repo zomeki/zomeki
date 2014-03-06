@@ -15,6 +15,7 @@ class Organization::Public::Piece::CategorizedDocsController < Sys::Controller::
                                                 .where(settings[:name].eq('organization_content_group_id')
                                                        .and(settings[:value].eq(content.id)))
                                                 .where(site_id: content.site.id)
+
       @docs = if article_contents.empty?
                 GpArticle::Doc.none
               else
@@ -24,15 +25,9 @@ class Organization::Public::Piece::CategorizedDocsController < Sys::Controller::
                   .order(@item.docs_order)
               end
 
-      category_types = GpCategory::CategoryType.public.where(content_id: content.category_contents.pluck(:id))
-      category_ids = category_types.inject([]){|category_ids, category_type|
-          category_type.public_root_categories.inject(category_ids){|ids, root_category|
-            ids.concat(root_category.public_descendants.map(&:id))
-          }
-        }
       categorizations = GpCategory::Categorization.arel_table
       @docs = @docs.joins(:categorizations).where(categorizations[:categorized_as].eq('GpArticle::Doc')
-                                                  .and(categorizations[:category_id].in(category_ids)))
+                                                  .and(categorizations[:category_id].in(@piece.category_ids)))
     else
       render :text => ''
     end
