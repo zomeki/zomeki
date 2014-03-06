@@ -9,9 +9,8 @@ class Organization::Content::Setting < Cms::ContentSetting
   set_config :time_style, :name => "#{GpArticle::Doc.model_name.human}時間形式",
     :comment => I18n.t('comments.time_style').html_safe
   set_config :num_docs, :name => "#{GpArticle::Doc.model_name.human}表示件数"
-  set_config :gp_category_content_category_type_ids, :name => '汎用カテゴリタイプ',
-    :options => lambda { GpCategory::Content::CategoryType.all.map{|ct| [ct.name, ct.id] } },
-    :form_type => :check_boxes
+  set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
+    :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
 
   validate :validate_value
 
