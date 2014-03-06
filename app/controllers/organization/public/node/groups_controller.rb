@@ -11,9 +11,7 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
   end
 
   def show
-#TODO: Revert flatted groups
-#    @group = @content.find_group_by_path_from_root(params[:group_names])
-    @group = @content.groups.where(name: params[:group_names]).first
+    @group = @content.find_group_by_path_from_root(params[:group_names])
     return http_error(404) unless @group.try(:public?)
 
     Page.current_item = @group
@@ -29,10 +27,8 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
     @docs = if article_contents.empty?
               GpArticle::Doc.none
             else
-#TODO: Revert flatted groups
-#              sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
-#              find_public_docs_with_group_id(sys_group_ids)
-              find_public_docs_with_group_id(@group.sys_group.id)
+              sys_group_ids = @group.public_descendants.map{|g| g.sys_group.id }
+              find_public_docs_with_group_id(sys_group_ids)
                 .where(content_id: article_contents.pluck(:id))
                 .order(@group.docs_order)
                 .paginate(page: params[:page], per_page: per_page)
