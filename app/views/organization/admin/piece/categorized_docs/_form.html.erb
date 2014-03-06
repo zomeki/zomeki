@@ -1,1 +1,46 @@
-<%= render 'shared/admin/piece/form', f: f %>
+<%= render(layout: 'shared/admin/piece/form', locals: {f: f}) do -%>
+  <p class="form">詳細設定</p>
+
+  <%- if (category_content = @piece.content.category_content) -%>
+  <table class="show">
+    <%- category_content.category_types.each do |category_type| -%>
+    <tr>
+      <th><%= category_type.title %></th>
+      <td>
+        <div id="category_type_<%= category_type.id %>_categories">
+          <%= render 'category', category_type: category_type, category: nil,
+                                 categories_for_option: category_type.categories_for_option %>
+          <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+          <%= render 'category', category_type: category_type, category: category,
+                                 categories_for_option: category_type.categories_for_option %>
+          <%- end -%>
+          <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+        </div>
+      </td>
+    </tr>
+    <%- end -%>
+  </table>
+  <%- end -%>
+<%- end -%>
+
+<%- if (category_content = @piece.content.category_content) -%>
+<%= javascript_tag do -%>
+function set_click_event_handler(category_type_id, prefix) {
+  if (prefix === undefined) { prefix = ''; }
+  var categories_wrapper = $('#' + prefix + 'category_type_' + category_type_id + '_categories');
+  categories_wrapper.find('.add_category').on('click', function () {
+    var new_category = categories_wrapper.children(':first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
+  }).trigger('click');
+}
+
+$(function () {
+  <%= disable_enter_script %>
+
+  <%- category_content.category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+});
+<%- end -%>
+<%- end -%>

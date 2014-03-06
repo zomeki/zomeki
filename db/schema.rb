@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140227170156) do
+ActiveRecord::Schema.define(:version => 20140306160826) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -536,6 +536,7 @@ ActiveRecord::Schema.define(:version => 20140227170156) do
     t.text     "head",           :limit => 2147483647
     t.text     "body",           :limit => 2147483647
     t.text     "xml_properties", :limit => 2147483647
+    t.text     "etcetera",       :limit => 16777215
   end
 
   add_index "cms_pieces", ["concept_id", "name", "state"], :name => "concept_id"

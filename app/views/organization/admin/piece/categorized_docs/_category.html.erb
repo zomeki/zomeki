@@ -1,0 +1,15 @@
+<%-
+  prefix ||= ''
+  common_attrs = {id: nil}
+  category_id = if category
+                  category.id
+                else
+                  common_attrs.merge!(disabled: true)
+                  nil
+                end
+-%>
+<span style="<%= 'display: none;' if common_attrs[:disabled] %>">
+  <%= select_tag "#{prefix}categories[#{category_type.id}][]",
+                 options_for_select(categories_for_option, category_id),
+                 common_attrs.merge(include_blank: true) %>
+</span>

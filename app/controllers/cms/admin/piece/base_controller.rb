@@ -12,8 +12,7 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
   def model
     return @model_class if @model_class
     mclass = self.class.to_s.gsub(/^(\w+)::Admin/, '\1').gsub(/Controller$/, '').singularize
-    eval(mclass)
-    @model_class = eval(mclass)
+    @model_class = mclass.constantize
   rescue
     @model_class = Cms::Piece
   end
@@ -59,6 +58,6 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
   private
 
   def find_piece
-    Cms::Piece.new.readable.find(params[:id])
+    model.new.readable.find(params[:id])
   end
 end
