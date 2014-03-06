@@ -48,16 +48,12 @@ class Organization::Group < ActiveRecord::Base
 
   def public_uri
     return '' unless content.public_node
-#TODO: Revert flatted groups
-#    "#{content.public_node.public_uri}#{path_from_root}/"
-    "#{content.public_node.public_uri}#{name}/"
+    "#{content.public_node.public_uri}#{path_from_root}/"
   end
 
   def public_full_uri
     return '' unless content.public_node
-#TODO: Revert flatted groups
-#    "#{content.public_node.public_full_uri}#{path_from_root}/"
-    "#{content.public_node.public_full_uri}#{name}/"
+    "#{content.public_node.public_full_uri}#{path_from_root}/"
   end
 
   def parent
@@ -100,9 +96,7 @@ class Organization::Group < ActiveRecord::Base
 
     if (node = content.try(:public_node))
       c = node.bread_crumbs.crumbs.first
-#TODO: Revert flatted groups
-#      ancestors.each{|a| c << [a.sys_group.name, "#{node.public_uri}#{a.path_from_root}/"] }
-      ancestors.each{|a| c << [a.sys_group.name, "#{node.public_uri}#{a.name}/"] }
+      ancestors.each{|a| c << [a.sys_group.name, "#{node.public_uri}#{a.path_from_root}/"] }
       crumbs << c
     end
 

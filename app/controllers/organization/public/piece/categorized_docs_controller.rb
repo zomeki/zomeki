@@ -18,10 +18,8 @@ class Organization::Public::Piece::CategorizedDocsController < Sys::Controller::
       @docs = if article_contents.empty?
                 GpArticle::Doc.none
               else
-#TODO: Revert flatted groups
-#                sys_group_ids = @item.public_descendants.map{|g| g.sys_group.id }
-#                find_public_docs_with_group_id(sys_group_ids)
-                find_public_docs_with_group_id(@item.sys_group.id)
+                sys_group_ids = @item.public_descendants.map{|g| g.sys_group.id }
+                find_public_docs_with_group_id(sys_group_ids)
                   .where(content_id: article_contents.pluck(:id))
                   .order(@item.docs_order)
               end

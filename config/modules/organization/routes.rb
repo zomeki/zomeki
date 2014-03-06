@@ -33,16 +33,16 @@ ZomekiCMS::Application.routes.draw do
     match 'node_groups(/(index))' => 'public/node/groups#index'
   end
   scope "_public/#{mod}", :module => 'gp_article' do
-    get 'node_groups/:group_names/:name/comments/new' => 'public/node/comments#new', :format => false
-    post 'node_groups/:group_names/:name/comments/confirm' => 'public/node/comments#confirm', :format => false
-    post 'node_groups/:group_names/:name/comments' => 'public/node/comments#create', :format => false
-    match 'node_groups/:group_names/:name/preview/:id/file_contents/:basename.:extname' => 'public/node/docs#file_content'
-    match 'node_groups/:group_names/:name/preview/:id/:filename_base' => 'public/node/docs#show'
-    match 'node_groups/:group_names/:name/file_contents/:basename.:extname' => 'public/node/docs#file_content'
-    match 'node_groups/:group_names/:name/:filename_base' => 'public/node/docs#show'
+    get 'node_groups/*group_names/docs/:name/comments/new' => 'public/node/comments#new', :format => false
+    post 'node_groups/*group_names/docs/:name/comments/confirm' => 'public/node/comments#confirm', :format => false
+    post 'node_groups/*group_names/docs/:name/comments' => 'public/node/comments#create', :format => false
+    match 'node_groups/*group_names/docs/:name/preview/:id/file_contents/:basename.:extname' => 'public/node/docs#file_content'
+    match 'node_groups/*group_names/docs/:name/preview/:id/:filename_base' => 'public/node/docs#show'
+    match 'node_groups/*group_names/docs/:name/file_contents/:basename.:extname' => 'public/node/docs#file_content'
+    match 'node_groups/*group_names/docs/:name/:filename_base' => 'public/node/docs#show'
   end
   scope "_public/#{mod}", :module => mod do
-    match 'node_groups/:group_names/:filename_base' => 'public/node/groups#show'
-    match 'node_groups/:group_names' => 'public/node/groups#show'
+    match 'node_groups/*group_names/:filename_base' => 'public/node/groups#show'
+    match 'node_groups/*group_names' => 'public/node/groups#show'
   end
 end

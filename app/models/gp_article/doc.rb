@@ -230,7 +230,7 @@ class GpArticle::Doc < ActiveRecord::Base
               organization_content.related_article_content == content
 
             group = organization_content.groups.where(sys_group_code: creator.group.code).first
-            "#{group.public_uri}#{name}/" if group
+            "#{group.public_uri}docs/#{name}/" if group
           end
     uri ||= "#{node.public_uri}#{name}/"
     without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
@@ -243,7 +243,7 @@ class GpArticle::Doc < ActiveRecord::Base
             organization_content.related_article_content == content
 
             group = organization_content.groups.where(sys_group_code: creator.group.code).first
-            "#{group.public_full_uri}#{name}/" if group
+            "#{group.public_full_uri}docs/#{name}/" if group
           end
     uri ||= "#{node.public_full_uri}#{name}/"
     without_filename || filename_base == 'index' ? uri : "#{uri}#{filename_base}.html"
