@@ -77,7 +77,11 @@ class Organization::Content::Group < Cms::Content
   private
 
   def copy_from_sys_group(sys_group)
-    group = groups.where(sys_group_code: sys_group.code).first_or_create(name: sys_group.code)
+    group = groups.where(sys_group_code: sys_group.code).first_or_create(name: sys_group.name_en)
+    unless group.valid?
+      group.name = "#{sys_group.name_en}_#{sys_group.code}"
+      group.save
+    end
     unless sys_group.children.empty?
       sys_group.children.each do |child|
         next if (sys_group.sites & child.sites).empty?
