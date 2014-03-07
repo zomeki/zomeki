@@ -7,6 +7,8 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def pre_dispatch
     if (organization_content = Page.current_node.content).kind_of?(Organization::Content::Group)
       return http_error(404) unless organization_content.article_related?
+      @group = organization_content.find_group_by_path_from_root(params[:group_names])
+      return http_error(404) unless @group
       @content = organization_content.related_article_content
     else
       @content = GpArticle::Content::Doc.find_by_id(Page.current_node.content.id)
@@ -50,6 +52,9 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def show
     @item = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) if @item.nil? || @item.filename_base != params[:filename_base]
+    if @group
+      return http_error(404) unless @item.creator.group == @group.sys_group
+    end
 
     Page.current_item = @item
     Page.title = unless Page.mobile?
@@ -62,6 +67,9 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   def file_content
     @doc = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) unless @doc
+    if @group
+      return http_error(404) unless @doc.creator.group == @group.sys_group
+    end
 
     if (file = @doc.files.find_by_name("#{params[:basename]}.#{params[:extname]}"))
       mt = Rack::Mime.mime_type(".#{params[:extname]}")

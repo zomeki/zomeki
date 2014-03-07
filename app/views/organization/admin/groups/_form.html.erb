@@ -7,15 +7,9 @@
     <th><%= f.label :state %></th>
     <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS %></td>
   </tr>
-<%- if false -%>
   <tr>
     <th><%= f.label :name %> <span class="note">※</span></th>
     <td><%= f.text_field :name %></td>
-  </tr>
-<%- end -%>
-  <tr>
-    <th><%= @item.locale(:name) %></th>
-    <td><%= @item.name %></td>
   </tr>
   <tr>
     <th><%= @item.locale(:title) %></th>
