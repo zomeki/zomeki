@@ -1,6 +1,6 @@
 class Organization::Public::Piece::BusinessOutlinesController < Sys::Controller::Public::Base
   def pre_dispatch
-    @piece = Organization::Piece::BusinessOutline.find_by_id(Page.current_piece.id)
+    @piece = Organization::Piece::BusinessOutline.where(id: Page.current_piece.id).first
     render :text => '' unless @piece
 
     @item = Page.current_item

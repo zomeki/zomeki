@@ -1,6 +1,6 @@
 class Organization::Public::Piece::CategorizedDocsController < Sys::Controller::Public::Base
   def pre_dispatch
-    @piece = Organization::Piece::CategorizedDoc.find_by_id(Page.current_piece.id)
+    @piece = Organization::Piece::CategorizedDoc.where(id: Page.current_piece.id).first
     render :text => '' unless @piece
 
     @item = Page.current_item
