@@ -26,6 +26,8 @@ ZomekiCMS::Application.routes.draw do
     ## pieces
     resources :piece_categorized_docs,
       :controller => 'admin/piece/categorized_docs'
+    resources :piece_business_outlines,
+      :controller => 'admin/piece/business_outlines'
   end
 
   ## public

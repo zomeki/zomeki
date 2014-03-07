@@ -1,5 +1,5 @@
 class Organization::Piece::CategorizedDoc < Cms::Piece
-  default_scope where(model: 'Organization::CategorizedDoc')
+  default_scope { where(model: 'Organization::CategorizedDoc') }
 
   after_initialize :set_default_settings
 
