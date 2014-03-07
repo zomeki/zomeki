@@ -24,6 +24,9 @@ ZomekiCMS::Application.routes.draw do
       :path       => ':parent/node_groups'
 
     ## pieces
+#    resources :piece_groups, # Somehow doesn't work
+    resources :piece_all_groups,
+      :controller => 'admin/piece/all_groups'
     resources :piece_categorized_docs,
       :controller => 'admin/piece/categorized_docs'
     resources :piece_business_outlines,
