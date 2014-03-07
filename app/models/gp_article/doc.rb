@@ -50,13 +50,19 @@ class GpArticle::Doc < ActiveRecord::Base
   has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
   has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", self.name],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, d.class.name) }
+           :after_add => proc {|d, c|
+             d.categorizations.where(category_id: c.id, categorized_as: nil).first.update_column(:categorized_as, d.class.name)
+           }
   has_many :event_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'GpCalendar::Event'],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, 'GpCalendar::Event') }
+           :after_add => proc {|d, c|
+             d.categorizations.where(category_id: c.id, categorized_as: nil).first.update_column(:categorized_as, 'GpCalendar::Event')
+           }
   has_many :marker_categories, :class_name => 'GpCategory::Category', :through => :categorizations,
            :source => :category, :conditions => ["#{GpCategory::Categorization.table_name}.categorized_as = ?", 'Map::Marker'],
-           :after_add => proc {|d, c| d.categorizations.find_by_category_id_and_categorized_as(c.id, nil).update_column(:categorized_as, 'Map::Marker') }
+           :after_add => proc {|d, c|
+             d.categorizations.where(category_id: c.id, categorized_as: nil).first.update_column(:categorized_as, 'Map::Marker')
+           }
   has_and_belongs_to_many :tags, :class_name => 'Tag::Tag', :join_table => 'gp_article_docs_tag_tags',
                           :conditions => proc { self.content.try(:tag_content_tag) ? ['content_id = ?', self.content.tag_content_tag.id] : 'FALSE' }
   has_many :holds, :as => :holdable, :dependent => :destroy
@@ -415,7 +421,7 @@ class GpArticle::Doc < ActiveRecord::Base
     new_doc.event_categories = self.event_categories
     new_doc.marker_categories = self.marker_categories
     new_doc.categorizations.each do |new_c|
-      self_c = self.categorizations.find_by_category_id_and_categorized_as(new_c.category_id, new_c.categorized_as)
+      self_c = self.categorizations.where(category_id: new_c.category_id, categorized_as: new_c.categorized_as).first
       new_c.update_column(:sort_no, self_c.sort_no)
     end
 
@@ -655,7 +661,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     errors.add(:name, :invalid) if self.name && self.name !~ /^[\-\w]*$/
 
-    if (doc = self.class.find_by_name_and_state_and_content_id(self.name, self.state, self.content.id))
+    if (doc = self.class.where(name: self.name, state: self.state, content_id: self.content.id).first)
       unless doc.id == self.id || state_archived?
         errors.add(:name, :taken) unless state_public? && prev_edition.try(:state_public?)
       end
@@ -721,7 +727,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     words = Moji.normalize_zen_han(raw_tags).downcase.split(/[、,]/).map{|w| w.presence }.compact.uniq
     self.tags = words.map do |word|
-        all_tags.find_by_word(word) || all_tags.create(word: word)
+        all_tags.where(word: word).first || all_tags.create(word: word)
       end
     self.tags.each {|t| t.update_last_tagged_at }
 
@@ -778,7 +784,7 @@ class GpArticle::Doc < ActiveRecord::Base
       link.destroy unless lib.detect {|l| l[:body] == link.body && l[:url] == link.url }
     end
     lib.each do |link|
-      links.create(body: link[:body], url: link[:url]) unless links.find_by_body_and_url(link[:body], link[:url])
+      links.create(body: link[:body], url: link[:url]) unless links.where(body: link[:body], url: link[:url]).first
     end
   end
 
