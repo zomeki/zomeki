@@ -28,7 +28,11 @@ class GpArticle::Doc < ActiveRecord::Base
   FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
   FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
 
-  default_scope where("#{self.table_name}.state != 'archived'")
+  default_scope { where("#{self.table_name}.state != 'archived'") }
+  scope :public, -> { where(state: 'public') }
+  scope :mobile, ->(m) { m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
+  scope :none, -> { where('id IS ?', nil).where('id IS NOT ?', nil) }
+  scope :display_published_after, ->(date) { where(arel_table[:display_published_at].gteq(date)) }
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpArticle::Content::Doc'
@@ -94,11 +98,6 @@ class GpArticle::Doc < ActiveRecord::Base
   after_save :save_links
 
   attr_accessor :ignore_accessibility_check
-
-  scope :public, where(state: 'public')
-  scope :mobile, lambda {|m| m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
-  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
-  scope :display_published_after, lambda {|date| where(arel_table[:display_published_at].gteq(date)) }
 
   def self.all_with_content_and_criteria(content, criteria)
     docs = self.arel_table
