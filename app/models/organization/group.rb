@@ -13,9 +13,9 @@ class Organization::Group < ActiveRecord::Base
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'display_published_at DESC, published_at DESC'],
                         ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
-  default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
-  scope :public, where(state: 'public')
-  scope :none, where('id IS ?', nil).where('id IS NOT ?', nil)
+  default_scope { order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no") }
+  scope :public, -> { where(state: 'public') }
+  scope :none, -> { where('id IS ?', nil).where('id IS NOT ?', nil) }
 
   # Page
   belongs_to :concept, :class_name => 'Cms::Concept'
