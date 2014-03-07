@@ -31,8 +31,9 @@ class Organization::Group < ActiveRecord::Base
 
   after_initialize :set_defaults
 
-  validates :name, :presence => true, :uniqueness => true
+  validates :name, :presence => true
   validates :sys_group_code, :presence => true, :uniqueness => true
+  validate :name_uniqueness_in_siblings
 
   def sitemap_state_text
     SITEMAP_STATE_OPTIONS.detect{|o| o.last == self.sitemap_state }.try(:first).to_s
@@ -118,5 +119,10 @@ class Organization::Group < ActiveRecord::Base
     self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
     self.docs_order = DOCS_ORDER_OPTIONS.first.last if self.has_attribute?(:docs_order) && self.docs_order.nil?
     self.sort_no = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
+  end
+
+  def name_uniqueness_in_siblings
+    siblings = parent ? parent.children : content.root_groups
+    errors.add(:name, :taken) unless siblings.where(name: name).where('id != ?', id).empty?
   end
 end
