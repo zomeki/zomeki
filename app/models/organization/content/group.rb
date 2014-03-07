@@ -32,6 +32,11 @@ class Organization::Content::Group < Cms::Content
               .where(parent_id: 0, level_no: 1).first
   end
 
+  def root_groups
+    sys_group_codes = root_sys_group.children.pluck(:code)
+    groups.where(sys_group_code: sys_group_codes)
+  end
+
   def find_group_by_path_from_root(path_from_root)
     group_names = path_from_root.split('/')
     return nil if group_names.empty?
