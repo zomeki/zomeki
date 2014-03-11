@@ -13,6 +13,11 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   before_create :set_default_settings
 
+  def public_node
+    Cms::Node.where(state: 'public', content_id: id, model: 'GpCategory::CategoryType').order(:id).first
+  end
+
+#TODO: DEPRECATED
   def category_type_node
     return @category_type_node if @category_type_node
     @category_type_node = Cms::Node.where(state: 'public', content_id: id, model: 'GpCategory::CategoryType').order(:id).first

@@ -5,28 +5,35 @@ class Script
   def self.run(path, options = nil)
     ENV['INPUTRC'] ||= '/etc/inputrc'
 
+    if options.try('[]', :force)
+      run_script(path)
+      return
+    end
+
     @@lock_key = 'script_' + path.gsub(/\W/, '_')
     @@lock_key << '_' + Digest::MD5.new.update(options.to_s).to_s if options.present? 
     @@options  = options
-    
+
     unless self.lock
       puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') already running."
       return true
     end
 
-    begin
-      puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') started."
+    puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') started."
 
-      app = ActionController::Integration::Session.new(Rails.application)
-      app.get "/_script/sys/run/#{path}"
+    run_script(path)
 
-      puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') finished."
-    rescue => e
-      puts e.backtrace.join("\n") + "\n\n"
-      puts "ScriptError: #{e}"
-    end
+    puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') finished."
 
     self.unlock
+  end
+
+  def self.run_script(path)
+    app = ActionController::Integration::Session.new(Rails.application)
+    app.get "/_script/sys/run/#{path}"
+  rescue => e
+    error_log e.backtrace.join("\n") + "\n\n"
+    error_log "ScriptError: #{e}"
   end
 
   protected

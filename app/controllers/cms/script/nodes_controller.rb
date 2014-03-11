@@ -1,9 +1,23 @@
 class Cms::Script::NodesController < Cms::Controller::Script::Publication
   def publish
-    @ids  = {}
+    @ids = {}
 
-    Cms::Node.public.where(parent_id: 0).order('name, id').each do |node|
-      publish_node(node)
+    content_id = params[:target_content_id]
+
+    case params[:target_module]
+    when 'gp_category'
+      if content_id
+        content = GpCategory::Content::CategoryType.where(id: content_id).first
+        publish_node(content.public_node) if content.try(:public_node)
+      else
+        GpCategory::Content::CategoryType.all.each do |ct|
+          publish_node(ct.public_node) if ct.public_node
+        end
+      end
+    else
+      Cms::Node.public.where(parent_id: 0).order('name, id').each do |node|
+        publish_node(node)
+      end
     end
 
     render text: 'OK'
@@ -14,47 +28,46 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
     @ids[node.id] = true
 
     return unless node.site
-    last_name = nil
 
+    unless node.public?
+      node.close_page
+      return
+    end
+
+    ## page
+    if node.model == 'Cms::Page'
+      begin
+        uri = "#{node.public_uri}?node_id=#{node.id}"
+        publish_page(node, :uri => uri, :site => node.site, :path => node.public_path)
+      rescue => e
+        error_log e.message
+      end
+      return
+    end
+
+    ## modules' page
+    unless node.model == 'Cms::Directory'
+      begin
+        model = node.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/script/')
+        return unless "#{model.camelize}Controller".constantize.publishable?
+
+        publish_page(node, :uri => node.public_uri, :site => node.site, :path => node.public_path)
+        res = render_component_into_view :controller => model, :action => 'publish', :params => params.merge(node: node)
+      rescue LoadError => e
+        error_log e.message
+        return
+      rescue Exception => e
+        error_log e.message
+        return
+      end
+    end
+
+    last_name = nil
     nodes = Cms::Node.arel_table
     Cms::Node.where(parent_id: node.id)
              .where(nodes[:name].not_eq(nil).and(nodes[:name].not_eq('')).and(nodes[:name].not_eq(last_name)))
              .order('directory, name, id').each do |child_node|
       last_name = child_node.name
-
-      unless child_node.public?
-        child_node.close_page
-        next
-      end
-
-      ## page
-      if child_node.model == 'Cms::Page'
-        begin
-          uri = "#{child_node.public_uri}?node_id=#{child_node.id}"
-          publish_page(child_node, :uri => uri, :site => child_node.site, :path => child_node.public_path)
-        rescue => e
-          error_log e.message
-        end
-        next
-      end
-
-      ## modules' page
-      unless child_node.model == 'Cms::Directory'
-        begin
-          model = child_node.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/script/')
-          next unless "#{model.camelize}Controller".constantize.publishable?
-
-          publish_page(child_node, :uri => child_node.public_uri, :site => child_node.site, :path => child_node.public_path)
-          res = render_component_into_view :controller => model, :action => 'publish', :params => params.merge(node: child_node)
-        rescue LoadError => e
-          error_log e.message
-          next
-        rescue Exception => e
-          error_log e.message
-          next
-        end
-      end
-
       publish_node(child_node)
     end
   end
