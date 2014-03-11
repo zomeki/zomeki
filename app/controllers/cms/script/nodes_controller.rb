@@ -6,9 +6,10 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
     case params[:target_module]
     when 'gp_category'
-      if content_id
-        content = GpCategory::Content::CategoryType.where(id: content_id).first
-        publish_node(content.public_node) if content.try(:public_node)
+      if content_id.present?
+        GpCategory::Content::CategoryType.where(id: content_id).each do |content|
+          publish_node(content.public_node) if content.try(:public_node)
+        end
       else
         GpCategory::Content::CategoryType.all.each do |ct|
           publish_node(ct.public_node) if ct.public_node

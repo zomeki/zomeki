@@ -199,10 +199,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       release_document
 
       share_to_sns if @item.state_public?
-#
-#      Thread.new do
-#        ::Script.run('cms/script/nodes/publish?target_module=gp_category&target_content_id=7&target_id[]=16&target_id[]=18&target_child_id[]=365&target_child_id[]=482', force: true)
-#      end
+
+#      publish_category_pages
     end
   end
 
@@ -413,6 +411,18 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       rescue => e
         warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
       end
+    end
+  end
+
+  def publish_category_pages
+    script_params = ['target_module=gp_category']
+    @item.categories.each do |category|
+      script_params << "target_content_id[]=#{category.content.id}"
+      script_params << "target_id[]=#{category.category_type.id}"
+      script_params << "target_child_id[]=#{category.id}"
+    end
+    Thread.new do
+      ::Script.run("cms/script/nodes/publish?#{script_params.uniq.join('&')}", force: true)
     end
   end
 end
