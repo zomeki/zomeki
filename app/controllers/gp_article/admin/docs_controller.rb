@@ -199,6 +199,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       release_document
 
       share_to_sns if @item.state_public?
+#
+#      Thread.new do
+#        ::Script.run('cms/script/nodes/publish?target_module=gp_category&target_content_id=7&target_id[]=16&target_id[]=18&target_child_id[]=365&target_child_id[]=482', force: true)
+#      end
     end
   end
 
