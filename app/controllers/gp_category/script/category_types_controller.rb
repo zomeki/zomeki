@@ -47,7 +47,9 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
         publish_page(cat.category_type, :uri => "#{uri}#{atom}", :path => "#{path}#{atom}", :dependent => "#{cat_path}#{atom}")
       end
     end
-    
+
+    info_log %Q!OK: Published to "#{path}"!
+
     cat.public_children.each do |c|
       publish_category(c)
     end
