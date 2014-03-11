@@ -39,7 +39,7 @@ namespace :zomeki do
 end
 
 def clean_feeds
-  Dir["#{Rails.root.join('sites')}/**/index.{atom,rss}"].each do |file|
+  Dir["#{Rails.root.join('sites')}/**/{feed,index}.{atom,rss}"].each do |file|
     info_log "DELETED: #{file}"
     File.delete(file)
   end
