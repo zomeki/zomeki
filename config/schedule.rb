@@ -26,7 +26,7 @@ set :output, nil
 env :PATH, ENV['PATH']
 
 # http://rubygems.org/gems/delayed_job_active_record
-every 2.minutes do
+every 3.minutes do
   rake 'jobs:workoff'
 end
 
