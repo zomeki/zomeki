@@ -29,6 +29,10 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
   end
 
   def publish_node(node)
+#    return if node.model.in?('GpArticle::Doc', 'GpCategory::CategoryType')
+    started_at = Time.now
+    info_log "Publish node: #{node.model} #{node.name} #{node.title}"
+
     return if @ids.key?(node.id)
     @ids[node.id] = true
 
@@ -75,6 +79,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
       last_name = child_node.name
       publish_node(child_node)
     end
+
+    info_log "Published node: #{node.model} #{node.name} #{node.title} in #{(Time.now - started_at).round(2)} [secs.]"
   end
 
   def publish_by_task
