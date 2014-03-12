@@ -5,6 +5,10 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
     content_id = params[:target_content_id]
 
     case params[:target_module]
+    when 'cms'
+      if (target_node = Cms::Node.where(id: params[:target_node_id]).first)
+        publish_node(target_node)
+      end
     when 'gp_category'
       if content_id.present?
         GpCategory::Content::CategoryType.where(id: content_id).each do |content|

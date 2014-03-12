@@ -27,7 +27,8 @@ class Cms::Site < ActiveRecord::Base
     :class_name => 'Cms::SiteBasicAuthUser'
   has_many :site_belongings, :dependent => :destroy, :class_name => 'Cms::SiteBelonging'
   has_many :groups, :through => :site_belongings, :class_name => 'Sys::Group'
-  
+  has_many :nodes
+
   validates_presence_of :state, :name, :full_uri
   validates_uniqueness_of :full_uri
   validates_uniqueness_of :mobile_full_uri,
