@@ -21,7 +21,14 @@
 
 # set :environment, 'development'
 
+set :output, nil
+
 env :PATH, ENV['PATH']
+
+# http://rubygems.org/gems/delayed_job_active_record
+every 1.minute do
+  rake 'jobs:workoff'
+end
 
 # 記事の公開/非公開処理を行います。
 every '0-45/15 * * * *' do
