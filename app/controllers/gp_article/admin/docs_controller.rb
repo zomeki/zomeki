@@ -200,7 +200,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       share_to_sns if @item.state_public?
 
-      publish_category_pages
+      publish_related_pages
     end
   end
 
@@ -414,7 +414,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
   end
 
-  def publish_category_pages
+  def publish_related_pages
+    # Top
+    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first)
+      if (root_index = root_node.children.where(name: 'index.html').first)
+        ::Script.delay.run("cms/script/nodes/publish?target_module=cms&target_node_id[]=#{root_index.id}", force: true)
+      end
+    end
+
+    # Category
     category_ids = {}
     @item.categories.each do |c|
       category_ids[c.content.id] = {} unless category_ids[c.content.id]
