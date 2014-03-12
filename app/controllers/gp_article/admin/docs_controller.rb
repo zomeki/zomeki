@@ -140,6 +140,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       @item.fix_tmp_files(params[:_tmp])
 
       share_to_sns if @item.state_public?
+
+      publish_related_pages
     end
   end
 
@@ -230,6 +232,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     else
       flash[:alert] = '公開処理に失敗しました。'
     end
+  end
+
+  def close(item)
+    super
+    publish_related_pages
   end
 
   def duplicate(item)
