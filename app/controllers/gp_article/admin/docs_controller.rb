@@ -200,7 +200,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       share_to_sns if @item.state_public?
 
-#      publish_category_pages
+      publish_category_pages
     end
   end
 
@@ -415,14 +415,23 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish_category_pages
-    script_params = ['target_module=gp_category']
-    @item.categories.each do |category|
-      script_params << "target_content_id[]=#{category.content.id}"
-      script_params << "target_id[]=#{category.category_type.id}"
-      script_params << "target_child_id[]=#{category.id}"
+    category_ids = {}
+    @item.categories.each do |c|
+      category_ids[c.content.id] = {} unless category_ids[c.content.id]
+      category_ids[c.content.id][c.category_type.id] = [] unless category_ids[c.content.id][c.category_type.id]
+      category_ids[c.content.id][c.category_type.id] << c.id
     end
-    Thread.new do
-      ::Script.run("cms/script/nodes/publish?#{script_params.uniq.join('&')}", force: true)
+
+    script_params = []
+    category_ids.each do |key, value|
+      value.each do |k, v|
+        script_params <<
+          "target_module=gp_category&target_content_id[]=#{key}&target_id[]=#{k}&#{v.map{|c| "target_child_id[]=#{c}" }.join('&') }"
+      end
+    end
+
+    script_params.each do |script_param|
+      ::Script.delay.run("cms/script/nodes/publish?#{script_param}", force: true)
     end
   end
 end

@@ -43,6 +43,11 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     colored (1.2)
+    delayed_job (4.0.0)
+      activesupport (>= 3.0, < 4.1)
+    delayed_job_active_record (4.0.0)
+      activerecord (>= 3.0, < 4.1)
+      delayed_job (>= 3.0, < 4.1)
     diff-lcs (1.2.5)
     domain_name (0.5.16)
       unf (>= 0.0.5, < 1.0.0)
@@ -227,6 +232,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
+  delayed_job_active_record (~> 4.0.0)
   dynamic_form (~> 1.1.4)
   email_spec (~> 1.4.0)
   factory_girl_rails (~> 4.2.1)
