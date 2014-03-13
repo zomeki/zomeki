@@ -36,7 +36,7 @@ class GpCategory::Publisher < ActiveRecord::Base
     end
 
     script_params.each do |script_param|
-      ::Script.run("cms/script/nodes/publish?#{script_param}", force: true)
+      ::Script.run("cms/script/nodes/publish?all=all&#{script_param}", force: true)
     end
   end
 end
