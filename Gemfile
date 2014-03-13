@@ -64,6 +64,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'bullet'
   gem 'i18n_generators'
   gem 'rails_best_practices'
   gem 'spring'
