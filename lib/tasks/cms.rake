@@ -27,6 +27,11 @@ namespace :zomeki do
       task(:publish => :environment) do
         Script.run('cms/script/nodes/publish')
       end
+
+      desc 'Publish all nodes'
+      task(:publish_all => :environment) do
+        Script.run('cms/script/nodes/publish?all=all')
+      end
     end
 
     namespace :talks do
