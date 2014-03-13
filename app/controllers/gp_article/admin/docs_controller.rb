@@ -422,31 +422,16 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish_related_pages
-    # Top
+    Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
+
     if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first)
-      if (root_index = root_node.children.where(name: 'index.html').first)
-        ::Script.delay.run("cms/script/nodes/publish?target_module=cms&target_node_id[]=#{root_index.id}", force: true)
+      if (top_page = root_node.children.where(name: 'index.html').first)
+        ::Script.delay(queue: 'publish_top_page')
+                .run("cms/script/nodes/publish?target_module=cms&target_node_id[]=#{top_page.id}", force: true)
       end
     end
 
-    # Category
-    category_ids = {}
-    @item.categories.each do |c|
-      category_ids[c.content.id] = {} unless category_ids[c.content.id]
-      category_ids[c.content.id][c.category_type.id] = [] unless category_ids[c.content.id][c.category_type.id]
-      category_ids[c.content.id][c.category_type.id] << c.id
-    end
-
-    script_params = []
-    category_ids.each do |key, value|
-      value.each do |k, v|
-        script_params <<
-          "target_module=gp_category&target_content_id[]=#{key}&target_id[]=#{k}&#{v.map{|c| "target_child_id[]=#{c}" }.join('&') }"
-      end
-    end
-
-    script_params.each do |script_param|
-      ::Script.delay.run("cms/script/nodes/publish?#{script_param}", force: true)
-    end
+    GpCategory::Publisher.register_categories(@item.categories)
+    GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
   end
 end
