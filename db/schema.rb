@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140312031955) do
+ActiveRecord::Schema.define(:version => 20140313042932) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -873,6 +873,14 @@ ActiveRecord::Schema.define(:version => 20140312031955) do
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
   add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
   add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
+
+  create_table "gp_category_publishers", :force => true do |t|
+    t.integer  "category_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "gp_category_publishers", ["category_id"], :name => "index_gp_category_publishers_on_category_id"
 
   create_table "gp_category_template_modules", :force => true do |t|
     t.integer  "content_id"
