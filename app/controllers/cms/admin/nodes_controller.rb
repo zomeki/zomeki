@@ -11,20 +11,13 @@ class Cms::Admin::NodesController < Cms::Controller::Admin::Base
   end
 
   def index
-    item = Cms::Node.new#.readable
-    item.and :site_id, Core.site.id
-    item.and :parent_id, @parent.id
-    item.and :directory, 1
-    item.order params[:sort], 'sitemap_sort_no IS NULL, sitemap_sort_no, name'
-    @dirs = item.find(:all)
-    
-    item = Cms::Node.new#.readable
-    item.and :site_id, Core.site.id
-    item.and :parent_id, @parent.id
-    item.and :directory, 0
-    item.order params[:sort], 'sitemap_sort_no IS NULL, sitemap_sort_no, name'
-    @pages = item.find(:all)
-    
+    @dirs = Cms::Node.where(site_id: Core.site.id, parent_id: @parent.id, directory: 1)
+                     .order('sitemap_sort_no IS NULL, sitemap_sort_no, name')
+                     .includes(:site)
+
+    @pages = Cms::Node.where(site_id: Core.site.id, parent_id: @parent.id, directory: 0)
+                      .order('sitemap_sort_no IS NULL, sitemap_sort_no, name')
+                      .includes(:site)
     _index @pages
   end
   
