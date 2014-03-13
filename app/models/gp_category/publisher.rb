@@ -8,7 +8,8 @@ class GpCategory::Publisher < ActiveRecord::Base
   validates :category_id, :presence => true, :uniqueness => true
 
   def self.register_category(category)
-    self.where(category_id: category.id).first_or_create
+    category_id = category.kind_of?(GpCategory::Category) ? category.id : category.to_i
+    self.where(category_id: category_id).first_or_create if category_id > 0
   end
 
   def self.register_categories(categories)
