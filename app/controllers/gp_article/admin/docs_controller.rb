@@ -303,6 +303,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def set_categories
+    @old_category_ids = @item.category_ids
+
     category_ids = if params[:categories].is_a?(Hash)
                      params[:categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
                    else
@@ -320,6 +322,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     @item.category_ids = category_ids
+
+    @new_category_ids = @item.category_ids
   end
 
   def set_event_categories
@@ -424,14 +428,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def publish_related_pages
     Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
 
-    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first)
-      if (top_page = root_node.children.where(name: 'index.html').first)
-        ::Script.delay(queue: 'publish_top_page')
-                .run("cms/script/nodes/publish?target_module=cms&target_node_id[]=#{top_page.id}", force: true)
-      end
+    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first) &&
+       (top_page = root_node.children.where(name: 'index.html').first)
+      ::Script.delay(queue: 'publish_top_page')
+              .run("cms/script/nodes/publish?target_module=cms&target_node_id[]=#{top_page.id}", force: true)
     end
 
-    GpCategory::Publisher.register_categories(@item.categories)
-    GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
+    if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
+      GpCategory::Publisher.register_categories(@old_category_ids | @new_category_ids)
+      GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
+    end
   end
 end
