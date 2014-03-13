@@ -1,10 +1,10 @@
-class CreateGpCategoryPublisheres < ActiveRecord::Migration
+class CreateGpCategoryPublishers < ActiveRecord::Migration
   def change
-    create_table :gp_category_publisheres do |t|
+    create_table :gp_category_publishers do |t|
       t.belongs_to :category
 
       t.timestamps
     end
-    add_index :gp_category_publisheres, :category_id
+    add_index :gp_category_publishers, :category_id
   end
 end
