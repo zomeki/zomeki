@@ -11,7 +11,7 @@ class GpCategory::CategoryType < ActiveRecord::Base
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'display_published_at DESC, published_at DESC'], ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
-  default_scope order(:sort_no, :name)
+  default_scope { joins(:content).includes(:content).order("#{self.table_name}.sort_no, #{self.table_name}.name") }
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCategory::Content::CategoryType'
@@ -63,24 +63,14 @@ class GpCategory::CategoryType < ActiveRecord::Base
     }
   end
 
-  def public_uri=(uri)
-    @public_uri = uri
-  end
-
   def public_uri
-    return @public_uri if @public_uri
-    return '' unless node = content.category_type_node
-    @public_uri = "#{node.public_uri}#{name}/"
-  end
-
-  def public_full_uri=(uri)
-    @public_full_uri = uri
+    return '' unless node = content.public_node
+    "#{node.public_uri}#{name}/"
   end
 
   def public_full_uri
-    return @public_full_uri if @public_full_uri
-    return '' unless node = content.category_type_node
-    @public_full_uri = "#{node.public_full_uri}#{name}/"
+    return '' unless node = content.public_node
+    "#{node.public_full_uri}#{name}/"
   end
 
   def bread_crumbs(category_type_node)
