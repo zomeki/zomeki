@@ -26,7 +26,7 @@ class GpCategory::Category < ActiveRecord::Base
   belongs_to :category_type, :foreign_key => :category_type_id, :class_name => 'GpCategory::CategoryType'
   validates_presence_of :category_type_id
 
-  belongs_to :parent, :foreign_key => :parent_id, :class_name => self.name
+  belongs_to :parent, :foreign_key => :parent_id, :class_name => self.name, :counter_cache => :children_count
   has_many :children, :foreign_key => :parent_id, :class_name => self.name, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => [:category_type_id, :parent_id]}
