@@ -10,7 +10,7 @@ class GpArticle::Content::Doc < Cms::Content
   SNS_SHARE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   BLOG_FUNCTIONS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
-  default_scope where(model: 'GpArticle::Doc')
+  default_scope { where(model: 'GpArticle::Doc') }
 
   has_many :docs, :foreign_key => :content_id, :class_name => 'GpArticle::Doc', :dependent => :destroy
 
