@@ -5,7 +5,7 @@ class GpCategory::Content::CategoryType < Cms::Content
   DOC_STYLE_OPTIONS = [['全記事一覧', 'all_docs']]
   FEED_DISPLAY_OPTIONS = [['表示する', 'enabled'], ['表示しない', 'disabled']]
 
-  default_scope where(model: 'GpCategory::CategoryType')
+  default_scope { where(model: 'GpCategory::CategoryType') }
 
   has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => :sort_no, :dependent => :destroy
   has_many :templates, :foreign_key => :content_id, :class_name => 'GpCategory::Template', :dependent => :destroy
