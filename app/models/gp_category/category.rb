@@ -53,20 +53,20 @@ class GpCategory::Category < ActiveRecord::Base
 
   def descendants(categories=[])
     categories << self
-    children.each {|c| c.descendants(categories) } unless children.empty?
+    children.joins(:children).includes(:children).each {|c| c.descendants(categories) } unless children.empty?
     return categories
   end
 
   def public_descendants(categories=[])
     return categories unless self.public?
     categories << self
-    children.each {|c| c.public_descendants(categories) } unless children.empty?
+    children.joins(:children).includes(:children).each {|c| c.public_descendants(categories) } unless children.empty?
     return categories
   end
 
   def descendants_for_option(categories=[])
     categories << ["#{'　　' * (level_no - 1)}#{title}", id]
-    children.each {|c| c.descendants_for_option(categories) } unless children.empty?
+    children.joins(:children).includes(:children).each {|c| c.descendants_for_option(categories) } unless children.empty?
     return categories
   end
 
