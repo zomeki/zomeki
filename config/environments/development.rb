@@ -39,8 +39,8 @@ ZomekiCMS::Application.configure do
   config.after_initialize do
     Bullet.enable = true
     Bullet.alert = false
-    Bullet.bullet_logger = false
+    Bullet.bullet_logger = true
     Bullet.console = false
-    Bullet.rails_logger = true
+    Bullet.rails_logger = false
   end
 end
