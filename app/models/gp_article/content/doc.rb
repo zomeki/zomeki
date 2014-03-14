@@ -178,15 +178,18 @@ class GpArticle::Content::Doc < Cms::Content
   end
 
   def gp_temlate_content_template
-    GpTemplate::Content::Template.find_by_id(setting_value(:gp_template_content_template_id))
+    return nil if setting_value(:gp_template_content_template_id).blank?
+    GpTemplate::Content::Template.where(id: setting_value(:gp_template_content_template_id)).first
   end
 
   def templates
+    return GpTemplate::Template.none if setting_value(:gp_template_content_template_id).blank?
     GpTemplate::Template.where(id: setting_extra_value(:gp_template_content_template_id, :template_ids))
   end
 
   def default_template
-    GpTemplate::Template.find_by_id(setting_extra_value(:gp_template_content_template_id, :default_template_id))
+    return nil if setting_value(:gp_template_content_template_id).blank?
+    GpTemplate::Template.where(id: setting_extra_value(:gp_template_content_template_id, :default_template_id)).first
   end
 
   def feed_display?
