@@ -41,7 +41,9 @@
   </tr>
   <tr>
     <th><%= f.label :internal_category_type_id %></th>
-    <td><%= f.collection_select :internal_category_type_id, @content.category_types.where('id != ?', @item.id), :id, :title, include_blank: true %></td>
+    <td><%= f.collection_select :internal_category_type_id,
+                                @content.category_types.where(@content.category_types.table[:id].not_eq(@item.id)),
+                                :id, :title, include_blank: true %></td>
   </tr>
 </table>
 
