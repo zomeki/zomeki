@@ -31,7 +31,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
       @docs = @docs.paginate(page: params[:page], per_page: @content.feed_docs_number)
       return render_feed(@docs)
     end
-    @docs = @docs.reject{|d| d.will_be_replaced? } unless Core.publish
+    @docs = @docs.includes(:next_edition).reject{|d| d.will_be_replaced? } unless Core.publish
     @docs = @docs.paginate(page: params[:page], per_page: 20)
     return http_error(404) if @docs.current_page > @docs.total_pages
 

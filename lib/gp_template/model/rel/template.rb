@@ -8,8 +8,8 @@ module GpTemplate::Model::Rel::Template
   end
 
   def set_template_defaults
-    if self.template_id.nil?
-      self.template_id = content.default_template.id if self.has_attribute?(:template_id) && content && content.default_template
+    unless self.persisted?
+      self.template_id ||= content.default_template.id if self.has_attribute?(:template_id) && content && content.default_template
     end
     self.template_values ||= {} if self.has_attribute?(:template_values)
   end
