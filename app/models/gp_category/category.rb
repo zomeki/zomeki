@@ -13,7 +13,7 @@ class GpCategory::Category < ActiveRecord::Base
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'display_published_at DESC, published_at DESC'], ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
 
-  default_scope order("#{self.table_name}.category_type_id, #{self.table_name}.parent_id, #{self.table_name}.level_no, #{self.table_name}.sort_no, #{self.table_name}.name")
+  default_scope { order("#{self.table_name}.category_type_id, #{self.table_name}.parent_id, #{self.table_name}.level_no, #{self.table_name}.sort_no, #{self.table_name}.name") }
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
