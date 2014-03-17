@@ -1,26 +1,25 @@
 # encoding: utf-8
 class Cms::Admin::EmergenciesController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
-  
+
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:designer)
-    
+
     @parent   = Core.site.root_node
     @node     = @parent.children.find(:first, :conditions => {:name => 'index.html'})
     @node   ||= @parent.children.find(:first, :conditions => {:name => 'index.htm'})
   end
-  
+
   def index
-    item = Cms::SiteSetting::EmergencyLayout.new.current_site
-    @items = item.find(:all, :conditions => {:name => 'emergency_layout'}, :order => :sort_no)
+    @items = Cms::SiteSetting::EmergencyLayout.new.current_site.where(name: 'emergency_layout').order(:sort_no)
   end
-  
+
   def show
     @item = Cms::SiteSetting::EmergencyLayout.new.current_site.find(params[:id])
     @item.value = @item.value.to_i if @item.value
-    
+
     return error_auth unless @item.readable?
-    
+
     _show @item
   end
 
@@ -31,28 +30,28 @@ class Cms::Admin::EmergenciesController < Cms::Controller::Admin::Base
       :sort_no => 0
     })
   end
-  
+
   def create
     @item = Cms::SiteSetting::EmergencyLayout.new(params[:item])
     @item.site_id = Core.site.id
     @item.name    = 'emergency_layout'
     _create @item
   end
-  
+
   def update
     @item = Cms::SiteSetting::EmergencyLayout.new.current_site.find(params[:id])
     @item.attributes = params[:item]
     _update @item
   end
-  
+
   def destroy
     @item = Cms::SiteSetting::EmergencyLayout.new.current_site.find(params[:id])
     _destroy @item
   end
-  
+
   def change
     @item = Cms::SiteSetting::EmergencyLayout.new.current_site.find(params[:id])
-    
+
     if @item.value.blank?
       @item.errors.add_to_base "レイアウトが登録されていません。"
     end
@@ -62,12 +61,12 @@ class Cms::Admin::EmergenciesController < Cms::Controller::Admin::Base
     unless @node
       @item.errors.add_to_base "トップページが見つかりません。"
     end
-    
+
     if @item.errors.size == 0
       @node.layout_id = @item.value
       @node.save(:validate => false)
     end
-    
+
     if @item.errors.size == 0
       flash[:notice] = '反映処理が完了しました。'
       respond_to do |format|
