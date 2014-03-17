@@ -1,9 +1,8 @@
-# encoding: utf-8
-
 require 'RMagick'
 
 module Sys::Model::Base::File
-  IMAGE_RESIZE_OPTIONS = [['320px', '320'], ['640px', '640'], ['800px', '800'], ['1280px', '1280'], ['1600px', '1600'], ['1920px', '1920']]
+  IMAGE_RESIZE_OPTIONS = [['320px', '320'], ['640px', '640'], ['800px', '800'],
+                          ['1280px', '1280'], ['1600px', '1600'], ['1920px', '1920']]
 
   def self.included(mod)
     mod.validates_presence_of :file, :unless => :skip_upload?
@@ -14,9 +13,9 @@ module Sys::Model::Base::File
     mod.after_save :upload_internal_file
     mod.after_destroy :remove_internal_file
   end
-  
-  @@_maxsize = 50# MegaBytes
-  
+
+  @@_maxsize = 50 # MegaBytes
+
   attr_accessor :file, :allowed_type, :image_resize
 
   def skip_upload(skip=true)
@@ -66,7 +65,7 @@ module Sys::Model::Base::File
       end
     end
   end
-  
+
   def validate_upload_file
     return true if file.blank?
 
@@ -85,13 +84,20 @@ module Sys::Model::Base::File
     begin
       image = case file
               when ActionDispatch::Http::UploadedFile
-                Magick::Image.read(file.path).first
+                not_image = false
+
+                `type file > /dev/null 2>&1`
+                if $?.exitstatus == 0
+                  not_image = `file #{file.path}` !~ /GIF|JPEG|PNG/
+                end
+
+                Magick::Image.read(file.path).first unless not_image
               when Sys::Lib::File::NoUploadedFile
-                Magick::Image.from_blob(file.read).shift
+                Magick::Image.from_blob(file.read).first
               else
                 raise %Q!"#{file.class}" is not supported.!
               end
-      if image.format.in?(%w!GIF JPEG PNG!)
+      if image && image.format.in?(%w!GIF JPEG PNG!)
         image.auto_orient!
         image.resize_to_fit!(image_resize.to_i) if image_resize.present?
         image.write(file.path)
