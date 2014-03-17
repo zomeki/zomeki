@@ -24,19 +24,15 @@ class GpCategory::Publisher < ActiveRecord::Base
       category_ids[c.content.id] = {} unless category_ids[c.content.id]
       category_ids[c.content.id][c.category_type.id] = [] unless category_ids[c.content.id][c.category_type.id]
       category_ids[c.content.id][c.category_type.id] << c.id
-      publisher.destroy
     end
 
-    script_params = []
     category_ids.each do |key, value|
       value.each do |k, v|
-        script_params <<
-          "target_module=gp_category&target_content_id[]=#{key}&target_id[]=#{k}&#{v.map{|c| "target_child_id[]=#{c}" }.join('&') }"
+        ids = v.map{|c| "target_child_id[]=#{c}" }.join('&')
+        script_params = "target_module=gp_category&target_content_id[]=#{key}&target_id[]=#{k}&#{ids}"
+        self.where(category_id: v).destroy_all
+        ::Script.run("cms/script/nodes/publish?all=all&#{script_params}", force: true)
       end
-    end
-
-    script_params.each do |script_param|
-      ::Script.run("cms/script/nodes/publish?all=all&#{script_param}", force: true)
     end
   end
 end
