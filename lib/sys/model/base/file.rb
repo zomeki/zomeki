@@ -93,7 +93,7 @@ module Sys::Model::Base::File
 
                 Magick::Image.read(file.path).first unless not_image
               when Sys::Lib::File::NoUploadedFile
-                Magick::Image.from_blob(file.read).first
+                Magick::Image.from_blob(file.read).first if file.image?
               else
                 raise %Q!"#{file.class}" is not supported.!
               end
