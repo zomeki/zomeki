@@ -15,7 +15,7 @@ class Organization::Group < ActiveRecord::Base
 
   default_scope { order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no") }
   scope :public, -> { where(state: 'public') }
-  scope :none, -> { where('id IS ?', nil).where('id IS NOT ?', nil) }
+  scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
   # Page
   belongs_to :concept, :class_name => 'Cms::Concept'
