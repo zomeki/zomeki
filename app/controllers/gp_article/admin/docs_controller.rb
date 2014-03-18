@@ -303,7 +303,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def set_categories
-    @old_category_ids = @item.category_ids
+    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
 
     category_ids = if params[:categories].is_a?(Hash)
                      params[:categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
@@ -323,7 +323,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     @item.category_ids = category_ids
 
-    @new_category_ids = @item.category_ids
+    @new_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
   end
 
   def set_event_categories
