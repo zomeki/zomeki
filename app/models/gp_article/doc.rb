@@ -31,7 +31,7 @@ class GpArticle::Doc < ActiveRecord::Base
   default_scope { where("#{self.table_name}.state != 'archived'") }
   scope :public, -> { where(state: 'public') }
   scope :mobile, ->(m) { m ? where(terminal_mobile: true) : where(terminal_pc_or_smart_phone: true) }
-  scope :none, -> { where('id IS ?', nil).where('id IS NOT ?', nil) }
+  scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
   scope :display_published_after, ->(date) { where(arel_table[:display_published_at].gteq(date)) }
 
   # Content
