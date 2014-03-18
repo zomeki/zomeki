@@ -53,6 +53,10 @@ class Sys::Lib::File::NoUploadedFile
     @image ? 1 : 2
   end
 
+  def image?
+    !!@image
+  end
+
   def image_width
     @image ? @image.columns : nil
   end
