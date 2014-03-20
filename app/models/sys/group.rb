@@ -21,9 +21,11 @@ class Sys::Group < ActiveRecord::Base
   has_many :site_belongings, :dependent => :destroy, :class_name => 'Cms::SiteBelonging'
   has_many :sites, :through => :site_belongings, :class_name => 'Cms::Site'
 
-  validates_presence_of :state, :level_no, :code, :name, :name_en, :ldap
+  validates_presence_of :state, :level_no, :code, :name, :ldap
   validates_uniqueness_of :code
-  
+
+  validates :name_en, :presence => true, :uniqueness => {:scope => :parent_id}, :format => /\A[0-9A-Za-z\._-]*\z/i
+
   before_destroy :before_destroy
   
   def readable
