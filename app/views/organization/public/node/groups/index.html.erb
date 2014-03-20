@@ -1,18 +1,14 @@
 <div class="contentOrganization contentOrganizationGroups">
-  <%- unless @groups.empty? -%>
-  <ul>
-    <%- @groups.each do |group| -%>
-    <li>
-      <%= link_to group.sys_group.name, group.public_uri %>
-      <%- unless group.public_children.empty? -%>
-      <ul>
-        <%- group.public_children.each do |child| -%>
-        <%= group_li(child) %>
-        <%- end -%>
-      </ul>
+  <%- @groups.each do |group| -%>
+  <section class="<%= group.name %>">
+    <h2><%= link_to group.sys_group.name, group.public_uri %></h2>
+    <%- unless group.public_children.empty? -%>
+    <ul>
+      <%- group.public_children.each do |child| -%>
+      <%= group_li(child) %>
       <%- end -%>
-    </li>
+    </ul>
     <%- end -%>
-  </ul>
+  </section>
   <%- end -%>
 </div>
