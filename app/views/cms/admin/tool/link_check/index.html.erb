@@ -2,7 +2,7 @@
 <div id="reload_count"></div>
 <%- end -%>
 
-<%- unless @logs.empty? -%>
+<%#- unless @logs.empty? -%>
 <table class="index">
   <tr>
     <th style="text-align: center;">ページタイトル</th>
@@ -12,6 +12,8 @@
     <th style="text-align: center;">結果</th>
   </tr>
   <%- @logs.each do |log| -%>
+  <%- if log.link_checkable.content.site_id == Core.site.id -%>
+
   <tr>
     <td>
       <%- if (link_checkable = log.link_checkable).is_a?(GpArticle::Doc) -%>
@@ -26,8 +28,9 @@
     <td><%= log.result ? '○' : '×' %></td>
   </tr>
   <%- end -%>
+  <%- end -%>
 </table>
-<%- end -%>
+<%#- end -%>
 
 <%= javascript_tag do -%>
 $(document).ready(function () {

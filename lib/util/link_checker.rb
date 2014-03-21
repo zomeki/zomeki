@@ -16,7 +16,7 @@ class Util::LinkChecker
       link_check = Cms::LinkCheck.create
     end
 
-    GpArticle::Doc.all.each do |doc|
+    GpArticle::Content::Doc.find_by_site_id(Core.site.id).all_docs.each do |doc|
       doc.links.each do |link|
         uri = URI.parse(link.url)
         url = unless uri.absolute?
