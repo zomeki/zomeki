@@ -13,7 +13,6 @@
   </tr>
   <%- @logs.each do |log| -%>
   <%- if log.link_checkable.content.site_id == Core.site.id -%>
-
   <tr>
     <td>
       <%- if (link_checkable = log.link_checkable).is_a?(GpArticle::Doc) -%>
