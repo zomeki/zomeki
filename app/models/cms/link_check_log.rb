@@ -10,12 +10,6 @@ class Cms::LinkCheckLog < ActiveRecord::Base
 
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
-  scope :site, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
-
-  def site_id
-    link_checkable.content.site_id
-  end
-
   private
 
   def set_defaults
