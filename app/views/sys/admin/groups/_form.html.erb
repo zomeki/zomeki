@@ -20,7 +20,7 @@
     <td><%= f.text_field :name, :class => 'name' %></td>
   </tr><tr>
     <th><%= @item.locale(:name_en) %></th>
-    <td><%= f.text_field :name_en, :class => 'nameEn' %></td>
+    <td><%= f.text_field :name_en, :class => 'nameEn' %> <strong>使用可能文字</strong> 半角英数、「.」、「_」、「-」</td>
   </tr><tr>
     <th><%= @item.locale(:ldap) %></th>
     <td><%= f.radio_buttons :ldap, @item.ldap_states, :class => 'status' %></td>

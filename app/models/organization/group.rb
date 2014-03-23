@@ -31,8 +31,8 @@ class Organization::Group < ActiveRecord::Base
 
   after_initialize :set_defaults
 
-  validates :name, :presence => true
   validates :sys_group_code, :presence => true, :uniqueness => true
+  validates :name, :presence => true, :format => /\A[0-9A-Za-z\._-]*\z/i
   validate :name_uniqueness_in_siblings
 
   def sitemap_state_text
