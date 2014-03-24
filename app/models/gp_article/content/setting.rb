@@ -1,7 +1,7 @@
 # encoding: utf-8
 class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
-    :options => lambda { GpCategory::Content::CategoryType.all.map {|ct| [ct.name, ct.id] } }
+    :options => lambda { GpCategory::Content::CategoryType.where(site_id: Core.site.id).map {|ct| [ct.name, ct.id] } }
   set_config :gp_template_content_template_id, :name => 'テンプレート',
     :options => lambda { GpTemplate::Content::Template.all.map {|t| [t.name, t.id] } }
   set_config :allowed_attachment_type, :name => '添付ファイル/許可する種類',
