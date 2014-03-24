@@ -210,7 +210,7 @@ $(document).ready(function () {
   <tr>
     <th>コンテンツ</th>
     <td><%= select_tag 'map_content_id',
-                       options_from_collection_for_select(Map::Content::Marker.all, :id, :name, @item.extra_values[:map_content_id]), include_blank: true %></td>
+                       options_from_collection_for_select(Map::Content::Marker.where(site_id: Core.site.id), :id, :name, @item.extra_values[:map_content_id]), include_blank: true %></td>
   </tr>
   <tr>
     <th>デフォルト座標</th>
