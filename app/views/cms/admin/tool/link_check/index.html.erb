@@ -12,7 +12,7 @@
     <th style="text-align: center;">結果</th>
   </tr>
   <%- @logs.each do |log| -%>
-  <%- if log.link_checkable.content.site_id == Core.site.id -%>
+  <%- if log.link_checkable && log.link_checkable.content && log.link_checkable.content.site_id == Core.site.id -%>
   <tr>
     <td>
       <%- if (link_checkable = log.link_checkable).is_a?(GpArticle::Doc) -%>
