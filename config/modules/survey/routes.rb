@@ -21,7 +21,7 @@ ZomekiCMS::Application.routes.draw do
       end
       resources :questions,
         :controller => 'admin/questions'
-      resources :form_answers, :only => [:index, :show],
+      resources :form_answers, :only => [:index, :show, :destroy],
         :controller => 'admin/form_answers'
     end
 
