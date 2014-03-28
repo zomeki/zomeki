@@ -11,5 +11,6 @@
 
   <%- if action_name == 'show' -%>
   <%= link_to '一覧', url_for(action: 'index') %>
+  <%= link_to '削除', url_for(action: 'destroy'), :method => :delete, :confirm => '削除してよろしいですか？' if @item.form.deletable? %>
   <%- end -%>
 </div>
