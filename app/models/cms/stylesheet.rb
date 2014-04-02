@@ -100,14 +100,14 @@ class Cms::Stylesheet < Sys::Model::ValidationModel::Base
     read_stat
     @_stat.mtime
   end
-  
+
   def read_body
-    self.body = File.read(@full_path).encode(Encoding::UTF_8) if textfile?
+    self.body = File.read(@full_path).encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace) if textfile?
   rescue Exception => e
     warn_log(e.message)
     self.body = "#読み込みに失敗しました。"
   end
-  
+
   ## Validation
   def valid_filename?(name, value)
     if value.blank?
