@@ -23,7 +23,7 @@
   <tr>
     <th>内容</td>
   </tr><tr>
-    <td class="pre monospace"><%=hbr @item.body.to_s rescue "#読み込みに失敗しました。" %></td>
+    <td class="pre monospace"><%=simple_format @item.body %></td>
   </tr>
 </table>
 <% end %>
