@@ -59,7 +59,7 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
   def merge_docs_into_events(docs, events)
     docs.each do |doc|
       event = GpCalendar::Event.new(title: doc.title, href: doc.public_uri, target: '_self',
-                                    started_on: doc.event_started_on, ended_on: doc.event_ended_on, description: doc.summary)
+                                    started_on: doc.event_started_on, ended_on: doc.event_ended_on, description: doc.summary, content_id: @content.id)
       event.categories = doc.event_categories
       event.files = doc.files
 
