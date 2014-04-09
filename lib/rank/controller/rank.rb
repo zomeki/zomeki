@@ -89,7 +89,7 @@ module Rank::Controller::Rank
                     .where(content_id: content.id)
                     .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
                     .group(:hostname, :page_path)
-                    .find_each do |result|
+                    .find_all.each do |result|
 
             Rank::Total.create!(content_id:  content.id,
                                 term:        term,
