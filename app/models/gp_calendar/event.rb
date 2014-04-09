@@ -35,6 +35,7 @@ class GpCalendar::Event < ActiveRecord::Base
 
     rel = self.where(events[:content_id].eq(content.id))
     rel = rel.where(events[:name].matches("%#{criteria[:name]}%")) if criteria[:name].present?
+    rel = rel.where(events[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     rel = rel.where(events[:started_on].lteq(criteria[:date])
                     .and(events[:ended_on].gteq(criteria[:date]))) if criteria[:date].present?
     rel = case criteria[:order]
@@ -66,6 +67,11 @@ class GpCalendar::Event < ActiveRecord::Base
   end
 
   belongs_to :doc, :class_name => 'GpArticle::Doc' # Not saved to database
+
+  def holiday
+    criteria = {date: started_on, kind: 'holiday'}
+    GpCalendar::Holiday.public.all_with_content_and_criteria(content, criteria).first.title rescue nil
+  end
 
   private
 

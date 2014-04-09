@@ -1,7 +1,6 @@
 <%-
   s_style = localize_wday(date_style, event.started_on.wday)
   e_style = localize_wday(date_style, event.ended_on.wday)
-logger.info event.started_on
   started_on = event.started_on.strftime(s_style)
   ended_on = event.ended_on.strftime(e_style)
 -%>
@@ -23,4 +22,7 @@ logger.info event.started_on
   <span class="closeDate"><%= qreki(event.ended_on) %></span>
   </div>
   <%- end -%>
+<%- end -%>
+<%- if holiday_disp && event.holiday.present? -%>
+<span class="title"><%= event.holiday %></span>
 <%- end -%>

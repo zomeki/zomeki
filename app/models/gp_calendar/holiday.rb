@@ -30,6 +30,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
     rel = self.where(holidays[:content_id].eq(content.id))
     rel = rel.where(holidays[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     rel = rel.where("date_format(`date`, '%m%d') = ? and ( (ifnull(`repeat`, 0) = 0 and date_format(`date`, '%Y') = ?) or (`repeat` = 1) )", "#{criteria[:date].strftime('%m%d')}", "#{criteria[:date].strftime('%Y')}") if criteria[:date].present?
+    rel = rel.where(holidays[:kind].eq(criteria[:kind])) if criteria[:kind].present?
     rel = case criteria[:order]
           when 'created_at_desc'
             rel.except(:order).order(holidays[:created_at].desc)
@@ -71,6 +72,11 @@ class GpCalendar::Holiday < ActiveRecord::Base
   end
 
   attr_accessor :href, :name, :categories  # Similarly to event
+
+  def holiday
+    criteria = {date: started_on, kind: 'holiday'}
+    GpCalendar::Holiday.public.all_with_content_and_criteria(content, criteria).first.title rescue nil
+  end
 
   private
 
