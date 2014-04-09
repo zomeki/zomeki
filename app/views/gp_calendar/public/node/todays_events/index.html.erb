@@ -44,7 +44,7 @@
           </td>
           <%- end -%>
           <td class="date">
-            <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style %>
+            <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style, holiday_disp: false %>
           </td>
           <td class="<%= event.kind rescue 'event' %>">
             <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>

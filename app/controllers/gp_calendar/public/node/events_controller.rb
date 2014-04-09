@@ -21,7 +21,7 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
                            end
     merge_docs_into_events(event_docs(start_date, end_date), @events)
 
-    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria)
+    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria).where(kind: :event)
     @holidays.each do |holiday|
       holiday.started_on = @date.year
       @events << holiday if holiday.started_on
