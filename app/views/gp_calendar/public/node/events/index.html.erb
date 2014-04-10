@@ -31,7 +31,7 @@
           <%- end -%>
         </td>
         <%- end -%>
-        <td id="<%= 'day%02d' % event.started_on.day if event.started_on.month == @date.month %>" class="date<%= ' holiday' unless event.holiday.blank? %>">
+        <td id="<%= 'day%02d' % event.started_on.day if event.started_on.month == @date.month %>" class="date<%= ' holiday' if event.holiday.present? %>">
           <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style, holiday_disp: true %>
         </td>
         <td class="<%= event.kind rescue 'event' %>">
