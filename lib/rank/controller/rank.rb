@@ -146,7 +146,7 @@ module Rank::Controller::Rank
   end
 
   def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil)
-    hostname   = URI.parse(Core.site.full_uri).host
+    hostname   = URI.parse(content.site.full_uri).host
     exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
     rank_table = Rank::Total.arel_table
 
