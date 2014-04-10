@@ -1,8 +1,8 @@
 /.bundle/
 /vendor/bundle/
 
-/log/*.gz
 /log/*.log
+/log/*.log-*
 /sites/
 /tmp/
 /upload/
