@@ -75,7 +75,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
 
   def holiday
     criteria = {date: started_on, kind: 'holiday'}
-    public.all_with_content_and_criteria(content, criteria).first.title rescue nil
+    GpCalendar::Holiday.public.all_with_content_and_criteria(content, criteria).first.title rescue nil
   end
 
   private
