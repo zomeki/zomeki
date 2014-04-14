@@ -46,9 +46,11 @@ ja:
         feature_2: 記事表示
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
+        inquiries/address: 連絡先（住所）
         inquiries/tel: 連絡先（電話番号）
         inquiries/fax: 連絡先（ファクシミリ）
         inquiries/email: 連絡先（メールアドレス）
+        inquiries/note: 連絡先（備考）
       gp_article/category_type:
         name: カテゴリタイプID
         title: カテゴリタイプ名

@@ -23,10 +23,16 @@ group  = Sys::Group.find_by_id(item.in_inquiry['group_id']) || Core.user_group
     <%= safe{group.full_name} %>
     <input type="hidden" name="<%= f.object_name.to_s %>[in_inquiry][group_id]" value="<%= group.id %>" />
     <% end %></td>
+<% if false %>
 </tr><tr>
   <th>室・担当</th>
   <td><span <%= error?('連絡先（室・担当）') %>>
     <%= f.array_text_field "in_inquiry[charge]", :class => 'name' %></span></td>
+<% end %>
+</tr><tr>
+  <th>住所 <% if @item.inquiry_presence?(:address) %><span class="note">※</span><% end %></th>
+  <td><span <%= error?('住所') %>>
+    <%= f.array_text_field "in_inquiry[address]", :class => 'title' %></span></td>
 </tr><tr>
   <th>電話番号 <% if @item.inquiry_presence?(:tel) %><span class="note">※</span><% end %></th>
   <td><span <%= error?('連絡先（電話番号）') %>>
@@ -41,6 +47,10 @@ group  = Sys::Group.find_by_id(item.in_inquiry['group_id']) || Core.user_group
   <th>メールアドレス <% if @item.inquiry_presence?(:email) %><span class="note">※</span><% end %></th>
   <td><span <%= error?('連絡先（メールアドレス）') %>>
     <%= f.array_text_field "in_inquiry[email]", :class => 'email' %></span></td>
+</tr><tr>
+  <th>備考 <% if @item.inquiry_presence?(:note) %><span class="note">※</span><% end %></th>
+  <td><span <%= error?('備考') %>>
+    <%= f.array_text_field "in_inquiry[note]", :class => 'title' %></span></td>
 </tr>
 <% end %>
 </table>

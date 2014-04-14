@@ -1,9 +1,4 @@
 <%-
-def inquiry_require_label(item, field)
-  if item.inquiry_require_field?(field)
-    %Q(<span class="note">※</span>).html_safe
-  end
-end
 item.build_default_inquiry
 -%>
 
@@ -25,52 +20,72 @@ item.build_default_inquiry
     <p class="form">連絡先<%= i+1 if i != 0 %></p>
     <%= f2.hidden_field :state, :class => "inquiryState" -%>
     <%= f2.hidden_field :_destroy -%>
+    <span id="inquiryTableA<%= i %>" style="display: none;">
     <table class="show">
-      <%- if item.inquiry_display_field?(:group_id) -%>
       <tr>
-        <th><%= f2.label :group_id -%> <%= inquiry_require_label(item, :group_id) -%></th>
+        <th><%= f2.label :group_id -%></th>
         <td>
           <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
-          <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
-          <%= f2.select_with_tree :group_id, groups,
-            :style => "display: #{i == 0 && !Core.user.has_auth?(:manager) ? 'none' : 'block'};", :include_blank => true %>
-          <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) %></span>
+          <%= f2.select_with_tree :group_id, groups, :include_blank => true %>
         </td>
       </tr>
-      <%- end -%>
+    </table>
+    </span>
+    <span id="inquiryTableB<%= i %>">
+    <table class="show">
+      <tr>
+        <th><%= f2.label :group_id -%></th>
+        <td>
+          <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
+          <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) or Core.user.has_auth?(:manager) %></span>
+        </td>
+      </tr>
       <%- if item.inquiry_display_field?(:charge) -%>
       <tr>
-        <th><%= f2.label :charge -%> <%= inquiry_require_label(item, :charge) -%></th>
-        <td><%= f2.text_field :charge, :class => 'name' %></td>
+        <th><%= f2.label :charge -%></th>
+        <td><%= inquiry.charge %></td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:address) -%>
+      <tr>
+        <th><%= f2.label :address -%></th>
+        <td><%= inquiry.address %></td>
       </tr>
       <%- end -%>
       <%- if item.inquiry_display_field?(:tel) -%>
       <tr>
-        <th><%= f2.label :tel -%> <%= inquiry_require_label(item, :tel) -%></th>
-        <td><%= f2.text_field :tel, :class => 'number' %></td>
+        <th><%= f2.label :tel -%></th>
+        <td><%= inquiry.tel %></td>
       </tr>
       <%- end -%>
       <%- if item.inquiry_display_field?(:fax) -%>
       <tr>
-        <th><%= f2.label :fax -%> <%= inquiry_require_label(item, :fax) -%></th>
-        <td><%= f2.text_field :fax, :class => 'number' %></td>
+        <th><%= f2.label :fax -%></th>
+        <td><%= inquiry.fax %></td>
       </tr>
       <%- end -%>
       <%- if item.inquiry_display_field?(:email) -%>
       <tr>
-        <th><%= f2.label :email -%> <%= inquiry_require_label(item, :email) -%></th>
-        <td><%= f2.text_field :email, :class => 'email' %></td>
+        <th><%= f2.label :email -%></th>
+        <td><%= inquiry.email %></td>
+      </tr>
+      <%- end -%>
+      <%- if item.inquiry_display_field?(:note) -%>
+      <tr>
+        <th><%= f2.label :note -%></th>
+        <td><%= inquiry.note %></td>
       </tr>
       <%- end -%>
     </table>
-    <%= button_tag '削除する', :type => :button, :class => 'deleteInquiry', :style => "margin: 10px 0; display: #{i == 0 ? 'none' : 'block'}"   -%>
+    </span>
+    <%= button_tag '削除する', :type => :button, :class => 'deleteInquiry', :style => "margin: 10px 0; display: #{i == 0 ? 'none' : 'block'}" -%>
     </div>
   <%- end -%>
 <%- end -%>
 </div>
 
 <hr />
-<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' -%>
+<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' if Core.user.has_auth?(:manager) -%>
 
 <script type="text/javascript">
  $(function(){
@@ -94,6 +109,8 @@ item.build_default_inquiry
      });
      elm.find('p.form').show().html('連絡先' + String(no+1));
      elm.find('[id^=item_inquiries_attributes][id$=group_id]').show();
+     elm.find('[id^=inquiryTableA]').show();
+     elm.find('[id^=inquiryTableB]').hide();
      elm.find('[id^=inquiryGroupLabel]').hide();
      elm.find('.deleteInquiry').show();
      elm.show();

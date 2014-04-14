@@ -34,13 +34,19 @@
 
 <table class="show">
   <tr>
-    <th><%= @item.locale(:email) %></th>
-    <td><%= f.text_field :email, :class => 'email' %></td>
+    <th><%= @item.locale(:address) %></th>
+    <td><%= f.text_field :address, :class => 'title' %></td>
   </tr><tr>
     <th><%= @item.locale(:tel) %></th>
     <td><%= f.text_field :tel, :class => 'number' %></td>
   </tr><tr>
     <th><%= @item.locale(:fax) %></th>
     <td><%= f.text_field :fax, :class => 'number' %></td>
-  </tr>  
+  </tr><tr>
+    <th><%= @item.locale(:email) %></th>
+    <td><%= f.text_field :email, :class => 'email' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:note) %></th>
+    <td><%= f.text_field :note, :class => 'title' %></td>
+  </tr>
 </table>

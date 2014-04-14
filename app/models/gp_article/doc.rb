@@ -87,7 +87,7 @@ class GpArticle::Doc < ActiveRecord::Base
   validates :filename_base, :presence => true
   validate :name_validity
 
-  validate :validate_inquiry
+#  validate :validate_inquiry
 
   #validate :validate_platform_dependent_characters, :unless => :state_draft?
   validate :node_existence
