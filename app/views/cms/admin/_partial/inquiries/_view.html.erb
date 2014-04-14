@@ -13,9 +13,14 @@ return nil unless item.inquiry.visible?
   <tr>
     <th>課</th>
     <td><%= safe{item.inquiry.group.full_name} %></td>
+<% if false %>
   </tr><tr>
     <th>室・担当</th>
     <td><%= item.inquiry.charge %></td>
+<% end %>
+  </tr><tr>
+    <th>住所</th>
+    <td><%= item.inquiry.address %></td>
   </tr><tr>
     <th>電話番号</th>
     <td><%= item.inquiry.tel %></td>
@@ -29,4 +34,7 @@ return nil unless item.inquiry.visible?
     <td><%= item.inquiry.email %></td>
   </tr>
   <% end %>
+  </tr><tr>
+    <th>備考</th>
+    <td><%= item.inquiry.note %></td>
 </table>

@@ -1,24 +1,27 @@
 <%-
 
-return nil if !item.inquiries || item.inquiries.size == 0
-return nil if !item.inquiries.any?(&:visible?)
-
+#return nil if !item.inquiries || item.inquiries.size == 0
+#return nil if !item.inquiries.any?(&:visible?)
 -%>
 
 <%- item.inquiries.each_with_index do |inquiry, i| -%>
   <%- next if !inquiry.visible? -%>
   <p class="form">連絡先<%= i+1 if i != 0 %></p>
   <table class="show">
-    <%- if item.inquiry_display_field?(:group_id) -%>
     <tr>
       <th>課</th>
       <td><%= safe{inquiry.group.full_name} %></td>
     </tr>
-    <%- end -%>
     <%- if item.inquiry_display_field?(:charge) -%>
     <tr>
       <th>室・担当</th>
       <td><%= inquiry.charge %></td>
+    </tr>
+    <% end %>
+    <%- if item.inquiry_display_field?(:address) -%>
+    <tr>
+      <th>住所</th>
+      <td><%= inquiry.address %></td>
     </tr>
     <% end %>
     <%- if item.inquiry_display_field?(:tel) -%>
@@ -37,6 +40,12 @@ return nil if !item.inquiries.any?(&:visible?)
     <tr>
       <th>メールアドレス</th>
       <td><%= inquiry.email %></td>
+    </tr>
+    <% end %>
+    <%- if item.inquiry_display_field?(:note) -%>
+    <tr>
+      <th>備考</th>
+      <td><%= inquiry.note %></td>
     </tr>
     <% end %>
   </table>
