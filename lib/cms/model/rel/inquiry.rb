@@ -75,12 +75,10 @@ module Cms::Model::Rel::Inquiry
     _inq.state        = values['state']
     _inq.group_id     = values['group_id']
     _inq.charge       = values['charge']
-    _inq.address      = values['address']
     _inq.tel          = values['tel']
     _inq.fax          = values['fax']
     if inquiry_email_setting != "hidden"
       _inq.email      = values['email']
-    _inq.note          = values['note']
     end
 
     if _inq.new_record?
