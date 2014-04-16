@@ -6,7 +6,7 @@ class Rank::Total < ActiveRecord::Base
   validates_presence_of :content_id
 
   def page_title
-    self[:page_title].gsub(' | ' + Core.site.name, '')
+    self[:page_title].gsub(' | ' + content.site.name, '')
   end
 
 end
