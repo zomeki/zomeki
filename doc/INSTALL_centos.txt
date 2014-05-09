@@ -59,8 +59,8 @@ Rubyをインストールします。
   # yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   # cd /usr/local/src
-  # wget ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.1.tar.gz
-  # tar zxf ruby-2.1.1.tar.gz && cd ruby-2.1.1 && ./configure && make && make install
+  # wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.bz2
+  # tar jxf ruby-2.1.2.tar.bz2 && cd ruby-2.1.2 && ./configure && make && make install
 
   # gem install bundler
 
