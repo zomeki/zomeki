@@ -19,7 +19,7 @@ item.build_default_inquiry
     <span id="inquiryTableA<%= i %>" style="display: none;">
     <div>
       <div class="label1"><%= f2.label :group_id -%></div>
-      <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
+      <%- groups = Sys::Group.joins(:sites).where(level_no: 2).where("cms_sites.id=?", Page.site.id).order(:sort_no) -%>
       <%= f2.select_with_tree :group_id, groups, :include_blank => true %>
     </div>
     </span>
@@ -39,6 +39,7 @@ item.build_default_inquiry
     <div>
       <div class="label1"><%= f2.label :tel -%></div>
       <%= inquiry.tel %>
+      <%= inquiry.tel_attend %>
     </div>
     <%- end -%>
     <%- if item.inquiry_display_field?(:fax) -%>

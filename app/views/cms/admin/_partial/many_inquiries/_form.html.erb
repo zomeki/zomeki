@@ -25,7 +25,7 @@ item.build_default_inquiry
       <tr>
         <th><%= f2.label :group_id -%></th>
         <td>
-          <%- groups = Sys::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no) -%>
+          <%- groups = Sys::Group.joins(:sites).where(level_no: 2).where("cms_sites.id=?", Page.site.id).order(:sort_no) -%>
           <%= f2.select_with_tree :group_id, groups, :include_blank => true %>
         </td>
       </tr>
@@ -55,7 +55,8 @@ item.build_default_inquiry
       <%- if item.inquiry_display_field?(:tel) -%>
       <tr>
         <th><%= f2.label :tel -%></th>
-        <td><%= inquiry.tel %></td>
+        <td><%= inquiry.tel %>
+            <%= inquiry.tel_attend %></td>
       </tr>
       <%- end -%>
       <%- if item.inquiry_display_field?(:fax) -%>
