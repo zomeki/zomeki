@@ -36,7 +36,8 @@ group  = Sys::Group.find_by_id(item.in_inquiry['group_id']) || Core.user_group
 </tr><tr>
   <th>電話番号 <% if @item.inquiry_presence?(:tel) %><span class="note">※</span><% end %></th>
   <td><span <%= error?('連絡先（電話番号）') %>>
-    <%= f.array_text_field "in_inquiry[tel]", :class => 'number' %></span></td>
+    <%= f.array_text_field "in_inquiry[tel]", :class => 'number' %>
+    <%= f.array_text_field "in_inquiry[tel_attend]" %></span></td>
 </tr><tr>
   <th>ファクシミリ</th>
   <td><span <%= error?('連絡先（ファクシミリ）') %>>

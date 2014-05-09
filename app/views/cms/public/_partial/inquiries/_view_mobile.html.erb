@@ -11,7 +11,7 @@ return if !item.inquiry || !item.inquiry.visible?
   <% if !item.inquiry.address.blank?
    %><div class="address">住所： <%= item.inquiry.address %></div><% end %>
   <% if !item.inquiry.tel.blank?
-   %><div class="tel">電話番号： <%= tel_to item.inquiry.tel %></div><% end %>
+   %><div class="tel">電話番号： <%= tel_to item.inquiry.tel %><%= item.inquiry.tel_attend %></div><% end %>
   <% if !item.inquiry.fax.blank?
    %><div class="fax">ファクシミリ： <%= item.inquiry.fax %></div><% end %>
   <% if item.inquiry_email_setting != "hidden" && safe{item.inquiry.email} && !item.inquiry.email.blank?
