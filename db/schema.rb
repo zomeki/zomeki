@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140411083136) do
+ActiveRecord::Schema.define(:version => 20140509083136) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1485,6 +1485,7 @@ ActiveRecord::Schema.define(:version => 20140411083136) do
     t.string   "email"
     t.string   "address"
     t.string   "note"
+    t.string   "tel_attend"
   end
 
   create_table "sys_languages", :force => true do |t|

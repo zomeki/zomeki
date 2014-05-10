@@ -12,7 +12,7 @@ return if !item.inquiry || !item.inquiry.visible?
   <% if !item.inquiry.address.blank?
    %><div class="address"><span class="label">住所</span>：<%= item.inquiry.address %></div><% end %>
   <% if !item.inquiry.tel.blank?
-   %><div class="tel"><span class="label">電話</span>：<%= item.inquiry.tel %></div><% end %>
+   %><div class="tel"><span class="label">電話</span>：<%= item.inquiry.tel %><%= item.inquiry.tel_attend %></div><% end %>
   <% if !item.inquiry.fax.blank?
    %><div class="fax"><span class="label">ファクシミリ</span>：<%= item.inquiry.fax %></div><% end %>
   <% if item.inquiry_email_setting != "hidden" && safe{item.inquiry.email} && !item.inquiry.email.blank?
