@@ -23,7 +23,8 @@ return nil unless item.inquiry.visible?
     <td><%= item.inquiry.address %></td>
   </tr><tr>
     <th>電話番号</th>
-    <td><%= item.inquiry.tel %></td>
+    <td><%= item.inquiry.tel %>
+        <%= item.inquiry.tel_attend %></td>
   </tr><tr>
     <th>ファクシミリ</th>
     <td><%= item.inquiry.fax %></td>

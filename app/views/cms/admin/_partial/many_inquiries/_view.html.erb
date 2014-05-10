@@ -27,7 +27,8 @@
     <%- if item.inquiry_display_field?(:tel) -%>
     <tr>
       <th>電話番号</th>
-      <td><%= inquiry.tel %></td>
+      <td><%= inquiry.tel %>
+          <%= inquiry.tel_attend %></td>
     </tr>
     <% end %>
     <%- if item.inquiry_display_field?(:fax) -%>
