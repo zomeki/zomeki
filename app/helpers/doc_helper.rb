@@ -68,7 +68,7 @@ module DocHelper
       image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
       body_beginning: doc.body.blank? ? '' : content_tag(:span, "#{file_path_expanded_body(doc)}#{content_tag(:div, link_to(doc.body_more_link_text, doc.public_uri), class: 'continues') if doc.body_more.present? }".html_safe, class: 'body'),
       body: "#{doc.body}#{doc.body_more}".blank? ? '' : content_tag(:span, "#{file_path_expanded_body(doc)}#{doc.body_more}".html_safe, class: 'body'),
-      user: doc.creator.user.name.blank? ? '' : content_tag(:span, doc.creator.user.name, class: 'user'),
+      user: doc.creator.user.try(:name).blank? ? '' : content_tag(:span, doc.creator.user.name, class: 'user'),
       comment_count: content_tag(:span, link_to(doc.comments.count, "#{doc.public_uri}#comments"), class: 'comment_count'),
       }
 
