@@ -37,6 +37,8 @@ class GpCategory::Category < ActiveRecord::Base
   has_many :categorizations, :dependent => :destroy
   has_many :docs, :through => :categorizations, :source => :categorizable, :source_type => 'GpArticle::Doc'
   has_many :markers, :through => :categorizations, :source => :categorizable, :source_type => 'Map::Marker'
+  has_many :publishers, :dependent => :destroy
+  has_many :category_sets, :class_name => 'Gnav::CategorySet', :dependent => :destroy
 
   belongs_to :group, :foreign_key => :group_code, :class_name => 'Sys::Group'
 
