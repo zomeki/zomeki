@@ -233,14 +233,6 @@ $(document).ready(function () {
       <%- end -%>
     </td>
   </tr>
-  <tr>
-    <th>必須項目</th>
-    <td>
-      <%- GpArticle::Content::Doc::INQUIRY_FIELD_OPTIONS.each do |name, id| -%>
-      <%= check_box_tag "rf_#{id}", id, @item.extra_values[:require_fields].include?(id), name: 'require_fields[]' -%> <%= label_tag "rf_#{id}", name, style: 'padding-right: 20px;' -%>
-      <%- end -%>
-    </td>
-  </tr>
 </table>
 <%- end -%>
 
