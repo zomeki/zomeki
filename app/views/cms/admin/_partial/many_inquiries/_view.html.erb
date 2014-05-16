@@ -1,9 +1,3 @@
-<%-
-
-#return nil if !item.inquiries || item.inquiries.size == 0
-#return nil if !item.inquiries.any?(&:visible?)
--%>
-
 <%- item.inquiries.each_with_index do |inquiry, i| -%>
   <%- next if !inquiry.visible? -%>
   <p class="form">連絡先<%= i+1 if i != 0 %></p>
