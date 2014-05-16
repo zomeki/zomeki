@@ -85,8 +85,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   def default_inquiry_setting
     {
-      display_fields: ['group_id', 'address', 'tel', 'fax', 'email', 'note'],
-      require_fields: ['group_id', 'tel', 'email'],
+      display_fields: ['group_id', 'address', 'tel', 'fax', 'email', 'note']
     }
   end
 
