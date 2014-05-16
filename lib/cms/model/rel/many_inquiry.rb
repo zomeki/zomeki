@@ -29,28 +29,6 @@ module Cms::Model::Rel::ManyInquiry
     inquiries.each_with_index do |inquiry, i|
       next unless inquiry.visible?
 
-      if inquiry_display_require_field?(:group_id) && inquiry.group_id.blank?
-        inquiry.errors.add(:group_id, :blank)
-      end
-      if inquiry_display_require_field?(:charge) && inquiry.charge.blank?
-        inquiry.errors.add(:charge, :blank)
-      end
-      if inquiry_display_require_field?(:address) && inquiry.address.blank?
-        inquiry.errors.add(:address, :blank)
-      end
-      if inquiry_display_require_field?(:tel) && inquiry.tel.blank?
-        inquiry.errors.add(:tel, :blank)
-      end
-      if inquiry_display_require_field?(:fax) && inquiry.fax.blank?
-        inquiry.errors.add(:fax, :blank)
-      end
-      if inquiry_display_require_field?(:email) && inquiry.email.blank?
-        inquiry.errors.add(:email, :blank)
-      end
-      if inquiry_display_require_field?(:note) && inquiry.note.blank?
-        inquiry.errors.add(:note, :blank)
-      end
-
       inquiry.errors.add(:tel, :onebyte_characters) if inquiry.tel.to_s !~/^[ -~｡-ﾟ]*$/
       inquiry.errors.add(:fax, :onebyte_characters) if inquiry.fax.to_s !~/^[ -~｡-ﾟ]*$/
       inquiry.errors.add(:email, :invalid) if inquiry.email.to_s !~/^[ -~｡-ﾟ]*$/
@@ -86,23 +64,7 @@ module Cms::Model::Rel::ManyInquiry
     end
   end
 
-  def inquiry_require_fields
-    if content && content.inquiry_extra_values
-      content.inquiry_extra_values[:require_fields] || []
-    else
-      []
-    end
-  end
-
   def inquiry_display_field?(name)
     inquiry_display_fields.include?(name.to_s)
-  end
-
-  def inquiry_require_field?(name)
-    inquiry_require_fields.include?(name.to_s)
-  end
-
-  def inquiry_display_require_field?(name)
-    inquiry_display_field?(name) && inquiry_require_field?(name)
   end
 end
