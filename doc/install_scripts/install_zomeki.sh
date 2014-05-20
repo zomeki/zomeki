@@ -22,7 +22,7 @@ centos() {
 
   yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
-  git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
+  git clone https://github.com/zomeki/zomeki.git /var/share/zomeki
   chown -R zomeki:zomeki /var/share/zomeki
   su - zomeki -c 'cd /var/share/zomeki && bundle install --path vendor/bundle --without development test'
 
