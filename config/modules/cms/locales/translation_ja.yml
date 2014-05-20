@@ -1,7 +1,10 @@
 ja:
   activerecord:
     models:
+      cms/content: "コンテンツ"
+      cms/piece: "ピース"
       cms/site: "サイト"
+      tool/convert_setting: "変換情報"
 
     attributes:
       cms/concept:
@@ -27,7 +30,7 @@ ja:
         portal_group_business_ids: "業種"
         portal_group_attribute_ids: "属性"
         portal_group_area_ids: "地域"
-      
+
       cms/site_basic_auth_user:
         state: "状態"
         site_id: "サイト"
@@ -35,15 +38,16 @@ ja:
         password: "パスワード"
 
       cms/site_setting:
-        
+
       cms/site_setting/emergency_layout:
         value: "レイアウト"
         sort_no: "並び順"
-        
+
       cms/content:
         state: "状態"
         concept_id: "コンセプト"
         model: "コンテンツ種別"
+        code: "コンテンツID"
         name: "コンテンツ名"
         note: "備考"
 
@@ -86,7 +90,7 @@ ja:
         uri: "URL"
         sort_no: "並び順"
         target: "対象ウィンドウ"
-        
+
       cms/node:
         parent_id: "親ディレクトリ"
         concept_id: "コンセプト"
@@ -100,6 +104,8 @@ ja:
         body: "本文"
         mobile_title: "携帯タイトル"
         mobile_body: "携帯本文"
+        sitemap_state: "サイトマップ"
+        sitemap_sort_no: "並び順"
 
       cms/kana_dictionary:
         name: "名称"
@@ -136,7 +142,7 @@ ja:
         feed_title: "フィード文書名"
         link_alternate: "代替URL"
         entry_count: "記事取込数"
-      
+
       cms/stylesheet:
         path: "パス"
         name: "ファイル名"
@@ -144,10 +150,23 @@ ja:
         new_directory: "新規ディレクトリ名"
         new_file: "新規ファイル名"
         new_upload: "ファイル"
-      
+
       ## node
       cms/node/page:
         name: "ファイル名"
       cms/node/sitemap:
         name: "ファイル名"
 
+      cms/inquiry:
+        group_id: 課
+        charge: 室・担当
+        address: 住所
+        tel: 電話番号
+        fax: ファクシミリ
+        email: メールアドレス
+        note: 備考
+
+      tool/convert_setting:
+        site_url: サイトURL
+        title_tag: タイトル対象タグ
+        body_tag: 本文対象タグ

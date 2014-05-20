@@ -1,0 +1,16 @@
+<%= form_tag '', :method => 'get', :class => 'search' do -%>
+<table>
+  <tr>
+    <th><%= GpArticle::Comment.human_attribute_name :body %></th>
+    <th><%= GpArticle::Comment.human_attribute_name :author_name %></th>
+    <td rowspan="2" class="submitters">
+      <%= submit_tag '検索' %>
+      <%= submit_tag 'リセット', :name => 'reset_criteria' %>
+    </td>
+  </tr>
+  <tr>
+    <td><%= text_field_tag 'criteria[free_word]', params[:criteria].try('[]', :free_word), :style => 'width: 400px;' %></td>
+    <td><%= text_field_tag 'criteria[author_name]', params[:criteria].try('[]', :author_name), :style => 'width: 150px;' %></td>
+  </tr>
+</table>
+<%- end -%>

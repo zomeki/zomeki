@@ -14,22 +14,34 @@ ja:
         accepted: "を受諾してください。"
         empty: "を入力してください。"
         blank: "を入力してください。"
-        too_long: "は{{count}}文字以内で入力してください。"
-        too_short: "は{{count}}文字以上で入力してください。"
-        wrong_length: "は{{count}}文字で入力してください。"
+        too_long: "は%{count}文字以内で入力してください。"
+        too_short: "は%{count}文字以上で入力してください。"
+        wrong_length: "は%{count}文字で入力してください。"
         taken: "はすでに存在します。"
         not_a_number: "は数値で入力してください。"
         not_a_filename: "は半角英数字で入力してください。"
-        greater_than: "は{{count}}より大きい値にしてください。"
-        greater_than_or_equal_to: "は{{count}}以上の値にしてください。"
-        equal_to: "は{{count}}にしてください。"
-        less_than: "は{{count}}より小さい値にしてください。"
-        less_than_or_equal_to: "は{{count}}以下の値にしてください。"
+        greater_than: "は%{count}より大きい値にしてください。"
+        greater_than_or_equal_to: "は%{count}以上の値にしてください。"
+        equal_to: "は%{count}にしてください。"
+        less_than: "は%{count}より小さい値にしてください。"
+        less_than_or_equal_to: "は%{count}以下の値にしてください。"
         odd: "は奇数にしてください。"
         even: "は偶数にしてください。"
         email: "は正しいEメールアドレスではありません。"
         onebyte_characters: "は半角で入力してください。"
-        platform_dependent_characters: "に機種依存文字が含まれています。（{{chars}}）"
+        platform_dependent_characters: "に機種依存文字が含まれています。（%{chars}）"
 
   will_paginate:
     page_gap: " || "
+
+  simple_captcha:
+    placeholder: ""
+    label: "画像の文字を入力してください"
+    message:
+      default: "の画像と文字が一致しません。"
+
+  comments:
+    doc_style: <p><strong>タイトル：</strong>@title@ <strong>サブタイトル：</strong>@subtitle@ <strong>公開日時：</strong>@publish_date@ <strong>更新日時：</strong>@update_date@ <strong>公開時間：</strong>@publish_time@ <strong>更新時間：</strong>@update_time@<br /><strong>概要：</strong>@summary@ <strong>組織：</strong>@group@<br /><strong>カテゴリ（リンクなし）：</strong>@category@ <strong>カテゴリ（リンクあり）：</strong>@category_link@<br /><strong>添付画像（リンクなし）：</strong>@image@ <strong>添付画像（リンクあり）：</strong>@image_link@<br /><strong>記事本文（追記含む）：</strong>@body@ <strong>記事本文（追記以外）：</strong>@body_beginning@ <strong>記事本文（文字数指定）：</strong>@body_123@<br /><strong>作成者：</strong>@user@ <strong>コメント数：</strong>@comment_count@</p>
+    list_style: <strong>公開日時：</strong>@publish_date@ <strong>タイトル：</strong>@title@ <strong>組織：</strong>@group@ <strong>カテゴリ：</strong>@category@
+    date_style: <strong>年：</strong>%Y <strong>月：</strong>%m <strong>日：</strong>%d <strong>曜日：</strong>%A <strong>曜日（省略）：</strong>%a
+    time_style: <strong>時：</strong>%H <strong>分：</strong>%M <strong>秒：</strong>%S

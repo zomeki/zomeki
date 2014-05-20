@@ -1,5 +1,5 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns#">
 <head>
   <meta charset="UTF-8" />
   <title><%= Page.window_title %></title>
@@ -7,8 +7,23 @@
   <%= javascript_include_tag '/_common/js/jquery.min.js' %>
   <%= javascript_include_tag '/_common/js/jquery-migrate.min.js' %>
   <%= javascript_include_tag '/_common/js/jquery_ujs.js' %>
+
+  <%= javascript_include_tag '/_common/js/jquery.iframe-auto-height.js' %>
+
+  <%= stylesheet_link_tag '/_common/css/simple_tabs.css' %>
+  <%= javascript_include_tag '/_common/js/simple_tabs.js' %>
+
   <%= csrf_meta_tags %>
   <%= Page.layout.head_tag(request) %>
+
+  <%- if Page.current_item.try(:respond_to?, :meta_description) && (meta_description = Page.current_item.meta_description).present? -%>
+  <meta name="description" content="<%= meta_description.gsub(/(\r\n|\r|\n)/, ' ') %>" />
+  <%- end -%>
+  <%- if Page.current_item.try(:respond_to?, :meta_keywords) && (meta_keywords = Page.current_item.meta_keywords).present? -%>
+  <meta name="keywords" content="<%= meta_keywords %>" />
+  <%- end -%>
+
+  <%= og_tags(Page.current_item) %>
 </head>
 <body <%= Page.body_id %> <%= Page.body_class %>>
   <%= yield %>

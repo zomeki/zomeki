@@ -1,6 +1,8 @@
 # encoding: utf-8
 class GpCategory::Piece::Doc < Cms::Piece
+  DOCS_ORDER_OPTIONS = [['公開日（降順）', 'published_at_desc'], ['公開日（昇順）', 'published_at_asc'], ['ランダム', 'random']]
   LAYER_OPTIONS = [['下層のカテゴリすべて', 'descendants'], ['該当カテゴリのみ', 'self']]
+  PAGE_FILTER_OPTIONS = [['絞り込む', 'filter'], ['絞り込まない', 'through']]
 
   default_scope where(model: 'GpCategory::Doc')
 
@@ -18,60 +20,77 @@ class GpCategory::Piece::Doc < Cms::Piece
     (setting_value(:list_count).presence || 1000).to_i
   end
 
-  def layer
-    setting_value(:layer).presence || LAYER_OPTIONS.first.last
-  end
-
-  def list_style
-    setting_value(:list_style) || ''
+  def doc_style
+    setting_value(:doc_style).to_s
   end
 
   def date_style
-    setting_value(:date_style) || ''
+    setting_value(:date_style).to_s
+  end
+
+  def docs_order
+    setting_value(:docs_order).to_s
+  end
+
+  def page_filter
+    setting_value(:page_filter).to_s
+  end
+
+  def more_link_body
+    setting_value(:more_link_body).to_s
+  end
+
+  def more_link_url
+    setting_value(:more_link_url).to_s
   end
 
   def content
     GpCategory::Content::CategoryType.find(super)
   end
 
-  def category_types
-    content.category_types
-  end
-
-  def category_types_for_option
-    category_types.map {|ct| [ct.title, ct.id] }
-  end
-
-  def category_type
-    category_types.find_by_id(setting_value(:category_type_id))
-  end
-
   def categories
-    unless category_type
-      return category_types.inject([]) {|result, ct|
-                 result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
-               }
-    end
-
-    if (category_id = setting_value(:category_id)).present?
-      if layer == 'descendants'
-        category_type.categories.find_by_id(category_id).try(:descendants) || []
-      else
-        category_type.categories.where(id: category_id)
-      end
+    if category_sets.empty?
+      content.category_types.inject([]) {|result, ct|
+        result | ct.root_categories.inject([]) {|r, c| r | c.descendants }
+      }
     else
-      category_type.root_categories.inject([]) {|r, c| r | c.descendants }
+      category_sets.map {|cs|
+        unless cs[:category]
+          cs[:category_type].root_categories.inject([]) {|r, c| r | c.descendants }
+        else
+          if cs[:layer] == 'descendants'
+            cs[:category].descendants
+          else
+            cs[:category]
+          end
+        end
+      }.flatten.uniq
     end
   end
 
-  def category
-    return nil if categories.empty?
-
-    if categories.respond_to?(:find_by_id)
-      categories.find_by_id(setting_value(:category_id))
-    else
-      categories.detect {|c| c.id.to_s == setting_value(:category_id) }
+  def category_sets
+    value = YAML.load(setting_value(:category_sets).to_s)
+    return [] unless value.is_a?(Array)
+    value.map {|v|
+      next nil if (v[:category_type] = GpCategory::CategoryType.find_by_id(v[:category_type_id])).nil?
+      next nil if v[:category_id].nonzero? && (v[:category] = GpCategory::Category.find_by_id(v[:category_id])).nil?
+      next v
+    }.compact.sort do |a, b|
+      next a[:category_type].unique_sort_key <=> b[:category_type].unique_sort_key if a[:category].nil? && b[:category].nil?
+      next a[:category_type].unique_sort_key <=> b[:category].unique_sort_key if a[:category].nil?
+      next a[:category].unique_sort_key <=> b[:category_type].unique_sort_key if b[:category].nil?
+      a[:category].unique_sort_key <=> b[:category].unique_sort_key
     end
+  end
+
+  def new_category_set
+    {category_type_id: nil, category_id: nil, layer: LAYER_OPTIONS.first.last}
+  end
+
+  def gp_article_content_docs
+    value = YAML.load(setting_value(:gp_article_content_doc_ids).to_s)
+    return [] unless value.is_a?(Array)
+    value.map{|v| GpArticle::Content::Doc.find_by_id(v) }.compact
   end
 
   private
@@ -79,9 +98,9 @@ class GpCategory::Piece::Doc < Cms::Piece
   def set_default_settings
     settings = self.in_settings
 
-    settings['layer'] = LAYER_OPTIONS.first.last if setting_value(:layer).nil?
-    settings['list_style'] = '@title(@date @group)' if setting_value(:list_style).nil?
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
+    settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
+    settings['page_filter'] = PAGE_FILTER_OPTIONS.first.last if setting_value(:page_filter).nil?
 
     self.in_settings = settings
   end

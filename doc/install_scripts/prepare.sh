@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EPEL_RPM_URL="http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm"
-INSTALL_SCRIPTS_URL='https://raw.github.com/zomeki/zomeki/master/doc/install_scripts'
+INSTALL_SCRIPTS_URL='https://raw.github.com/zomeki/zomeki-development/master/doc/install_scripts'
 
 echo '#### Prepare to install ####'
 
@@ -13,7 +13,7 @@ centos() {
   echo "It's CentOS!"
 
   rpm -ivh $EPEL_RPM_URL
-  yum install -y wget
+  yum install -y wget git
 
   cd /usr/local/src
 
@@ -54,7 +54,7 @@ echo "
     mysql> SET PASSWORD FOR zomeki@localhost = PASSWORD('newpass');
     また、変更時には /var/share/zomeki/config/database.yml も合わせて変更してください。
     # vi /var/share/zomeki/config/database.yml
-３．OS の zomeki ユーザに cron が登録されています。運用時には有効化してください。
+３．OS の zomeki ユーザに cron が登録されています。
     # crontab -u zomeki -e
 "
 EOF
@@ -72,14 +72,14 @@ others() {
   exit
 }
 
-if [ -f /etc/lsb-release ]; then
+if [ -f /etc/centos-release ]; then
+  centos
+elif [ -f /etc/lsb-release ]; then
   if grep -qs Ubuntu /etc/lsb-release; then
     ubuntu
   else
     others
   fi
-elif [ -f /etc/centos-release ]; then
-  centos
 else
   others
 fi

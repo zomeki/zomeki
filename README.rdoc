@@ -1,3 +1,6 @@
+{<img src="https://travis-ci.org/zomeki/zomeki-development.png?branch=master" alt="Build Status" />}[https://travis-ci.org/zomeki/zomeki-development]
+{<img src="https://gemnasium.com/zomeki/zomeki-development.png" alt="Dependency Status" />}[https://gemnasium.com/zomeki/zomeki-development]
+
 = Copyright
 
 See COPYING
@@ -6,15 +9,17 @@ See COPYING
 
 == 想定環境
 
-OS:: CentOS 6.4 / Ubuntu 12.04
+OS:: CentOS 6.5 / Ubuntu 12.04
 Webサーバ:: Apache 2.2
 DBシステム:: MySQL 5.1
-Ruby:: 1.9.3
-Rails:: 3.1
+Ruby:: 2.1
+Rails:: 3.2
 
 == 自動スクリプト
 
-  # export LANG=ja_JP.UTF-8; curl -L http://install.zomeki.jp | bash
+  # export LANG=ja_JP.UTF-8; curl -L http://install-development.zomeki.jp | bash
+  or
+  # export LANG=ja_JP.UTF-8; curl -L https://raw.githubusercontent.com/zomeki/zomeki-development/master/doc/install_scripts/prepare.sh | bash
 
 == 手動マニュアル
 

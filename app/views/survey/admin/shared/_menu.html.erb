@@ -1,0 +1,37 @@
+<h2><%= @content.name %><%= @form ? " ： #{@form.title}" : '' %><%= defined?(sub) ? " ： #{sub}" : '' %></h2>
+
+<div class="actionMenu">
+  <%- if action_name == 'index' -%>
+  <%= link_to '新規作成', url_for(action: 'new') %>
+    <%- if controller_name == 'forms' -%>
+  <span class="separator"></span>
+  <%= link_to "#{Survey::Form.model_name.human}一覧", url_for(action: 'index'), (params[:target].blank? ? {class: 'current'} : {}) %>
+  <%= link_to "全#{Survey::Form.model_name.human}一覧", url_for(action: 'index', target: 'all'), (params[:target] == 'all' ? {class: 'current'} : {}) %>
+  <span class="separator"></span>
+  <%= link_to '下書き', url_for(action: 'index', target: 'draft'), (params[:target] == 'draft' ? {class: 'current'} : {}) %>
+  <%= link_to '承認待ち', url_for(action: 'index', target: 'approvable'), (params[:target] == 'approvable' ? {class: 'current'} : {}) %>
+  <%= link_to '公開待ち', url_for(action: 'index', target: 'approved'), (params[:target] == 'approved' ? {class: 'current'} : {}) %>
+  <%= link_to '公開中', url_for(action: 'index', target: 'public'), (params[:target] == 'public' ? {class: 'current'} : {}) %>
+  <%= link_to '非公開', url_for(action: 'index', target: 'closed'), (params[:target] == 'closed' ? {class: 'current'} : {}) %>
+    <%- end -%>
+  <%- end -%>
+
+  <%- if %w|new create show edit update|.include?(action_name) -%>
+  <%= link_to '一覧', url_for(action: 'index') %>
+  <%- end -%>
+
+  <%- if %w|edit update|.include?(action_name) -%>
+  <span class="separator"></span>
+  <%= link_to '詳細', url_for(action: 'show') %>
+  <%- end -%>
+
+  <%- if action_name == 'show' -%>
+  <span class="separator"></span>
+  <%= link_to '編集', url_for(action: 'edit') if @item.try(:editable?) %>
+  <%= link_to '削除', url_for(action: 'destroy'), :method => :delete, :confirm => '削除してよろしいですか？' if @item.try(:deletable?) %>
+    <%- if controller_name == 'forms' -%>
+  <%= link_to '承認', url_for(action: 'approve'), :method => :post, :confirm => '承認してもよろしいですか？' if @item.state_approvable? && @item.approvers.include?(Core.user) %>
+  <%= link_to '公開', url_for(action: 'publish'), :method => :post, :confirm => '公開してもよろしいですか？' if @item.state_approved? && @item.approval_participators.include?(Core.user) %>
+    <%- end -%>
+  <%- end -%>
+</div>

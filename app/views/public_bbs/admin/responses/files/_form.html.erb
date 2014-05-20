@@ -16,11 +16,11 @@ $(function() {
   </tr>
   <% end %>
   <tr>
-    <th><label for="item_name"><%= @item.locale(:name) %><br /><span class="required">※半角英数字のみ</span></label></th>
+    <th><label for="item_name"><%= @item.locale(:name) %><br /><span class="note">※半角英数字のみ</span></label></th>
     <td><%= f.text_field :name, :class => 'string' %></td>
   </tr>
   <tr>
-    <th><label for="item_title"><%= @item.locale(:title) %><br /><span class="required">※日本語でわかりやすく</span></label></th>
+    <th><label for="item_title"><%= @item.locale(:title) %><br /><span class="note">※日本語でわかりやすく</span></label></th>
     <td>
       <%= f.text_field :title, :class => 'string' %>
       <%= f.submit(submit_label) %>

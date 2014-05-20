@@ -1,0 +1,8 @@
+<%= @approval_request.requester.name %>さんより「<%= @approval_request.approvable.title %>」についての承認依頼が届きました。
+  次の手順により承認作業を行ってください。
+
+  １．次のURLから文書を確認
+    <%= @preview_url %>
+
+  ２．次のURLから承認を実施
+    <%= @approve_url %>

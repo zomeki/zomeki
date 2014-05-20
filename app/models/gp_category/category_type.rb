@@ -5,8 +5,13 @@ class GpCategory::CategoryType < ActiveRecord::Base
   include Cms::Model::Auth::Content
   include Cms::Model::Base::Page
   include Cms::Model::Base::Page::Publisher
+  include Cms::Model::Base::Page::TalkTask
 
-  default_scope order(:sort_no)
+  STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+  SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  DOCS_ORDER_OPTIONS = [['公開日（降順）', 'display_published_at DESC, published_at DESC'], ['公開日（昇順）', 'display_published_at ASC, published_at ASC']]
+
+  default_scope { joins(:content).includes(:content).order("#{self.table_name}.sort_no, #{self.table_name}.name") }
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCategory::Content::CategoryType'
@@ -14,20 +19,22 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
-  belongs_to :layout,  :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+  belongs_to :layout, :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
+  belongs_to :template
+  belongs_to :internal_category_type, :class_name => self.name
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
-  has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpCategory::Category',
-                        :order => [:category_type_id, :level_no, :parent_id, :sort_no], :dependent => :destroy
+  has_many :categories, :foreign_key => :category_type_id, :class_name => 'GpCategory::Category', :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
 
   after_initialize :set_defaults
 
-  scope :public, where(state: 'public')
+  scope :public, -> { where(state: 'public') }
+  scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
   def public_categories
     categories.public
@@ -35,6 +42,10 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   def root_categories
     categories.where(parent_id: nil)
+  end
+
+  def root_categories_for_option
+    root_categories.map {|c| [c.title, c.id] }
   end
 
   def public_root_categories
@@ -52,24 +63,14 @@ class GpCategory::CategoryType < ActiveRecord::Base
     }
   end
 
-  def public_uri=(uri)
-    @public_uri = uri
-  end
-
   def public_uri
-    return @public_uri if @public_uri
-    return '' unless node = content.category_type_node
-    @public_uri = "#{node.public_uri}#{name}/"
-  end
-
-  def public_full_uri=(uri)
-    @public_full_uri = uri
+    return '' unless node = content.public_node
+    "#{node.public_uri}#{name}/"
   end
 
   def public_full_uri
-    return @public_full_uri if @public_full_uri
-    return '' unless node = content.category_type_node
-    @public_full_uri = "#{node.public_full_uri}#{name}/"
+    return '' unless node = content.public_node
+    "#{node.public_full_uri}#{name}/"
   end
 
   def bread_crumbs(category_type_node)
@@ -111,10 +112,20 @@ class GpCategory::CategoryType < ActiveRecord::Base
     end
   end
 
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
+  def unique_sort_key
+    '__%032d_%32s' % [self.sort_no.to_i, self.name.to_s]
+  end
+
   private
 
   def set_defaults
-    self.state   ||= 'public' if self.has_attribute?(:state)
-    self.sort_no ||= 10       if self.has_attribute?(:sort_no)
+    self.state         = STATE_OPTIONS.first.last         if self.has_attribute?(:state) && self.state.nil?
+    self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
+    self.docs_order    = DOCS_ORDER_OPTIONS.first.last    if self.has_attribute?(:docs_order) && self.docs_order.nil?
+    self.sort_no = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 end

@@ -22,12 +22,15 @@ class Sys::User < ActiveRecord::Base
     :class_name => 'Sys::UsersRole'
   has_many :role_names, :through => :users_roles,
     :source => :role_name
+  has_many :operation_logs, :class_name => 'Sys::OperationLog'
 
   attr_accessor :in_group_id
   
   validates_uniqueness_of :account
   validates_presence_of :state, :account, :name, :ldap
   validates_presence_of :in_group_id, :if => %Q(in_group_id == '')
+
+  validate :admin_auth_no_fixation
   
   after_save :save_group, :if => %Q(@_in_group_id_changed)
 
@@ -279,5 +282,14 @@ protected
 
   def block_root_deletion
     raise "Root user can't be deleted." if self.root?
+  end
+
+  def admin_auth_no_fixation
+    return unless self.root?
+
+    unless self.auth_no == 5
+      errors.add(:base, 'システム管理者の権限は変更出来ません。')
+      self.auth_no = 5
+    end
   end
 end

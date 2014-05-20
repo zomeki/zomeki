@@ -12,11 +12,11 @@ class Tag::Content::Tag < Cms::Content
   end
 
   def list_style
-    setting_value(:list_style) || ''
+    setting_value(:list_style).to_s
   end
 
   def date_style
-    setting_value(:date_style) || ''
+    setting_value(:date_style).to_s
   end
 
   private

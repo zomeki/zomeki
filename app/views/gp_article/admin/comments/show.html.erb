@@ -1,0 +1,42 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.status.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %></th>
+    <td><%= @item.doc.title %></td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :public_full_uri %></th>
+    <td><%= @item.doc.public_full_uri %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :author_name %></th>
+    <td><%= @item.author_name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :author_email %></th>
+    <td><%= @item.author_email %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :author_url %></th>
+    <td><%= @item.author_url %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :remote_addr %></th>
+    <td><%= @item.remote_addr %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :user_agent %></th>
+    <td><%= @item.user_agent %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :body %></th>
+    <td><%=simple_format @item.body %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :posted_at %></th>
+    <td><%=i18n_l @item.updated_at %></td>
+  </tr>
+</table>

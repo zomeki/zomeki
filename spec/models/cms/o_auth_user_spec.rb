@@ -5,12 +5,12 @@ describe Cms::OAuthUser do
   context 'when create using omniauth' do
     before do
       @valid_auth = {
-        'provider' => 'facebook',
-        'uid'      => '1234567890',
-        'info'     => { 'nickname' => 'yamada',
-                        'name'     => '山田 太郎',
-                        'image'    => 'http://example.com/images/yamada.jpg',
-                        'urls'     => { 'Facebook' => 'http://example.com/yamada' } }
+        provider: 'facebook',
+        uid:      '1234567890',
+        info_nickname: 'yamada',
+        info_name: '山田 太郎',
+        info_image: 'http://example.com/images/yamada.jpg',
+        info_url: 'http://example.com/yamada'
       }
     end
 
@@ -22,7 +22,7 @@ describe Cms::OAuthUser do
 
     describe 'with invalid auth' do
       it 'raise error' do
-        @valid_auth['provider'] = nil
+        @valid_auth[:provider] = nil
         expect { Cms::OAuthUser.create_or_update_with_omniauth(@valid_auth) }.to raise_error
       end
     end

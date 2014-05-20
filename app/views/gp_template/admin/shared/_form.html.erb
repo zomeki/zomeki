@@ -1,0 +1,44 @@
+<%- return '' unless defined?(template) && defined?(template_values) -%>
+
+<%- template.items.public.each do |item| -%>
+  <%- if item.item_type == 'rich_text' -%>
+  <table class="show">
+    <tr>
+      <th><%= item.title %></th>
+    </tr>
+    <tr>
+      <td class="cke_editor_wrapper">
+        <%= text_area_tag "item[template_values][#{item.name}]", template_values[item.name], style: item.style_attribute, class: 'body ckeditor' %>
+        <%= javascript_tag do %>
+          CKEDITOR.replace('item_template_values_<%= item.name %>');
+        <%- end -%>
+      </td>
+    </tr>
+  </table>
+  <%- else -%>
+  <table class="show">
+    <tr>
+      <th><%= item.title %></th>
+      <td>
+        <%- case item.item_type -%>
+        <%- when 'text_field' -%>
+          <%= text_field_tag "item[template_values][#{item.name}]", template_values[item.name], style: item.style_attribute %>
+        <%- when 'text_area' -%>
+          <%= text_area_tag "item[template_values][#{item.name}]", template_values[item.name], style: item.style_attribute, class: 'body' %>
+        <%- when 'select' -%>
+          <%= select_tag "item[template_values][#{item.name}]",
+                         options_for_select(item.item_options_for_select, template_values[item.name]), style: item.style_attribute,
+                         include_blank: true %>
+        <%- when 'radio_button' -%>
+          <%- item.item_options_for_select.each do |option| -%>
+            <label><%= radio_button_tag "item[template_values][#{item.name}]", option,
+                                        option == template_values[item.name], style: item.style_attribute %> <%= option %></label>
+          <%- end -%>
+        <%- when 'attachment_file' -%>
+          <%= text_field_tag "item[template_values][#{item.name}]", template_values[item.name], style: item.style_attribute %>
+        <%- end -%>
+      </td>
+    </tr>
+  </table>
+  <%- end -%>
+<%- end -%>

@@ -1,26 +1,53 @@
 # encoding: utf-8
-class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
-  def pre_dispatch
-    @node = Page.current_node
-    @content = GpCalendar::Content::Event.find_by_id(@node.content.id)
-    return http_error(404) unless @content
-
-    @today = Date.today
-    @min_date = @today.beginning_of_month
-    @max_date = @min_date.since(11.months).to_date
-
-    return http_error(404) unless validate_date
-  end
+class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::BaseController
+  skip_filter :render_public_layout, :only => [:file_content]
 
   def index
-    index_monthly
-    render :index_monthly unless Page.mobile?
+    year_month = @year_only ? @date.strftime('%Y') : @date.strftime('%Y%m')
+
+    criteria = {year_month: year_month}
+    events_table = GpCalendar::Event.arel_table
+    @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
+                               .where(events_table[:started_on].lteq(@max_date).and(events_table[:ended_on].gteq(@min_date)))
+
+    start_date, end_date = if @year_only
+                             boy = @date.beginning_of_year
+                             boy = @min_date if @min_date > boy
+                             eoy = @date.end_of_year
+                             eoy = @max_date if @max_date < eoy
+                             [boy, eoy]
+                           else
+                             [@date.beginning_of_month, @date.end_of_month]
+                           end
+    merge_docs_into_events(event_docs(start_date, end_date), @events)
+
+    @holidays = GpCalendar::Holiday.public.all_with_content_and_criteria(@content, criteria).where(kind: :event)
+    @holidays.each do |holiday|
+      holiday.started_on = @date.year
+      @events << holiday if holiday.started_on
+    end
+    @events.sort! {|a, b| a.started_on <=> b.started_on}
+
+    filter_events_by_specified_category(@events)
   end
 
+  def file_content
+    @event = @content.events.find_by_name(params[:name])
+    return http_error(404) unless @event
+    file = @event.files.find_by_name("#{params[:basename]}.#{params[:extname]}")
+    return http_error(404) unless file
+
+    mt = file.mime_type.presence || Rack::Mime.mime_type(File.extname(file.name))
+    type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
+    disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
+    send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
+  end
+
+#TODO: OBSOLETED
   def index_monthly
     sdate = Date.new(@year, @month, 1)
     return http_error(404) unless sdate.between?(@min_date, @max_date)
-    edate = sdate.since(1.month).to_date
+    edate = 1.month.since(sdate)
 
     @calendar = Util::Date::Calendar.new(@year, @month)
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
@@ -41,10 +68,11 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     render :index_monthly_mobile if Page.mobile?
   end
 
+#TODO: OBSOLETED
   def index_yearly
     return http_error(404) unless @year.between?(@min_date.year, @max_date.year)
     sdate = Date.new(@year, 1, 1)
-    edate = sdate.since(1.year).to_date
+    edate = 1.year.since(sdate)
 
     @days  = []
     @items = {}
@@ -74,41 +102,5 @@ class GpCalendar::Public::Node::EventsController < Cms::Controller::Public::Base
     @pagination.next_label = '次の年'
     @pagination.prev_uri = "#{@node.public_uri}#{@year - 1}/" if (@year - 1) >= @min_date.year
     @pagination.next_uri = "#{@node.public_uri}#{@year + 1}/" if (@year + 1) <= @max_date.year
-  end
-
-  private
-
-  def validate_date
-    @month = params[:month].to_i
-    @month = @today.month if @month.zero?
-    return false unless @month.between?(1, 12)
-
-    @year = params[:year].to_i
-    @year = @today.year if @year.zero?
-    return false unless @year.between?(1000, 9999)
-
-    params[:gp_calendar_event_year]     = @year
-    params[:gp_calendar_event_month]    = @month
-    params[:gp_calendar_event_min_date] = @min_date
-    params[:gp_calendar_event_max_date] = @max_date
-
-    return true
-  end
-
-  def event_docs(sdate, edate)
-    doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @content.id).map(&:content)
-    doc_contents.reject! {|dc| dc.site != Page.site }
-    return doc_contents if doc_contents.empty?
-
-    doc_contents.map {|dc|
-      case dc.model
-      when 'GpArticle::Doc'
-        dc = GpArticle::Content::Doc.find(dc.id)
-        docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(sdate).and(docs[:event_date].lt(edate)))
-      else
-        []
-      end
-    }.flatten
   end
 end

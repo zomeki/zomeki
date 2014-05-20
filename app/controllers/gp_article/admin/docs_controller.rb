@@ -1,145 +1,214 @@
 # encoding: utf-8
-
-require 'will_paginate/array'
-
 class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
-  include Sys::Controller::Scaffold::Recognition
   include Sys::Controller::Scaffold::Publication
 
+  before_filter :hold_document, :only => [ :edit ]
+  before_filter :check_intercepted, :only => [ :update ]
+
   def pre_dispatch
-    return error_auth unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
+    return http_error(404) unless @content = GpArticle::Content::Doc.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(request.env['PATH_INFO']) if params[:reset_criteria]
 
     @category_types = @content.category_types
     @visible_category_types = @content.visible_category_types
-    @recognition_type = @content.setting_value(:recognition_type)
+    @event_category_types = @content.event_category_types
+    @marker_category_types = @content.marker_category_types
+
+    @item = @content.docs.find(params[:id]) if params[:id].present?
+
+    @params_categories = params[:categories].kind_of?(Hash) ? params[:categories] : {}
+    @params_event_categories = params[:event_categories].kind_of?(Hash) ? params[:event_categories] : {}
+    @params_marker_categories = params[:marker_categories].kind_of?(Hash) ? params[:marker_categories] : {}
+
+    @params_item_in_editable_groups = if (ieg = params[:item].try('[]', :in_editable_groups)).kind_of?(Array)
+                                        ieg
+                                      end
+    @params_item_in_maps = if (im = params[:item].try('[]', :in_maps)).kind_of?(Hash)
+                             im
+                           end
+    @params_share_accounts = params[:share_accounts] if params[:share_accounts].kind_of?(Array)
   end
 
   def index
     if params[:options]
-      if params[:category_id]
-        if (category = GpCategory::Category.find_by_id(params[:category_id]))
-          @items = category.docs
-        else
-          @items = []
-        end
-      else
-        @items = @content.docs
+      @items = if params[:category_id]
+                 if (category = GpCategory::Category.find_by_id(params[:category_id]))
+                   params[:public] ? category.public_docs : category.docs
+                 else
+                   category.docs.none
+                 end
+               else
+                 params[:public] ? @content.public_docs : @content.docs
+               end
+
+      if params[:exclude]
+        docs_table = @items.table
+        @items = @items.where(docs_table[:name].not_eq(params[:exclude]))
       end
-      render 'index_options', :layout => false
-      return
+
+      return render('index_options', layout: false)
     end
 
     criteria = params[:criteria] || {}
 
-    if %w!editable recognizable publishable!.include?(params[:target])
-      search_params = {}
-      search_params[:s_id] = criteria[:id] if criteria[:id].present?
-      search_params[:s_title] = criteria[:title] if criteria[:title].present?
-      search_params[:s_affiliation_name] = criteria[:group] if criteria[:group].present?
-    end
-
     case params[:target]
-    when 'editable'
-      item = GpArticle::Doc.new.editable
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
-    when 'recognizable'
-      item = GpArticle::Doc.new
-      if @content.setting_value(:recognition_type) == 'with_admin' && Core.user.has_auth?(:manager)
-        item.join_creator
-        item.join_recognition
-        cond = Condition.new do |c|
-          c.or 'sys_recognitions.user_id', Core.user.id
-          c.or 'sys_recognitions.recognizer_ids', 'REGEXP', "(^| )#{Core.user.id}( |$)"
-          c.or 'sys_recognitions.info_xml', 'LIKE', '%<admin/>%'
-        end
-        item.and cond
-        item.and "#{item.class.table_name}.state", 'recognize'
-      else
-        item.recognizable
-      end
-
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
-    when 'publishable'
-      item = GpArticle::Doc.new.publishable
-      item.and :content_id, @content.id
-      item.search search_params
-      item.page params[:page], params[:limit]
-      item.order params[:sort], 'updated_at DESC'
-      @items = item.find(:all)
+    when 'all'
+      # No criteria
+    when 'draft'
+      criteria[:state] = 'draft'
+      criteria[:touched_user_id] = Core.user.id
+    when 'public'
+      criteria[:state] = 'public'
+      criteria[:touched_user_id] = Core.user.id
+    when 'closed'
+      criteria[:state] = 'closed'
+      criteria[:touched_user_id] = Core.user.id
+    when 'approvable'
+      criteria[:approvable] = true
+      criteria[:state] = 'approvable'
+    when 'approved'
+      criteria[:approvable] = true
+      criteria[:state] = 'approved'
     else
-      @items = GpArticle::Doc.find_with_content_and_criteria(@content, criteria).paginate(page: params[:page], per_page: 30)
+      criteria[:editable] = true
     end
+
+    docs = GpArticle::Doc.arel_table
+    @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).order(docs[:updated_at].desc).paginate(page: params[:page], per_page: 30)
 
     _index @items
   end
 
   def show
-    @item = @content.docs.find(params[:id])
-    @item.recognition.try(:change_type, @recognition_type)
     _show @item
   end
 
   def new
     @item = @content.docs.build
-    @item.in_inquiry = @item.default_inquiry
+    render 'new_smart_phone', layout: 'admin/gp_article_smart_phone' if Page.smart_phone?
   end
 
   def create
-    @item = @content.docs.build(params[:item])
-    @item.concept = @content.concept
-    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
-    @item.change_state_by_commit(commit_state)
+    failed_template = Page.smart_phone? ? {template: "#{controller_path}/new_smart_phone", layout: 'admin/gp_article_smart_phone'}
+                                        : {action: 'new'}
+    new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
-    _create(@item) do
+    @item = @content.docs.build(params[:item])
+
+    @item.validate_word_dictionary # replace validate word
+    @item.ignore_accessibility_check = params[:ignore_accessibility_check]
+
+    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+      @item.body = Util::AccessibilityChecker.modify @item.body
+    end
+
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
+      check_results = @item.check_links_in_body
+      self.class.helpers.large_flash(flash, :key => :link_check_result,
+                                     :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
+      return render(failed_template) if params[:link_check_in_body]
+    end
+
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+      check_results = Util::AccessibilityChecker.check @item.body
+      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+      return render(failed_template) if params[:accessibility_check]
+    end
+
+    @item.concept = @content.concept
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
+
+    validate_approval_requests if @item.state_approvable?
+    return render(failed_template) unless @item.errors.empty?
+
+    location = ->(d){ edit_gp_article_doc_url(@content, d) } if @item.state_draft?
+    _create(@item, location: location, failed_template: failed_template) do
+      set_share_accounts
       set_categories
+      set_event_categories
+      set_marker_categories
+
+      @item.approval_requests.each(&:reset) if @item.state_approvable?
+      set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+
+      publish_by_update(@item) if @item.state_public?
 
       @item.fix_tmp_files(params[:_tmp])
-      send_recognition_request_mail(@item) if @item.state_recognize?
-      publish_by_update(@item) if @item.state_public?
+
+      share_to_sns if @item.state_public?
+
+      publish_related_pages
     end
   end
 
+  def edit
+    return redirect_to(edit_gp_article_doc_url(@content, @item.duplicate(:replace))) if @item.state_public?
+    render 'edit_smart_phone', layout: 'admin/gp_article_smart_phone' if Page.smart_phone?
+  end
+
   def update
-    @item = @content.docs.find(params[:id])
+    failed_template = Page.smart_phone? ? {template: "#{controller_path}/edit_smart_phone", layout: 'admin/gp_article_smart_phone'}
+                                        : {action: 'edit'}
+    new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
+
     @item.attributes = params[:item]
-    commit_state = params.keys.detect {|k| k =~ /^commit_/ }
-    @item.change_state_by_commit(commit_state)
 
-    _update(@item) do
+    @item.validate_word_dictionary #replace validate word 
+    @item.ignore_accessibility_check = params[:ignore_accessibility_check]
+
+    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+      @item.body = Util::AccessibilityChecker.modify @item.body
+    end
+
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
+      check_results = @item.check_links_in_body
+      self.class.helpers.large_flash(flash, :key => :link_check_result,
+                                     :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
+      return render(failed_template) if params[:link_check_in_body]
+    end
+
+    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+      check_results = Util::AccessibilityChecker.check @item.body
+      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+      return render(failed_template) if params[:accessibility_check]
+    end
+
+    @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
+
+    validate_approval_requests if @item.state_approvable?
+    return render(failed_template) unless @item.errors.empty?
+
+    location = url_for(action: 'edit') if @item.state_draft?
+    _update(@item, location: location, failed_template: failed_template) do
+      set_share_accounts
       set_categories
+      set_event_categories
+      set_marker_categories
 
-      send_recognition_request_mail(@item) if @item.state_recognize?
+      @item.approval_requests.each(&:reset) if @item.state_approvable?
+      set_approval_requests
+      @item.send_approval_request_mail if @item.state_approvable?
+
       publish_by_update(@item) if @item.state_public?
-      @item.close unless @item.public? # Don't use "state_public?" here
+
+      @item.close unless @item.public? # Never use "state_public?" here
+
+      release_document
+
+      share_to_sns if @item.state_public?
+
+      publish_related_pages
     end
   end
 
   def destroy
-    @item = @content.docs.find(params[:id])
-    _destroy @item
-  end
-
-  def recognize(item)
-    _recognize(item) do
-      if @item.state == 'recognized'
-        send_recognition_success_mail(@item)
-      elsif @recognition_type == 'with_admin'
-        if item.recognition.recognized_all?(false)
-          users = Sys::User.find_managers
-          send_recognition_request_mail(@item, users)
-        end
-      end
+    _destroy(@item) do
+      send_link_broken_notification(@item) unless @item.backlinks.empty?
     end
   end
 
@@ -150,15 +219,13 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     item.publish_page(render_public_as_string(uri, :site => item.content.site), :path => path, :dependent => :ruby)
   end
 
-  def publish(item)
-    item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
-    item.update_column(:published_at, Core.now)
-    _publish(item) { publish_ruby(item) }
+  def publish
+    @item.update_column(:published_at, Core.now)
+    _publish(@item) { publish_ruby(@item) }
   end
 
   def publish_by_update(item)
     return unless item.terminal_pc_or_smart_phone
-    item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
     if item.publish(render_public_as_string(item.public_uri))
       publish_ruby(item)
       flash[:notice] = '公開処理が完了しました。'
@@ -167,76 +234,209 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
   end
 
+  def close(item)
+    super
+    publish_related_pages
+  end
+
   def duplicate(item)
-    if dupe_item = item.duplicate
-      flash[:notice] = '複製処理が完了しました。'
-      respond_to do |format|
-        format.html { redirect_to url_for(:action => :index) }
-        format.xml  { head :ok }
-      end
+    if item.duplicate
+      redirect_to url_for(:action => :index), notice: '複製処理が完了しました。'
     else
-      flash[:alert] = '複製処理に失敗しました。'
-      respond_to do |format|
-        format.html { redirect_to url_for(:action => :show) }
-        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
-      end
+      redirect_to url_for(:action => :index), alert: '複製処理に失敗しました。'
+    end
+  end
+
+  def approve
+    @item.approve(Core.user) if @item.approvers.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
+  end
+
+  def passback
+    if @item.state_approvable? && @item.approvers.include?(Core.user)
+      @item.passback(Core.user, comment: params[:comment])
+      redirect_to gp_article_doc_url(@content, @item), notice: '差し戻しが完了しました。'
+    else
+      redirect_to gp_article_doc_url(@content, @item), notice: '差し戻しに失敗しました。'
+    end
+  end
+
+  def pullback
+    if @item.state_approvable? && @item.approval_requesters.include?(Core.user)
+      @item.pullback(comment: params[:comment])
+      redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しが完了しました。'
+    else
+      redirect_to gp_article_doc_url(@content, @item), notice: '引き戻しに失敗しました。'
     end
   end
 
   protected
 
-  def send_recognition_request_mail(item, users=nil)
-    users ||= item.recognizers
+  def send_link_broken_notification(item)
+    mail_from = 'noreply'
 
-    mail_from = Core.user.email
+    item.backlinked_docs.each do |doc|
+      subject = "【#{doc.content.site.name.presence || 'ZOMEKI'}】リンク切れ通知"
 
-    subject = "#{item.content.name}（#{item.content.site.name}）：承認依頼メール"
-    body = <<-EOT
-#{Core.user.name}さんより「#{item.title}」についての承認依頼が届きました。
-  次の手順により，承認作業を行ってください。
+      body = <<-EOT
+「#{doc.title}」からリンクしている「#{item.title}」が削除されました。
+  対象のリンクは次の通りです。
 
-  １．PC用記事のプレビューにより文書を確認
-    #{item.preview_uri}
-  ２．次のリンクから承認を実施
-    #{gp_article_doc_url(content: @content, id: item.id)}
-    EOT
+#{item.backlinks.where(doc_id: doc.id).map{|l| "  ・#{l.body} ( #{l.url} )" }.join("\n")}
 
-    users.each {|user| send_mail(mail_from, user.email, subject, body) }
+  次のURLをクリックしてリンクを確認してください。
+
+  #{gp_article_doc_url(content: @content, id: doc.id)}
+      EOT
+
+      send_mail(mail_from, doc.creator.user.email, subject, body)
+    end
   end
 
-  def send_recognition_success_mail(item)
-    return true unless item.recognition
-    return true unless item.recognition.user
-    return true if item.recognition.user.email.blank?
-
-    mail_from = Core.user.email
-    mail_to = item.recognition.user.email
-
-    subject = "#{item.content.name}（#{item.content.site.name}）：最終承認完了メール"
-    body = <<-EOT
-「#{item.title}」についての承認が完了しました。
-  次のＵＲＬをクリックして公開処理を行ってください。
-  #{gp_article_doc_url(content: @content, id: item.id)}
-    EOT
-
-    send_mail(mail_from, mail_to, subject, body)
+  def set_share_accounts
+    share_account_ids = if params[:share_accounts].kind_of?(Array)
+                          params[:share_accounts].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+    @item.sns_account_ids = share_account_ids
   end
 
   def set_categories
-    if params[:categories].is_a?(Hash)
-      category_ids = params[:categories].values.flatten.reject{|c| c.blank? }.uniq
+    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
 
-      if @category_types.include?(@content.group_category_type)
-        if (group_category = @content.group_category_type.categories.find_by_group_code(@item.creator.group.code))
-          category_ids |= [group_category.id]
+    category_ids = if params[:categories].is_a?(Hash)
+                     params[:categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
+                   else
+                     []
+                   end
+
+    if @category_types.include?(@content.group_category_type)
+      if (group_category = @content.group_category_type.categories.find_by_group_code(@item.creator.group.code))
+        category_ids |= [group_category.id]
+      end
+    end
+
+    if @content.default_category && @category_types.include?(@content.default_category_type)
+      category_ids |= [@content.default_category.id]
+    end
+
+    @item.category_ids = category_ids
+
+    @new_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+  end
+
+  def set_event_categories
+    event_category_ids = if params[:event_categories].is_a?(Hash)
+                           params[:event_categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
+                         else
+                           []
+                         end
+    @item.event_category_ids = event_category_ids
+  end
+
+  def set_marker_categories
+    marker_category_ids = if params[:marker_categories].is_a?(Hash)
+                            params[:marker_categories].values.flatten.map{|c| c.to_i if c.present? }.compact.uniq
+                          else
+                            []
+                          end
+    @item.marker_category_ids = marker_category_ids
+  end
+
+  def hold_document
+    unless (holds = @item.holds).empty?
+      holds = holds.each{|h| h.destroy if h.user == Core.user }.reject(&:destroyed?)
+      alerts = holds.map do |hold|
+          in_editing_from = (hold.updated_at.today? ? I18n.l(hold.updated_at, :format => :short_ja) : I18n.l(hold.updated_at, :format => :default_ja))
+          "#{hold.user.group.name}#{hold.user.name}さんが#{in_editing_from}から編集中です。"
         end
-      end
+      flash[:alert] = "<ul><li>#{alerts.join('</li><li>')}</li></ul>".html_safe
+    end
+    @item.holds.create(user: Core.user)
+  end
 
-      if @content.default_category && @category_types.include?(@content.default_category_type)
-        category_ids |= [@content.default_category.id]
-      end
+  def check_intercepted
+    unless @item.holds.detect{|h| h.user == Core.user }
+      user = @item.operation_logs.first.user
+      flash[:alert] = "#{user.group.name}#{user.name}さんが記事を編集したため、編集内容を反映できません。"
+      render :action => :edit
+    end
+  end
 
-      @item.category_ids = category_ids
+  def release_document
+    @item.holds.destroy_all
+  end
+
+  def set_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    approval_flow_ids.each do |approval_flow_id|
+      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+    end
+
+    @item.approval_requests.each do |approval_request|
+      approval_request.destroy unless approval_flow_ids.include?(approval_request.approval_flow_id)
+    end
+  end
+
+  def validate_approval_requests
+    approval_flow_ids = if params[:approval_flows].is_a?(Array)
+                          params[:approval_flows].map{|a| a.to_i if a.present? }.compact.uniq
+                        else
+                          []
+                        end
+
+    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
+  end
+
+  def share_to_sns
+    view_helpers = self.class.helpers
+
+    @item.sns_accounts.each do |account|
+      next if account.credential_token.blank?
+
+      begin
+        apps = YAML.load_file(Rails.root.join('config/sns_apps.yml'))[account.provider]
+
+        case account.provider
+        when 'facebook'
+          fb = RC::Facebook.new(access_token: account.credential_token.presence)
+          message = view_helpers.strip_tags(@item.send(@item.share_to_sns_with))
+          info_log fb.post("#{account.facebook_page}/feed", message: message)
+        when 'twitter'
+          if (app = apps[request.host])
+            tw = RC::Twitter.new(consumer_key: app['key'],
+                                 consumer_secret: app['secret'],
+                                 oauth_token: account.credential_token.presence,
+                                 oauth_token_secret: account.credential_secret.presence)
+            message = view_helpers.truncate(view_helpers.strip_tags(@item.send(@item.share_to_sns_with)), length: 140)
+            info_log tw.tweet(message)
+          end
+        end
+      rescue => e
+        warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
+      end
+    end
+  end
+
+  def publish_related_pages
+    Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
+
+    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first) &&
+       (top_page = root_node.children.where(name: 'index.html').first)
+      ::Script.delay(queue: 'publish_top_page')
+              .run("cms/script/nodes/publish?all=all&target_module=cms&target_node_id[]=#{top_page.id}", force: true)
+    end
+
+    if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
+      GpCategory::Publisher.register_categories(@old_category_ids | @new_category_ids)
+      GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
     end
   end
 end

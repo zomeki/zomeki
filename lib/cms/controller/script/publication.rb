@@ -15,6 +15,11 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
   
   def publish_page(item, params = {})
+    if Script.options
+      path = params[:uri].to_s.sub(/\?.*/, '')
+      return false if Script.options.is_a?(Array) && !Script.options.include?(path)
+      return false if Script.options.is_a?(Regexp) && Script.options !~ path
+    end
     
     site = params[:site] || @site
     res  = item.publish_page(render_public_as_string(params[:uri], :site => site),
@@ -45,7 +50,7 @@ class Cms::Controller::Script::Publication < ApplicationController
       ruby = true
     elsif !::File.exist?(path)
       ruby = true
-    elsif ::File.stat(path).mtime < Cms::KanaDictionary.dic_mtime(:ruby)
+    elsif ::File.stat(path).mtime < Cms::KanaDictionary.dic_mtime
       ruby = true
     end
     

@@ -90,4 +90,52 @@ module Cms::FormHelper
     locals = {:item => item}
     render :partial => 'cms/admin/_partial/maps/view', :locals => locals
   end
+
+  def value_form(f)
+    object = f.object || instance_variable_get("@#{f.object_name}")
+    case object.form_type
+    when :select
+      options = if (co = object.config_options).kind_of?(Proc)
+                  co.call(object.content)
+                else
+                  co
+                end
+      f.select(:value, options, include_blank: true)
+    when :text
+      f.text_area(:value, style: 'width: 600px; height: 120px;')
+    when :check_boxes
+      f.check_boxes(:value, object.config_options)
+    when :radio_buttons
+      f.radio_buttons(:value, object.config_options)
+    when :multiple_select
+      select_tag 'item[value]', options_from_collection_for_select(object.config_options.where(id: object.value), :id, :name),
+                                multiple: true, style: 'height: 150px; width: 250px;'
+    when :text_area
+      f.text_area(:value, size: '100x10')
+    else
+      f.text_field(:value, style: 'width: 400px;')
+    end
+  end
+
+  def toggle_form_function
+    f = <<-EOS
+function toggle_form(link, target, open_label, close_label, quick) {
+  if (open_label === undefined) open_label = '開く▼';
+  if (close_label === undefined) close_label = '閉じる▲';
+  var l = jQuery(link);
+  var t = jQuery(target);
+  if (t.is(':hidden')) {
+    l.html(close_label);
+  } else {
+    l.html(open_label);
+  }
+  if (quick) {
+    t.toggle();
+  } else {
+    t.slideToggle();
+  }
+}
+    EOS
+    f.html_safe
+  end
 end

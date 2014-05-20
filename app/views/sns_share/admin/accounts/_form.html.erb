@@ -1,0 +1,32 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :provider %></th>
+    <td><%= @item.provider.humanize %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :uid %></th>
+    <td><%= @item.uid %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_nickname %></th>
+    <td><%= link_to_if @item.info_url.present?, @item.info_nickname, @item.info_url, target: 'preview' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_image %></th>
+    <td><%= image_tag @item.info_image if @item.info_image.present? %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :info_name %></th>
+    <td><%= @item.info_name %></td>
+  </tr>
+  <%- if @item.provider == 'facebook' -%>
+  <tr>
+    <th><%= @item.class.human_attribute_name :credential_expires_at %></th>
+    <td><%= l(Time.at(@item.credential_expires_at.to_i)) if @item.credential_expires_at.present? %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :facebook_page %></th>
+    <td><%= f.select :facebook_page, @item.facebook_page_options, include_blank: true %></td>
+  </tr>
+  <%- end -%>
+</table>

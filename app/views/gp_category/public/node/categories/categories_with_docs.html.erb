@@ -1,0 +1,44 @@
+<div class="contentGpCategory contentGpCategoryCategory">
+  <%- unless @docs.empty? -%>
+  <section class="category<%= @category.name.try(:camelize) %>">
+    <%- if @content.feed_display? -%>
+    <ul class="feed">
+      <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+      <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+    </ul>
+    <%- end -%>
+    <div class="docs">
+      <ul>
+        <%- @docs.each do |doc| -%>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style, @content.time_style) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+    <%- if @docs.total_entries > @docs.per_page -%>
+    <div class="more">
+      <%= link_to '一覧へ', "#{@category.public_uri}more.html" %>
+    </div>
+    <%- end -%>
+  </section>
+  <%- end -%>
+
+  <%- @category.public_children.each do |child| -%>
+  <section class="category<%= child.name.try(:camelize) %> classification">
+    <h2><%= link_to child.title, child.public_uri %></h2>
+    <%- unless child.public_docs.empty? -%>
+    <div class="docs">
+      <ul>
+        <%- child.public_docs.limit(@content.category_docs_number).each do |doc| -%>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style, @content.time_style) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+    <%- end -%>
+    <%- if child.public_docs.count > @content.category_docs_number -%>
+    <div class="more">
+      <%= link_to '一覧へ', child.public_uri %>
+    </div>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>

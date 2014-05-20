@@ -6,7 +6,6 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
     return error_auth unless Core.user.has_auth?(:designer)
     return error_auth unless @content = GpCategory::Content::CategoryType.find(params[:content])
     return error_auth unless @content.editable?
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -21,11 +20,34 @@ class GpCategory::Admin::Content::SettingsController < Cms::Controller::Admin::B
 
   def edit
     @item = GpCategory::Content::Setting.config(@content, params[:id])
+    _show @item
   end
 
   def update
     @item = GpCategory::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
+
+    if @item.name.in?('category_type_style', 'category_style', 'doc_style', 'feed')
+      extra_values = @item.extra_values
+
+      case @item.name
+      when 'category_type_style'
+        extra_values[:category_type_doc_style] = params[:category_type_doc_style]
+        extra_values[:category_type_docs_number] = params[:category_type_docs_number]
+      when 'category_style'
+        extra_values[:category_doc_style] = params[:category_doc_style]
+        extra_values[:category_docs_number] = params[:category_docs_number]
+      when 'doc_style'
+        extra_values[:doc_doc_style] = params[:doc_doc_style]
+        extra_values[:doc_docs_number] = params[:doc_docs_number]
+      when 'feed'
+        extra_values[:feed_docs_number] = params[:feed_docs_number]
+        extra_values[:feed_docs_period] = params[:feed_docs_period]
+      end
+
+      @item.extra_values = extra_values
+    end
+
     _update @item
   end
 

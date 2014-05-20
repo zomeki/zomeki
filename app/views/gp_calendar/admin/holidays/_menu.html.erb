@@ -1,0 +1,6 @@
+<%= render 'gp_calendar/admin/shared/menu', index_path: gp_calendar_holidays_path(content: @content),
+    sub: "#{GpCalendar::Holiday.model_name.human}#{case action_name.to_sym
+                                                   when :index; '一覧'
+                                                   when :new;   '登録'
+                                                   when :edit;  '編集'
+                                                   end}" %>

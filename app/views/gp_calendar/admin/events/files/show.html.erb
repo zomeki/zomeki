@@ -1,0 +1,24 @@
+<%= render 'menu' %>
+
+<table class="show">
+  <tr>
+    <th>ファイル名（保存用）</th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th>ファイル名（表示用）</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>アップロード日時</th>
+    <td><%= @item.created_at.try(:strftime, '%Y-%m-%d %H:%M') %></td>
+  </tr>
+  <tr>
+    <th>ファイルサイズ</th>
+    <td><%= @item.eng_unit %><br /><%= @item.image_size %></td>
+  </tr>
+  <tr>
+    <th>ファイル種別</th>
+    <td><%= @item.mime_type %></td>
+  </tr>
+</table>

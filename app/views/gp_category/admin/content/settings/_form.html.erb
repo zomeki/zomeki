@@ -1,13 +1,4 @@
-<%-
-value_form = case @item.form_type
-             when :select
-               f.select(:value, @item.config_options, include_blank: true)
-             when :text
-               f.text_area(:value, style: 'width: 600px; height: 120px;')
-             else
-               f.text_field(:value, style: 'width: 400px;')
-             end
-%><%= f.hidden_field :content_id -%>
+<%= f.hidden_field :content_id -%>
 
 <table class="show">
   <tr>
@@ -18,8 +9,81 @@ value_form = case @item.form_type
     <th>設定値</th>
     <td>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
-      <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+      <%= @item.config[:comment_upper] %>
+      <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
     </td>
   </tr>
 </table>
+
+<%- if @item.name == 'category_type_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <%=raw t('comments.doc_style') %>
+      <%= text_area_tag :category_type_doc_style, @item.extra_values[:category_type_doc_style], size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示件数</th>
+    <td>
+      <%= text_field_tag :category_type_docs_number, @item.extra_values[:category_type_docs_number], class: 'number' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'category_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <%=raw t('comments.doc_style') %>
+      <%= text_area_tag :category_doc_style, @item.extra_values[:category_doc_style], size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示件数</th>
+    <td>
+      <%= text_field_tag :category_docs_number, @item.extra_values[:category_docs_number], class: 'number' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'doc_style' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
+    <td>
+      <%=raw t('comments.doc_style') %>
+      <%= text_area_tag :doc_doc_style, @item.extra_values[:doc_doc_style], size: '100x10' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.model_name.human %>表示件数</th>
+    <td>
+      <%= text_field_tag :doc_docs_number, @item.extra_values[:doc_docs_number], class: 'number' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'feed' -%>
+<table class="show">
+  <tr>
+    <th>表示件数</th>
+    <td>
+      <%= text_field_tag :feed_docs_number, @item.extra_values[:feed_docs_number], class: 'number' %>
+    </td>
+  </tr>
+  <tr>
+    <th>表示期間（当日含む）</th>
+    <td>
+      <%= text_field_tag :feed_docs_period, @item.extra_values[:feed_docs_period], class: 'number' %>
+      （例 公開日時が1週間以内の場合、入力は7　※当日含む）
+    </td>
+  </tr>
+</table>
+<%- end -%>

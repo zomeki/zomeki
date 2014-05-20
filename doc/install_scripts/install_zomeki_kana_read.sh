@@ -13,10 +13,25 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
+  yum install -y glibc-devel.i686 libstdc++-devel.i686 sox
+
   cd /usr/local/src
-  rm -rf darts-0.32.tar.gz darts-0.32
-  wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
-  tar zxf darts-0.32.tar.gz && cd darts-0.32 && ./configure && make && make install
+  rm -rf hts_engine_API-1.07.tar.gz hts_engine_API-1.07
+  wget http://downloads.sourceforge.net/hts-engine/hts_engine_API-1.07.tar.gz
+  tar zxf hts_engine_API-1.07.tar.gz && cd hts_engine_API-1.07 && ./configure CFLAGS='-m32' && make && make install
+
+  cd /usr/local/src
+  rm -rf open_jtalk-1.06.tar.gz open_jtalk-1.06
+  wget http://downloads.sourceforge.net/open-jtalk/open_jtalk-1.06.tar.gz
+  tar zxf open_jtalk-1.06.tar.gz && cd open_jtalk-1.06
+  sed -i 's/#define MAXBUFLEN 1024/#define MAXBUFLEN 10240/' bin/open_jtalk.c
+  ./configure --with-charset=UTF-8 CPPFLAGS='-m32' LDFLAGS='-m32' && make && make install
+
+  cd /usr/local/src
+  rm -rf open_jtalk_dic_utf_8-1.06.tar.gz open_jtalk_dic_utf_8-1.06
+  wget http://downloads.sourceforge.net/open-jtalk/open_jtalk_dic_utf_8-1.06.tar.gz
+  tar zxf open_jtalk_dic_utf_8-1.06.tar.gz
+  mkdir /usr/local/share/open_jtalk && mv open_jtalk_dic_utf_8-1.06 /usr/local/share/open_jtalk/dic
 
   cd /usr/local/src
   rm -rf lame-3.99.5.tar.gz lame-3.99.5
@@ -24,42 +39,19 @@ centos() {
   tar zxf lame-3.99.5.tar.gz && cd lame-3.99.5 && ./configure && make && make install
 
   cd /usr/local/src
-  rm -rf chasen-2.4.4.tar.gz chasen-2.4.4
-  wget http://jaist.dl.sourceforge.jp/chasen-legacy/32224/chasen-2.4.4.tar.gz
-  tar zxf chasen-2.4.4.tar.gz && cd chasen-2.4.4 && ./configure && make && make install
+  rm -rf mecab-0.996.tar.gz mecab-0.996
+  wget http://mecab.googlecode.com/files/mecab-0.996.tar.gz
+  tar zxf mecab-0.996.tar.gz && cd mecab-0.996 && ./configure --enable-utf8-only && make && make install
 
-  yum install -y nkf
   cd /usr/local/src
-  rm -rf ipadic-2.7.0.tar.gz ipadic-2.7.0
-  wget http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
-  tar zxf ipadic-2.7.0.tar.gz && cd ipadic-2.7.0 && ./configure
-cat <<'EOF' > to_utf8.sh
-#!/bin/bash
-for file in *.dic *.cha chasenrc
-do
-if [ -f $file ]; then
-  nkf --utf8 $file > tmpfile
-  mv tmpfile $file
-fi
-done
-exit
-EOF
-  chmod 755 to_utf8.sh
-  ./to_utf8.sh
-  ldconfig
-  `chasen-config --mkchadic`/makemat -i w
-  `chasen-config --mkchadic`/makeda -i w chadic *.dic
-  make install
+  rm -rf mecab-ipadic-2.7.0-20070801.tar.gz mecab-ipadic-2.7.0-20070801
+  wget http://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
+  tar zxf mecab-ipadic-2.7.0-20070801.tar.gz && cd mecab-ipadic-2.7.0-20070801 && ./configure --with-charset=utf8 && make && make install
 
-  yum install -y libxslt-devel
-  cd /var/share/zomeki/ext/morph/chaone
-  chmod 775 configure
-  ./configure && make && make install
-
-  cd /var/share/zomeki/ext/gtalk
-  chmod 775 configure
-  ./configure && make
-  chmod 755 /var/share/zomeki/ext/gtalk_filter.rb
+  cd /usr/local/src
+  rm -rf mecab-ruby-0.996.tar.gz mecab-ruby-0.996
+  wget http://mecab.googlecode.com/files/mecab-ruby-0.996.tar.gz
+  tar zxf mecab-ruby-0.996.tar.gz && cd mecab-ruby-0.996 && ruby extconf.rb && make && make install
 }
 
 others() {
@@ -67,14 +59,14 @@ others() {
   exit
 }
 
-if [ -f /etc/lsb-release ]; then
+if [ -f /etc/centos-release ]; then
+  centos
+elif [ -f /etc/lsb-release ]; then
   if grep -qs Ubuntu /etc/lsb-release; then
     ubuntu
   else
     others
   fi
-elif [ -f /etc/centos-release ]; then
-  centos
 else
   others
 fi

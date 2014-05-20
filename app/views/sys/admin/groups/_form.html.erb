@@ -20,7 +20,7 @@
     <td><%= f.text_field :name, :class => 'name' %></td>
   </tr><tr>
     <th><%= @item.locale(:name_en) %></th>
-    <td><%= f.text_field :name_en, :class => 'nameEn' %></td>
+    <td><%= f.text_field :name_en, :class => 'nameEn' %> <strong>使用可能文字</strong> 半角英数、「.」、「_」、「-」</td>
   </tr><tr>
     <th><%= @item.locale(:ldap) %></th>
     <td><%= f.radio_buttons :ldap, @item.ldap_states, :class => 'status' %></td>
@@ -30,22 +30,24 @@
   </tr>
 </table>
 
-<br /><p class="form">Web公開</p>
+<br /><p class="form">グループ設定</p>
 
 <table class="show">
   <tr>
-    <th><%= @item.locale(:web_state) %></th>
-    <td><%= f.radio_buttons :web_state, @item.web_states, :class => 'status' %></td>
-  </tr>
-  <%= layout_form f, :container => :tr %>
-  <tr>
+    <th><%= @item.locale(:address) %></th>
+    <td><%= f.text_field :address, :class => 'title' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:tel) %></th>
+    <td><%= f.text_field :tel, :class => 'number' %>
+        <%= f.text_field :tel_attend %></td>
+  </tr><tr>
+    <th><%= @item.locale(:fax) %></th>
+    <td><%= f.text_field :fax, :class => 'number' %></td>
+  </tr><tr>
     <th><%= @item.locale(:email) %></th>
     <td><%= f.text_field :email, :class => 'email' %></td>
   </tr><tr>
-    <th><%= @item.locale(:tel) %></th>
-    <td><%= f.text_field :tel, :class => 'number' %></td>
-  </tr><tr>
-    <th><%= @item.locale(:outline_uri) %></th>
-    <td><%= f.text_field :outline_uri, :class => 'url' %></td>
-  </tr>  
+    <th><%= @item.locale(:note) %></th>
+    <td><%= f.text_field :note, :class => 'title' %></td>
+  </tr>
 </table>

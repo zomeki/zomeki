@@ -3,20 +3,28 @@
 return nil unless item.inquiry
 return nil unless item.inquiry.visible?
 
-%><br />
-
-<p class="form">連絡先</p>
+%>
 
 <table class="show">
   <tr>
+    <th>連絡先表示</th>
+    <td><%= item.inquiry.state == 'visible' ? '表示' : '非表示' %></td>
+  </tr>
+  <tr>
     <th>課</th>
     <td><%= safe{item.inquiry.group.full_name} %></td>
+<% if false %>
   </tr><tr>
     <th>室・担当</th>
     <td><%= item.inquiry.charge %></td>
+<% end %>
+  </tr><tr>
+    <th>住所</th>
+    <td><%= item.inquiry.address %></td>
   </tr><tr>
     <th>電話番号</th>
-    <td><%= item.inquiry.tel %></td>
+    <td><%= item.inquiry.tel %>
+        <%= item.inquiry.tel_attend %></td>
   </tr><tr>
     <th>ファクシミリ</th>
     <td><%= item.inquiry.fax %></td>
@@ -27,4 +35,7 @@ return nil unless item.inquiry.visible?
     <td><%= item.inquiry.email %></td>
   </tr>
   <% end %>
+  </tr><tr>
+    <th>備考</th>
+    <td><%= item.inquiry.note %></td>
 </table>

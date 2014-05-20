@@ -1,0 +1,34 @@
+<%-
+  common_attrs = {id: nil}
+
+  case
+  when (category = category_set[:category])
+    category_type_id = category.category_type.id
+    categories_for_option = category.category_type.categories_for_option
+    category_id = category.id
+  when (category_type = category_set[:category_type])
+    category_type_id = category_type.id
+    categories_for_option = category_type.categories_for_option
+    category_id = nil
+  else
+    common_attrs.merge!(disabled: true)
+    category_type_id = nil
+    categories_for_option = []
+    category_id = nil
+  end
+-%>
+<tr style="<%= 'display: none;' if common_attrs[:disabled] %>">
+  <th><%= GpCategory::CategoryType.model_name.human %></th>
+  <td class="category_type"><%= select_tag "category_types[#{index || 'N'}]", options_for_select(category_types_for_option, category_type_id), common_attrs.merge(include_blank: true) %></td>
+  <th><%= GpCategory::Category.model_name.human %></th>
+  <td class="category"><%= select_tag "categories[#{index || 'N'}]", options_for_select(categories_for_option, category_id), common_attrs.merge(include_blank: true) %></td>
+  <td style="text-align: right;"><%= link_to_function '条件設定▼', "toggle_form(this, $(this).closest('tr').next(), '条件設定▼', '条件設定▲', true)" %></td>
+</tr>
+<tr style="display: none;">
+  <td><%= GpCategory::Category.model_name.human %>階層</td>
+  <td colspan="4">
+    <%- layer_options.each do |lo| -%>
+    <label><%= radio_button_tag "layers[#{index || 'N'}]", lo.last, lo.last == category_set[:layer], common_attrs %> <%= lo.first %></label>
+    <%- end -%>
+  </td>
+</tr>

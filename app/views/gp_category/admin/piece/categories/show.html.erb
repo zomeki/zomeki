@@ -1,0 +1,14 @@
+<%= render(layout: 'gp_category/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :in_settings_category_type_id %></th>
+    <td><%= @item.category_type.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :in_settings_num_docs_visibility %></th>
+    <td><%= @item.num_docs_visibility_text %></td>
+  </tr>
+</table>
+<%- end -%>

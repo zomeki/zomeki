@@ -26,7 +26,7 @@
   float: left;
   width: 400px;
   line-height: 60px;
-} 
+}
 #header h1 a {
   display: block;
   width: 400px;
@@ -155,11 +155,13 @@
 }
 #content h2 {
   margin: 15px 0px 15px 5px;
-  padding-left: 8px;
-  border-left: 3px solid #000;
   color: #000;
   font-size: 120%;
   font-weight: bold;
+}
+#contentHeader h2 {
+  padding-left: 8px;
+  border-left: 3px solid #000;
 }
 #content .noticeBox {
   margin: 15px 0px;
@@ -185,9 +187,9 @@
   margin: 0px 2px;
   padding: 8px 18px;
   border: 1px solid #bbb;
-  -webkit-box-shadow: #999 0px 1px 2px;
-  -moz-box-shadow: #999 0px 1px 2px;
-  box-shadow: #999 0px 1px 2px;
+  -webkit-box-shadow: #ddd 0px 1px 2px;
+  -moz-box-shadow: #ddd 0px 1px 2px;
+  box-shadow: #ddd 0px 1px 2px;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#fdfdfd));
   background-image: -webkit-linear-gradient(#ffffff, #fdfdfd);
   background-image: -moz-linear-gradient(#ffffff, #fdfdfd);
@@ -201,6 +203,12 @@
   position: relative;
   text-decoration: none;
   color: #000;
+}
+#content .actionMenu a:hover,
+#content .actionMenu a:focus,
+#content .actionMenu a.current {
+  background-color: #fce1de;
+  background-image: none !important;
 }
 #content .navi {
   margin: 10px 0px 10px 0px;

@@ -1,0 +1,40 @@
+ja:
+  activerecord:
+    models:
+      survey/form: フォーム
+      survey/question: 質問
+      survey/form_answer: 回答
+    attributes:
+      survey/form:
+        state: 状態
+        name: URL名
+        title: フォーム名
+        opened_at: 開始日時
+        closed_at: 終了日時
+        sitemap_state: サイトマップ
+        sort_no: 並び順
+        created_at: 作成日時
+        summary: 概要
+        description: 説明
+        receipt: 送信後のメッセージ
+        confirmation: 確認画面
+      survey/question:
+        state: 状態
+        title: 項目名
+        sort_no: 並び順
+        description: 説明
+        style_attribute: スタイル（style=）
+        required: 必須
+        form_type: 種別
+        form_text_max_length: 最大文字数
+        form_options: 選択候補
+      survey/form_answer:
+        answered_url: 回答されたページ
+        created_at: 回答日時
+        remote_addr: IPアドレス
+        user_agent: ユーザーエージェント
+        captcha: 画像認証
+      survey/piece/form:
+        target_form_id: リンク先
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト

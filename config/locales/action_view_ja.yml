@@ -51,42 +51,42 @@ ja:
       half_a_minute: "30秒前後"
       less_than_x_seconds:
         one:   "less than 1 second"
-        other: "less than {{count}} seconds"
+        other: "less than %{count} seconds"
       x_seconds:
         one:   "1 second"
-        other: "{{count}} seconds"
+        other: "%{count} seconds"
       less_than_x_minutes:
         one:   "less than a minute"
-        other: "less than {{count}} minutes"
+        other: "less than %{count} minutes"
       x_minutes:
         one: "1分"
-        other: "{{count}}分"
+        other: "%{count}分"
       about_x_hours:
         one: "約1時間"
-        other: "約{{count}}時間"
+        other: "約%{count}時間"
       x_days:
         one: "1日"
-        other: "{{count}}日"
+        other: "%{count}日"
       about_x_months:
         one:   "about 1 month"
-        other: "about {{count}} months"
+        other: "about %{count} months"
       x_months:
         one: "1ヶ月"
-        other: "{{count}}ヶ月"
+        other: "%{count}ヶ月"
       about_x_years:
         one:   "about 1 year"
-        other: "about {{count}} years"
+        other: "about %{count} years"
       over_x_years:
-        one: "{{count}}年以上"
-        other: "{{count}}年以上"
+        one: "%{count}年以上"
+        other: "%{count}年以上"
 
   activerecord:
     errors:
       template:
         header:
-          #one: "{{model}}にエラーが発生しました。"
+          #one: "%{model}にエラーが発生しました。"
           one: "入力もれがあります。"
-          #other: "{{model}}に{{count}}つのエラーが発生しました。"
-          other: "{{count}}個の入力もれがあります。"
+          #other: "%{model}に%{count}つのエラーが発生しました。"
+          other: "%{count}個の入力もれがあります。"
         # The variable :count is also available
         body: "次の項目を確認してください。"

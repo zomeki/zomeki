@@ -80,7 +80,12 @@ module Cms::Controller::Layout
         :smart_phone_body => '[[content]]'
       })
     end
-    
+
+    if params[:filename_base] =~ /^more($|_)/i &&
+       Page.current_item.respond_to?(:more_layout) && Page.current_item.more_layout
+      Page.layout = Page.current_item.more_layout
+    end
+
     body = Page.layout.body_tag(request).clone.to_s
     
     ## render the piece
@@ -161,7 +166,7 @@ module Cms::Controller::Layout
     
     ## ruby(kana)
     if Page.ruby
-      body = Cms::Lib::Navi::Ruby.convert(body)
+      body = Cms::Lib::Navi::Kana.convert(body)
     end
     
 #    ## for preview
@@ -175,7 +180,7 @@ module Cms::Controller::Layout
     body = last_convert_body(body)
     
     ## render the true layout
-    render :text => body.force_encoding('utf-8'), :layout => 'layouts/public/base'
+    render :text => (body ? body.force_encoding('UTF-8') : ''), :layout => 'layouts/public/base'
   end
   
   def last_convert_body(body)

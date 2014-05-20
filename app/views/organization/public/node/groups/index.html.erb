@@ -1,0 +1,14 @@
+<div class="contentOrganization contentOrganizationGroups">
+  <%- @groups.each do |group| -%>
+  <section class="<%= group.name %>">
+    <h2><%= link_to group.sys_group.name, group.public_uri %></h2>
+    <%- unless group.public_children.empty? -%>
+    <ul>
+      <%- group.public_children.each do |child| -%>
+      <%= group_li(child) %>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>

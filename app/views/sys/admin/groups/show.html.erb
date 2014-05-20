@@ -27,22 +27,24 @@
   </tr>
 </table>
 
-<br /><p class="form">Web公開</p>
+<br /><p class="form">グループ設定</p>
 
 <table class="show">
   <tr>
-    <th><%= @item.locale(:web_state) %></th>
-    <td><%= @item.web_status.name %></td>
-  </tr>
-  <%= layout_view @item, :container => :tr %>
-  <tr>
+    <th><%= @item.locale(:address) %></th>
+    <td><%= @item.address %></td>
+  </tr> <tr>
+    <th><%= @item.locale(:tel) %></th>
+    <td><%= @item.tel %>
+        <%= @item.tel_attend %></td>
+  </tr> <tr>
+    <th><%= @item.locale(:fax) %></th>
+    <td><%= @item.fax %></td>
+  </tr><tr>
     <th><%= @item.locale(:email) %></th>
     <td><%= @item.email %></td>
   </tr><tr>
-    <th><%= @item.locale(:tel) %></th>
-    <td><%= @item.tel %></td>
-  </tr><tr>
-    <th><%= @item.locale(:outline_uri) %></th>
-    <td><%= @item.outline_uri %></td>
-  </tr>  
+    <th><%= @item.locale(:note) %></th>
+    <td><%= @item.note %></td>
+  </tr>
 </table>

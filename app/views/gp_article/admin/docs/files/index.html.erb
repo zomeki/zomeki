@@ -1,22 +1,22 @@
-<%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true}) do |f| %>
+<%= form_for(:item, :url => gp_article_doc_files_path(@content, doc_id: @doc_id), :html => {:multipart => true, :id => 'file_form'}) do |f| %>
   <%= error_messages_for :item %>
-  <%= render 'form', f: f, submit_label: 'アップロード' %>
+  <%= render 'form_multiple', f: f, submit_label: 'アップロード' %>
 <% end %>
 
 <%= javascript_tag do %>
-  function ckeInsertContent(value) {
-    parent.CKEDITOR.instances['item_body'].insertHtml(value);
-  }
-  function selectAction() {
-    var filesForm = document.filesForm;
-    var selectFile;
-    for (var i=0; i < filesForm.elements.s_item.length; i++) {
-      if (filesForm.elements.s_item[i].checked) {
-        var element = document.getElementById("link_attach" + filesForm.elements.s_item[i].value);
-        alert(element.getAttribute('onclick'));
+function ckeInsertContent(value) {
+  if (parent.CKEDITOR.currentInstance) {
+    parent.CKEDITOR.currentInstance.insertHtml(value);
+  } else {
+    for (var i in parent.CKEDITOR.instances) {
+      var instance = parent.CKEDITOR.instances[i];
+      if (instance.container.isVisible()) {
+        instance.insertHtml(value);
+        break;
       }
     }
   }
+}
 <% end %>
 
 <table class="index">
@@ -26,7 +26,7 @@
     <th style="width: 60px; text-align: center;">添付</th>
     <th style="width: 90px; text-align: center;">サムネイル</th>
     <th style="width: 80px; text-align: center;">画像の貼付</th>
-    <th>添付ファイル</th>
+    <th>添付ファイル名</th>
     <th style="width: 120px; text-align: center;">サイズ（幅x高さ）</th>
   </tr>
 
@@ -43,9 +43,9 @@
     </td>
     <td style="text-align: center;">
       <% if item.image_file? %>
-        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), file_content_path, target: '_blank' %>
+        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), file_content_path, class: 'thumbnail', title: item.title %>
       <% else %>
-        <%= link_to 'File', file_content_path, class: item.css_class, target: '_blank' %>
+        <%= link_to 'File', file_content_path, class: item.css_class, onclick: "parent.document.location=$(this).attr('href'); return false;" %>
       <% end %>
     </td>
     <td style="text-align: center;">
@@ -54,7 +54,7 @@
           %Q(ckeInsertContent('<img src="#{file_content_path}" alt="#{item.alt}" title="#{item.alt}" />')), id: "link_image#{item.id}" %>
       <% end %>
     </td>
-    <td><%= item.name %></td>
+    <td><span class="item_name" item_name="<%= item.name %>"><%= item.name %></span></td>
     <td style="text-align: center;"><%= item.eng_unit %><br /><%= item.image_size %></td>
   </tr>
   <% end %>

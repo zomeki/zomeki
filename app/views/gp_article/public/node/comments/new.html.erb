@@ -1,0 +1,39 @@
+<article class="contentGpArticleDoc">
+
+<div class="comments">
+  <h2>コメントの投稿</h2>
+  <%= form_for(@comment, as: 'comment', url: "#{@doc.public_uri}comments/confirm") do |f| -%>
+  <%= f.error_messages %>
+  <div class="commentPost">
+    <table>
+      <tr>
+        <th><%= f.label :author_name, '名前' %> <span class="note">※</span></th>
+        <td><%= f.text_field :author_name, :style => 'width: 300px;' %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :author_email, 'メールアドレス' %></th>
+        <td><%= f.text_field :author_email, :style => 'width: 300px;' %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :author_url, 'ホームページ' %></th>
+        <td><%= f.text_field :author_url, :style => 'width: 500px;' %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :body, 'コメント' %></th>
+        <td><%= f.text_area :body, size: '100x5' %></td>
+      </tr>
+      <%- unless @confirmation_required -%>
+      <tr>
+        <th>画像認証</th>
+        <td><%= show_simple_captcha(input_html: {required: false}) %></td>
+      </tr>
+      <%- end -%>
+      <tr>
+        <td colspan="2" style="text-align: center;"><%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %></td>
+      </tr>
+    </table>
+  </div>
+  <%- end -%>
+</div>
+
+<!-- end .contentGpArticleDoc --></article>

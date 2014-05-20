@@ -1,22 +1,24 @@
-ja: 
-  activerecord: 
-    attributes: 
-      sys/sequence: 
+ja:
+  activerecord:
+    models:
+      sys/user: "ユーザ"
+    attributes:
+      sys/sequence:
         created_at: "作成日時"
         updated_at: "更新日時"
         name: "名前"
         version: "バージョン"
         value: "値"
-      
-      sys/language: 
+
+      sys/language:
         state: "状態"
         created_at: "作成日時"
         updated_at: "更新日時"
         sort_no: "並び順"
         name: "内部名前"
         title: "表示名称"
-      
-      sys/group: 
+
+      sys/group:
         state: "状態"
         created_at: "作成日時"
         updated_at: "更新日時"
@@ -30,14 +32,17 @@ ja:
         ldap: "LDAP同期"
         ldap_version: "LDAP同期バージョン"
         web_state: "Web公開"
+        address: "住所"
         tel: "電話番号"
+        fax: "ファクシミリ"
         outline_uri: "業務概要URL"
-      
-      sys/group_user: 
+        note: "備考"
+
+      sys/group_user:
         created_at: "作成日時"
         updated_at: "更新日時"
-      
-      sys/user: 
+
+      sys/user:
         id: "ID"
         created_at: "作成日時"
         updated_at: "更新日時"
@@ -58,33 +63,33 @@ ja:
         role_name: "ロール権限"
         admin_creatable: "サイト管理者作成"
         site_creatable: "サイト作成"
-      
-      sys/role_name: 
+
+      sys/role_name:
         name: "ロールID"
         title: "ロール名"
-        
-      sys/object_privilege: 
+
+      sys/object_privilege:
         item_unid: "コンセプト"
         action: "権限"
         in_actions: "権限"
-        
-      sys/maintenance: 
+
+      sys/maintenance:
         created_at: "作成日時"
         updated_at: "編集日時"
         published_at: "公開日時"
         state: "状態"
         title: "タイトル"
         body: "本文"
-      
-      sys/message: 
+
+      sys/message:
         created_at: "作成日時"
         updated_at: "編集日時"
         published_at: "公開日時"
         state: "状態"
         title: "タイトル"
         body: "本文"
-      
-      sys/file: 
+
+      sys/file:
         file: "ファイル"
         name: "保存ファイル名"
         title: "表示ファイル名"

@@ -1,0 +1,10 @@
+<%- unless @comments.empty? -%>
+<ul>
+  <%- @comments.each do |comment| -%>
+  <li>
+    <%= link_to comment.doc.title, "#{comment.doc.public_uri}#comments" %>
+    <%= "(#{comment.author_name})" if @piece.authors_visible? %>
+  </li>
+  <%- end -%>
+</ul>
+<%- end -%>

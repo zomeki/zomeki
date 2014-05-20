@@ -1,0 +1,26 @@
+#simple_tabs {
+  margin: 0;
+  padding: 5px 0;
+}
+
+#simple_tabs > li {
+  background-color: #ccc;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  cursor: pointer;
+  display: inline;
+  margin: 0;
+  padding: 5px 10px;
+}
+#simple_tabs > li.current {
+  background-color: #fff;
+  padding-bottom: 6px;
+}
+
+#simple_tab_panels > div {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  display: none;
+  margin: 0;
+  padding: 10px;
+}

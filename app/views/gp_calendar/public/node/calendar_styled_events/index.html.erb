@@ -1,0 +1,62 @@
+<div class="calendarEvents calendarCalendarEvents">
+  <h2><%= @date.year %>年<%= @date.month %>月</h2>
+
+  <%= render 'gp_calendar/public/node/shared/pagination', extra_css: 'upperPagination' %>
+
+  <table border="1">
+    <thead class="wdays">
+      <tr>
+        <th class="wday sun">日</th>
+        <th class="wday mon">月</th>
+        <th class="wday tue">火</th>
+        <th class="wday wed">水</th>
+        <th class="wday thu">木</th>
+        <th class="wday fri">金</th>
+        <th class="wday sat">土</th>
+      </tr>
+    </thead>
+    <tbody class="days">
+      <%- @weeks.each do |week| -%>
+      <tr class="week">
+        <%- week.each do |day| -%>
+        <td id="<%= 'day%02d' % day.day if day.month == @date.month %>" class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= ' prevMonth' if day < @date.beginning_of_month %><%= ' nextMonth' if day > @date.end_of_month %>">
+          <p class="date"><%= day.day %></p>
+          <%- if @content.setting_value(:show_qreki) == "1" -%>
+          <div class="qreki">
+          <p class="date"><%= qreki(day) %></p>
+          </div>
+
+          <%- end -%>
+          <%- unless (holidays = @holidays.select{|e| e.started_on = day.year; day == e.started_on }).empty? -%>
+          <ul>
+          <%- holidays.each do |holiday| -%>
+          <li class="<%= holiday.kind %>"><%= holiday.title %></li>
+          <%- end -%>
+          </ul>
+          <%- end -%>
+
+          <%- unless (events = @events.select{|e| day.between?(e.started_on, e.ended_on) }).empty? -%>
+          <ul>
+            <%- events.each do |event| -%>
+            <li>
+              <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
+              <%- unless event.categories.empty? -%>
+              <p class="category">
+                <%- event.categories.each do |category| -%>
+                <span class="category<%= category.name.capitalize %>"><%= category.title %></span>
+                <%- end -%>
+              </p>
+              <%- end -%>
+            </li>
+            <%- end -%>
+          </ul>
+          <%- end -%>
+        </td>
+        <%- end -%>
+      </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+
+  <%= render 'gp_calendar/public/node/shared/pagination', extra_css: 'lowerPagination' %>
+<!-- end .calendarEvents --></div>

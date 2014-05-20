@@ -1,0 +1,86 @@
+<%- unless Page.mobile? -%>
+<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#current_url').closest('form').submit(function (event) {
+    $('#current_url').val(parent.document.location);
+    $('#current_url_title').val(parent.document.title);
+  });
+});
+<%- end -%>
+<%- end -%>
+
+<div class="surveyForm">
+  <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
+
+  <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
+    <%= f.error_messages %>
+
+    <%- unless @form_answer.form.public_questions.empty? -%>
+    <div class="questions">
+      <%- @form_answer.form.public_questions.each do |question| -%>
+      <div class="question">
+        <div class="question_content">
+          <%= label_tag "question_#{question.id}", question.title %>
+          <% if question.required? %><span class="note">※</span><% end %>
+        </div>
+
+        <div class="answer_content">
+          <%- case question.form_type -%>
+          <%- when 'text_field' -%>
+            <%= text_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute %>
+            <%- if question.form_text_max_length -%>
+            <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>
+            <%- end -%>
+          <%- when 'text_area' -%>
+            <%= text_area_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute, size: '100x10' %>
+            <%- if question.form_text_max_length -%>
+            <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>
+            <%- end -%>
+          <%- when 'select' -%>
+            <%= select_tag "question_answers[#{question.id}]",
+                           options_for_select(question.form_options_for_select, @form_answer.detect_answer_by_question(question).try(:content)), style: question.style_attribute,
+                           include_blank: true %>
+          <%- when 'radio_button' -%>
+            <%= hidden_field_tag "question_answers[#{question.id}][]" %>
+            <%- question.form_options_for_select.each do |option| -%>
+              <label><%= radio_button_tag "question_answers[#{question.id}]", option,
+                                          option == @form_answer.detect_answer_by_question(question).try(:content) %> <%= option %></label>
+            <%- end -%>
+          <%- when 'check_box' -%>
+            <%= hidden_field_tag "question_answers[#{question.id}][]" %>
+            <%- question.form_options_for_select.each do |option| -%>
+              <label><%= check_box_tag "question_answers[#{question.id}][]", option,
+                                       @form_answer.detect_answer_by_question(question).try(:content).try(:split, ',').try(:include?, option) %> <%= option %></label>
+            <%- end -%>
+          <%- end -%>
+        </div>
+
+        <%- if question.description.present? -%>
+        <div class="body"><%=raw question.description %></div>
+        <%- end -%>
+      </div>
+      <%- end -%>
+    </div>
+    <%- end -%>
+
+    <%- if @content.use_captcha? -%>
+    <div class="question">
+      <div class="question_content">画像認証</div>
+      <div class="answer_content"><%= show_simple_captcha %></div>
+    </div>
+    <%- end -%>
+
+    <div class="submit">
+      <%- if @form_answer.form.confirmation? -%>
+      <%= submit_tag '確認画面へ' %>
+      <%- else -%>
+      <%= submit_tag '送信', confirm: '送信してもよろしいですか？', disable_with: '送信中...' %>
+      <%- end -%>
+    </div>
+
+    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
+    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
+    <%= hidden_field_tag :piece, true if params[:piece] -%>
+  <%- end -%>
+</div>

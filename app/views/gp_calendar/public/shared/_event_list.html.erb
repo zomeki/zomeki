@@ -1,0 +1,18 @@
+<%-
+link_to_options = if event.href.present?
+                    [event.href, target: event.target]
+                  else
+                    nil
+                  end
+
+event_title = if link_to_options
+                link_to *(link_to_options.unshift event.title)
+              else
+                h event.title
+              end
+
+title = %Q!<p class="title">#{event_title}</p>!
+
+event_line = list_style.gsub(/@title@/, title).html_safe
+-%>
+<%= event_line %>

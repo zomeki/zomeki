@@ -1,0 +1,24 @@
+<div class="contentOrganization contentOrganizationGroup<%= @group.parent ? 'Unit' : 'Department' %>">
+  <%- unless @docs.empty? -%>
+  <div class="articleHeader"><h2>新着情報</h2></div>
+  <ul>
+    <%- @docs.each do |doc| -%>
+    <li><%= doc_replace(doc, @content.doc_style, @content.date_style, @content.time_style) %></li>
+    <%- end -%>
+  </ul>
+  <div class="more"><%= link_to '>>新着情報の一覧を見る', "#{@group.public_uri}more.html" %></div>
+  <%- end -%>
+
+  <%- if false -%>
+  <%- unless @group.public_children.empty? -%>
+  <ul>
+    <%- @group.public_children.each do |child| -%>
+    <li>
+      <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
+      <div class="information"><%=simple_format child.business_outline %></div>
+    </li>
+    <%- end -%>
+  </ul>
+  <%- end -%>
+  <%- end -%>
+</div>

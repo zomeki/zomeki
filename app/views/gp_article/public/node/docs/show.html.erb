@@ -1,15 +1,34 @@
 <article class="contentGpArticleDoc">
 
-<p class="publishedAt"><%= @item.published_at.try(:strftime, '%Y年%-m月%-d日') %></p>
+<%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
+<div class="date">
+  <%- if @content.display_dates(:published_at) -%>
+  <p class="publishedAt">公開日 <%= @item.formated_display_published_at %></p>
+  <%- end -%>
+  <%- if @content.display_dates(:updated_at) -%>
+  <p class="updatedAt">最終更新日 <%= @item.formated_display_updated_at %></p>
+  <%- end -%>
+</div>
+<%- end -%>
 
-<div class="body"><%=raw (unless Page.mobile?
-  @item.body.gsub('"file_contents/', %Q("#{Core.mode == 'preview' ? @item.preview_uri : @item.public_uri}file_contents/))
-else
-  body_doc = Nokogiri::XML("<bory_root>#{@item.mobile_body.presence || @item.body}</bory_root>")
-  body_doc.xpath('//img').each {|img| img.replace(img.attribute('alt').try(:value) || '') }
-  body_doc.xpath('//a').each {|a| a.replace(a.text) if a.attribute('href').try(:value) =~ %r!^file_contents/! }
-  body_doc.xpath('/bory_root').to_xml.gsub(%r!^<bory_root>|</bory_root>$!, '')
-end) %></div>
+<div class="body">
+  <div class="text-beginning"><%=raw (
+  unless Page.mobile?
+    body = @item.template ? template_body(@item.template, @item.template_values, @item.files) : @item.body.to_s
+    body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? @item.public_uri(without_filename: true) : @item.preview_uri(without_filename: true)}file_contents/))
+  else
+    @item.body_for_mobile
+  end) %></div>
+
+  <%- if @content.blog_functions_available? -%>
+    <%- if @item.body_more.present? -%>
+  <div class="text-continues"><%=raw @item.body_more %></div>
+    <%- end -%>
+    <%- if @content.blog_functions[:footer_style].present? -%>
+  <div class="footer"><%= doc_replace(@item, @content.blog_functions[:footer_style], @content.date_style, @content.time_style) %></div>
+    <%- end -%>
+  <%- end -%>
+</div>
 
 <%- unless Page.mobile? -%>
 <%= render 'cms/public/_partial/maps/view', item: @item %>
@@ -34,10 +53,16 @@ end) %></div>
 <%- end -%>
 <%- end -%>
 
-<%= render 'cms/public/_partial/inquiries/view', item: @item %>
+<%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
-<%- unless Page.mobile? -%>
-<div class="back"><%= link_to_function '戻る', 'history.back();' %></div>
+<%- if @content.blog_functions[:comment] -%>
+<%= render 'comments', item: @item %>
 <%- end -%>
 
+<%- if @item.links_in_body.any?{|l| l[:url] =~ /\.pdf$/i } -%>
+<div class="adobeReader">
+  <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>
+  <a href="http://get.adobe.com/jp/reader/" target="_blank" title="Adobe Readerダウンロード">Adobe Readerダウンロード</a>
+</div>
+<%- end -%>
 <!-- end .contentGpArticleDoc --></article>

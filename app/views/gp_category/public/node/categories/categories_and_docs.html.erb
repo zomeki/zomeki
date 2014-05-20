@@ -1,0 +1,34 @@
+<div class="contentGpCategory contentGpCategoryCategory">
+  <%- unless @category.public_children.empty? -%>
+  <section class="categoryType categories">
+    <h2><%= @category.title %></h2>
+    <nav>
+      <ul>
+        <%- @category.public_children.each do |child| -%>
+        <li class="category<%= child.name.try(:camelize) %>"><%= link_to child.title, child.public_uri %></li>
+        <%- end -%>
+      </ul>
+    </nav>
+  </section>
+  <%- end -%>
+
+  <%- unless @docs.empty? -%>
+  <section class="categoryType">
+    <%- if @content.feed_display? -%>
+    <ul class="feed">
+      <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+      <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+    </ul>
+    <%- end -%>
+    <div class="docs">
+      <ul>
+        <%- @docs.each do |doc| -%>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style, @content.time_style) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  </section>
+  <%- end -%>
+
+  <%= paginate @docs %>
+</div>

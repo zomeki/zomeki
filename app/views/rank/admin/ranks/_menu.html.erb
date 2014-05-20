@@ -1,0 +1,6 @@
+<div class="actionMenu">
+  <%- if params[:action] == 'index' -%>
+  <%= link_to 'PV', {target: :pageviews}, class: ('current' if @target == 'pageviews') %>
+  <%= link_to '訪問者', {target: :visitors}, class: ('current' if @target == 'visitors') %>
+  <%- end -%>
+</div>

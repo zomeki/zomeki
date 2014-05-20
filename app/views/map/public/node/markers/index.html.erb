@@ -6,29 +6,55 @@
   <%= javascript_tag do -%>
   var map;
   google.maps.event.addDomListener(window, 'load', function (event) {
-    map = new Map('map_canvas', <%= @markers.first.try(:latitude) || 0 %>, <%= @markers.first.try(:longitude) || 0 %>);
+    map = new Map('map_canvas', <%= default_latitude %>, <%= default_longitude %>);
     <%- @markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
-                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>');
+                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
+                     '<%= @content.icon_image(marker.categories.first, true) %>');
     <%- end -%>
   });
   <%- end -%>
 
-  <div class="searchForm"><span>カテゴリ：</span><%= form_tag '', :method => 'get', :class => 'search' do -%>
-    <%= select_tag 'c', options_from_collection_for_select(@categories, :id, :title, params[:c]), :prompt => '----- すべて -----',
-                   :onchange => 'this.form.submit()' %>
-  <%- end -%></div>
-
   <%- unless @markers.empty? -%>
   <table>
     <tr>
+      <th>カテゴリ</th>
+      <%- if @content.show_images? -%>
+      <th>画像</th>
+      <%- end -%>
       <th>名称</th>
-      <th>マーカー</th>
+      <th>地図</th>
     </tr>
     <%- @markers.each do |marker| -%>
     <tr>
+      <td class="markerCategories">
+        <%- marker.categories.each do |category| -%>
+        <div class="<%= category.name -%>"><%= category.title %></div>
+        <%- end -%>
+      </td>
+      <%- if @content.show_images? -%>
+      <td class="markerImage">
+        <%- if marker.files.empty? -%>
+          <%- if @content.default_image.blank? -%>
+            画像がありません。
+          <%- else -%>
+            <%= image_tag @content.default_image %>
+          <%- end -%>
+        <%- else -%>
+          <%- unless (mi = marker_image(marker)).blank? -%>
+            <%= mi %>
+          <%- else -%>
+            <%- if @content.default_image.blank? -%>
+              画像がありません。
+            <%- else -%>
+              <%= image_tag @content.default_image %>
+            <%- end -%>
+          <%- end -%>
+        <%- end -%>
+      </td>
+      <%- end -%>
       <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
-      <td class="marker"><%= link_to_function '移動', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
+      <td class="marker"><%= link_to_function '表示', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
     </tr>
     <%- end -%>
   </table>

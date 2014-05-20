@@ -1,0 +1,14 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>アイコン画像</th>
+    <td><%= text_field_tag :icon_image, @icon_image, style: 'width: 400px;' %></td>
+  </tr>
+</table>

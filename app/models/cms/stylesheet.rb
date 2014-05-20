@@ -57,7 +57,7 @@ class Cms::Stylesheet < Sys::Model::ValidationModel::Base
   
   def textfile?
     return false unless file?
-    mime_type.blank? || mime_type =~ /^text/i
+    mime_type.blank? || mime_type =~ /(text|javascript)/i
   end
   
   def escaped_path
@@ -100,13 +100,14 @@ class Cms::Stylesheet < Sys::Model::ValidationModel::Base
     read_stat
     @_stat.mtime
   end
-  
+
   def read_body
-    self.body = NKF.nkf('-w', ::File.new(@full_path).read.to_s) if textfile?
-  rescue Exception
+    self.body = File.read(@full_path).encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace) if textfile?
+  rescue Exception => e
+    warn_log(e.message)
     self.body = "#読み込みに失敗しました。"
   end
-  
+
   ## Validation
   def valid_filename?(name, value)
     if value.blank?

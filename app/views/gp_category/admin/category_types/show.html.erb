@@ -14,18 +14,32 @@
     <td><%= @item.title %></td>
   </tr>
   <tr>
+    <th><%= @item.locale(:sitemap_state) %></th>
+    <td><%= @item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == @item.sitemap_state }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:docs_order) %></th>
+    <td><%= @item.class::DOCS_ORDER_OPTIONS.detect{|o| o.last == @item.docs_order }.try(:first) %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
 </table>
-
-<br />
 
 <p class="form">ページ設定</p>
 
 <table class="show">
   <%= concept_view @item, :container => :tr %>
   <%= layout_view @item, :container => :tr %>
+  <tr>
+    <th><%= @item.class.human_attribute_name :template_id %></th>
+    <td><%= @item.template.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :internal_category_type_id %></th>
+    <td><%= @item.internal_category_type.try(:title) %></td>
+  </tr>
 </table>
 
 <%= creator_view @item %>

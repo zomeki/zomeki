@@ -1,10 +1,10 @@
 module Sys::Model::Base
   include Sys::Model::ConditionBuilder
-  
+
   def self.included(mod)
-    mod.set_table_name mod.to_s.underscore.gsub('/', '_').downcase.pluralize
+    mod.table_name = mod.to_s.underscore.gsub('/', '_').downcase.pluralize
   end
-  
+
   def locale(name)
     label = I18n.t name, :scope => [:activerecord, :attributes, self.class.to_s.underscore]
     return label =~ /^translation missing:/ ? name.to_s.humanize : label

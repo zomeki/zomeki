@@ -1,0 +1,25 @@
+<%= render 'search' -%>
+
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th><%= GpArticle::Comment.human_attribute_name :author_name %></th>
+    <th><%= GpArticle::Doc.model_name.human %></th>
+    <th style="text-align: center; width: 150px;"><%= GpArticle::Comment.human_attribute_name :posted_at %></th>
+    <th style="text-align: center; width: 150px;"><%= GpArticle::Comment.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 60px;"><%= GpArticle::Comment.human_attribute_name :state %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, gp_article_comment_path(content: @content, id: item.id) %></td>
+    <td><%= item.author_name %></td>
+    <td><%= link_to item.doc.title, gp_article_doc_path(content: @content, id: item.doc.id) %></td>
+    <td style="text-align: center;"><%=i18n_l item.posted_at %></td>
+    <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
+    <td style="text-align: center;"><%= item.status.name %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

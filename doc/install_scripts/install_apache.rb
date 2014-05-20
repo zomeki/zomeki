@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 DONE_FLAG = "/tmp/#{$0}_done"
 
-PASSENGER_VERSION = '4.0.10'
+PASSENGER_VERSION = '4.0.42'
 
 puts '#### Install Apache ####'
 exit if File.exist?(DONE_FLAG)
@@ -66,14 +65,14 @@ def others
 end
 
 if __FILE__ == $0
-  if File.exist?('/etc/lsb-release')
-    if !`grep -s Ubuntu /etc/lsb-release`.empty?
+  if File.exist? '/etc/centos-release'
+    centos
+  elsif File.exist? '/etc/lsb-release'
+    unless `grep -s Ubuntu /etc/lsb-release`.empty?
       ubuntu
     else
       others
     end
-  elsif File.exist?('/etc/centos-release')
-    centos
   else
     others
   end

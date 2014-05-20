@@ -1,10 +1,4 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_view @item, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'gp_category/admin/piece/shared/show') do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
@@ -41,5 +35,4 @@
   </tr>
   <%- end -%>
 </table>
-
-<%= creator_view @item %>
+<%- end -%>

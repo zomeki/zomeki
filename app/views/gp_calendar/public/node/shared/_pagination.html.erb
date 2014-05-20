@@ -1,0 +1,27 @@
+<div class="pagination<%= " #{extra_css}" if defined?(extra_css) && extra_css.present? %>">
+  <%- if @year_only -%>
+    <%- if @date.prev_year.year < @min_date.year -%>
+    <span class="disabled prev_page">前の年</span>
+    <%- else -%>
+    <%= link_to '前の年', @node.public_uri + @date.prev_year.strftime('%Y/'), class: 'prev_page' %>
+    <%- end -%>
+    <span class="separator">|</span>
+    <%- if @date.next_year.year > @max_date.year -%>
+    <span class="disabled next_page">次の年</span>
+    <%- else -%>
+    <%= link_to '次の年', @node.public_uri + @date.next_year.strftime('%Y/'), class: 'next_page' %>
+    <%- end -%>
+  <%- else -%>
+    <%- if @date.prev_month < @min_date -%>
+    <span class="disabled prev_page">前の月</span>
+    <%- else -%>
+    <%= link_to '前の月', @node.public_uri + @date.prev_month.strftime('%Y/%m/'), class: 'prev_page' %>
+    <%- end -%>
+    <span class="separator">|</span>
+    <%- if @date.next_month > @max_date -%>
+    <span class="disabled next_page">次の月</span>
+    <%- else -%>
+    <%= link_to '次の月', @node.public_uri + @date.next_month.strftime('%Y/%m/'), class: 'next_page' %>
+    <%- end -%>
+  <%- end -%>
+</div>

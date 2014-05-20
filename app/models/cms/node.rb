@@ -14,21 +14,28 @@ class Cms::Node < ActiveRecord::Base
   include Cms::Model::Rel::Content
   include Cms::Model::Auth::Concept
   
+  SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+
   belongs_to :status,   :foreign_key => :state,      :class_name => 'Sys::Base::Status'
   belongs_to :parent,   :foreign_key => :parent_id,  :class_name => 'Cms::Node'
   belongs_to :layout,   :foreign_key => :layout_id,  :class_name => 'Cms::Layout'
   
   has_many   :children, :foreign_key => :parent_id,  :class_name => 'Cms::Node',
-    :order => :name, :dependent => :destroy
+    :order => 'sitemap_sort_no IS NULL, sitemap_sort_no, name', :dependent => :destroy
+  has_many   :children_in_route, :foreign_key => :route_id,  :class_name => 'Cms::Node',
+    :order => 'sitemap_sort_no IS NULL, sitemap_sort_no, name', :dependent => :destroy
   
   validates_presence_of :parent_id, :state, :model, :name, :title
   validates_uniqueness_of :name, :scope => [:site_id, :parent_id],
     :if => %Q(!replace_page?)
   validates_format_of :name, :with=> /^[0-9A-Za-z@\.\-_\+\s]+$/, :message=> :not_a_filename,
     :if => %Q(parent_id != 0)
-  
+
+  after_initialize :set_defaults
   after_destroy :remove_file
-  
+
+  scope :public, where(state: 'public')
+
   def validate
     errors.add :parent_id, :invalid if id != nil && id == parent_id
     errors.add :route_id, :invalid if id != nil && id == route_id
@@ -213,6 +220,18 @@ class Cms::Node < ActiveRecord::Base
 
     return self
   end
+
+  def sitemap_visible?
+    self.sitemap_state == 'visible'
+  end
+
+  def public_children
+    children.public
+  end
+
+  def public_children_in_route
+    children_in_route.public
+  end
   
 protected
   def remove_file
@@ -306,5 +325,11 @@ protected
       
       return item
     end
+  end
+
+  private
+
+  def set_defaults
+    self.sitemap_state ||= SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state)
   end
 end

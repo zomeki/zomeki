@@ -1,0 +1,14 @@
+<%= render(layout: 'map/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= @item.visible_category_types.map(&:title).join(', ') %></td>
+  </tr>
+  <tr>
+    <th>リンク先</th>
+    <td><%= "#{@item.target_node.title}（#{@item.target_node.name}）" if @item.target_node %></td>
+  </tr>
+</table>
+<%- end -%>

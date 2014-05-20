@@ -1,0 +1,21 @@
+<div class="contentGpCategoryCategoryType">
+  <%- @category_type.public_root_categories.each do |category| -%>
+  <section class="categoryType categoryType<%= @category_type.name.try(:camelize) %>">
+    <h2><%= link_to category.title, category.public_uri %></h2>
+    <%- unless category.public_docs.empty? -%>
+    <div class="docs">
+      <ul>
+        <%- category.public_docs.limit(@content.category_type_docs_number).each do |doc| -%>
+        <li><%= doc_replace(doc, @content.category_type_doc_style, @content.date_style, @content.time_style) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+    <%- end -%>
+    <%- if category.public_docs.count > @content.category_type_docs_number -%>
+    <div class="more">
+      <%= link_to '一覧へ', category.public_uri %>
+    </div>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>

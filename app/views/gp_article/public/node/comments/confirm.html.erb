@@ -1,0 +1,40 @@
+<article class="contentGpArticleDoc">
+
+<div class="comments">
+  <h2>コメントの投稿</h2>
+  <%= form_for(@comment, as: 'comment', url: "#{@doc.public_uri}comments") do |f| -%>
+  <%= f.error_messages %>
+  <div class="commentPost">
+    <table>
+      <tr>
+        <th><%= f.label :author_name, '名前' %></th>
+        <td><%= f.hidden_field :author_name %><%= f.object.author_name %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :author_email, 'メールアドレス' %></th>
+        <td><%= f.hidden_field :author_email %><%= f.object.author_email %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :author_url, 'ホームページ' %></th>
+        <td><%= f.hidden_field :author_url %><%= f.object.author_url %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :body, 'コメント' %></th>
+        <td><%= f.hidden_field :body %><%=simple_format f.object.body %></td>
+      </tr>
+      <tr>
+        <th>画像認証</th>
+        <td><%= show_simple_captcha(input_html: {required: false}) %></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: center;">
+          <%= submit_tag '投稿する' %>
+          <%= submit_tag '変更する', name: 'edit_comment' %>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <%- end -%>
+</div>
+
+<!-- end .contentGpArticleDoc --></article>

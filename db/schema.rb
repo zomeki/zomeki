@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130524021106) do
+ActiveRecord::Schema.define(:version => 20140509083136) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -58,6 +58,57 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "approval_approval_flows", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "title"
+    t.integer  "group_id"
+    t.integer  "sort_no"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "approval_approval_request_histories", :force => true do |t|
+    t.integer  "request_id"
+    t.integer  "user_id"
+    t.string   "reason"
+    t.text     "comment"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "approval_approval_request_histories", ["request_id"], :name => "index_approval_approval_request_histories_on_request_id"
+  add_index "approval_approval_request_histories", ["user_id"], :name => "index_approval_approval_request_histories_on_user_id"
+
+  create_table "approval_approval_requests", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "approval_flow_id"
+    t.integer  "approvable_id"
+    t.string   "approvable_type"
+    t.integer  "current_index"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "approval_approvals", :force => true do |t|
+    t.integer  "approval_flow_id"
+    t.integer  "index"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "approval_assignments", :force => true do |t|
+    t.integer  "assignable_id"
+    t.string   "assignable_type"
+    t.integer  "user_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.datetime "approved_at"
+  end
+
+  add_index "approval_assignments", ["assignable_type", "assignable_id"], :name => "index_approval_assignments_on_assignable_type_and_assignable_id"
+  add_index "approval_assignments", ["user_id"], :name => "index_approval_assignments_on_user_id"
 
   create_table "article_areas", :force => true do |t|
     t.integer  "unid"
@@ -212,6 +263,7 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.string   "name"
     t.text     "xml_properties", :limit => 2147483647
     t.string   "note"
+    t.string   "code"
   end
 
   create_table "cms_data_file_nodes", :force => true do |t|
@@ -298,7 +350,8 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
   end
 
   create_table "cms_inquiries", :force => true do |t|
-    t.string   "state",      :limit => 15
+    t.integer  "parent_unid"
+    t.string   "state",       :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -309,14 +362,15 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.text     "email"
   end
 
+  add_index "cms_inquiries", ["parent_unid"], :name => "index_cms_inquiries_on_parent_unid"
+
   create_table "cms_kana_dictionaries", :force => true do |t|
     t.integer  "unid"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.text     "body",        :limit => 2147483647
-    t.text     "ipadic_body", :limit => 2147483647
-    t.text     "unidic_body", :limit => 2147483647
+    t.text     "body",       :limit => 2147483647
+    t.text     "mecab_csv",  :limit => 2147483647
   end
 
   create_table "cms_layouts", :force => true do |t|
@@ -340,6 +394,28 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.text     "smart_phone_head"
     t.text     "smart_phone_body",       :limit => 2147483647
     t.text     "smart_phone_stylesheet", :limit => 2147483647
+  end
+
+  create_table "cms_link_check_logs", :force => true do |t|
+    t.integer  "link_check_id"
+    t.integer  "link_checkable_id"
+    t.string   "link_checkable_type"
+    t.boolean  "checked"
+    t.string   "title"
+    t.string   "body"
+    t.string   "url"
+    t.integer  "status"
+    t.string   "reason"
+    t.boolean  "result"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  create_table "cms_link_checks", :force => true do |t|
+    t.boolean  "in_progress"
+    t.boolean  "checked"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "cms_map_markers", :force => true do |t|
@@ -384,7 +460,7 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.integer  "unid"
     t.integer  "concept_id"
     t.integer  "site_id"
-    t.string   "state",         :limit => 15
+    t.string   "state",           :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "recognized_at"
@@ -397,9 +473,11 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.integer  "layout_id"
     t.string   "name"
     t.text     "title"
-    t.text     "body",          :limit => 2147483647
+    t.text     "body",            :limit => 2147483647
     t.text     "mobile_title"
-    t.text     "mobile_body",   :limit => 2147483647
+    t.text     "mobile_body",     :limit => 2147483647
+    t.string   "sitemap_state"
+    t.integer  "sitemap_sort_no"
   end
 
   add_index "cms_nodes", ["parent_id", "name"], :name => "parent_id"
@@ -430,12 +508,13 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
   add_index "cms_piece_link_items", ["piece_id"], :name => "piece_id"
 
   create_table "cms_piece_settings", :force => true do |t|
-    t.integer  "piece_id",   :null => false
+    t.integer  "piece_id",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
     t.text     "value"
     t.integer  "sort_no"
+    t.text     "extra_value"
   end
 
   add_index "cms_piece_settings", ["piece_id"], :name => "piece_id"
@@ -457,6 +536,7 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.text     "head",           :limit => 2147483647
     t.text     "body",           :limit => 2147483647
     t.text     "xml_properties", :limit => 2147483647
+    t.text     "etcetera",       :limit => 16777215
   end
 
   add_index "cms_pieces", ["concept_id", "name", "state"], :name => "concept_id"
@@ -523,6 +603,22 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
   end
 
   add_index "cms_talk_tasks", ["unid", "dependent"], :name => "unid"
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "enquete_answer_columns", :force => true do |t|
     t.integer "answer_id"
@@ -596,11 +692,28 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "layout_id"
+    t.string   "sitemap_state"
   end
 
   add_index "gnav_menu_items", ["concept_id"], :name => "index_gnav_menu_items_on_concept_id"
   add_index "gnav_menu_items", ["content_id"], :name => "index_gnav_menu_items_on_content_id"
   add_index "gnav_menu_items", ["layout_id"], :name => "index_gnav_menu_items_on_layout_id"
+
+  create_table "gp_article_comments", :force => true do |t|
+    t.integer  "doc_id"
+    t.string   "state"
+    t.string   "author_name"
+    t.string   "author_email"
+    t.string   "author_url"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.text     "body"
+    t.datetime "posted_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "gp_article_comments", ["doc_id"], :name => "index_gp_article_comments_on_doc_id"
 
   create_table "gp_article_docs", :force => true do |t|
     t.integer  "unid"
@@ -619,26 +732,90 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.datetime "recognized_at"
     t.string   "state"
     t.string   "event_state"
-    t.date     "event_date"
     t.text     "raw_tags"
     t.string   "mobile_title"
     t.text     "mobile_body"
     t.boolean  "terminal_pc_or_smart_phone"
     t.boolean  "terminal_mobile"
     t.string   "rel_doc_ids"
+    t.datetime "display_published_at"
+    t.datetime "display_updated_at"
+    t.date     "event_started_on"
+    t.date     "event_ended_on"
+    t.string   "marker_state"
+    t.text     "meta_description"
+    t.string   "meta_keywords"
+    t.string   "list_image"
+    t.integer  "prev_edition_id"
+    t.string   "og_type"
+    t.string   "og_title"
+    t.text     "og_description"
+    t.string   "og_image"
+    t.integer  "template_id"
+    t.text     "template_values"
+    t.string   "share_to_sns_with"
+    t.text     "body_more"
+    t.string   "body_more_link_text"
+    t.boolean  "feature_1"
+    t.boolean  "feature_2"
+    t.string   "filename_base"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
   add_index "gp_article_docs", ["content_id"], :name => "index_gp_article_docs_on_content_id"
 
-  create_table "gp_article_docs_gp_category_categories", :id => false, :force => true do |t|
-    t.integer "doc_id"
-    t.integer "category_id"
-  end
-
   create_table "gp_article_docs_tag_tags", :id => false, :force => true do |t|
     t.integer "doc_id"
     t.integer "tag_id"
+  end
+
+  create_table "gp_article_holds", :force => true do |t|
+    t.integer  "holdable_id"
+    t.string   "holdable_type"
+    t.integer  "user_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "gp_article_links", :force => true do |t|
+    t.integer  "doc_id"
+    t.string   "body"
+    t.string   "url"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "gp_calendar_events", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.date     "started_on"
+    t.date     "ended_on"
+    t.string   "name"
+    t.string   "title"
+    t.string   "href"
+    t.string   "target"
+    t.text     "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
+    t.integer "event_id"
+    t.integer "category_id"
+  end
+
+  create_table "gp_calendar_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.date     "date"
+    t.text     "description"
+    t.string   "kind"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.boolean  "repeat"
   end
 
   create_table "gp_category_categories", :force => true do |t|
@@ -656,12 +833,26 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "group_code"
+    t.string   "sitemap_state"
+    t.string   "docs_order"
+    t.integer  "template_id"
+    t.integer  "children_count",   :default => 0, :null => false
   end
 
   add_index "gp_category_categories", ["category_type_id"], :name => "index_gp_category_categories_on_category_type_id"
   add_index "gp_category_categories", ["concept_id"], :name => "index_gp_category_categories_on_concept_id"
   add_index "gp_category_categories", ["layout_id"], :name => "index_gp_category_categories_on_layout_id"
   add_index "gp_category_categories", ["parent_id"], :name => "index_gp_category_categories_on_parent_id"
+
+  create_table "gp_category_categorizations", :force => true do |t|
+    t.integer  "categorizable_id"
+    t.string   "categorizable_type"
+    t.integer  "category_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "sort_no"
+    t.string   "categorized_as"
+  end
 
   create_table "gp_category_category_types", :force => true do |t|
     t.integer  "unid"
@@ -674,11 +865,77 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.integer  "sort_no"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "sitemap_state"
+    t.string   "docs_order"
+    t.integer  "template_id"
+    t.integer  "internal_category_type_id"
   end
 
   add_index "gp_category_category_types", ["concept_id"], :name => "index_gp_category_category_types_on_concept_id"
   add_index "gp_category_category_types", ["content_id"], :name => "index_gp_category_category_types_on_content_id"
   add_index "gp_category_category_types", ["layout_id"], :name => "index_gp_category_category_types_on_layout_id"
+
+  create_table "gp_category_publishers", :force => true do |t|
+    t.integer  "category_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "gp_category_publishers", ["category_id"], :name => "index_gp_category_publishers_on_category_id"
+
+  create_table "gp_category_template_modules", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "name"
+    t.string   "title"
+    t.string   "module_type"
+    t.string   "module_type_feature"
+    t.string   "wrapper_tag"
+    t.text     "doc_style"
+    t.integer  "num_docs"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "gp_category_template_modules", ["content_id"], :name => "index_gp_category_template_modules_on_content_id"
+
+  create_table "gp_category_templates", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "name"
+    t.string   "title"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "gp_category_templates", ["content_id"], :name => "index_gp_category_templates_on_content_id"
+
+  create_table "gp_template_items", :force => true do |t|
+    t.integer  "template_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.string   "item_type"
+    t.text     "item_options"
+    t.string   "style_attribute"
+    t.integer  "sort_no"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "gp_template_items", ["template_id"], :name => "index_gp_template_items_on_template_id"
+
+  create_table "gp_template_templates", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "title"
+    t.text     "body"
+    t.integer  "sort_no"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "gp_template_templates", ["content_id"], :name => "index_gp_template_templates_on_content_id"
 
   create_table "laby_docs", :force => true do |t|
     t.integer  "unid"
@@ -703,6 +960,7 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.text     "window_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|
@@ -779,6 +1037,26 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.text     "name"
     t.text     "email"
   end
+
+  create_table "organization_groups", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "concept_id"
+    t.integer  "layout_id"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "sys_group_code"
+    t.string   "sitemap_state"
+    t.string   "docs_order"
+    t.integer  "sort_no"
+    t.text     "business_outline"
+    t.text     "contact_information"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "more_layout_id"
+  end
+
+  add_index "organization_groups", ["sys_group_code"], :name => "index_organization_groups_on_sys_group_code"
 
   create_table "portal_article_categories", :force => true do |t|
     t.integer  "unid"
@@ -1014,6 +1292,147 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
   add_index "public_bbs_threads", ["content_id"], :name => "index_public_bbs_threads_on_content_id"
   add_index "public_bbs_threads", ["user_id"], :name => "index_public_bbs_threads_on_user_id"
 
+  create_table "rank_categories", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "page_path"
+    t.integer  "category_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "rank_ranks", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "page_title"
+    t.string   "hostname"
+    t.string   "page_path"
+    t.date     "date"
+    t.integer  "pageviews"
+    t.integer  "visitors"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "rank_totals", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "term"
+    t.string   "page_title"
+    t.string   "hostname"
+    t.string   "page_path"
+    t.integer  "pageviews"
+    t.integer  "visitors"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "simple_captcha_data", :force => true do |t|
+    t.string   "key",        :limit => 40
+    t.string   "value",      :limit => 6
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  add_index "simple_captcha_data", ["key"], :name => "idx_key"
+
+  create_table "sns_share_accounts", :force => true do |t|
+    t.integer  "content_id"
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "info_nickname"
+    t.string   "info_name"
+    t.string   "info_image"
+    t.string   "info_url"
+    t.string   "credential_token"
+    t.string   "credential_expires_at"
+    t.string   "credential_secret"
+    t.text     "facebook_page_options"
+    t.string   "facebook_page"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "sns_share_accounts", ["content_id"], :name => "index_sns_share_accounts_on_content_id"
+
+  create_table "sns_share_shares", :force => true do |t|
+    t.integer  "sharable_id"
+    t.string   "sharable_type"
+    t.integer  "account_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "sns_share_shares", ["sharable_type", "sharable_id"], :name => "index_sns_share_shares_on_sharable_type_and_sharable_id"
+
+  create_table "survey_answers", :force => true do |t|
+    t.integer  "form_answer_id"
+    t.integer  "question_id"
+    t.text     "content"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "survey_answers", ["form_answer_id"], :name => "index_survey_answers_on_form_answer_id"
+  add_index "survey_answers", ["question_id"], :name => "index_survey_answers_on_question_id"
+
+  create_table "survey_form_answers", :force => true do |t|
+    t.integer  "form_id"
+    t.string   "answered_url"
+    t.string   "remote_addr"
+    t.string   "user_agent"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "answered_url_title"
+  end
+
+  add_index "survey_form_answers", ["form_id"], :name => "index_survey_form_answers_on_form_id"
+
+  create_table "survey_forms", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.datetime "opened_at"
+    t.datetime "closed_at"
+    t.integer  "sort_no"
+    t.text     "summary"
+    t.text     "description"
+    t.text     "receipt"
+    t.boolean  "confirmation"
+    t.string   "sitemap_state"
+  end
+
+  add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"
+
+  create_table "survey_questions", :force => true do |t|
+    t.integer  "form_id"
+    t.string   "state"
+    t.string   "title"
+    t.text     "description"
+    t.string   "form_type"
+    t.text     "form_options"
+    t.boolean  "required"
+    t.string   "style_attribute"
+    t.integer  "sort_no"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+    t.integer  "form_text_max_length"
+  end
+
+  add_index "survey_questions", ["form_id"], :name => "index_survey_questions_on_form_id"
+
+  create_table "sys_cache_sweepers", :force => true do |t|
+    t.string   "state",      :limit => 15
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "model"
+    t.text     "uri"
+    t.text     "options"
+  end
+
+  add_index "sys_cache_sweepers", ["model", "uri"], :name => "model", :length => {"model"=>20, "uri"=>30}
+
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1061,8 +1480,12 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.string   "name"
     t.string   "name_en"
     t.string   "tel"
+    t.string   "fax"
     t.string   "outline_uri"
     t.string   "email"
+    t.string   "address"
+    t.string   "note"
+    t.string   "tel_attend"
   end
 
   create_table "sys_languages", :force => true do |t|
@@ -1119,6 +1542,15 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
 
   add_index "sys_object_privileges", ["item_unid", "action"], :name => "item_unid"
 
+  create_table "sys_operation_logs", :force => true do |t|
+    t.integer  "loggable_id"
+    t.string   "loggable_type"
+    t.integer  "user_id"
+    t.string   "operation"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "sys_publishers", :force => true do |t|
     t.integer  "unid"
     t.string   "dependent",    :limit => 64
@@ -1163,6 +1595,12 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
     t.datetime "updated_at"
     t.datetime "process_at"
     t.string   "name"
+  end
+
+  create_table "sys_temp_texts", :force => true do |t|
+    t.text     "content"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "sys_unid_relations", :force => true do |t|
@@ -1226,6 +1664,29 @@ ActiveRecord::Schema.define(:version => 20130524021106) do
   end
 
   add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
+
+  create_table "tool_convert_docs", :force => true do |t|
+    t.string   "name"
+    t.string   "doc_class"
+    t.string   "file_path"
+    t.string   "uri_path"
+    t.string   "host"
+    t.text     "title"
+    t.datetime "published_at"
+    t.text     "body",         :limit => 2147483647
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+  end
+
+  create_table "tool_convert_settings", :force => true do |t|
+    t.string   "site_url"
+    t.text     "title_tag"
+    t.text     "body_tag"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "tool_convert_settings", ["site_url"], :name => "index_tool_convert_settings_on_site_url"
 
   create_table "tool_simple_captcha_data", :force => true do |t|
     t.string   "key",        :limit => 40

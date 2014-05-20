@@ -1,0 +1,12 @@
+<%- unless @ranks.empty? -%>
+<ul>
+  <% @ranks.each.with_index(1) do |rank, i| -%>
+  <li <%= (i <= 10) ? "class=""ranking#{i}""" : "" %>><span class="rank"><%= i %></span><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", {target: "http://#{rank.hostname}/".index(Page.site.full_uri) ? nil : '_blank'})%><%= "(#{rank.accesses})" unless @piece.show_count == 0 %></li>
+  <%- end -%>
+</ul>
+<%- if @piece.more_link_body.present? && @piece.more_link_url.present? -%>
+<div class="more">
+  <%= link_to @piece.more_link_body, @piece.more_link_url %>
+</div>
+<%- end -%>
+<%- end -%>

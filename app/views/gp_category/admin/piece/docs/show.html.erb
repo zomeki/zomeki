@@ -1,35 +1,59 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_view @item, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'gp_category/admin/piece/shared/show') do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
   <tr>
     <th><%= @item.locale :list_count %></th>
-    <td colspan="3"><%= @item.setting_value(:list_count) %></td>
+    <td><%= @item.setting_value(:list_count) %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :layer %></th>
-    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
+    <th><%= @item.locale :docs_order %></th>
+    <td><%= @item.class::DOCS_ORDER_OPTIONS.detect{|o| o.last == @item.setting_value(:docs_order) }.try(:first) %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :category_type_id %></th>
-    <td><%= @item.category_type.try(:title) %></td>
-    <th><%= @item.locale :category_id %></th>
-    <td><%= @item.category.try(:title) %></td>
+    <th><%= GpArticle::Content::Doc.model_name.human %></th>
+    <td><%= @item.gp_article_content_docs.map(&:name).join(', ') -%></td>
   </tr>
   <tr>
-    <th><%= @item.locale :list_style %></th>
-    <td colspan="3"><%= @item.setting_value(:list_style) %></td>
+    <th>ページ絞り込み</th>
+    <td><%= @item.class::PAGE_FILTER_OPTIONS.detect{|o| o.last == @item.setting_value(:page_filter) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::Category.model_name.human %></th>
+    <td>
+      <table class="show">
+        <tbody>
+          <%- @item.category_sets.each do |category_set| -%>
+          <tr>
+            <th><%= GpCategory::CategoryType.model_name.human %></th>
+            <td><%= category_set[:category_type].title %></td>
+            <th><%= GpCategory::Category.model_name.human %></th>
+            <td><%= category_set[:category].try(:title) %></td>
+          </tr>
+          <tr>
+            <td><%= GpCategory::Category.model_name.human %>階層</td>
+            <td><%= @item.class::LAYER_OPTIONS.detect{|o| o.last == category_set[:layer] }.try(:first) %></td>
+          </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td><%=simple_format @item.setting_value(:doc_style) %></td>
   </tr>
   <tr>
     <th><%= @item.locale :date_style %></th>
-    <td colspan="3"><%= @item.setting_value(:date_style) %></td>
+    <td><%= @item.setting_value(:date_style) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_body %></th>
+    <td><%= @item.setting_value(:more_link_body) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= @item.setting_value(:more_link_url) %></td>
   </tr>
 </table>
-
-<%= creator_view @item %>
+<%- end -%>

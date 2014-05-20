@@ -1,2 +1,2 @@
-class GpCalendar::Admin::Piece::MonthlyLinksController < Cms::Admin::Piece::BaseController
+class GpCalendar::Admin::Piece::MonthlyLinksController < GpCalendar::Admin::Piece::BaseController
 end

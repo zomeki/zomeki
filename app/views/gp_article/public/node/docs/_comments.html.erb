@@ -1,0 +1,22 @@
+<div id="comments" class="comments">
+  <%- unless item.public_comments.empty? -%>
+  <h2>コメント</h2>
+  <div class="commentsBody">
+    <%- item.public_comments.each do |comment| -%>
+    <div class="comment">
+      <div class="body"><%=simple_format comment.body %></div>
+      <div class="commentNavi">
+        <span class="author"><%= comment.author_name %></span>
+        <span class="date">
+          <%= comment.posted_at.strftime(localize_wday(@content.date_style, comment.posted_at.wday)) %>
+          <%= comment.posted_at.strftime(@content.time_style) %>
+        </span>
+      </div>
+    </div>
+    <%- end -%>
+  </div>
+  <%- end -%>
+
+  <h2>コメントの投稿</h2>
+  <%= render (Page.mobile? ? 'comment_form_mobile' : 'comment_form'), item: item %>
+</div>

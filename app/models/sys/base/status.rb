@@ -1,6 +1,8 @@
 # encoding: utf-8
 class Sys::Base::Status < ActiveRecord::Base
   class Value
+    attr_accessor :id
+
     def initialize(id)
       @id = id
     end
@@ -13,11 +15,14 @@ class Sys::Base::Status < ActiveRecord::Base
       when 'hidden';     return '非表示'
       when 'draft';      return '下書き'
       when 'recognize';  return '承認待ち'
+      when 'approvable'; return '承認待ち'
       when 'recognized'; return '公開待ち'
+      when 'approved';   return '公開待ち'
       when 'prepared';   return '公開'
       when 'public';     return '公開中'
       when 'closed';     return '非公開'
       when 'completed';  return '完了'
+      when 'archived';   return '履歴'
       end
       nil
     end

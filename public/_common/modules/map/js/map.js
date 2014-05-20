@@ -39,15 +39,21 @@ Map.prototype.create_marker = function (options) {
     return marker;
   }
 
-Map.prototype.set_marker = function (id, latitude, longitude, title, window_text) {
-    this._markers[id] = this.create_marker({
+Map.prototype.set_marker = function (id, latitude, longitude, title, window_text, icon) {
+    options = {
         position: new google.maps.LatLng(latitude, longitude),
         title: title,
-//        icon: 'http://chart.googleapis.com/chart?chst=d_map_pin_icon_withshadow&chld=info|ff9999',
         map: this._map_canvas,
         animation: google.maps.Animation.DROP,
         window_text: window_text
-      });
+      };
+
+//    options.icon = 'http://chart.googleapis.com/chart?chst=d_map_pin_icon_withshadow&chld=info|ff9999';
+    if (icon) {
+      options.icon = icon;
+    }
+
+    this._markers[id] = this.create_marker(options);
   }
 
 Map.prototype.move_to = function (id) {

@@ -1,11 +1,11 @@
 # encoding: utf-8
 module Cms::Model::Rel::Inquiry
   attr_accessor :in_inquiry
-  
+
   @@inquiry_presence_of = [:group_id, :tel, :email]
-  
+
   def self.included(mod)
-    mod.belongs_to :inquiry, :foreign_key => 'unid', :class_name => 'Cms::Inquiry',
+    mod.belongs_to :inquiry, :foreign_key => 'unid', :primary_key => 'parent_unid', :class_name => 'Cms::Inquiry',
       :dependent => :destroy
 
     mod.after_save :save_inquiry
@@ -29,18 +29,18 @@ module Cms::Model::Rel::Inquiry
   def inquiry_states
    {'visible' => '表示', 'hidden' => '非表示'}
   end
-  
+
   def default_inquiry(params = {})
     unless g = Core.user.group
       return params
     end
-    {:state => 'visible', :group_id => g.id, :tel => g.tel, :email => g.email}.merge(params)
+    {:state => 'hidden', :group_id => g.id, :address => g.address, :tel => g.tel, :email => g.email, :note => g.note}.merge(params)
   end
-  
+
   def inquiry_presence?(name)
     @@inquiry_presence_of.index(name) != nil
   end
-  
+
   def validate_inquiry
     if @inquiry && @inquiry['state'] == 'visible'
       if inquiry_presence?(:group) && @inquiry['group_id'].blank?
@@ -51,7 +51,7 @@ module Cms::Model::Rel::Inquiry
       end
       errors["連絡先（電話番号）"] = :onebyte_characters if @inquiry['tel'].to_s !~/^[ -~｡-ﾟ]*$/
       errors["連絡先（ファクシミリ）"] = :onebyte_characters if @inquiry['fax'].to_s !~/^[ -~｡-ﾟ]*$/
-      
+
       if inquiry_email_setting != "hidden"
         if inquiry_presence?(:email) && @inquiry['email'].blank?
           errors["連絡先（メールアドレス）"] = "を入力してください。"
@@ -65,10 +65,10 @@ module Cms::Model::Rel::Inquiry
     return false unless unid
     return true unless @inquiry
     return true unless @inquiry.is_a?(Hash)
-    
+
     values = @inquiry
     @inquiry = nil
-    
+
     _inq = inquiry  || Cms::Inquiry.new
     _inq.created_at ||= Core.now
     _inq.updated_at   = Core.now
@@ -82,7 +82,7 @@ module Cms::Model::Rel::Inquiry
     end
 
     if _inq.new_record?
-      _inq.id = unid
+      _inq.parent_unid = unid
       return false unless _inq.save_with_direct_sql
     else
       return false unless _inq.save
@@ -90,7 +90,7 @@ module Cms::Model::Rel::Inquiry
     inquiry(true)
     return true
   end
-  
+
   def inquiry_email_setting
     "visible"
   end

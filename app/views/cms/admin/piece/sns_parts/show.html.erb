@@ -10,7 +10,11 @@
 <table class="show">
   <tr>
     <th>表示種別</th>
-    <td><%= @item.in_settings.map{|k, v| v ? @item.class::SETTING_NAMES[k] : nil }.compact.join(', ') %></td>
+    <td><%= @item.in_settings.map{|k, v| v ? @item.class::SETTING_NAMES[k] : nil unless k == 'mixi_data_key' }.compact.join(', ') %></td>
+  </tr>
+  <tr>
+    <th>mixiチェックキー</th>
+    <td><%= @item.in_settings['mixi_data_key'] %></td>
   </tr>
 </table>
 

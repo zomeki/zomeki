@@ -1,0 +1,25 @@
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;">編集</th>
+    <th style="width: 250px;">設定名</th>
+    <th>設定値</th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :edit, edit_rank_content_setting_path(id: item.name) %></td>
+    <td><%= item.config_name %></td>
+    <td><%=truncate (item.persisted? ? (item.form_type.to_s == 'password' ? '*****' :item.value_name) : '未設定'), length: 60 %></td>
+  </tr>
+  <% end %>
+
+</table>
+
+<div class="submitters">
+<%= form_tag 'content_settings/import', method: :post, style: 'display: inline' do %>
+  <%= submit_tag 'ランキング一括取込', name: :submit_import, style: 'width: 140px' %>
+<% end %>
+<%= form_tag 'content_settings/makeup', method: :post, style: 'display: inline' do %>
+  <%= submit_tag 'ランキング集計', name: :submit_makeup, style: 'width: 140px' %>
+<% end %>
+</div>

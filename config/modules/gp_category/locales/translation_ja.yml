@@ -3,6 +3,8 @@ ja:
     models:
       gp_category/category_type: カテゴリタイプ
       gp_category/category: カテゴリ
+      gp_category/template: テンプレート
+      gp_category/template_module: モジュール
     attributes:
       gp_category/category_type:
         name: カテゴリタイプID
@@ -10,6 +12,10 @@ ja:
         sort_no: 並び順
         updated_at: 更新日時
         state: 状態
+        sitemap_state: サイトマップ
+        docs_order: 記事表示順
+        template_id: テンプレート
+        internal_category_type_id: ネストカテゴリタイプ
       gp_category/category:
         name: カテゴリID
         title: カテゴリ名
@@ -17,19 +23,40 @@ ja:
         updated_at: 更新日時
         state: 状態
         description: 説明
+        sitemap_state: サイトマップ
+        docs_order: 記事表示順
+        template_id: テンプレート
+      gp_category/categorization:
+        sort_no: 並び順
+      gp_category/template:
+        name: テンプレートID
+        title: テンプレート名
+        body: テンプレート
+        updated_at: 更新日時
+      gp_category/template_module:
+        name: モジュールID
+        title: モジュール名
+        module_type: モジュール種別
+        wrapper_tag: タグ
+        doc_style: 記事表示形式
+        num_docs: 表示件数
+        updated_at: 更新日時
       gp_category/piece/doc:
-        category_type_id: 表示カテゴリタイプ
-        category_id: 表示カテゴリ
         list_count: 表示件数
-        layer: 表示カテゴリ階層
-        list_style: 表示形式
         date_style: 日付形式
+        docs_order: 記事表示順
+        doc_style: 記事表示形式
+        more_link_body: 一覧リンク文字
+        more_link_url: 一覧リンクURL
       gp_category/piece/category_type:
         category_type_id: 表示カテゴリタイプ
         category_id: 表示カテゴリ
         layer: 表示カテゴリ階層
         list_style: 表示形式
         date_style: 日付形式
+      gp_category/piece/category:
+        in_settings_category_type_id: 表示カテゴリタイプ
+        in_settings_num_docs_visibility: 記事数表示
       gp_category/piece/recent_tab:
         list_count: 表示件数
         list_style: 表示形式
@@ -40,3 +67,5 @@ ja:
         more: 一覧リンク
         condition: 結合
         sort_no: 並び順
+      gp_category/piece/feed:
+        filename: ファイル名

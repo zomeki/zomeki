@@ -1,0 +1,29 @@
+<ul id="simple_tabs">
+  <li>本日</li>
+  <li>明日</li>
+</ul>
+<div id="simple_tab_panels">
+  <div>
+    <%- unless @todays_events.empty? -%>
+    <ul>
+      <%- @todays_events.each do |event| -%>
+      <li><%= link_to_if event.href.present?, event.title, event.href, target: event.target %></li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </div>
+  <div>
+    <%- unless @tomorrows_events.empty? -%>
+    <ul>
+      <%- @tomorrows_events.each do |event| -%>
+      <li><%= link_to_if event.href.present?, event.title, event.href, target: event.target %></li>
+      <%- end -%>
+    </ul>
+    <%- end -%>
+  </div>
+</div>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  enable_simple_tabs();
+});
+<%- end -%>

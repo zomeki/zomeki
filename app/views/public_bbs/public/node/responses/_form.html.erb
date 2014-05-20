@@ -10,19 +10,19 @@
 </div>
 
 <div class="loginUser">ログイン中のユーザ：<%= image_tag current_o_auth_user.image, :alt => '', :class => 'profileimage' %><span class="name"><%= current_o_auth_user.name %></span></div>
-<p class="required">※は必須項目です。</p>
+<p class="note">※は必須項目です。</p>
 
 <section class="responseBody">
 <table>
   <tr>
-    <th><label for="item_title"><%= @item.locale(:title) %> <span class="required" title="必須">※</span></label></th>
+    <th><label for="item_title"><%= @item.locale(:title) %> <span class="note" title="必須">※</span></label></th>
     <td><%= f.text_field :title, :class => 'title' %></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <th><label for="item_body"><%= @item.locale(:body) %> <span class="required" title="必須">※</span></label></th>
+    <th><label for="item_body"><%= @item.locale(:body) %> <span class="note" title="必須">※</span></label></th>
   </tr>
   <tr>
     <td><%= f.text_area :body, :class => 'body ckeditor' %></td>

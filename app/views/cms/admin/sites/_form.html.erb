@@ -12,14 +12,17 @@ businesses = PortalGroup::Business.root_items(cond)
 attributes = PortalGroup::Attribute.find(:all, :conditions => cond, :order => "content_id, sort_no").collect{|c| [c.title, c.id]}
 areas      = PortalGroup::Area.root_items(cond)
 
-%><p class="form">基本情報</p>
+%>
+<span class="note">※は必須項目です。</span>
+
+<p class="form">基本情報</p>
 
 <table class="show">
   <tr>
-    <th><%= @item.locale(:name) %></th>
+    <th><%= @item.locale(:name) %> <span class="note">※</span></th>
     <td><%= f.text_field :name, :class => 'name' %></td>
   </tr><tr>
-    <th><%= @item.locale(:full_uri) %></th>
+    <th><%= @item.locale(:full_uri) %> <span class="note">※</span></th>
     <td><%= f.text_field :full_uri, :class => 'url' %></td>
   </tr><tr>
     <th><%= @item.locale(:mobile_full_uri) %></th>
@@ -80,6 +83,28 @@ areas      = PortalGroup::Area.root_items(cond)
     </td>
   </tr>
 </table>
+
+<p class="form">SNS設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= label_tag 'sns_apps[facebook_app_id]', 'Facebook App ID' %></th>
+    <td><%= text_field_tag 'sns_apps[facebook_app_id]', @sns_apps['facebook_app_id'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[facebook_app_secret]', 'Facebook App Secret' %></th>
+    <td><%= text_field_tag 'sns_apps[facebook_app_secret]', @sns_apps['facebook_app_secret'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[twitter_consumer_key]', 'Twitter Consumer key' %></th>
+    <td><%= text_field_tag 'sns_apps[twitter_consumer_key]', @sns_apps['twitter_consumer_key'], style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th><%= label_tag 'sns_apps[twitter_consumer_secret]', 'Twitter Consumer secret' %></th>
+    <td><%= text_field_tag 'sns_apps[twitter_consumer_secret]', @sns_apps['twitter_consumer_secret'], style: 'width: 400px;' %></td>
+  </tr>
+</table>
+
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_category_ids_0,
       :with => :item_portal_group_id, :on => 'change', :url => categories_portal_group_groups_path(0)) %>
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_business_ids_0,

@@ -7,6 +7,18 @@
     <th><%= @item.class.human_attribute_name :title %></th>
     <td><%= @item.title %></td>
   </tr>
+</table>
+
+<%- unless @item.categories.empty? -%>
+<table class="show">
+  <tr>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= @item.categories.map(&:title).join(', ') %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<table class="show">
   <tr>
     <th><%= @item.class.human_attribute_name :latitude %></th>
     <td><%= @item.latitude %></td>
@@ -18,5 +30,15 @@
   <tr>
     <th><%= @item.class.human_attribute_name :window_text %></th>
     <td><%=simple_format @item.window_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :file %></th>
+    <td>
+      <%- unless @item.files.empty? -%>
+      <%= image_tag file_content_map_marker_path(content: @content, id: @item.id), width: 100 %>
+      <%- else -%>
+      なし
+      <%- end -%>
+    </td>
   </tr>
 </table>

@@ -5,15 +5,14 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
   
   def pre_dispatch_piece
     return error_auth unless Core.user.has_auth?(:designer)
-    return error_auth unless @piece = Cms::Piece.new.readable.find(params[:id])
+    return error_auth unless @piece = find_piece
     #default_url_options[:piece] = @piece
   end
   
   def model
     return @model_class if @model_class
     mclass = self.class.to_s.gsub(/^(\w+)::Admin/, '\1').gsub(/Controller$/, '').singularize
-    eval(mclass)
-    @model_class = eval(mclass)
+    @model_class = mclass.constantize
   rescue
     @model_class = Cms::Piece
   end
@@ -54,5 +53,11 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
         format.html { return redirect_to(cms_pieces_path) }
       end
     end
+  end
+
+  private
+
+  def find_piece
+    model.new.readable.find(params[:id])
   end
 end

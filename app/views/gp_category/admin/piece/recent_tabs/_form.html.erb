@@ -1,10 +1,4 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_form f, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'gp_category/admin/piece/shared/form', locals: {f: f}) do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
@@ -13,17 +7,16 @@
     <td><%= f.array_text_field 'in_settings[list_count]', class: 'number' %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :list_style %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> 日付：@date タイトル：@title 組織：@group カテゴリ：@category</td>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> <%=raw t('comments.date_style') %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :date_style %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+    <th><%= @item.locale :list_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> <%=raw t('comments.list_style') %></td>
   </tr>
   <tr>
     <th><%= @item.locale :more_label %></th>
     <td><%= f.array_text_field 'in_settings[more_label]', class: 'name' %></td>
   </tr>
 </table>
-
-<%= creator_form f %>
+<%- end -%>

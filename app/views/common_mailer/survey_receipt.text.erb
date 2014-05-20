@@ -1,0 +1,4 @@
+「<%= @form_answer.form.title %>」に回答が届きました。
+
+  次のURLをクリックして回答を確認してください。
+  <%= @form_answer.form.content.site.full_uri.sub(/\/\z/, '') %><%= survey_form_form_answers_path(content: @form_answer.form.content, form_id: @form_answer.form.id) %>

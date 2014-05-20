@@ -1,0 +1,14 @@
+<div class="noticeExplanation" id="noticeExplanation">
+ <h2>アクセシビリティチェック結果</h2>
+  <%- if results.empty? -%>
+    <p>エラーはありませんでした。</p>
+  <%- else -%>
+    <p>以下のエラーがあります。</p>
+    <ul>
+      <%- results.each do |result| -%>
+      <li><%= result %></li>
+      <%- end -%>
+    </ul>
+    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_accessibility_check' %> <%= label_tag 'ignore_accessibility_check', '無視' %>　<%= check_box_tag 'accessibility_check_modify' %> <%= label_tag 'accessibility_check_modify', '自動修正' %></div>
+  <%- end -%>
+</div>

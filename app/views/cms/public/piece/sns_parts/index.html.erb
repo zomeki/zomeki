@@ -36,3 +36,22 @@
   }(document, 'script', 'facebook-jssdk'));</script>
 </div>
 <%- end -%>
+
+<%- if @piece.in_settings[:mixi] -%>
+<div class="mixi-wrapper">
+<a href="http://mixi.jp/share.pl" class="mixi-check-button" data-key="<%= @piece.in_settings[:mixi_data_key] %>" data-button="button-6">mixiチェック</a>
+<script type="text/javascript" src="http://static.mixi.jp/js/share.js"></script>
+</div>
+<%- end -%>
+
+<%- if Page.smart_phone? %>
+<%- if @piece.in_settings[:line] -%>
+<div class="line-wrapper">
+<script type="text/javascript" src="http://media.line.naver.jp/js/line-button.js?v=20130508" ></script>
+<script type="text/javascript">
+new jp.naver.line.media.LineButton({"pc":true,"lang":"ja","type":"a"});
+</script>
+</div>
+<%- end -%>
+<%- end -%>
+

@@ -1,0 +1,39 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th colspan="2"><%= SnsShare::Account.human_attribute_name :provider %></th>
+    <th><%= SnsShare::Account.human_attribute_name :info_image %></th>
+    <th><%= SnsShare::Account.human_attribute_name :info_nickname %></th>
+    <th><%= SnsShare::Account.human_attribute_name :info_name %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, sns_share_account_path(content: @content, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.provider.humanize %></td>
+    <td style="text-align: center; width: 100px;">
+      <%- path = case item.provider
+                 when 'facebook'
+                   o_auth_facebook_path(class: item.class.name, id: item.id, return_to: sns_share_accounts_path(@content))
+                 when 'twitter'
+                   o_auth_twitter_path(class: item.class.name, id: item.id, return_to: sns_share_accounts_path(@content))
+                 end -%>
+          <%- if item.uid.blank? -%>
+          <%= button_to 'ログイン', path if path %>
+          <%- else -%>
+          <%= button_to '再ログイン', path if path %>
+          <%= button_to 'ログアウト', logout_sns_share_account_path(@content, item), :method => :post %>
+          <%- end -%>
+    </td>
+    <td style="text-align: left;"><%= image_tag item.info_image if item.info_image.present? %></td>
+    <td style="text-align: left;"><%= item.info_nickname %></td>
+    <td style="text-align: left;">
+      <%= item.info_name %>
+      <%- if item.provider == 'facebook' -%>
+        <span style="margin-left: 20px;"><%= item.facebook_page_text %></span>
+      <%- end -%>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

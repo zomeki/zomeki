@@ -1,0 +1,20 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :group_id %></th>
+    <td><%= @item.group.try(:name) || 'すべて' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>承認者</th>
+    <td><%= @item.approvals.map{|a| a.approvers.pluck(:name).join('、') }.join(' ＞ ') %></td>
+  </tr>
+</table>

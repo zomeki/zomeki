@@ -18,22 +18,28 @@
     <td><%= @item.description %></td>
   </tr>
   <tr>
+    <th><%= @item.locale(:sitemap_state) %></th>
+    <td><%= @item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == @item.sitemap_state }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:docs_order) %></th>
+    <td><%= @item.class::DOCS_ORDER_OPTIONS.detect{|o| o.last == @item.docs_order }.try(:first) %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
-  <tr>
-    <th>記事数</th>
-    <td><%= @item.docs.count %></td>
-  </tr>
 </table>
-
-<br />
 
 <p class="form">ページ設定</p>
 
 <table class="show">
   <%= concept_view @item, :container => :tr %>
   <%= layout_view @item, :container => :tr %>
+  <tr>
+    <th><%= @item.class.human_attribute_name :template_id %></th>
+    <td><%= @item.template.try(:title) %></td>
+  </tr>
 </table>
 
 <%= creator_view @item %>

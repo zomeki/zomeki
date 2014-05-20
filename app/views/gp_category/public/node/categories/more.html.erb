@@ -1,0 +1,15 @@
+<div class="contentGpCategory contentGpCategoryCategory">
+  <%- unless @docs.empty? -%>
+  <section class="category">
+    <div class="docs">
+      <ul>
+        <%- @docs.each do |doc| -%>
+        <li><%= doc_replace(doc, @content.category_doc_style, @content.date_style) %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  </section>
+  <%- end -%>
+
+  <%= paginate @docs %>
+</div>

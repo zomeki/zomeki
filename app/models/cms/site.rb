@@ -27,7 +27,8 @@ class Cms::Site < ActiveRecord::Base
     :class_name => 'Cms::SiteBasicAuthUser'
   has_many :site_belongings, :dependent => :destroy, :class_name => 'Cms::SiteBelonging'
   has_many :groups, :through => :site_belongings, :class_name => 'Sys::Group'
-  
+  has_many :nodes
+
   validates_presence_of :state, :name, :full_uri
   validates_uniqueness_of :full_uri
   validates_uniqueness_of :mobile_full_uri,
@@ -39,7 +40,7 @@ class Cms::Site < ActiveRecord::Base
   after_save { save_cms_data_file(:site_image, :site_id => id) }
   after_destroy { destroy_cms_data_file(:site_image) }
 
-  before_destroy :block_main_deletion
+  before_destroy :block_last_deletion
 
   def states
     [['公開','public']]
@@ -124,9 +125,6 @@ class Cms::Site < ActiveRecord::Base
 
       conf.concat(<<-EOT)
 <VirtualHost *:80>
-    AddType text/x-component .htc
-    DocumentRoot #{site.public_path}
-    Alias /_common/ "#{Rails.root}/public/_common/"
     ServerName #{domain}
       EOT
 
@@ -138,6 +136,9 @@ class Cms::Site < ActiveRecord::Base
       end
 
       conf.concat(<<-EOT)
+    AddType text/x-component .htc
+    Alias /_common/ "#{Rails.root}/public/_common/"
+    DocumentRoot #{site.public_path}
     Include #{Rails.root}/config/rewrite/base.conf
     Include #{site.config_path}/rewrite.conf
 </VirtualHost>
@@ -195,8 +196,8 @@ class Cms::Site < ActiveRecord::Base
     return true
   end
 
-  def main?
-    self.id == 1
+  def last?
+    self.class.count == 1
   end
 
   def groups_for_option
@@ -211,7 +212,7 @@ protected
     return true
   end
 
-  def block_main_deletion
-    raise "Main site can't be deleted." if self.main?
+  def block_last_deletion
+    raise "Last site can't be deleted." if self.last?
   end
 end

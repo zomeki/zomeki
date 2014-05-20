@@ -1,0 +1,27 @@
+<%= form_tag "#{item.public_uri}comments/confirm" do -%>
+<div class="commentPost">
+  <div class="commentItem">
+    <div class="itemLabel"><%= label_tag 'comment[author_name]', '名前' %> <span class="note">※</span></div>
+    <div class="itemContent"><%= text_field_tag 'comment[author_name]', nil, :style => 'width: 300px;' %></div>
+  </div>
+  <div class="commentItem">
+    <div class="itemLabel"><%= label_tag 'comment[author_email]', 'メールアドレス' %></div>
+    <div class="itemContent"><%= text_field_tag 'comment[author_email]', nil, :style => 'width: 300px;' %></div>
+  </div>
+  <div class="commentItem">
+    <div class="itemLabel"><%= label_tag 'comment[author_url]', 'ホームページ' %></div>
+    <div class="itemContent"><%= text_field_tag 'comment[author_url]', nil, :style => 'width: 500px;' %></div>
+  </div>
+  <div class="commentItem">
+    <div class="itemLabel"><%= label_tag 'comment[body]', 'コメント' %></div>
+    <div class="itemContent"><%= text_area_tag 'comment[body]', nil, size: '100x5' %></div>
+  </div>
+  <div class="commentItem">
+    <div class="itemLabel">画像認証</div>
+    <div class="itemContent"><%= show_simple_captcha(input_html: {required: false}) %></div>
+  </div>
+  <div class="commentItem">
+    <%= submit_tag '投稿する', confirm: '送信してもよろしいですか？' %>
+  </div>
+</div>
+<%- end -%>

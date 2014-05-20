@@ -1,16 +1,25 @@
 # encoding: utf-8
-class GpCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Public::Base
+class GpCalendar::Public::Piece::MonthlyLinksController < GpCalendar::Public::Piece::BaseController
   def pre_dispatch
     @piece = GpCalendar::Piece::MonthlyLink.find_by_id(Page.current_piece.id)
     return render(:text => '') unless @piece
 
-    @node = @piece.content.event_node
+    @node = @piece.target_node
     return render(:text => '') unless @node
 
-    @year     = params[:gp_calendar_event_year]
-    @month    = params[:gp_calendar_event_month]
+    date      = params[:gp_calendar_event_date]
     @min_date = params[:gp_calendar_event_min_date]
     @max_date = params[:gp_calendar_event_max_date]
+
+    unless date
+      date = Date.today
+      @min_date = 1.year.ago(date.beginning_of_month)
+      @max_date = 11.months.since(date.beginning_of_month)
+    end
+
+    @year     = date.year
+    @month    = date.month
+
     return render(:text => '') unless @min_date
 
     @item = Page.current_item
@@ -22,7 +31,7 @@ class GpCalendar::Public::Piece::MonthlyLinksController < Sys::Controller::Publi
     date = @min_date
     while date <= @max_date
       month = date.month
-      if year != date.year
+      unless year == date.year
         year = date.year
         css_class = "year year#{year}"
         css_class.concat(' current') if @year == date.year && @month.nil?

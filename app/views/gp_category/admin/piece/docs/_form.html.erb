@@ -1,51 +1,112 @@
-<p class="form">基本情報</p>
-
-<table class="show">
-  <%= piece_base_form f, :container => :tr %>
-</table>
-
-<br />
+<%= render(layout: 'gp_category/admin/piece/shared/form', locals: {f: f}) do -%>
 <p class="form">詳細設定</p>
 
 <table class="show">
   <tr>
     <th><%= @item.locale :list_count %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[list_count]', class: 'number' %></td>
+    <td><%= f.array_text_field 'in_settings[list_count]', class: 'number' %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :layer %></th>
-    <td colspan="3"><%= f.array_radio_buttons  'in_settings[layer]', @item.class::LAYER_OPTIONS %></td>
+    <th><%= @item.locale :docs_order %></th>
+    <td><%= f.array_select 'in_settings[docs_order]', @item.class::DOCS_ORDER_OPTIONS %></td>
   </tr>
   <tr>
-    <th><%= @item.locale :category_type_id %></th>
-    <td><%= f.array_select 'in_settings[category_type_id]', @item.category_types_for_option, include_blank: true %></td>
-    <th><%= @item.locale :category_id %></th>
-    <td><%= f.array_select 'in_settings[category_id]', @item.category_type.try(:categories_for_option) || [], include_blank: true %></td>
+    <th><%= GpArticle::Content::Doc.model_name.human %></th>
+    <td>
+      <div id="gp_article_content_docs">
+        <%= render 'gp_article_content_doc', gacd: nil %>
+        <%- @item.gp_article_content_docs.each do |gacd| -%>
+        <%= render 'gp_article_content_doc', gacd: gacd %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', class: 'add_button' %></span>
+      </div>
+    </td>
   </tr>
   <tr>
-    <th><%= @item.locale :list_style %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> 日付：@date タイトル：@title 組織：@group カテゴリ：@category</td>
+    <th>ページ絞り込み</th>
+    <td><%= f.array_radio_buttons 'in_settings[page_filter]', @item.class::PAGE_FILTER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::Category.model_name.human %></th>
+    <td>
+      <table class="show" id="categories">
+        <tbody>
+          <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
+                                     index: nil, category_set: @item.new_category_set -%>
+          <%- @item.category_sets.each_with_index do |category_set, index| -%>
+          <%= render 'category_set', category_types_for_option: @item.content.category_types_for_option, layer_options: @item.class::LAYER_OPTIONS,
+                                     index: index, category_set: category_set -%>
+          <%- end -%>
+          <tr>
+            <td colspan="4">&nbsp;</td>
+            <td style="text-align: right;"><%= button_tag '追加', type: 'button', class: 'add_button' %></td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :doc_style %></th>
+    <td>
+      <%=raw t('comments.doc_style') %>
+      <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
+    </td>
   </tr>
   <tr>
     <th><%= @item.locale :date_style %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+    <td><%= f.array_text_field 'in_settings[date_style]', size: 50 %> 年：%Y 月：%m 日：%d 時：%H 分：%M 秒：%S</td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_body %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_body]', :style => 'width: 500px;' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :more_link_url %></th>
+    <td><%= f.array_text_field 'in_settings[more_link_url]', :style => 'width: 500px;' %></td>
   </tr>
 </table>
 
-<%= creator_form f %>
-
 <%= javascript_tag do -%>
+<%= toggle_form_function %>
+
 $(document).ready(function () {
-  $('#item_in_settings_category_type_id').on('change', function (event) {
+  var gp_article_content_docs_wrapper = $('#gp_article_content_docs');
+  gp_article_content_docs_wrapper.find('.add_button').on('click', function () {
+    var new_gp_article_content_doc = gp_article_content_docs_wrapper.children(':first-child').clone(true);
+    new_gp_article_content_doc.find(':disabled').removeAttr('disabled');
+    new_gp_article_content_doc.insertBefore(gp_article_content_docs_wrapper.children(':last-child')).show();
+  }).trigger('click');
+
+  var categories_wrapper = $('#categories > tbody');
+  categories_wrapper.find('> tr > td.category_type > select').on('change', function (event) {
     var category_type_id = parseInt(event.target.value);
+    var category_select = $(event.target).closest('tr').find('td.category > select');
     if (isNaN(category_type_id)) {
-      $('#item_in_settings_category_id').html('<option value=""></option>');
+      category_select.html('<option value=""></option>');
     } else {
-      $('#item_in_settings_category_id').html('<option value="">更新中...</option>');
+      category_select.html('<option value="">更新中...</option>');
       $.get('<%= gp_category_category_type_categories_path(content: @item.content, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
-        $('#item_in_settings_category_id').html(data);
+        category_select.html(data);
       });
     }
   });
+  categories_wrapper.find('.add_button').on('click', function () {
+    var next_index = (categories_wrapper.find('tr').length - 3) / 2; <%# クローン元(2) + 追加ボタン(1) => 3tr, 単位 => 2tr %>
+
+    var categories_tr = categories_wrapper.children(':first-child').clone(true);
+    var categories = categories_tr.find('select[name="categories[N]"]');
+    categories.attr('name', categories.attr('name').replace('N', next_index));
+    var category_types = categories_tr.find('select[name="category_types[N]"]');
+    category_types.attr('name', category_types.attr('name').replace('N', next_index));
+    categories_tr.find(':disabled').removeAttr('disabled');
+    categories_tr.insertBefore(categories_wrapper.children(':last-child')).show();
+
+    var layers_tr = categories_wrapper.children(':first-child + tr').clone(true);
+    var layers = layers_tr.find('input[name="layers[N]"]');
+    layers.attr('name', layers.attr('name').replace('N', next_index));
+    layers_tr.find(':disabled').removeAttr('disabled');
+    layers_tr.insertBefore(categories_wrapper.children(':last-child'));
+  }).trigger('click');
 });
+<%- end -%>
 <%- end -%>

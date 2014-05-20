@@ -11,20 +11,13 @@ class Cms::Admin::NodesController < Cms::Controller::Admin::Base
   end
 
   def index
-    item = Cms::Node.new#.readable
-    item.and :site_id, Core.site.id
-    item.and :parent_id, @parent.id
-    item.and :directory, 1
-    item.order params[:sort], 'name, id'
-    @dirs = item.find(:all)
-    
-    item = Cms::Node.new#.readable
-    item.and :site_id, Core.site.id
-    item.and :parent_id, @parent.id
-    item.and :directory, 0
-    item.order params[:sort], 'name, id'
-    @pages = item.find(:all)
-    
+    @dirs = Cms::Node.where(site_id: Core.site.id, parent_id: @parent.id, directory: 1)
+                     .order('sitemap_sort_no IS NULL, sitemap_sort_no, name')
+                     .includes(:site)
+
+    @pages = Cms::Node.where(site_id: Core.site.id, parent_id: @parent.id, directory: 0)
+                      .order('sitemap_sort_no IS NULL, sitemap_sort_no, name')
+                      .includes(:site)
     _index @pages
   end
   
@@ -34,7 +27,7 @@ class Cms::Admin::NodesController < Cms::Controller::Admin::Base
     #item.and :directory, 0
     item.search params
     item.page params[:page], params[:limit]
-    item.order params[:sort], 'parent_id, name, id'
+    item.order params[:sort], 'parent_id, sitemap_sort_no IS NULL, sitemap_sort_no, name'
     @items = item.find(:all)
     
     @skip_navi = true

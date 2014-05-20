@@ -1,0 +1,14 @@
+<%= render(layout: 'shared/admin/piece/show') do -%>
+  <p class="form">詳細設定</p>
+
+  <%- if (category_content = @piece.content.category_content) -%>
+  <table class="show">
+    <%- category_content.category_types.each do |category_type| -%>
+    <tr>
+      <th><%= category_type.title %></th>
+      <td><%= @item.categories.where(category_type_id: category_type.id).pluck(:title).join(', ') %></td>
+    </tr>
+    <%- end -%>
+  </table>
+  <%- end -%>
+<%- end -%>

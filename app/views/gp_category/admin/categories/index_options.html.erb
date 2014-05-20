@@ -1,2 +1,2 @@
 <option value=""></option>
-<%= options_for_select @category_type.categories_for_option -%>
+<%= options_for_select(params[:root_only] ? @category_type.root_categories_for_option : @category_type.categories_for_option)  -%>

@@ -1,0 +1,10 @@
+<div class="surveyForm">
+  <div class="message">
+    <%- if @form.receipt.present? -%>
+    <%=raw @form.receipt %>
+    <%- else -%>
+    <div style="text-align: center;">ご回答ありがとうございました。</div>
+    <%- end -%>
+  </div>
+  <div class="back"><%= link_to '戻る', "#{@node.public_uri}#{@form.name}#{'?piece=true' if params[:piece]}" %></div>
+</div>

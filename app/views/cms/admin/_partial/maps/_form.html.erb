@@ -1,17 +1,16 @@
-<%
-
+<%-
 map     = item.maps.find(:first)
 markers = map ? map.markers : []
 
 default_position = item.default_map_position.split(/[ ]*,[ ]*/)
-map_lat  = (map && map.map_lat  != '') ? map.map_lat : default_position[0]
-map_lng  = (map && map.map_lng  != '') ? map.map_lng : default_position[1]
-map_zoom = (map && map.map_zoom != '') ? map.map_zoom : 14
+map_lat  = (map && map.map_lat.present?) ? map.map_lat : default_position[0]
+map_lng  = (map && map.map_lng.present?) ? map.map_lng : default_position[1]
+map_zoom = (map && map.map_zoom.present?) ? map.map_zoom : 14
 
 in_size = safe(0){params[:item][:in_maps]['0'][:markers].size}
 markers_size = [3, markers.size, in_size].max
-
-%><script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
+-%>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
 <script type="text/javascript" src="/_common/modules/cms/js/map.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -74,7 +73,7 @@ var me = null;
 addEvent(window, 'load', function() {
   // map
   var mapOptions = {
-    center: new google.maps.LatLng(<%= map_lat %>, <%= map_lng %>),
+    center: new google.maps.LatLng(<%= map_lat.to_f %>, <%= map_lng.to_f %>),
     zoom: <%= map_zoom %>,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     scaleControl: true,
@@ -87,7 +86,26 @@ addEvent(window, 'load', function() {
   google.maps.event.addListener(map, 'dragend', function(){ me.syncMap(); } );
   google.maps.event.addListener(map, 'zoom_changed', function(){ me.syncMap(); } );
   google.maps.event.addListener(map, 'click', function(event){ me.syncClick(event); } );
-  
+
+  <%- if @params_item_in_maps.kind_of?(Hash) &&
+         (params_markers = @params_item_in_maps['0'].try('[]', 'markers')).kind_of?(Hash) -%>
+    <%- params_markers.each do |key, value| next if value['lat'].blank? || value['lng'].blank? -%>
+    var marker<%= key %> = new google.maps.Marker({
+      // title: '<%= value['name'] %>'
+      position: new google.maps.LatLng(<%= value['lat'] %>, <%= value['lng'] %>),
+      map: map
+    });
+    var infowindow<%= key %> = new google.maps.InfoWindow({
+      content: '<%= h(value['name']).gsub(/\r\n|\r|\n/, '<br />').html_safe %>',
+      disableAutoPan: false
+    });
+    google.maps.event.addListener(marker<%= key %>, 'click', function() {
+      infowindow<%= key %>.open(map, marker<%= key %>);
+    });
+
+    me.markers['item_in_maps_0_markers<%= key %>'] = marker<%= key %>;
+    <%- end -%>
+  <%- else -%>
   // markers
   <% markers.each_with_index do |marker, idx| %>
     var marker<%= idx %> = new google.maps.Marker({
@@ -102,25 +120,20 @@ addEvent(window, 'load', function() {
     google.maps.event.addListener(marker<%= idx %>, 'click', function() {
       infowindow<%= idx %>.open(map, marker<%= idx %>);
     });
-    
+
     // registers to a editor
     me.markers['item_in_maps_0_markers<%= idx %>'] = marker<%= idx %>;
   <% end %>
-  
+  <%- end -%>
+
   // hidden
   google.maps.event.addListener(map, 'tilesloaded', function() {
     google.maps.event.clearListeners(map, 'tilesloaded');
-    document.getElementById("mapForm").style.display = "none";
   });
 });
 
 //]]>
 </script>
-
-<br />
-<p class="form">地図</p>
-
-<div style="margin: 10px;"><%= link_to_function '開く▼', "toggle_form(this, '#mapForm')" %></div>
 
 <div id="mapForm" class="articleMapForm">
 
@@ -159,15 +172,32 @@ addEvent(window, 'load', function() {
     <caption>マップの設定</caption>
     <tr>
       <th style="width: 90px;">マップ名</th>
-      <td class="name"><%= f.array_text_field "in_maps[0][title]" %></td>
+      <td class="name">
+        <%- if @params_item_in_maps.kind_of?(Hash) -%>
+        <%= text_field_tag 'item[in_maps][0][title]', @params_item_in_maps['0'].try('[]', 'title') %>
+        <%- else -%>
+        <%= f.array_text_field "in_maps[0][title]" %>
+        <%- end -%>
+      </td>
     </tr><tr>
       <th style="width: 90px;">座標</th>
       <td class="point">
-        <%= f.array_text_field "in_maps[0][map_lat]", :id => "item_in_maps_0_mapLat"
-         %>.<%= f.array_text_field "in_maps[0][map_lng]", :id => "item_in_maps_0_mapLng" %></td>
+        <%- if @params_item_in_maps.kind_of?(Hash) -%>
+        <%= text_field_tag 'item[in_maps][0][map_lat]', @params_item_in_maps['0'].try('[]', 'map_lat'), id: 'item_in_maps_0_mapLat' %><!--
+        -->.<%= text_field_tag 'item[in_maps][0][map_lng]', @params_item_in_maps['0'].try('[]', 'map_lng'), id: 'item_in_maps_0_mapLng' %>
+        <%- else -%>
+        <%= f.array_text_field "in_maps[0][map_lat]", :id => "item_in_maps_0_mapLat" %><!--
+        -->.<%= f.array_text_field "in_maps[0][map_lng]", :id => "item_in_maps_0_mapLng" %>
+        <%- end -%>
+      </td>
     </tr><tr>
       <th style="width: 90px;">縮尺</th>
-      <td class="zoom"><%= f.array_text_field "in_maps[0][map_zoom]", :id => "item_in_maps_0_mapZoom" %>&nbsp;
+      <td class="zoom">
+        <%- if @params_item_in_maps.kind_of?(Hash) -%>
+        <%= text_field_tag 'item[in_maps][0][map_zoom]', @params_item_in_maps['0'].try('[]', 'map_zoom'), id: 'item_in_maps_0_mapZoom' %>
+        <%- else -%>
+        <%= f.array_text_field "in_maps[0][map_zoom]", :id => "item_in_maps_0_mapZoom" %>
+        <%- end -%>
         <a href="#" onclick="me.setMapInfo('item_in_maps_0_map'); return false;">≪現在の座標と縮尺を設定する</a></td>
     </tr>
   </table>
@@ -179,11 +209,27 @@ addEvent(window, 'load', function() {
     <tr>
       <th class="name">名称</th>
       <td class="name">
-        <%= f.array_text_field "in_maps[0][markers][#{i}][name]", :id => "item_in_maps_0_markers#{i}Name", :wrap => 'off' %></td>
+        <%- if @params_item_in_maps.kind_of?(Hash) -%>
+        <%= text_field_tag "item[in_maps][0][markers][#{i}][name]", @params_item_in_maps['0'].try('[]', 'markers')
+                                                                                             .try('[]', i.to_s)
+                                                                                             .try('[]', 'name'), id: "item_in_maps_0_markers#{i}Name" %>
+        <%- else -%>
+        <%= f.array_text_field "in_maps[0][markers][#{i}][name]", :id => "item_in_maps_0_markers#{i}Name" %></td>
+        <%- end -%>
       <th class="point">座標</th>
       <td class="point">
-        <%= f.array_text_field "in_maps[0][markers][#{i}][lat]", :id => "item_in_maps_0_markers#{i}Lat"
-         %>.<%= f.array_text_field "in_maps[0][markers][#{i}][lng]", :id => "item_in_maps_0_markers#{i}Lng" %></td>
+        <%- if @params_item_in_maps.kind_of?(Hash) -%>
+        <%= text_field_tag "item[in_maps][0][markers][#{i}][lat]", @params_item_in_maps['0'].try('[]', 'markers')
+                                                                                            .try('[]', i.to_s)
+                                                                                            .try('[]', 'lat'), id: "item_in_maps_0_markers#{i}Lat" %><!--
+        -->.<%= text_field_tag "item[in_maps][0][markers][#{i}][lng]", @params_item_in_maps['0'].try('[]', 'markers')
+                                                                                                .try('[]', i.to_s)
+                                                                                                .try('[]', 'lng'), id: "item_in_maps_0_markers#{i}Lng" %>
+        <%- else -%>
+        <%= f.array_text_field "in_maps[0][markers][#{i}][lat]", :id => "item_in_maps_0_markers#{i}Lat" %><!--
+        -->.<%= f.array_text_field "in_maps[0][markers][#{i}][lng]", :id => "item_in_maps_0_markers#{i}Lng" %>
+        <%- end -%>
+      </td>
       <td class="action">
         <a href="#" onclick="me.setMarker('item_in_maps_0_markers<%= i %>'); return false;">≪クリックした座標を設定する</a>
         <a href="#" onclick="me.unsetMarker('item_in_maps_0_markers<%= i %>'); return false;">≪クリア</a></td>
@@ -191,9 +237,8 @@ addEvent(window, 'load', function() {
     <% end %>
     </tbody>
   </table>
-  
+
   <div class="addMarkerForm">
     <a href="#" onclick="return addMakerForm();">入力フォームを追加する</a>
   </div>
-  
 </div>

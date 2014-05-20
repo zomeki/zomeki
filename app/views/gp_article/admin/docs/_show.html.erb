@@ -1,0 +1,414 @@
+<%= render 'gp_article/admin/docs/replacement_notification' %>
+
+<div class="tabs">
+  <ul>
+    <li class="options"><a href="#tab8">オプション</a></li>
+    <li class="mobile"><a href="#tab7">携帯</a></li>
+    <li class="map" style="<%= 'display: none;' unless @content.map_related? %>"><a href="#tab6">地図</a></li>
+    <li class="calendar" style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
+    <li class="approval" style="<%= 'display: none;' unless @content.approval_related? %>"><a href="#tab4">承認</a></li>
+    <li class="inquiry" style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
+    <li class="publish"><a href="#tab2">公開日</a></li>
+    <li class="doc"><a href="#tab1">記事</a></li>
+  </ul>
+
+  <div id="tab1">
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :id %></th>
+        <td colspan="3"><%= @item.id %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :public_full_uri %></th>
+        <td colspan="3"><%= link_to_if @item.public_full_uri.present?,
+                                       @item.public_full_uri, @item.public_full_uri, target: 'preview' %></td>
+      </tr>
+      <%- if @item.template -%>
+      <tr>
+        <th><%= @item.locale :template_id %></th>
+        <td colspan="3"><%= @item.template.title %></td>
+      </tr>
+      <%- end -%>
+      <tr>
+        <th><%= @item.locale :title %></th>
+        <td><%= @item.title %></td>
+        <th>タイトル設定</th>
+        <td><%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %></td>
+      </tr>
+    </table>
+
+    <div id="title_settings" style="display: none;">
+      <table class="show">
+        <tr>
+          <th><%= @item.locale :href %></th>
+          <td>
+            <%= link_to_unless(@item.target == 'attached_file', @item.href, @item.href, target: '_blank') %>
+            <span style="<%= 'margin-left: 10px;' unless @item.href.blank? %>"><%= @item.target_text %></span>
+          </td>
+        </tr>
+        <tr>
+          <th><%= @item.locale :subtitle %></th>
+          <td><%=simple_format @item.subtitle %></td>
+        </tr>
+        <tr>
+          <th><%= @item.locale :summary %></th>
+          <td><%=simple_format @item.summary %></td>
+        </tr>
+        <tr>
+          <th><%= @item.locale :list_image %></th>
+          <td><%= @item.list_image %></td>
+        </tr>
+      </table>
+    </div>
+
+    <%- if @item.template -%>
+    <%= render partial: 'gp_template/admin/shared/show', locals: {template: @item.template, template_values: @item.template_values} %>
+    <%- else -%>
+    <table class="show">
+      <tr>
+        <th colspan="2"><%= @item.locale :body %></th>
+      </tr>
+      <tr>
+        <td colspan="2"><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+      </tr>
+      <%- unless @item.links_in_body.empty? -%>
+      <tr>
+        <th><%= @item.locale :body %>に含まれるリンク</th>
+        <td>
+          <ul>
+            <%- @item.links_in_body.each do |link| -%>
+            <li><%= link[:body] %> (<%= link_to link[:url], link[:url], target: 'preview' %>)</li>
+            <%- end -%>
+          </ul>
+        </td>
+      </tr>
+      <%- end -%>
+      <tr>
+        <th colspan="2"><%= @item.locale :body_more %></th>
+      </tr>
+      <tr>
+        <td colspan="2"><%=raw @item.body_more %></td>
+      </tr>
+    </table>
+    <%- end -%>
+
+    <p class="form">記事設定</p>
+
+    <table class="show">
+      <%- @category_types.each do |category_type| -%>
+      <tr>
+        <th><%= category_type.title %></th>
+        <td><%= @item.categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
+      </tr>
+      <%- end -%>
+      <tr>
+        <th><%= @item.locale :feature_1 %></th>
+        <td><%= @item.feature_1_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :feature_2 %></th>
+        <td><%= @item.feature_2_text %></td>
+      </tr>
+      <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
+      <tr>
+        <th><%= @item.locale :raw_tags %></th>
+        <td><%= @item.raw_tags %></td>
+      </tr>
+      <%- end -%>
+      <%- unless @item.rel_docs.empty? -%>
+      <tr>
+        <th><%= @item.locale :in_rel_doc_ids %></th>
+        <td>
+          <ul>
+            <%- @item.rel_docs.each do |doc| -%>
+            <li><%= doc.title %></li>
+            <%- end -%>
+          </ul>
+        </td>
+      </tr>
+      <%- end -%>
+    </table>
+  </div>
+  <div id="tab2">
+    <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
+    <p class="form" style="margin-top: 0;">表示日時設定</p>
+
+    <table class="show">
+      <%- if @content.display_dates(:published_at) -%>
+      <tr>
+        <th>公開日時</th>
+        <td><%=l @item.display_published_at rescue '' %></td>
+      </tr>
+      <%- end -%>
+      <%- if @content.display_dates(:updated_at) -%>
+      <tr>
+        <th>最終更新日時</th>
+        <td><%=l @item.display_updated_at rescue '' %></td>
+      </tr>
+      <%- end -%>
+    </table>
+    <%- end -%>
+
+    <%= task_view @item %>
+  </div>
+  <div id="tab3">
+    <%= render 'cms/admin/_partial/many_inquiries/view', {item: @item} %>
+  </div>
+  <div id="tab4">
+    <%- if @content.approval_content_approval_flow -%>
+    <table class="show">
+      <tr>
+        <th><%= Approval::ApprovalFlow.model_name.human %></th>
+        <td>
+          <%- unless @item.approval_requests.empty? -%>
+          <table class="approval noDesign">
+            <%- @item.approval_requests.each do |approval_request| -%>
+            <tr>
+              <td><%= approval_request.approval_flow.approvals.map{|a|
+                approvers = a.approvers.pluck(:name).join('、')
+                a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;')
+                                                       : content_tag(:span, approvers, style: 'padding: 4px;')
+                }.join(' ＞ ').html_safe %></td>
+            </tr>
+            <%- end -%>
+          </table>
+          <%- end -%>
+        </td>
+      </tr>
+    </table>
+
+    <%- if @item.state_approvable? && @item.approvers.include?(Core.user) -%>
+      <%= form_tag passback_gp_article_doc_path(@content, @item) do %>
+      <table class="show">
+        <tr>
+          <th>差し戻し</th>
+          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
+          <td><%= submit_tag '差し戻し', confirm: '差し戻してよろしいですか？' %></td>
+        </tr>
+      </table>
+      <%- end -%>
+    <%- end -%>
+
+    <%- if @item.state_approvable? && @item.approval_requesters.include?(Core.user) -%>
+      <%= form_tag pullback_gp_article_doc_path(@content, @item) do %>
+      <table class="show">
+        <tr>
+          <th>引き戻し</th>
+          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
+          <td><%= submit_tag '引き戻し', confirm: '引き戻してよろしいですか？' %></td>
+        </tr>
+      </table>
+      <%- end -%>
+    <%- end -%>
+
+    <%- unless @item.approval_requests.all?{|r| r.histories.empty? } -%>
+    <p class="form">履歴</p>
+
+      <%- @item.approval_requests.each do |approval_request| -%>
+      <table class="show histories">
+        <%- approval_request.histories.each do |history| -%>
+        <tr>
+          <th>
+            <span class="reason"><%= history.reason_title %></span>
+            <span class="group"><%= history.operator.group.name %></span>
+            <span class="user"><%= history.operator.name %>（<%= history.operator.account %>）</span>
+            <span class="date"><%=l history.updated_at %></span>
+          </th>
+        </tr>
+        <tr>
+          <td><%=simple_format history.comment.presence || 'コメントなし' %></td>
+        </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    <%- end -%>
+    <%- else -%>
+    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
+    <%- end -%>
+  </div>
+  <div id="tab5">
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :event_state %></th>
+        <td><%= @item.event_state_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :event_started_on %></th>
+        <td><%= @item.event_started_on %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :event_ended_on %></th>
+        <td><%= @item.event_ended_on %></td>
+      </tr>
+      <%- @event_category_types.each do |category_type| -%>
+      <tr>
+        <th><%= category_type.title %></th>
+        <td><%= @item.event_categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
+      </tr>
+      <%- end -%>
+    </table>
+  </div>
+  <div id="tab6">
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :marker_state %></th>
+        <td><%= @item.marker_state_text %></td>
+      </tr>
+      <%- @marker_category_types.each do |category_type| -%>
+      <tr>
+        <th><%= category_type.title %></th>
+        <td><%= @item.marker_categories.where(category_type_id: category_type.id).map(&:title).join(', ') %></td>
+      </tr>
+      <%- end -%>
+    </table>
+    <%= google_map_view @item %>
+  </div>
+  <div id="tab7">
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :mobile_title %></th>
+        <td><%= @item.mobile_title %></td>
+      </tr>
+      <tr>
+        <th colspan="2"><%= @item.locale :mobile_body %></th>
+      </tr>
+      <tr>
+        <td colspan="2"><%=raw @item.mobile_body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+      </tr>
+      <%- unless @item.links_in_mobile_body.empty? -%>
+      <tr>
+        <th><%= @item.locale :mobile_body %>に含まれるリンク</th>
+        <td>
+          <ul>
+            <%- @item.links_in_mobile_body.each do |link| -%>
+            <li><%= link[:body] %> (<%= link_to link[:url], link[:url], target: 'preview' %>)</li>
+            <%- end -%>
+          </ul>
+        </td>
+      </tr>
+      <%- end -%>
+    </table>
+  </div>
+  <div id="tab8">
+    <p class="form" style="margin-top: 0;">基本設定</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :filename_base %></th>
+        <td>
+          <%= @item.name %>
+          /
+          <%= @item.filename_base %>.html
+        </td>
+      </tr>
+      <tr>
+        <th>表示端末</th>
+        <td>
+          <%= @item.locale :terminal_pc_or_smart_phone if @item.terminal_pc_or_smart_phone %>
+          <%= @item.locale :terminal_mobile if @item.terminal_mobile %>
+        </td>
+      </tr>
+    </table>
+
+    <p class="form">metaタグ（検索エンジン用）</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :meta_description %></th>
+        <td><%= @item.meta_description.try(:gsub, /(\r\n|\r|\n)/, ' ') %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :meta_keywords %></th>
+        <td><%= @item.meta_keywords %></td>
+      </tr>
+    </table>
+
+    <p class="form">SNS(OGP)</p>
+
+    <%- if @content.sns_share_related? -%>
+    <table class="show">
+      <tr>
+        <%- if @content.sns_share_content_account -%>
+        <th>SNS投稿</th>
+        <td>
+          <%- unless @content.sns_share_content_account.accounts.empty? -%>
+          <table class="noDesign">
+          <%- @content.sns_share_content_account.accounts.each do |account| -%>
+          <tr>
+            <td><%= @item.sns_accounts.include?(account) ? '投稿する' : '投稿しない' %></td>
+            <td><%= account.provider.humanize %></td>
+            <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
+            <td>
+              <%= link_to_if account.info_url.present?, "#{account.info_name} #{account.info_nickname.presence ? "(#{account.info_nickname})" : ''}", account.info_url, target: 'preview' %>
+              <%- if account.provider == 'facebook' -%>
+                <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
+              <%- end -%>
+            </td>
+          </tr>
+          <%- end -%>
+          </table>
+          <%- end -%>
+        </td>
+        <%- else -%>
+        <td><%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %></td>
+        <%- end -%>
+      </tr>
+    </table>
+    <%- end -%>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :og_type %></th>
+        <td><%= @item.og_type_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :og_title %></th>
+        <td><%= @item.og_title %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :og_description %></th>
+        <td><%=simple_format @item.og_description %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :og_image %></th>
+        <td><%= @item.og_image %></td>
+      </tr>
+    </table>
+
+    <%= editable_group_view @item %>
+    <%= creator_view @item %>
+  </div>
+</div>
+
+<%= javascript_tag do -%>
+<%= toggle_form_function %>
+
+$(document).ready(function () {
+  var active_tab_index = $('.tabs > ul > li').length - 1;
+
+  <%- if (active_tab = params[:active_tab]) -%>
+  $('.tabs > ul > li').each(function (index, item) {
+    if ($(item).hasClass('<%= active_tab %>')) {
+      active_tab_index = index;
+      return false;
+    }
+  });
+  <%- end -%>
+
+  $('.tabs').tabs({
+    active: active_tab_index,
+    show: function (event, ui) {
+        if ((typeof me) !== 'undefined' && me) {
+          var lat = $('#centerDispLat').val();
+          var lng = $('#centerDispLng').val();
+          if (lat === undefined) { lat = 0; }
+          if (lng === undefined) { lng = 0; }
+
+          google.maps.event.trigger(me.map, 'resize');
+          me.map.panTo(new google.maps.LatLng(lat, lng));
+        }
+      }
+  });
+  $('.tabs .ui-tabs-nav > li').css('float', 'right');
+});
+<%- end -%>

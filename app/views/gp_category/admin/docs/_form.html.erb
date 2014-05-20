@@ -1,0 +1,14 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale :public_full_uri %></th>
+    <td><%= @item.public_full_uri %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= GpCategory::Categorization.human_attribute_name :sort_no %></th>
+    <td><%= text_field_tag :sort_no, @item.categorizations.find_by_category_id(@category.id).try(:sort_no), :class => 'number' %></td>
+  </tr>
+</table>

@@ -1,0 +1,63 @@
+<div>
+  <div class="label"><%= f.label :file %></div>
+  <%= file_field_tag 'files[]', id: 'files', multiple: true, required: true, style: 'width: 500px;' %>
+</div>
+<div>
+  <div class="label">画像リサイズ <span class="note">※長辺の長さ</span></div>
+  <%= select_tag :image_resize, options_for_select(Sys::Model::Base::File::IMAGE_RESIZE_OPTIONS), include_blank: true %>
+</div>
+
+<table id="fileAttrs" class="show" style="margin-top: 0;">
+  <tr id="fileAttrHeader">
+    <th style="width: 2em;">&nbsp;</th>
+    <th style="text-align: left;">
+      ①<%= f.label :name %> <span class="note">※半角英数字のみ</span><br />
+      ②<%= f.label :title %> <span class="note">※日本語でわかりやすく</span>
+    </th>
+  </tr>
+</table>
+
+<div style="margin: 20px;">
+  <%= f.submit(submit_label) %>
+</div>
+
+<%= javascript_tag do %>
+$(document).ready(function () {
+  var row = '<tr>' +
+    '<td>_NO_</td>' +
+    '<td>① <%= text_field_tag 'names[]', '_NAME_', class: 'string fileName' %><br />' +
+    '② <%= text_field_tag 'titles[]', '_TITLE_', class: 'string fileTitle' %></td>' +
+  '</tr>';
+
+  $('#files').on('change', function (event) {
+    var filenames = [];
+    if (window.File) {
+      for (var i=0; i<this.files.length; i++) {
+        filenames.push(this.files[i].name);
+      }
+    } else {
+      filenames.push(this.value);
+    }
+
+    $('#fileAttrs tr[id!="fileAttrHeader"]').remove();
+    for (var i=0; i<filenames.length; i++) {
+      var filename = filenames[i].replace(/\\/g, '/').replace(/.*\//, '');
+      var name = filename.replace(/[^0-9a-z\.\-_\\+@#]/ig, '');
+      var title = filename.replace(/(.*)\.[a-z]+$/i, '$1');
+      var html = row.replace(/_NO_/, i+1).replace(/_NAME_/, name).replace(/_TITLE_/, title);
+      $('#fileAttrs').append(html);
+    }
+  });
+
+  $('#file_form').on('submit', function (event) {
+    for (var i=0; i<$('input.fileName').length; i++) {
+      var name = $('input.fileName')[i].value;
+      if ($('.item_name[item_name="' + name + '"]').length > 0) {
+        if (!confirm("この保存ファイル名は既に存在しています。\n上書きしてもよろしいですか？")) {
+          return false;
+        }
+      }
+    }
+  });
+});
+<% end %>

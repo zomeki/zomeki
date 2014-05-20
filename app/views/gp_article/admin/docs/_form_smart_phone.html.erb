@@ -1,0 +1,536 @@
+<%- inline_id = @item.id || params[:_tmp].presence || Util::Sequencer.next_id(:tmp, md5: true) -%>
+
+<span class="note">※は必須項目です。</span>
+
+<div class="tabs">
+  <ul>
+    <li><a href="#tab1">記事</a></li>
+    <li><a href="#tab2">公開日</a></li>
+    <li style="<%= 'display: none;' unless @content.inquiry_related? %>"><a href="#tab3">連絡先</a></li>
+    <li style="<%= 'display: none;' unless @content.approval_related? %>"><a href="#tab4">承認</a></li>
+    <li style="<%= 'display: none;' unless @content.calendar_related? %>"><a href="#tab5">イベント</a></li>
+    <li style="display: none;"><a href="#tab6">地図</a></li>
+    <li><a href="#tab7">携帯</a></li>
+    <li><a href="#tab8">オプション</a></li>
+  </ul>
+
+  <div id="tab1">
+    <div>
+      <div class="label1"><%= f.label :title %> <span class="note">※</span></div>
+      <%= f.text_field :title, :class => 'title', :style => 'width: 290px;' %>
+    </div>
+    <div>
+      <div class="label1">タイトル設定</div>
+      <%= link_to_function '開く▼', "toggle_form(this, '#title_settings')" %>
+    </div>
+
+    <div id="title_settings" style="display: none;">
+      <div>
+        <div class="label1"><%= f.label :href %></div>
+        <%= f.text_field :href, :style => 'width: 290px;' %><br />
+        <%= f.radio_buttons :target, GpArticle::Doc::TARGET_OPTIONS %>
+      </div>
+      <div>
+        <div class="label1"><%= f.label :subtitle %></div>
+        <%= f.text_area :subtitle, :size => '100x2', :style => 'width: 290px;' %>
+      </div>
+      <div>
+        <div class="label1"><%= f.label :summary %></div>
+        <%= f.text_area :summary, :size => '100x5', :style => 'width: 290px;' %>
+      </div>
+      <div>
+        <div class="label1"><%= f.label :list_image %></div>
+        <%= f.text_field :list_image, :style => 'width: 200px;' %>
+      </div>
+    </div>
+
+    <div id="normal_body_form" style="<%= 'display:none;' if @item.template %>">
+      <div class="label1"><%= f.label :body %></div>
+      <div class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :body, :class => 'body ckeditor' %>
+      </div>
+      <div>
+        <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
+        <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
+      </div>
+    </div>
+
+    <div id="template_body_form">
+      <%= render partial: 'gp_template/admin/shared/form',
+                  locals: {template: @item.template, template_values: @item.template_values} if @item.template %>
+    </div>
+
+    <%- if @content.blog_functions_available? -%>
+    <p class="form">追記を入力する</p>
+
+    <div><%= link_to_function '開く▼', "toggle_form(this, '#body_more')" %></div>
+
+    <div id="body_more" style="display: none;">
+      <div>
+        <div class="label1"><%= f.label :body_more_link_text %></div>
+        <%= f.text_field :body_more_link_text, :style => 'width: 200px;' %>
+      </div>
+      <div class="cke_editor_wrapper">
+        <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+        <%= f.text_area :body_more, :class => 'body ckeditor' %>
+      </div>
+    </div>
+    <%- end -%>
+
+    <p class="form">添付ファイル</p>
+
+    <div><%= link_to_function '開く▼', "toggle_form(this, '#inline_files')" %></div>
+
+    <div id="inline_files" style="display: none;">
+      <%= hidden_field_tag :_tmp, inline_id %>
+      <div class="iframe-wrapper"><iframe src="<%= gp_article_doc_files_path(@content, inline_id) %>" style="height: 400px;"></iframe></div>
+    </div>
+
+    <p class="form">記事設定</p>
+
+    <%- @visible_category_types.each do |category_type| -%>
+    <div class="label1"><%= category_type.title %></div>
+    <div id="category_type_<%= category_type.id %>_categories">
+      <%= render 'category', category_type: category_type, category: nil,
+                             categories_for_option: category_type.categories_for_option %>
+      <%- if (pc = @params_categories[category_type.id.to_s]).kind_of?(Array) -%>
+        <%- pc.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: category_type.categories_for_option %>
+        <%- end -%>
+      <%- else -%>
+        <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
+        <%= render 'category', category_type: category_type, category: category,
+                               categories_for_option: category_type.categories_for_option %>
+        <%- end -%>
+      <%- end -%>
+      <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+    </div>
+    <%- end -%>
+
+    <div>
+      <div class="label1"><%= f.label :feature_1 %></div>
+      <%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :feature_2 %></div>
+      <%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %>
+    </div>
+
+    <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
+    <div>
+      <div class="label1"><%= f.label :raw_tags %></div>
+      <%= f.text_field :raw_tags, :style => 'width: 700px;' %>
+    </div>
+    <%- end -%>
+
+    <div class="label1"><%= f.label :in_rel_doc_ids %></div>
+    <div>
+      <div class="label2"><%= GpCategory::CategoryType.model_name.human %></div>
+      <%= select_tag 'rel_category_type', options_for_select(@content.category_types_for_option), include_blank: true %>
+    </div>
+    <div>
+      <div class="label2"><%= GpCategory::Category.model_name.human %></div>
+      <%= select_tag 'rel_category', '', include_blank: true %>
+    </div>
+    <div>
+      <div class="label2"><%= GpArticle::Doc.model_name.human %></div>
+      <%= select_tag 'rel_doc', '', include_blank: true %><br />
+      <%= button_tag '追加', type: 'button', id: 'add_rel_doc' %>
+    </div>
+
+    <hr />
+
+    <div id="rel_docs">
+      <%- @item.rel_docs.each do |doc| -%>
+      <div style="margin-top: 10px; width: 700px;"><%= select_tag 'item[in_rel_doc_ids][]', options_from_collection_for_select([doc], :id, :title, doc.id), include_blank: true %></div>
+      <%- end -%>
+    </div>
+  </div>
+  <div id="tab2">
+    <%- if @content.display_dates(:published_at) || @content.display_dates(:updated_at) -%>
+    <p class="form" style="margin-top: 0;">表示日時設定</p>
+
+    <%- if @content.display_dates(:published_at) -%>
+    <div>
+      <div class="label1">公開日時</div>
+      <%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
+                       :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <%- end -%>
+    <%- if @content.display_dates(:updated_at) -%>
+    <div>
+      <div class="label1">最終更新日時</div>
+      <%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
+                       :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <%- end -%>
+    <%- end -%>
+
+    <p class="form">公開日時設定</p>
+
+    <div>
+      <div class="label1">公開開始日時</div>
+      <%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+    <div>
+      <div class="label1">公開終了日時</div>
+      <%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %>
+    </div>
+  </div>
+  <div id="tab3">
+    <%= render 'cms/admin/_partial/many_inquiries/form_smart_phone', {f: f, item: @item, content: @content} %>
+  </div>
+  <div id="tab4">
+    <%- if @content.approval_content_approval_flow -%>
+    <div>
+      <div class="label1"><%= Approval::ApprovalFlow.model_name.human %></div>
+      <%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
+        <%- unless approval_flows.empty? -%>
+        <table class="approval noDesign">
+          <%- approval_flows.each do |approval_flow| -%>
+          <tr>
+            <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+            <td><%= approval_flow.approvals.map{|a|
+              approvers = a.approvers.pluck(:name).join('、')
+              content_tag(:span, approvers, style: 'padding: 4px;')
+              }.join(' ＞ ').html_safe %></td>
+          </tr>
+          <%- end -%>
+        </table>
+      <%- end -%>
+    </div>
+    <%- else -%>
+    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
+    <%- end -%>
+  </div>
+  <div id="tab5">
+    <%- if @content.gp_calendar_content_event -%>
+    <div>
+      <div class="label1"><%= f.label :event_state %></div>
+      <%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %>
+    </div>
+    <%- end -%>
+    <div>
+      <div class="label1"><%= f.label :event_started_on %></div>
+      <%= f.text_field :event_started_on, :value => value_for_datepicker(f.object_name, :event_started_on),
+                                          :style => 'width: 150px;', :class => 'datepicker' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :event_ended_on %></div>
+      <%= f.text_field :event_ended_on, :value => value_for_datepicker(f.object_name, :event_ended_on),
+                                        :style => 'width: 150px;', :class => 'datepicker' %>
+    </div>
+    <%- @event_category_types.each do |category_type| -%>
+    <div>
+      <div class="label1"><%= category_type.title %></div>
+      <div id="event_category_type_<%= category_type.id %>_categories">
+        <%= render 'category', category_type: category_type, category: nil,
+                               categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                               prefix: 'event_' %>
+        <%- if (pec = @params_event_categories[category_type.id.to_s]).kind_of?(Array) -%>
+          <%- pec.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+          <%= render 'category', category_type: category_type, category: category,
+                                 categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                 prefix: 'event_' %>
+          <%- end -%>
+        <%- else -%>
+        <%- @item.event_categories.where(category_type_id: category_type.id).each do |category| -%>
+          <%= render 'category', category_type: category_type, category: category,
+                                 categories_for_option: @content.event_category_type_categories_for_option(category_type),
+                                 prefix: 'event_' %>
+          <%- end -%>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+      </div>
+    </div>
+    <%- end -%>
+  </div>
+  <div id="tab6">
+    <table class="show">
+      <%- if @content.map_content_marker -%>
+      <tr>
+        <th><%= f.label :marker_state %></th>
+        <td><%= f.radio_buttons :marker_state, @item.class::MARKER_STATE_OPTIONS %></td>
+      </tr>
+      <%- end -%>
+      <%- @marker_category_types.each do |category_type| -%>
+      <tr>
+        <th><%= category_type.title %></th>
+        <td>
+          <div id="marker_category_type_<%= category_type.id %>_categories">
+            <%= render 'category', category_type: category_type, category: nil,
+                                   categories_for_option: @content.marker_category_type_categories_for_option(category_type),
+                                   prefix: 'marker_' %>
+            <%- if (pmc = @params_marker_categories[category_type.id.to_s]).kind_of?(Array) -%>
+              <%- pmc.each do |c| next unless (category = category_type.categories.find_by_id(c)) -%>
+              <%= render 'category', category_type: category_type, category: category,
+                                     categories_for_option: @content.marker_category_type_categories_for_option(category_type),
+                                     prefix: 'marker_' %>
+              <%- end -%>
+            <%- else -%>
+              <%- @item.marker_categories.where(category_type_id: category_type.id).each do |category| -%>
+              <%= render 'category', category_type: category_type, category: category,
+                                     categories_for_option: @content.marker_category_type_categories_for_option(category_type),
+                                     prefix: 'marker_' %>
+              <%- end -%>
+            <%- end -%>
+            <span><%= button_tag '追加', type: 'button', class: 'add_category' %></span>
+          </div>
+        </td>
+      </tr>
+      <%- end -%>
+    </table>
+    <%= google_map_form f %>
+  </div>
+  <div id="tab7">
+    <div>
+      <div class="label1"><%= f.label :mobile_title %></div>
+      <%= f.text_field :mobile_title, :class => 'title', :style => 'width: 500px;' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :mobile_body %></div>
+    </div>
+    <div>
+      <%= init_ckeditor :baseHref => "#{gp_article_doc_path(@content, inline_id)}/" %>
+      <%= f.text_area :mobile_body, :class => 'body ckeditor' %>
+    </div>
+  </div>
+  <div id="tab8">
+    <p class="form" style="margin-top: 0;">基本設定</p>
+
+    <div>
+      <div class="label1"><%= f.label :filename_base %></div>
+      <%- if @item.prev_edition -%>
+      <%= @item.name %><%= f.hidden_field :name %>
+      <%- else -%>
+      <%= f.text_field :name, :style => 'width: 200px;' %>
+      <%- end -%>
+      /
+      <%= f.text_field :filename_base, :style => 'width: 200px;' %>.html
+    </div>
+    <div>
+      <div class="label1">表示端末</div>
+      <%= f.check_box :terminal_pc_or_smart_phone %> <%= f.label :terminal_pc_or_smart_phone %>
+      <%= f.check_box :terminal_mobile %> <%= f.label :terminal_mobile %>
+    </div>
+
+    <p class="form">metaタグ（検索エンジン用）</p>
+
+    <div>
+      <div class="label1"><%= f.label :meta_description %></div>
+      <%= f.text_area :meta_description, :size => '100x3' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :meta_keywords %></div>
+      <%= f.text_field :meta_keywords, :style => 'width: 700px;' %>
+    </div>
+
+    <p class="form">SNS(OGP)</p>
+
+    <%- if @content.sns_share_related? -%>
+      <%- if @content.sns_share_content_account -%>
+      <div>
+        <div class="label1">SNS投稿</div>
+        <%- unless @content.sns_share_content_account.accounts.empty? -%>
+        <table class="noDesign">
+        <%- @content.sns_share_content_account.accounts.each do |account| -%>
+        <tr>
+          <td><%= check_box_tag 'share_accounts[]', account.id, (@params_share_accounts ? @params_share_accounts.include?(account.id.to_s)
+                                                                                        : @item.sns_accounts.include?(account)) , id: "share_accounts_#{account.id}" %>
+            <%= label_tag "share_accounts_#{account.id}", '投稿する' %></td>
+          <td><%= account.provider.humanize %></td>
+          <td><%= image_tag account.info_image, style: 'height: 50px; width: 50px;' if account.info_image.present? %></td>
+          <td>
+            <%= link_to_if account.info_url.present?, "#{account.info_name}#{account.info_nickname.presence ? " (#{account.info_nickname})" : ''}", account.info_url, target: 'preview' %>
+            <%- if account.provider == 'facebook' -%>
+              <span style="margin-left: 20px;"><%= account.facebook_page_text %></span>
+            <%- end -%>
+          </td>
+        </tr>
+        <%- end -%>
+        </table>
+        <%- end -%>
+      </div>
+      <div>
+        <%= f.radio_buttons :share_to_sns_with, GpArticle::Doc::SHARE_TO_SNS_WITH_OPTIONS %>
+      </div>
+      <%- else -%>
+      <div>
+        <%= link_to '使用するSNSシェアを選択してください。', gp_article_content_settings_path %>
+      </div>
+      <%- end -%>
+    <%- end -%>
+
+    <div>
+      <div class="label1"><%= f.label :og_type %></div>
+      <%= f.select :og_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_title %></div>
+      <%= f.text_field :og_title %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_description %></div>
+      <%= f.text_area :og_description, :size => '100x3' %>
+    </div>
+    <div>
+      <div class="label1"><%= f.label :og_image %></div>
+      <%= f.text_field :og_image, :style => 'width: 200px;' %>
+    </div>
+
+    <p class="form">編集権限</p>
+
+    <%- groups = Core.site.groups.where(level_no: 2).order(:sort_no) -%>
+    <div>
+      <div class="label1"><%= f.label :in_editable_groups %></div>
+      <div id="editable_groups">
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: Core.site.groups.build, available: false %>
+        <%- Sys::Group.where(id: (@params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups
+                                                                                  : @item.in_editable_groups)).each do |group| -%>
+        <%= render 'editable_group', groups_for_option: Core.site.groups_for_option, group: group, available: true %>
+        <%- end -%>
+        <span><%= button_tag '追加', type: 'button', id: 'add_editable_group' %></span>
+      </div>
+      <div><%= check_box_tag 'item[in_editable_groups][]', 'ALL',
+                             @params_item_in_editable_groups.kind_of?(Array) ? @params_item_in_editable_groups.include?('ALL')
+                                                                             : @item.editable_group.try(:all?),
+                             id: 'all_group' %> <%= label_tag 'all_group', 'すべてのグループ' %></div>
+    </div>
+
+    <%= creator_form_smart_phone f %>
+  </div>
+</div>
+
+<%= javascript_tag do -%>
+<%= toggle_form_function %>
+
+function set_click_event_handler(category_type_id, prefix) {
+  if (prefix === undefined) { prefix = ''; }
+  var categories_wrapper = $('#' + prefix + 'category_type_' + category_type_id + '_categories');
+  categories_wrapper.find('.add_category').on('click', function () {
+    var new_category = categories_wrapper.children(':first-child').clone(true);
+    new_category.find(':disabled').removeAttr('disabled');
+    new_category.insertBefore(categories_wrapper.children(':last-child')).show();
+  }).trigger('click');
+}
+
+function set_copy_date(from, to) {
+  $(from).on('change', function () {
+    if ($(to).val() === '') { $(to).val($(from).val()); }
+  });
+}
+
+$(document).ready(function () {
+  <%= disable_enter_script -%>
+  <%= enable_datepicker_script -%>
+  <%= enable_datetimepicker_script -%>
+
+  <%- @visible_category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>');
+  <%- end -%>
+
+  <%- @event_category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>', 'event_');
+  <%- end -%>
+
+  <%- @marker_category_types.each do |category_type| -%>
+  set_click_event_handler('<%= category_type.id %>', 'marker_');
+  <%- end -%>
+
+  $('#add_editable_group').on('click', function () {
+    var editable_groups_wrapper = $('#editable_groups');
+    var new_group = editable_groups_wrapper.children(':first-child').clone(true);
+    new_group.find(':disabled').removeAttr('disabled');
+    new_group.insertBefore(editable_groups_wrapper.children(':last-child')).show();
+  }).trigger('click');
+
+  <%- if @content.gp_category_content_category_type -%>
+  $('#rel_category_type').on('change', function (event) {
+    var category_type_id = parseInt(event.target.value);
+    var category_select = $('#rel_category');
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_type_id)) {
+      category_select.html('<option value=""></option>');
+      doc_select.html('<option value=""></option>');
+    } else {
+      category_select.html('<option value="">更新中...</option>');
+      doc_select.html('<option value=""></option>');
+      $.get('<%= gp_category_category_type_categories_path(content: @content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        category_select.html(data);
+      });
+    }
+  });
+
+  $('#rel_category').on('change', function (event) {
+    var category_id = parseInt(event.target.value);
+    var doc_select = $('#rel_doc');
+    if (isNaN(category_id)) {
+      doc_select.html('<option value=""></option>');
+    } else {
+      doc_select.html('<option value="">更新中...</option>');
+      $.get('<%= gp_article_docs_path(content: @content) %>?options=true&public=true&exclude=<%= @item.name %>&category_id=' + category_id, function (data) {
+        doc_select.html(data);
+      });
+    }
+  });
+  <%- end -%>
+
+  $('#add_rel_doc').on('click', function () {
+    var rel_doc = $('#rel_doc');
+    if (rel_doc.val() === '') {
+      alert('記事を選択してください。');
+      return;
+    }
+
+    var new_doc = $('<select>', {name: 'item[in_rel_doc_ids][]'}).append($('<option>', {value: ''}));
+    new_doc.append(rel_doc.children(':selected').clone(true)).val(rel_doc.val());
+    $('<div>', {style: 'margin-top: 10px; width: 700px;'}).append(new_doc).appendTo($('#rel_docs'));
+    rel_doc.val('');
+  });
+
+  $('.tabs').tabs({
+    active: 0,
+    show: function (event, ui) {
+        if ((typeof me) !== 'undefined' && me) {
+          var lat = $('#centerDispLat').val();
+          var lng = $('#centerDispLng').val();
+          if (lat === undefined) { lat = 0; }
+          if (lng === undefined) { lng = 0; }
+
+          google.maps.event.trigger(me.map, 'resize');
+          me.map.panTo(new google.maps.LatLng(lat, lng));
+        }
+      }
+  });
+
+  set_copy_date('#item_event_started_on', '#item_event_ended_on');
+  set_copy_date('#item_event_ended_on', '#item_event_started_on');
+});
+<%- end -%>
+
+<%- if @content.template_available? -%>
+<%= javascript_tag do -%>
+$(function() {
+  var prevTemplateId;
+  $('#item_template_id').on('click', function() {
+    prevTemplateId = $(this).val();
+  }).on('change', function() {
+    if (!confirm('テンプレートを変更してよろしいですか？')) {
+      $(this).val(prevTemplateId);
+    }
+    if (this.value) {
+      $.post('<%= form_gp_template_template_path(@content.gp_temlate_content_template, id: '_ID_') %>'.replace(/_ID_/, this.value), $('form').serialize(), function(data) {
+        $('#template_body_form').html(data);
+      });
+      $('#normal_body_form').hide();
+      $('#template_body_form').show();
+    } else {
+      $('#normal_body_form').show();
+      $('#template_body_form').hide().html('');
+    }
+  });
+});
+<%- end -%>
+<%- end -%>

@@ -9,10 +9,12 @@ class ApplicationController < ActionController::Base
   
   def initialize_application
     if Core.publish
-      Page.mobile = nil
+      Page.mobile = false
+      Page.smart_phone = false
       unset_mobile
     else
       Page.mobile = true if request.mobile?
+      Page.smart_phone = true if request.smart_phone?
       set_mobile if Page.mobile? && !request.mobile?
     end
     return false if Core.dispatched?
@@ -24,27 +26,26 @@ class ApplicationController < ActionController::Base
   end
   
   def send_mail(fr_addr, to_addr, subject, body)
-    return false if fr_addr.blank?
-    return false if to_addr.blank?
+    return false if fr_addr.blank? || to_addr.blank?
     CommonMailer.plain(from: fr_addr, to: to_addr, subject: subject, body: body).deliver
   end
   
   def send_download
     #
   end
-  
+
   def set_mobile
     def request.mobile
       Jpmobile::Mobile::Au.new(nil, self)
     end
   end
-  
+
   def unset_mobile
     def request.mobile
       nil
     end
   end
-  
+
 private
   def rescue_action(error)
     case error

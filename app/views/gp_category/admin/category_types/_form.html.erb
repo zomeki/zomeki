@@ -16,6 +16,14 @@
     <td><%= f.text_field :title, :class => 'name' %></td>
   </tr>
   <tr>
+    <th><%= f.label :sitemap_state %></th>
+    <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :docs_order %></th>
+    <td><%= f.select :docs_order, @item.class::DOCS_ORDER_OPTIONS, include_blank: true %></td>
+  </tr>
+  <tr>
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
@@ -27,6 +35,16 @@
 
 <table class="show">
   <%= concept_and_layout_form f %>
+  <tr>
+    <th><%= f.label :template_id %></th>
+    <td><%= f.collection_select :template_id, @content.templates, :id, :title, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :internal_category_type_id %></th>
+    <td><%= f.collection_select :internal_category_type_id,
+                                @content.category_types.where(@content.category_types.table[:id].not_eq(@item.id)),
+                                :id, :title, include_blank: true %></td>
+  </tr>
 </table>
 
 <%= creator_form f %>

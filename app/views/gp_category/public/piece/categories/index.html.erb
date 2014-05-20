@@ -1,0 +1,10 @@
+<ul class="level1">
+  <%- @root_categories.each do |category| -%>
+  <li class="<%= category.name -%>">
+    <%= link_to category.title, category.public_uri %> <%= "(#{public_docs_with_category_id(category.id).count})" if @piece.num_docs_visible? %>
+    <%- unless category.public_children.empty? -%>
+    <%= render 'category', category: category %>
+    <%- end -%>
+  </li>
+  <%- end -%>
+</ul>

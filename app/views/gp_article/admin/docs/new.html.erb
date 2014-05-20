@@ -1,5 +1,9 @@
-<%= form_for(:item, :url => gp_article_docs_path) do |f| %>
+<%= render 'gp_article/admin/docs/replacement_notification' %>
+
+<%= form_for(@item, :as => :item, :url => gp_article_docs_path) do |f| %>
   <%= error_messages_for :item %>
+  <%=raw large_flash(flash, :key => :link_check_result) %>
+  <%=raw large_flash(flash, :key => :accessibility_check_result) %>
   <%= render 'form', :f => f %>
   <%= submit @item.state_options %>
 <% end %>

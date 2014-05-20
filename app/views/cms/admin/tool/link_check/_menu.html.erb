@@ -1,0 +1,13 @@
+<h2>リンクチェック</h2>
+
+<div class="actionMenu">
+  <%= link_to 'リンクエラーをチェック', tool_link_check_path, :method => :post %>
+  <span class="separator"></span>
+  <%= link_to '失敗のみ', tool_link_check_path(only: 'failed') %>
+  <%= link_to '成功のみ', tool_link_check_path(only: 'succeeded') %>
+  <%= link_to 'すべて', tool_link_check_path %>
+  <%- if false -%>
+  <span class="separator"></span>
+  <%= link_to '設定', nil %>
+  <%- end -%>
+</div>

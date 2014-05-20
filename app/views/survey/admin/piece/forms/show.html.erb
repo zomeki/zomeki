@@ -1,0 +1,27 @@
+<%= render(layout: 'survey/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :target_form_id %></th>
+    <td><%= "#{@item.target_form.title}（#{@item.target_form.name}）" if @item.target_form %></td>
+  </tr>
+</table>
+
+<p class="form">挿入テキスト</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :upper_text %></th>
+  </tr>
+  <tr>
+    <td><%= @item.setting_value(:upper_text) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :lower_text %></th>
+  </tr>
+  <tr>
+    <td><%= @item.setting_value(:lower_text) %></td>
+  </tr>
+</table>
+<%- end -%>

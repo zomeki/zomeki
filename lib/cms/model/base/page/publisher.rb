@@ -37,7 +37,11 @@ module Cms::Model::Base::Page::Publisher
 
   def publishable
     editable
-    self.and "#{self.class.table_name}.state", 'recognized'
+    if respond_to?(:state_approved?)
+      self.and "#{self.class.table_name}.state", 'approved'
+    else
+      self.and "#{self.class.table_name}.state", 'recognized'
+    end
     return self
   end
 
@@ -49,7 +53,11 @@ module Cms::Model::Base::Page::Publisher
 
   def publishable?
     return false unless editable?
-    return false unless recognized?
+    if respond_to?(:state_approved?)
+      return false unless state_approved?
+    else
+      return false unless recognized?
+    end
     return true
   end
 
@@ -72,29 +80,38 @@ module Cms::Model::Base::Page::Publisher
   end
   
   def publish_page(content, options = {})
-    @published = nil
+    @published = false
     return false if content.nil?
     save(:validate => false) if unid.nil? # path for Article::Unit
     return false if unid.nil?
-    
-    path = (options[:path] || public_path).gsub(/\/$/, "/index.html")
-    hash = content ? Digest::MD5.new.update(content).to_s : nil
-    
+
+    content = content.gsub(%r!zdel_.+?/!i, '')
+
+    path = (options[:path] || public_path).gsub(/\/$/, '/index.html')
+    hash = Digest::MD5.new.update(content).to_s
+
     cond = options[:dependent] ? ['dependent = ?', options[:dependent].to_s] : ['dependent IS NULL']
     pub  = publishers.find(:first, :conditions => cond)
-    
+
     return true if mobile_page?
-    if hash != nil && pub != nil && hash == pub.content_hash && ::File.exist?(path)
-      #FileUtils.touch([path])
-      return true
+    return true if hash && pub && hash == pub.content_hash && ::File.exist?(path)
+
+clean_statics = false
+if clean_statics
+    if File.exist?(path)
+      File.delete(path)
+      info_log "DELETED: #{path}"
     end
+    @published = true
+else
     if ::File.exist?(path) && ::File.new(path).read == content
       #FileUtils.touch([path])
     else
       Util::File.put(path, :data => content, :mkdir => true)
       @published = true
     end
-    
+end
+
     pub ||= Sys::Publisher.new
     pub.unid         = unid
     pub.dependent    = options[:dependent] ? options[:dependent].to_s : nil

@@ -1,15 +1,15 @@
-## ZOMEKI v1.1.0 インストールマニュアル
+## ZOMEKI development インストールマニュアル
 
 **********************************************************************
  1 想定環境
 **********************************************************************
 
 [システム]
-OS         : CentOS 6.4
+OS         : CentOS 6.5
 Webサーバ  : Apache 2.2
 DBシステム : MySQL 5.1
-Ruby       : 1.9.3
-Rails      : 3.1
+Ruby       : 2.1
+Rails      : 3.2
 
 [設定]
 ドメイン   : zomeki.example.com
@@ -48,7 +48,7 @@ yumリポジトリにEPELを追加します。
 
 必要なパッケージをインストールします。
 
-  # yum -y install wget
+  # yum -y install wget git
 
 **********************************************************************
  5 Ruby のインストール
@@ -59,8 +59,10 @@ Rubyをインストールします。
   # yum install -y gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   # cd /usr/local/src
-  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p448.tar.gz
-  # tar zxf ruby-1.9.3-p448.tar.gz && cd ruby-1.9.3-p448 && ./configure && make && make install
+  # wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.bz2
+  # tar jxf ruby-2.1.2.tar.bz2 && cd ruby-2.1.2 && ./configure && make && make install
+
+  # gem install bundler
 
 **********************************************************************
  6 ZOMEKI のインストール
@@ -74,11 +76,9 @@ ZOMEKIをインストールします。
 
   # yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
-  # cd /usr/local/src
-  # wget https://github.com/zomeki/zomeki/archive/v1.1.0.tar.gz -O zomeki-1.1.0.tar.gz
-  # mkdir -p /var/share
-  # tar zxf zomeki-1.1.0.tar.gz && mv zomeki-1.1.0 /var/share/zomeki && chown -R zomeki:zomeki /var/share/zomeki
-  # cd /var/share/zomeki && gem install bundler && bundle install --without development test
+  # git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
+  # chown -R zomeki:zomeki /var/share/zomeki
+  # su - zomeki -c 'cd /var/share/zomeki && bundle install --path vendor/bundle --without development test'
 
   # cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.
 
@@ -101,13 +101,13 @@ Phusion Passengerをインストールします。
 
   # yum install -y curl-devel
 
-  # gem install passenger -v 4.0.10
+  # gem install passenger -v 4.0.42
   # passenger-install-apache2-module
   # cp /var/share/zomeki/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
   # vi /etc/httpd/conf.d/passenger.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ※「PASSENGER_VERSION」をすべて「4.0.10」に書き換えます。
+  ※「PASSENGER_VERSION」をすべて「4.0.42」に書き換えます。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************
@@ -187,11 +187,30 @@ MySQLをインストールします
  10 ふりがな・読み上げ機能 のインストール
 **********************************************************************
 
-Dartsをインストールします。
+必要なパッケージをインストールします。
+
+  # yum install -y glibc-devel.i686 libstdc++-devel.i686 sox
+
+hts_engine APIをインストールします。
 
   # cd /usr/local/src
-  # wget http://chasen.org/~taku/software/darts/src/darts-0.32.tar.gz
-  # tar zxf darts-0.32.tar.gz && cd darts-0.32 && ./configure && make && make install
+  # wget http://downloads.sourceforge.net/hts-engine/hts_engine_API-1.07.tar.gz
+  # tar zxf hts_engine_API-1.07.tar.gz && cd hts_engine_API-1.07 && ./configure CFLAGS='-m32' && make && make install
+
+Open JTalkをインストールします。
+
+  # cd /usr/local/src
+  # wget http://downloads.sourceforge.net/open-jtalk/open_jtalk-1.06.tar.gz
+  # tar zxf open_jtalk-1.06.tar.gz && cd open_jtalk-1.06
+  # sed -i 's/#define MAXBUFLEN 1024/#define MAXBUFLEN 10240/' bin/open_jtalk.c
+  # ./configure --with-charset=UTF-8 CPPFLAGS='-m32' LDFLAGS='-m32' && make && make install
+
+Dictionaryをインストールします。
+
+  # cd /usr/local/src
+  # wget http://downloads.sourceforge.net/open-jtalk/open_jtalk_dic_utf_8-1.06.tar.gz
+  # tar zxf open_jtalk_dic_utf_8-1.06.tar.gz
+  # mkdir /usr/local/share/open_jtalk && mv open_jtalk_dic_utf_8-1.06 /usr/local/share/open_jtalk/dic
 
 LAMEをインストールします。
 
@@ -199,54 +218,23 @@ LAMEをインストールします。
   # wget http://jaist.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
   # tar zxf lame-3.99.5.tar.gz && cd lame-3.99.5 && ./configure && make && make install
 
-ChaSenをインストールします。
+MeCabをインストールします。
 
   # cd /usr/local/src
-  # wget http://jaist.dl.sourceforge.jp/chasen-legacy/32224/chasen-2.4.4.tar.gz
-  # tar zxf chasen-2.4.4.tar.gz && cd chasen-2.4.4 && ./configure && make && make install
+  # wget http://mecab.googlecode.com/files/mecab-0.996.tar.gz
+  # tar zxf mecab-0.996.tar.gz && cd mecab-0.996 && ./configure --enable-utf8-only && make && make install
 
-IPAdicをインストールします。
+MeCab-IPAdicをインストールします。
 
-  # yum install -y nkf
   # cd /usr/local/src
-  # wget http://iij.dl.sourceforge.jp/ipadic/24435/ipadic-2.7.0.tar.gz
-  # tar zxf ipadic-2.7.0.tar.gz && cd ipadic-2.7.0 && ./configure
+  # wget http://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
+  # tar zxf mecab-ipadic-2.7.0-20070801.tar.gz && cd mecab-ipadic-2.7.0-20070801 && ./configure --with-charset=utf8 && make && make install
 
-  辞書をUTF-8に変換します。
+MeCab-Rubyをインストールします。
 
-  # vi to_utf8.sh
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #!/bin/bash
-  for file in *.dic *.cha chasenrc
-  do
-  if [ -f $file ]; then
-    nkf --utf8 $file > tmpfile
-    mv tmpfile $file
-  fi
-  done
-  exit
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # chmod 755 to_utf8.sh
-  # ./to_utf8.sh
-
-  # ldconfig
-  # `chasen-config --mkchadic`/makemat -i w
-  # `chasen-config --mkchadic`/makeda -i w chadic *.dic
-  # make install
-
-ChaOneをインストールします。
-
-  # yum install -y libxslt-devel
-  # cd /var/share/zomeki/ext/morph/chaone
-  # chmod 755 configure
-  # ./configure && make && make install
-
-GalateaTalkをインストールします。
-
-  # cd /var/share/zomeki/ext/gtalk
-  # chmod 755 configure
-  # ./configure && make
-  # chmod 755 /var/share/zomeki/ext/gtalk_filter.rb
+  # cd /usr/local/src
+  # wget http://mecab.googlecode.com/files/mecab-ruby-0.996.tar.gz
+  # tar zxf mecab-ruby-0.996.tar.gz && cd mecab-ruby-0.996 && ruby extconf.rb && make && make install
 
 **********************************************************************
  11 Apache/MySQL の起動
@@ -261,20 +249,7 @@ GalateaTalkをインストールします。
 
 ユーザzomekiのcronに処理を追加します。
 
-  # crontab -u zomeki -e
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # 記事の公開/非公開処理を行います。
-  10,25,40,55 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('sys/script/tasks/exec')"
-
-  # トップページや中間ページを静的ファイルとして書き出します。
-  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/nodes/publish')"
-
-  # 音声ファイルを静的ファイルとして書き出します。
-  */15 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/talk_tasks/exec')"
-
-  # 新着記事ポータルで設定したAtomフィードを取り込みます。
-  0 * * * * /usr/local/bin/ruby /var/share/zomeki/script/rails runner -e production "Script.run('cms/script/feeds/read')"
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # su - zomeki -c 'cd /var/share/zomeki && bundle exec whenever --update-crontab'
 
 **********************************************************************
  13 動作確認

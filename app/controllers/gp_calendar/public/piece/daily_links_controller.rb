@@ -1,42 +1,45 @@
 # encoding: utf-8
-class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public::Base
+class GpCalendar::Public::Piece::DailyLinksController < GpCalendar::Public::Piece::BaseController
   def pre_dispatch
     @piece = GpCalendar::Piece::DailyLink.find_by_id(Page.current_piece.id)
-    render :text => '' unless @piece
+    return render(:text => '') unless @piece
 
     @item = Page.current_item
   end
 
   def index
-    year     = params[:gp_calendar_event_year]
-    month    = params[:gp_calendar_event_month]
+    date     = params[:gp_calendar_event_date]
     min_date = params[:gp_calendar_event_min_date]
     max_date = params[:gp_calendar_event_max_date]
 
-    unless year && month
-      today = Date.today
-      year = today.year
-      month = today.month
-      min_date = today.beginning_of_month
-      max_date = min_date.since(11.months).to_date
+    unless date
+      date = Date.today
+      min_date = 1.year.ago(date.beginning_of_month)
+      max_date = 11.months.since(date.beginning_of_month)
     end
 
-    sdate = Date.new(year, month, 1)
-    edate = sdate.since(1.month).to_date
+    start_date = date.beginning_of_month.beginning_of_week(:sunday)
+    end_date = date.end_of_month.end_of_week(:sunday)
 
-    @calendar = Util::Date::Calendar.new(year, month)
+    @calendar = Util::Date::Calendar.new(date.year, date.month)
 
-    return unless (@node = @piece.content.event_node)
+    return unless (@node = @piece.target_node)
 
     @calendar.year_uri  = "#{@node.public_uri}:year/"
     @calendar.month_uri = "#{@node.public_uri}:year/:month/"
     @calendar.day_uri   = "#{@node.public_uri}:year/:month/#day:day"
 
-    dates = []
-    event_docs(sdate, edate).each do |event|
-      dates << event.event_date
+    days = event_docs(start_date, end_date).inject([]) do |dates, doc|
+             dates | (doc.event_started_on..doc.event_ended_on).to_a
+           end
+
+    (min_date..min_date.end_of_month).each do |date|
+      unless GpCalendar::Event.public.all_with_content_and_criteria(@piece.content, {date: date}).empty?
+        days << date unless days.include?(date)
+      end
     end
-    @calendar.day_link = dates
+
+    @calendar.day_link = days.sort!
 
     if min_date && max_date
       @pagination = Util::Html::SimplePagination.new
@@ -46,24 +49,5 @@ class GpCalendar::Public::Piece::DailyLinksController < Sys::Controller::Public:
       @pagination.prev_uri   = @calendar.prev_month_uri if @calendar.prev_month_date >= min_date
       @pagination.next_uri   = @calendar.next_month_uri if @calendar.next_month_date <= max_date
     end
-  end
-
-  private
-
-  def event_docs(sdate, edate)
-    doc_contents = Cms::ContentSetting.where(name: 'gp_calendar_content_event_id', value: @piece.content.id).map(&:content)
-    doc_contents.reject! {|dc| dc.site != Page.site }
-    return [] if doc_contents.empty?
-
-    doc_contents.map {|dc|
-      case dc.model
-      when 'GpArticle::Doc'
-        dc = GpArticle::Content::Doc.find(dc.id)
-        docs = dc.public_docs.table
-        dc.public_docs.where(event_state: 'visible').where(docs[:event_date].gteq(sdate).and(docs[:event_date].lt(edate)))
-      else
-        []
-      end
-    }.flatten
   end
 end

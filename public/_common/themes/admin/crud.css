@@ -7,7 +7,7 @@
 /* etc.
 --------------------------------------------------------- */
 p.form, p.managerForm {
-  margin: 0px 0px 10px 0px;
+  margin: 20px 0px 10px 0px;
   padding: 0px 5px 0px 0px;
   font-size: 110%;
   font-weight: bold;
@@ -50,6 +50,10 @@ table.index td {
   padding: 5px 6px;
   border-left: 1px solid #ccc;
 }
+table.index td.approvable {
+  font-weight: bold;
+  color: #ee0000;
+}
 table.index tr.cycle td {
   background-color: #f4f4f4;
 }
@@ -82,7 +86,10 @@ table.show td.tableContainer {
 }
 table.show td.tableContainer th {
   background-color: #ddd;
-} 
+}
+table.show td textarea {
+  width: 100%;
+}
 
 /* Form
 ------------------------------------- */
@@ -112,6 +119,7 @@ table.show input.title {
   width: 600px;
 }
 table.show input.number {
+  text-align: right;
   width: 100px;
   ime-mode: disabled;
 }

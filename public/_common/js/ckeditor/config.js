@@ -1,28 +1,38 @@
-﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+/**
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.html or http://ckeditor.com/license
+ */
 
-CKEDITOR.editorConfig = function( config )
-{
+CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 
   // ツールバーの設定
   // http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html#.toolbar_Full
-  config.toolbar = [
-    { name: 'document',    items : [ 'Source','-','DocProps','Preview','-','Templates' ] },
-    { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-    { name: 'styles',      items : [ 'FontSize','Font','Format','Styles' ] },
-    { name: 'editing',     items : [ 'Find','Replace','-','SelectAll' ] },
-    '/',
-    { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-    { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
-    { name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
-    { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube' ] },
-    { name: 'tools',       items : [ 'Maximize', 'ShowBlocks' ] }
-  ];
+  if (zomeki && zomeki.Page && zomeki.Page.smart_phone) {
+    config.toolbar = [
+      { name: 'styles',      items : [ 'Format' ] },
+      { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike' ] },
+      '/',
+      { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight' ] },
+      { name: 'links',       items : [ 'ZomekiLink','ZomekiUnlink' ] },
+      { name: 'insert',      items : [ 'Image' ] }
+    ];
+  } else {
+    config.toolbar = [
+      { name: 'document',    items : [ 'Source','-','DocProps','Preview','-','Templates' ] },
+      { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+      { name: 'styles',      items : [ 'FontSize','Font','Format','Styles' ] },
+      { name: 'editing',     items : [ 'Find','Replace','-','SelectAll' ] },
+      { name: 'tools',       items : [ 'Maximize', 'ShowBlocks' ] },
+      '/',
+      { name: 'basicstyles', items : [ 'TextColor','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+      { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
+      { name: 'links',       items : [ 'ZomekiLink','ZomekiUnlink','ZomekiAnchor' ] },
+      { name: 'insert',      items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Flash','Iframe','Youtube','Audio','Video' ] }
+    ];
+  }
 
   // 外部CSSを読み込み
   var css = [config.contentsCss];
@@ -52,17 +62,23 @@ CKEDITOR.editorConfig = function( config )
 
   // テンプレート内容の置き換えしない
   config.templates_replaceContent = false;
+
+  // プラグイン
+  config.extraPlugins = 'youtube,audio,video,zomekilink';
+
+  // tagの許可
+  config.allowedContent = true;
 };
 
-  // スタイルの設定
-CKEDITOR.addStylesSet( 'myStyles', [
-  // Block Styles
-  { name : '枠線', element : 'p', styles : { 'border' : '1px solid #999' , 'padding' : '10px' } },
-  // Inline Styles
-  { name : '強調（赤文字）' , element : 'span', styles : { 'color' : '#e00' } },
+// スタイルの設定
+CKEDITOR.stylesSet.add('my_styles', [
+  // Block-level styles
+  { name: '枠線', element: 'p', styles: { 'border': '1px solid #999' , 'padding' : '10px' } },
+
+  // Inline styles
+  { name: '強調（赤文字）', element: 'span', styles: { 'color': '#e00' } }
 ]);
-CKEDITOR.config.stylesCombo_stylesSet = 'myStyles';
 
-CKEDITOR.config.coreStyles_strike = { element : 'del', };
-
-CKEDITOR.config.coreStyles_underline = { element : 'ins', };
+CKEDITOR.config.stylesSet = 'my_styles';
+CKEDITOR.config.coreStyles_strike = { element : 'del' };
+CKEDITOR.config.coreStyles_underline = { element : 'ins' };

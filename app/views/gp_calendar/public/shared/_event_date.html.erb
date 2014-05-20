@@ -1,0 +1,28 @@
+<%-
+  s_style = localize_wday(date_style, event.started_on.wday)
+  e_style = localize_wday(date_style, event.ended_on.wday)
+  started_on = event.started_on.strftime(s_style)
+  ended_on = event.ended_on.strftime(e_style)
+-%>
+<%- if event.started_on == event.ended_on -%>
+  <span class="startDate closeDate"><%= started_on %></span>
+  <%- if @content.setting_value(:show_qreki) == "1" -%>
+  <div class="qreki">
+  <span class="startDate closeDate"><%= qreki(event.started_on) %></span>
+  </div>
+  <%- end -%>
+<%- else -%>
+  <span class="startDate"><%= started_on %></span>
+  <span class="from">～</span>
+  <span class="closeDate"><%= ended_on %></span>
+  <%- if @content.setting_value(:show_qreki) == "1" -%>
+  <div class="qreki">
+  <span class="startDate"><%= qreki(event.started_on) %></span>
+  <span class="from">～</span>
+  <span class="closeDate"><%= qreki(event.ended_on) %></span>
+  </div>
+  <%- end -%>
+<%- end -%>
+<%- if holiday_disp && event.holiday.present? -%>
+<span class="title"><%= event.holiday %></span>
+<%- end -%>

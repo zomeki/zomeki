@@ -1,0 +1,14 @@
+<%= render(layout: 'gp_article/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :docs_number %></th>
+    <td><%= f.array_text_field 'in_settings[docs_number]', class: 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :authors_visibility %></th>
+    <td><%= f.array_select 'in_settings[authors_visibility]', @item.class::AUTHORS_VISIBILITY_OPTIONS, include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>

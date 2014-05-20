@@ -6,7 +6,10 @@
   <tr>
     <th style="width: 60px; text-align: center;">詳細</th>
     <th style="width: 20%;">ファイル名</th>
-    <th style="width: ;">タイトル</th>
+    <th><%= Cms::Node.human_attribute_name :title %></th>
+    <th><%= Cms::Node.human_attribute_name :model %></th>
+    <th><%= Cms::Node.human_attribute_name :sitemap_state %></th>
+    <th><%= Cms::Node.human_attribute_name :sitemap_sort_no %></th>
     <th style="width: 120px; text-align: center;">更新日時</th>
     <th style="width: 60px; text-align: center;">状態</th>
     <th style="width: 65px; text-align: center;">プレビュー</th>
@@ -17,6 +20,9 @@
     <td style="text-align: center;"><%= link_to :show, item.admin_uri %></td>
     <td class="name"><%= link_to h(item.name), url_for(:action => :index, :parent => item) %></td>
     <td><%= truncate(item.title, :length => 36) %></td>
+    <td><%= item.model_name(:wo_type) %></td>
+    <td><%= item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == item.sitemap_state }.try(:first) %></td>
+    <td><%= item.sitemap_sort_no %></td>
     <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
     <td style="text-align: center;"><%= safe{item.status.name} %></td>
     <td style="text-align: center;">
@@ -31,6 +37,9 @@
     <td style="text-align: center;"><%= link_to :show, item.admin_uri %></td>
     <td class="name"><%= truncate(item.name, :length => 20) %></td>
     <td><%= truncate(item.title, :length => 36) %><%= " （更新用）" if item.replace_page? %></td>
+    <td><%= item.model_name(:wo_type) %></td>
+    <td><%= item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == item.sitemap_state }.try(:first) %></td>
+    <td><%= item.sitemap_sort_no %></td>
     <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
     <td style="text-align: center;"><%= safe{item.status.name} %></td>
     <td style="text-align: center;">

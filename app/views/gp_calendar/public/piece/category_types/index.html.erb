@@ -1,0 +1,7 @@
+<%- unless @top_categories.empty? -%>
+<ul class="categories">
+  <%- @top_categories.each do |category| -%>
+  <%= render 'category', category: category %>
+  <%- end -%>
+</ul>
+<%- end -%>

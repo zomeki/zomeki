@@ -1,0 +1,44 @@
+<div class="surveyForm">
+  <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/send_answers") do |f| -%>
+    <%- unless @form_answer.form.public_questions.empty? -%>
+    <div class="questions">
+      <%- @form_answer.form.public_questions.each do |question| -%>
+      <div class="question">
+        <div class="question_content">
+          <%= label_tag "question_answer_#{question.id}", question.title %>
+        </div>
+
+        <div class="answer_content">
+          <%= hidden_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- case question.form_type -%>
+          <%- when 'text_field' -%>
+            <%= @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- when 'text_area' -%>
+            <%=simple_format @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- when 'select' -%>
+            <%= @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- when 'radio_button' -%>
+            <%= @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- when 'check_box' -%>
+            <%= @form_answer.detect_answer_by_question(question).try(:content) %>
+          <%- end -%>
+        </div>
+
+        <%- if question.description.present? -%>
+        <div class="body"><%=raw question.description %></div>
+        <%- end -%>
+      </div>
+      <%- end -%>
+    </div>
+    <%- end -%>
+
+    <div class="submit">
+      <%= submit_tag '送信する' %>
+      <%= submit_tag '変更する', name: 'edit_answers' %>
+    </div>
+
+    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
+    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
+    <%= hidden_field_tag :piece, true if params[:piece] -%>
+  <%- end -%>
+</div>
