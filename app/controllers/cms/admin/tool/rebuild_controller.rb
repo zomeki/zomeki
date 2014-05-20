@@ -69,4 +69,12 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
       redirect_to :action => :index
     end
   end
+
+  def rebuild_contents
+    contents = Cms::Content.where(id: params[:target_content_ids])
+p contents
+    return redirect_to(url_for(action: 'index'), alert: '対象を選択してください。') if contents.empty?
+
+    redirect_to url_for(action: 'index'), notice: '再構築が終了しました。'
+  end
 end
