@@ -1,5 +1,5 @@
-{<img src="https://travis-ci.org/zomeki/zomeki-development.png?branch=master" alt="Build Status" />}[https://travis-ci.org/zomeki/zomeki-development]
-{<img src="https://gemnasium.com/zomeki/zomeki-development.png" alt="Dependency Status" />}[https://gemnasium.com/zomeki/zomeki-development]
+{<img src="https://travis-ci.org/zomeki/zomeki.png?branch=master" alt="Build Status" />}[https://travis-ci.org/zomeki/zomeki]
+{<img src="https://gemnasium.com/zomeki/zomeki.png" alt="Dependency Status" />}[https://gemnasium.com/zomeki/zomeki]
 
 = Copyright
 
@@ -17,9 +17,9 @@ Rails:: 3.2
 
 == 自動スクリプト
 
-  # export LANG=ja_JP.UTF-8; curl -L http://install-development.zomeki.jp | bash
+  # export LANG=ja_JP.UTF-8; curl -L http://install.zomeki.jp | bash
   or
-  # export LANG=ja_JP.UTF-8; curl -L https://raw.githubusercontent.com/zomeki/zomeki-development/master/doc/install_scripts/prepare.sh | bash
+  # export LANG=ja_JP.UTF-8; curl -L https://raw.githubusercontent.com/zomeki/zomeki/master/doc/install_scripts/prepare.sh | bash
 
 == 手動マニュアル
 
