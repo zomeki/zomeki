@@ -225,7 +225,8 @@ class GpArticle::Doc < ActiveRecord::Base
     else
       _name = ::File.join(name[0..0], name[0..1], name[0..2], name)
     end
-    "#{content.public_path}/docs/#{_name}/#{filename_base}.html"
+    node_name = content.public_node.try(:name) || 'docs'
+    "#{content.public_path}/#{node_name}/#{_name}/#{filename_base}.html"
   end
 
   def public_uri(without_filename: false)
