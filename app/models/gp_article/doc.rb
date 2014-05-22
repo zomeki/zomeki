@@ -321,6 +321,13 @@ class GpArticle::Doc < ActiveRecord::Base
     publish_page(content, path: public_path, uri: public_uri)
   end
 
+  def rebuild(content, options={})
+    return false unless self.state_public?
+    @save_mode = :publish
+    publish_page(content, options)
+    publish_files
+  end
+
   def bread_crumbs(doc_node)
     crumbs = []
 
