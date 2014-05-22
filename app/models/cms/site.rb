@@ -59,7 +59,11 @@ class Cms::Site < ActiveRecord::Base
     dir = format('%08d', id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1')
     "#{Rails.root}/sites/#{dir}/config"
   end
-  
+
+  def rewrite_config_path
+    "#{config_path}/rewrite.conf"
+  end
+
   def uri
     return '/' unless full_uri.match(/^[a-z]+:\/\/[^\/]+\//)
     full_uri.sub(/^[a-z]+:\/\/[^\/]+\//, '/')

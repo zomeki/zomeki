@@ -43,6 +43,8 @@ ZomekiCMS::Application.routes.draw do
       end
     resources :contents,
       :controller  => "admin/contents"
+    resource :contents_rewrite,
+      :controller  => "admin/content/rewrite"
     resources :nodes,
       :controller  => "admin/nodes",
       :path        => ":parent/nodes" do
