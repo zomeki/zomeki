@@ -72,9 +72,33 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
 
   def rebuild_contents
     contents = Cms::Content.where(id: params[:target_content_ids])
-p contents
     return redirect_to(url_for(action: 'index'), alert: '対象を選択してください。') if contents.empty?
 
-    redirect_to url_for(action: 'index'), notice: '再構築が終了しました。'
+    result_message = ['再構築：コンテンツ']
+
+    contents.each do |content|
+      ctl = content.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/admin/tool/')
+      act = 'rebuild'
+      prm = params.merge(content: content)
+      begin
+        result_message << content.name
+        render_component_into_view :controller => ctl, :action => act, :params => prm
+      rescue => e
+        result_message << "-- 失敗 #{e.message}"
+      end
+    end
+
+    notice_message = '再構築が終了しました。'
+
+    unless result_message.empty?
+      max_messages = 3000
+      messages = result_message.join('<br />')
+      if messages.size > max_messages
+        messages = ApplicationController.helpers.truncate(messages, :length => max_messages)
+      end
+      notice_message << "<br />#{messages}"
+    end
+
+    redirect_to url_for(action: 'index'), notice: notice_message.html_safe
   end
 end
