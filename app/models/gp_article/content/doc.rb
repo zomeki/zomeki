@@ -238,6 +238,17 @@ class GpArticle::Content::Doc < Cms::Content
     setting_value(:broken_link_notification) == 'enabled'
   end
 
+  def rewrite_configs
+    if node = public_node
+      line = ["RewriteRule ^#{node.public_uri}",
+              '((\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d).*)',
+              " #{public_path.gsub(/.*(\/_contents\/)/, '\\1')}/#{node.name}/$2/$3/$4/$5/$6/$1 [L]"].join
+      [line]
+    else
+      []
+    end
+  end
+
   private
 
   def set_default_settings
