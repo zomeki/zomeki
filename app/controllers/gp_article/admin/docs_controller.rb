@@ -208,7 +208,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def destroy
     _destroy(@item) do
-      send_link_broken_notification(@item) unless @item.backlinks.empty?
+      send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
     end
   end
 
@@ -272,7 +272,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   protected
 
-  def send_link_broken_notification(item)
+  def send_broken_link_notification(item)
     mail_from = 'noreply'
 
     item.backlinked_docs.each do |doc|
