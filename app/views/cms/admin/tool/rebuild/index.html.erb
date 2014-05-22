@@ -21,3 +21,15 @@ contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect
 <%= f.submit '再構築', :onclick => "$('#message2').html('再構築を開始しました。そのままでお待ちください。');" %>
 <span id="message2" style="margin-left: 10px; color: #b40;"></span><br />
 <% end %>
+
+<p class="form">コンテンツ</p>
+<%- target_contents = Cms::Content.where(site_id: Core.site.id,
+                                         model: ['GpArticle::Doc',
+                                                 'GpCategory::CategoryType',
+                                                 'Organization::Group']) -%>
+<%= form_tag(tool_rebuild_contents_path) do -%>
+  <%= select_tag 'target_content_ids',
+                 options_for_select(target_contents.map{|c| ["#{c.name}（#{c.model_name}）", c.id] }), multiple: true, size: 10 %>
+  <%= submit_tag '再構築', data: {disable_with: '再構築'}, onclick: "$('#message3').html('再構築を開始しました。そのままでお待ちください。');" %>
+  <span id="message3" style="margin-left: 10px; color: #b40;"></span>
+<%- end -%>
