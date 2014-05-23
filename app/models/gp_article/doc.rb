@@ -659,6 +659,10 @@ class GpArticle::Doc < ActiveRecord::Base
     FEATURE_2_OPTIONS.detect{|o| o.last == self.feature_2 }.try(:first).to_s
   end
 
+  def public_files_path
+    "#{::File.dirname(public_path)}/file_contents"
+  end
+
   private
 
   def name_validity
