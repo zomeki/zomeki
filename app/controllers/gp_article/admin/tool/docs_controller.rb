@@ -8,8 +8,8 @@ class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
 
     docs.each do |doc|
       begin
-        if doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: doc.content.site))
-          doc.publish_page(render_public_as_string("#{doc.public_uri}index.html.r", site: doc.content.site),
+        if doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: content.site))
+          doc.publish_page(render_public_as_string("#{doc.public_uri}index.html.r", site: content.site),
                            :path => "#{doc.public_path}.r", :dependent => :ruby)
           results[:ok] += 1
         end
