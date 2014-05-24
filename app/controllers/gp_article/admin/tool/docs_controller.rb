@@ -1,7 +1,7 @@
 class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
   def rebuild
-    docs = GpArticle::Content::Doc.find(params[:content_id]).public_docs
-                                  .order('display_published_at DESC, published_at DESC')
+    content = GpArticle::Content::Doc.find(params[:content_id])
+    docs = content.public_docs.order('display_published_at DESC, published_at DESC')
 
     results = {ok: 0, ng: 0}
     errors = []
@@ -18,6 +18,16 @@ class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
         errors << "エラー： #{doc.id}, #{doc.title}, #{e.message}"
         error_log("Rebuild: #{e.message}")
       end
+    end
+
+    begin
+      render_component_into_view :controller => '/gp_article/script/docs', :action => 'publish',
+                                 :params => {node_id: content.public_node.id}
+      results[:ok] += 1
+    rescue => e
+      results[:ng] += 1
+      errors << "エラー： #{content.id}, #{content.name}, #{e.message}"
+      error_log("Rebuild: #{e.message}")
     end
 
     messages = ["-- 成功 #{results[:ok]}件", "-- 失敗 #{results[:ng]}件"]
