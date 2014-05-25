@@ -90,4 +90,29 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
       http_error(404)
     end
   end
+
+  def view
+    @item = Sys::File.find(params[:id])
+    return error_auth unless @item.readable?
+
+    @file_content_relative_path = "file_contents/#{@item.escaped_name}"
+    @file_content_path = "#{gp_article_doc_path(@content, id: @doc_id)}/#{@file_content_relative_path}"
+
+    _show @item
+  end
+
+  def crop
+    @item = Sys::File.find(params[:id])
+    return error_auth unless @item.readable?
+
+    unless params[:x].to_i == 0 && params[:y].to_i == 0
+      if @item.crop(params[:x].to_i, params[:y].to_i, params[:w].to_i, params[:h].to_i)
+        flash[:notice] = "トリミングしました。"
+      else
+        flash[:alert]  = "トリミングに失敗しました。"
+      end
+    end
+
+    redirect_to url_for(action: :index)
+  end
 end
