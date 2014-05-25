@@ -265,6 +265,22 @@ module Sys::Model::Base::File
     File.exist?(upload_path)
   end
 
+  def crop(x, y, w, h)
+    return false unless image_file?
+    image = Magick::Image.from_blob(File.read(upload_path)).first
+
+    if image && image.format.in?(%w!GIF JPEG PNG!)
+      image.crop!(Magick::NorthWestGravity, x, y, w, h)
+      image.write(upload_path)
+    end
+
+    update_attribute(:size, File.size(upload_path))
+    update_attribute(:image_width,  image.columns)
+    update_attribute(:image_height, image.rows)
+
+    return true
+  end
+
   private
 
   ## filter/aftar_save
