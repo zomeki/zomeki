@@ -24,8 +24,13 @@ ZomekiCMS::Application.routes.draw do
         post :pullback
         post :publish
       end
-      resources :files,
-        :controller => 'admin/docs/files'
+      resources(:files,
+        :controller => 'admin/docs/files') do
+        member do
+          get  :view
+          post :crop
+        end
+      end
       resources :histories,
         :controller => 'admin/docs/histories', :only => [:index, :show]
     end
