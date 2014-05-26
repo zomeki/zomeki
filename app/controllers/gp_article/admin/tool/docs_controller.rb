@@ -1,15 +1,15 @@
 class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
   def rebuild
-    docs = GpArticle::Content::Doc.find(params[:content_id]).public_docs
-                                  .order('display_published_at DESC, published_at DESC')
+    content = GpArticle::Content::Doc.find(params[:content_id])
+    docs = content.public_docs.order('display_published_at DESC, published_at DESC')
 
     results = {ok: 0, ng: 0}
     errors = []
 
     docs.each do |doc|
       begin
-        if doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: doc.content.site))
-          doc.publish_page(render_public_as_string("#{doc.public_uri}index.html.r", site: doc.content.site),
+        if doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: content.site))
+          doc.publish_page(render_public_as_string("#{doc.public_uri}index.html.r", site: content.site),
                            :path => "#{doc.public_path}.r", :dependent => :ruby)
           results[:ok] += 1
         end
@@ -18,6 +18,16 @@ class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
         errors << "エラー： #{doc.id}, #{doc.title}, #{e.message}"
         error_log("Rebuild: #{e.message}")
       end
+    end
+
+    begin
+      render_component_into_view :controller => '/gp_article/script/docs', :action => 'publish',
+                                 :params => {node_id: content.public_node.id}
+      results[:ok] += 1
+    rescue => e
+      results[:ng] += 1
+      errors << "エラー： #{content.id}, #{content.name}, #{e.message}"
+      error_log("Rebuild: #{e.message}")
     end
 
     messages = ["-- 成功 #{results[:ok]}件", "-- 失敗 #{results[:ng]}件"]
