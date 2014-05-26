@@ -63,7 +63,7 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
     flash.now[:alert]  = "#{failure}件の登録処理に失敗しました。" if failure != 0
 
     @items = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid)).paginate(page: params[:page], per_page: 20).order(:name)
-    redirect_to url_for(:action => :index)
+    render action: :index
   end
 
   def update
