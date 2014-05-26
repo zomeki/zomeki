@@ -101,4 +101,41 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
 
     redirect_to url_for(action: 'index'), notice: notice_message.html_safe
   end
+
+  def rebuild_nodes
+    nodes = Cms::Node.where(id: params[:target_node_ids])
+    return redirect_to(url_for(action: 'index'), alert: '対象を選択してください。') if nodes.empty?
+
+    result_message = ['再構築：ページ']
+
+    results = {ok: 0, ng: 0}
+    errors = []
+
+    nodes.each do |node|
+      begin
+        node.publish_page(render_public_as_string(node.public_uri, site: node.site))
+        results[:ok] += 1
+      rescue => e
+        results[:ng] += 1
+        errors << "エラー： #{node.id}, #{node.title}, #{e.message}"
+        error_log("Rebuild: #{e.message}")
+      end
+    end
+
+    result_message.concat(["-- 成功 #{results[:ok]}件", "-- 失敗 #{results[:ng]}件"])
+    result_message.concat(errors)
+
+    notice_message = '再構築が終了しました。'
+
+    unless result_message.empty?
+      max_messages = 3000
+      messages = result_message.join('<br />')
+      if messages.size > max_messages
+        messages = ApplicationController.helpers.truncate(messages, :length => max_messages)
+      end
+      notice_message << "<br />#{messages}"
+    end
+
+    redirect_to url_for(action: 'index'), notice: notice_message.html_safe
+  end
 end
