@@ -1,56 +1,56 @@
 # encoding: utf-8
 class GpArticle::Content::Setting < Cms::ContentSetting
-  set_config :gp_category_content_category_type_id, :name => '汎用カテゴリタイプ',
-    :options => lambda { GpCategory::Content::CategoryType.where(site_id: Core.site.id).map {|ct| [ct.name, ct.id] } }
-  set_config :gp_template_content_template_id, :name => 'テンプレート',
-    :options => lambda { GpTemplate::Content::Template.all.map {|t| [t.name, t.id] } }
-  set_config :allowed_attachment_type, :name => '添付ファイル/許可する種類',
-    :comment => '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
-  set_config :word_dictionary, :name => "本文/単語変換辞書",
-    :form_type => :text, :lower_text => "CSV形式（例　対象文字,変換後文字 ）"
-  set_config :list_style, :name => "#{GpArticle::Doc.model_name.human}表示形式",
-    :form_type => :text_area, :comment_upper => I18n.t('comments.doc_style').html_safe
-  set_config :date_style, :name => "#{GpArticle::Doc.model_name.human}日付形式",
-    :comment => I18n.t('comments.date_style').html_safe
-  set_config :time_style, :name => "#{GpArticle::Doc.model_name.human}時間形式",
-    :comment => I18n.t('comments.time_style').html_safe
-  set_config :feed, :name => "フィード",
-    :options => GpArticle::Content::Doc::FEED_DISPLAY_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :calendar_relation, :name => '汎用カレンダー',
-    :options => GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :tag_relation, :name => '関連ワード',
-    :options => GpArticle::Content::Doc::TAG_RELATION_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :save_button_states, :name => '保存ボタン',
+  set_config :gp_category_content_category_type_id, name: '汎用カテゴリタイプ',
+    options: lambda { GpCategory::Content::CategoryType.where(site_id: Core.site.id).map {|ct| [ct.name, ct.id] } }
+  set_config :gp_template_content_template_id, name: 'テンプレート',
+    options: lambda { GpTemplate::Content::Template.where(site_id: Core.site.id).map {|t| [t.name, t.id] } }
+  set_config :allowed_attachment_type, name: '添付ファイル/許可する種類',
+    comment: '（例 gif,jpg,png,pdf,doc,xls,ppt,odt,ods,odp ）'
+  set_config :word_dictionary, name: "本文/単語変換辞書",
+    form_type: :text, lower_text: "CSV形式（例　対象文字,変換後文字 ）"
+  set_config :list_style, name: "#{GpArticle::Doc.model_name.human}表示形式",
+    form_type: :text_area, comment_upper: I18n.t('comments.doc_style').html_safe
+  set_config :date_style, name: "#{GpArticle::Doc.model_name.human}日付形式",
+    comment: I18n.t('comments.date_style').html_safe
+  set_config :time_style, name: "#{GpArticle::Doc.model_name.human}時間形式",
+    comment: I18n.t('comments.time_style').html_safe
+  set_config :feed, name: "フィード",
+    options: GpArticle::Content::Doc::FEED_DISPLAY_OPTIONS,
+    form_type: :radio_buttons
+  set_config :calendar_relation, name: '汎用カレンダー',
+    options: GpArticle::Content::Doc::CALENDAR_RELATION_OPTIONS,
+    form_type: :radio_buttons
+  set_config :tag_relation, name: '関連ワード',
+    options: GpArticle::Content::Doc::TAG_RELATION_OPTIONS,
+    form_type: :radio_buttons
+  set_config :save_button_states, name: '保存ボタン',
 #TODO: 暫定として即時公開のみ
-    :options => GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },
-#    :options => GpArticle::Doc::STATE_OPTIONS,
-    :form_type => :check_boxes
-  set_config :map_relation, :name => 'マップ',
-    :options => GpArticle::Content::Doc::MAP_RELATION_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :display_dates, :name => '記事日付表示',
-    :options => [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
-    :form_type => :check_boxes
-  set_config :inquiry_setting, :name => '連絡先',
-    :options => [['使用する', 'enabled'], ['使用しない', 'disabled']],
-    :form_type => :radio_buttons
-  set_config :approval_relation, :name => '承認フロー',
-    :options => GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :sns_share_relation, :name => 'SNSシェア',
-    :options => GpArticle::Content::Doc::SNS_SHARE_RELATION_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :blog_functions, :name => 'ブログ',
-    :options => GpArticle::Content::Doc::BLOG_FUNCTIONS_OPTIONS,
-    :form_type => :radio_buttons
-  set_config :organization_content_group_id, :name => '組織',
-    :options => lambda { Organization::Content::Group.where(site_id: Core.site.id).map{|g| [g.name, g.id] } }
-  set_config :broken_link_notification, :name => 'リンク切れ通知',
-    :options => GpArticle::Content::Doc::BROKEN_LINK_NOTIFICATION_OPTIONS,
-    :form_type => :radio_buttons
+    options: GpArticle::Doc::STATE_OPTIONS.reject {|o| o.last != 'public' },
+#    options: GpArticle::Doc::STATE_OPTIONS,
+    form_type: :check_boxes
+  set_config :map_relation, name: 'マップ',
+    options: GpArticle::Content::Doc::MAP_RELATION_OPTIONS,
+    form_type: :radio_buttons
+  set_config :display_dates, name: '記事日付表示',
+    options: [['公開日', 'published_at'], ['最終更新日', 'updated_at']],
+    form_type: :check_boxes
+  set_config :inquiry_setting, name: '連絡先',
+    options: [['使用する', 'enabled'], ['使用しない', 'disabled']],
+    form_type: :radio_buttons
+  set_config :approval_relation, name: '承認フロー',
+    options: GpArticle::Content::Doc::APPROVAL_RELATION_OPTIONS,
+    form_type: :radio_buttons
+  set_config :sns_share_relation, name: 'SNSシェア',
+    options: GpArticle::Content::Doc::SNS_SHARE_RELATION_OPTIONS,
+    form_type: :radio_buttons
+  set_config :blog_functions, name: 'ブログ',
+    options: GpArticle::Content::Doc::BLOG_FUNCTIONS_OPTIONS,
+    form_type: :radio_buttons
+  set_config :organization_content_group_id, name: '組織',
+    options: lambda { Organization::Content::Group.where(site_id: Core.site.id).map{|g| [g.name, g.id] } }
+  set_config :broken_link_notification, name: 'リンク切れ通知',
+    options: GpArticle::Content::Doc::BROKEN_LINK_NOTIFICATION_OPTIONS,
+    form_type: :radio_buttons
 
   after_initialize :set_defaults
 
