@@ -62,6 +62,9 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
   def update
     @item = Cms::Site.new.find(params[:id])
     @item.attributes = params[:item]
+
+    @sns_apps = params[:sns_apps]
+
     _update @item do
       make_node(@item)
       make_files(@item)
