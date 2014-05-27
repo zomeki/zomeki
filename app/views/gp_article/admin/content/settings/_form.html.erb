@@ -269,7 +269,7 @@ $(document).ready(function () {
   <tr>
     <th>コンテンツ</th>
     <td><%= select_tag 'tag_content_tag_id',
-                       options_from_collection_for_select(Tag::Content::Tag.all, :id, :name, @item.extra_values[:tag_content_tag_id]), include_blank: true %></td>
+                       options_from_collection_for_select(Tag::Content::Tag.where(site_id: Page.site.id), :id, :name, @item.extra_values[:tag_content_tag_id]), include_blank: true %></td>
   </tr>
 </table>
 <%- end -%>
