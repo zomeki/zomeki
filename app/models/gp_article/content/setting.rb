@@ -47,7 +47,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     :options => GpArticle::Content::Doc::BLOG_FUNCTIONS_OPTIONS,
     :form_type => :radio_buttons
   set_config :organization_content_group_id, :name => '組織',
-    :options => lambda { Organization::Content::Group.all.map{|g| [g.name, g.id] } }
+    :options => lambda { Organization::Content::Group.where(site_id: Core.site.id).map{|g| [g.name, g.id] } }
   set_config :broken_link_notification, :name => 'リンク切れ通知',
     :options => GpArticle::Content::Doc::BROKEN_LINK_NOTIFICATION_OPTIONS,
     :form_type => :radio_buttons
