@@ -35,10 +35,19 @@ protected
   def replace_preview_data
     return if response.content_type != 'text/html' && response.content_type != 'application/xhtml+xml'
     return if response.body.class != String
+
+    public_uri = URI.parse(Page.site.full_uri)
+    public_uri.path = '/'
+    if (script_uri = Core.env['SCRIPT_URI'])
+      admin_uri = URI.parse(script_uri)
+      admin_uri.path = '/'
+    else
+      admin_uri = public_uri
+    end
     
     mobile   = Page.mobile? ? 'm' : ''
-    base_uri = "#{Core.full_uri}_preview/#{format('%08d', Page.site.id)}#{mobile}"
-    
+    base_uri = "#{admin_uri}_preview/#{format('%08d', Page.site.id)}#{mobile}"
+
     self.response_body = response.body.gsub(/<a[^>]+?href="\/[^"]*?"[^>]*?>/i) do |m|
       if m =~ /href="\/_(files|layouts)\//
         m
@@ -49,11 +58,28 @@ protected
     
     ## preview mark
     html = %Q(<div id="cmsPreviewMark") +
-      %Q( style="position: absolute; top: 0px; left: 0px; width: 80px; margin: 1px; padding: 2px; ) +
-      %Q(   border: 1px solid #777; background-color: #dfd; ) +
-      %Q(   line-height: 1.5; font-family: sans-serif; text-align: center; cursor: pointer; ") +
+      %Q( style="position: absolute; top: 0px; left: 0px; width: 500px; margin: 1px; padding: 3px 10px; ) +
+      %Q(   border: 2px solid #f00; background-color: #dfd; ) +
+      %Q(   line-height: 1.5; font-family: sans-serif; cursor: pointer; ") +
       %Q( onclick="document.getElementById('cmsPreviewMark').style.display='none';" ) +
-      %Q(>プレビュー</div>)
+      %Q(>プレビュー：終了する場合は、ブラウザのタブの×で閉じてください。</div>)
     self.response_body = response.body.gsub(/(<body[^>]*?>)/i, '\\1' + html)
+
+    ## host
+    doc = Nokogiri::HTML.parse(response.body)
+    unless (a_tags = doc.css(%Q!a[href^="#{public_uri}"]!)).empty?
+      a_tags.each do |a_tag|
+        a_tag.set_attribute('href', a_tag.attribute('href').to_s.sub(public_uri.to_s, admin_uri.to_s))
+      end
+    end
+    unless (img_tags = doc.css(%Q!img[src^="#{public_uri}"]!)).empty?
+      img_tags.each do |img_tag|
+        img_tag.set_attribute('src', img_tag.attribute('src').to_s.sub(public_uri.to_s, admin_uri.to_s))
+      end
+    end
+    self.response_body = doc.to_s
+
+    ## themes
+    self.response_body = response.body.gsub(%r! (href|src)="/_themes/!, %Q! \\1="#{public_uri}_themes/!)
   end
 end

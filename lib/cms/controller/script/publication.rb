@@ -8,8 +8,8 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
   
   def initialize_publication
-    if @node = params[:node] || Cms::Node.find(params[:node_id])
-      @site   = @node.site
+    if @node = params[:node] || Cms::Node.where(id: params[:node_id]).first
+      @site = @node.site
     end
     @errors = []
   end
