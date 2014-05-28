@@ -57,12 +57,9 @@ protected
     end
     
     ## preview mark
-    html = %Q(<div id="cmsPreviewMark") +
-      %Q( style="position: absolute; top: 0px; left: 0px; width: 500px; margin: 1px; padding: 3px 10px; ) +
-      %Q(   border: 2px solid #f00; background-color: #dfd; ) +
-      %Q(   line-height: 1.5; font-family: sans-serif; cursor: pointer; ") +
-      %Q( onclick="document.getElementById('cmsPreviewMark').style.display='none';" ) +
-      %Q(>プレビュー：終了する場合は、ブラウザのタブの×で閉じてください。</div>)
+    html = <<-EOT
+<div id="cmsPreviewMark" style="margin: 1px; padding: 5px 10px; border-bottom: 1px solid #fff; background-color: #000; color: #fff; line-height: 1.5; font-family: sans-serif; cursor: pointer; " onclick="document.getElementById('cmsPreviewMark').style.display='none';">プレビュー：&nbsp;終了する場合は、ブラウザのタブの×で閉じてください。</div>
+    EOT
     self.response_body = response.body.gsub(/(<body[^>]*?>)/i, '\\1' + html)
 
     ## host
