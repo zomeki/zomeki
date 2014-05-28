@@ -11,9 +11,9 @@ ZomekiCMS::Application.routes.draw do
     resources :navi_sites,
       :controller  => "admin/navi/sites"
       # :as => :cms_navi_concepts
-    get "stylesheets/(*path)" => "admin/stylesheets#index",
-      :as => :stylesheets, :format => false
-    
+    match "stylesheets/(*path)" => "admin/stylesheets#index",
+      :as => :stylesheets, :format => false, via: [:get, :post, :put]
+
     resources :tests,
       :controller  => "admin/tests"
     resources :concepts,
