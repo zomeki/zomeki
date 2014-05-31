@@ -6,6 +6,10 @@ class Survey::Piece::Form < Cms::Piece
     content.public_forms.find_by_id(setting_value(:target_form_id))
   end
 
+  def head_css
+    setting_value(:head_css).to_s
+  end
+
   def upper_text
     setting_value(:upper_text).to_s
   end
