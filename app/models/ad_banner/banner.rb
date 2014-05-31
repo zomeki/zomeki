@@ -13,11 +13,15 @@ class AdBanner::Banner < ActiveRecord::Base
   banners = self.arel_table
   scope :published, -> {
           now = Time.now
-          where(banners[:state].eq('public').and(banners[:published_at].eq(nil).or(banners[:published_at].lteq(now)).and(banners[:closed_at].eq(nil).or(banners[:closed_at].gt(now)))))
+          where(banners[:state].eq('public')
+                .and(banners[:published_at].eq(nil).or(banners[:published_at].lteq(now))
+                .and(banners[:closed_at].eq(nil).or(banners[:closed_at].gt(now)))))
         }
   scope :closed, -> {
           now = Time.now
-          where(banners[:state].eq('closed').or(banners[:published_at].gt(now)).or(banners[:closed_at].lteq(now)))
+          where(banners[:state].eq('closed')
+                .or(banners[:published_at].gt(now))
+                .or(banners[:closed_at].lteq(now)))
         }
 
   # Content
@@ -37,6 +41,40 @@ class AdBanner::Banner < ActiveRecord::Base
 
   after_initialize :set_defaults
   before_create :set_token
+
+  def image_uri
+    return '' unless content.public_node
+    "#{content.public_node.public_uri}#{name}"
+  end
+
+  def image_path
+    return '' unless content.public_node
+    "#{content.public_node.public_path}#{name}"
+  end
+
+  def link_uri
+    return '' unless content.public_node
+    "#{content.public_node.public_uri}#{token}"
+  end
+
+  def publish_or_close_image
+    if published?
+      FileUtils.mkdir_p ::File.dirname(image_path)
+      FileUtils.cp upload_path, image_path
+    else
+      FileUtils.rm image_path if ::File.exist?(image_path)
+      FileUtils.rmdir ::File.dirname(image_path)
+    end
+  end
+
+  def published?
+    now = Time.now
+    (state == 'public') && (published_at.nil? || published_at <= now) && (closed_at.nil? || closed_at > now)
+  end
+
+  def closed?
+    !published?
+  end
 
   private
 
