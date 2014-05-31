@@ -27,6 +27,10 @@
     <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
   </tr>
   <tr>
+    <th><%= f.label :index_link %></th>
+    <td><%= f.radio_buttons :index_link, @item.class::INDEX_LINK_OPTIONS %></td>
+  </tr>
+  <tr>
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
