@@ -7,6 +7,10 @@
     <td><%= f.array_select 'in_settings[target_form_id]',
                            @item.content.public_forms.map{|f| ["#{f.title}（#{f.name}）", f.id] }, include_blank: true %></td>
   </tr>
+  <tr>
+    <th><%= f.label :head_css %></th>
+    <td><%= f.array_text_area 'in_settings[head_css]', rows: 4 %></td>
+  </tr>
 </table>
 
 <p class="form">挿入テキスト</p>

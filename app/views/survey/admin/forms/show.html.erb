@@ -28,6 +28,10 @@
     <td><%= @item.class::SITEMAP_STATE_OPTIONS.detect{|o| o.last == @item.sitemap_state }.try(:first) %></td>
   </tr>
   <tr>
+    <th><%= @item.locale(:index_link) %></th>
+    <td><%= @item.class::INDEX_LINK_OPTIONS.detect{|o| o.last == @item.index_link }.try(:first) %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>
     <td><%= @item.sort_no %></td>
   </tr>
