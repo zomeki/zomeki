@@ -39,6 +39,6 @@
 
     <%= hidden_field_tag :current_url, @form_answer.answered_url %>
     <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
-    <%= hidden_field_tag :piece, true if params[:piece] -%>
+    <%= hidden_field_tag :piece, params[:piece] if params[:piece] -%>
   <%- end -%>
 </div>
