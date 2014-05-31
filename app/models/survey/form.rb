@@ -11,6 +11,7 @@ class Survey::Form < ActiveRecord::Base
   STATE_OPTIONS = [['下書き保存', 'draft'], ['承認依頼', 'approvable'], ['即時公開', 'public']]
   CONFIRMATION_OPTIONS = [['あり', true], ['なし', false]]
   SITEMAP_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  INDEX_LINK_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
 
@@ -187,6 +188,10 @@ class Survey::Form < ActiveRecord::Base
 
   def sitemap_visible?
     self.sitemap_state == 'visible'
+  end
+
+  def index_visible?
+    self.index_link != 'hidden'
   end
 
   private

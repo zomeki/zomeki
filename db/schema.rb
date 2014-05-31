@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140509083136) do
+ActiveRecord::Schema.define(:version => 20140530054001) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1401,6 +1401,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.text     "receipt"
     t.boolean  "confirmation"
     t.string   "sitemap_state"
+    t.string   "index_link"
   end
 
   add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"
