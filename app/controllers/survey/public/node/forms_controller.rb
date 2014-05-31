@@ -19,29 +19,34 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     @form_answer = @form.form_answers.build(answered_url: "#{@content.site.full_uri.sub(/\/+$/, '')}#{@content.public_node.public_uri}#{@form.name}",
                                             answered_url_title: @form.title,
                                             remote_addr: request.remote_addr, user_agent: request.user_agent)
+    render_survey_layout
   end
 
   def confirm_answers
     build_answer
 
     if @form_answer.form.confirmation?
-      return render(action: 'show') unless @content.use_captcha? ? @form_answer.valid_with_captcha? : @form_answer.valid?
+      render_survey_layout(:show) and return unless @content.use_captcha? ? @form_answer.valid_with_captcha? : @form_answer.valid?
     else
-      return render(action: 'show') unless @content.use_captcha? ? @form_answer.save_with_captcha : @form_answer.save
-      send_mail_and_redirect_to_finish
+      render_survey_layout(:show) and return unless @content.use_captcha? ? @form_answer.save_with_captcha : @form_answer.save
+      send_mail_and_redirect_to_finish and return
     end
+
+    render_survey_layout and return
   end
 
   def send_answers
     build_answer
 
-    return render(action: 'show') if params[:edit_answers]
-    return render(action: 'show') unless @form_answer.save
-
-    send_mail_and_redirect_to_finish
+    if params[:edit_answers] || !@form_answer.save
+      render_survey_layout(:show)
+    else
+      send_mail_and_redirect_to_finish
+    end
   end
 
   def finish
+    render_survey_layout
   end
 
   private
@@ -72,6 +77,21 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
                 .deliver if @content.mail_from.present? && @content.mail_to.present?
 
-    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish#{'?piece=true' if params[:piece]}"
+    redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish?piece=#{params[:piece]}"
+  end
+
+  def render_survey_layout(action = action_name)
+    @piece = Survey::Piece::Form.find_by_id(params[:piece])
+    return render(:text => '') unless @piece
+
+    Page.layout = Cms::Layout.new({
+      head:             @piece.head_css,
+      mobile_head:      @piece.head_css,
+      smart_phone_head: @piece.head_css,
+      body:             '[[content]]',
+      mobile_body:      '[[content]]',
+      smart_phone_body: '[[content]]'
+    })
+    render action: action, layout: 'layouts/public/base'
   end
 end
