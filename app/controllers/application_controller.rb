@@ -11,11 +11,9 @@ class ApplicationController < ActionController::Base
     if Core.publish
       Page.mobile = false
       Page.smart_phone = false
-      unset_mobile
     else
       Page.mobile = true if request.mobile?
       Page.smart_phone = true if request.smart_phone?
-      set_mobile if Page.mobile? && !request.mobile?
     end
     return false if Core.dispatched?
     return Core.dispatched
@@ -32,18 +30,6 @@ class ApplicationController < ActionController::Base
   
   def send_download
     #
-  end
-
-  def set_mobile
-    def request.mobile
-      Jpmobile::Mobile::Au.new(nil, self)
-    end
-  end
-
-  def unset_mobile
-    def request.mobile
-      nil
-    end
   end
 
 private

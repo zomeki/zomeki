@@ -67,7 +67,15 @@ class Cms::Node < ActiveRecord::Base
   def public_path
     "#{site.public_path}#{public_uri}".gsub(/\?.*/, '')
   end
-  
+
+  def public_mobile_path
+    "#{site.public_path}/_mobile#{public_uri}".gsub(/\?.*/, '')
+  end
+
+  def public_smart_phone_path
+    "#{site.public_path}/_smartphone#{public_uri}".gsub(/\?.*/, '')
+  end
+
   def public_uri=(uri)
     @public_uri = uri
   end
