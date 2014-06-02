@@ -6,6 +6,11 @@
   var currentPosition= new Object();
   var currentMarker;
 
+      var position_options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+        maximumAge:0
+      };
 
   function renderMap(default_latitude, default_longitude, set_markers){
     navigator.geolocation.watchPosition(function(pos) {
@@ -42,11 +47,7 @@
       setMarker();
 
       }
-      var position_options = {
-        enableHighAccuracy: true,
-        timeout: 60000,
-        maximumAge: 0
-      };
+
       currentPosition["lat"] = pos.coords.latitude;
       currentPosition["lng"] = pos.coords.longitude;
       if(currentMarker){
@@ -86,7 +87,9 @@
         myMap.panTo(currentPos);
         setMarker();
       }
-    });
+    },
+    position_options
+    );
   }
 
   function calcDistance(lat1, lng1, lat2, lng2){
