@@ -26,7 +26,8 @@ module Cms::Controller::Layout
       act  = opt[:action]
 
       opt[:authenticity_token] = params[:authenticity_token] if params[:authenticity_token]
-      body = render_component_into_view :controller => ctl, :action => act, :params => opt
+      body = render_component_into_view :controller => ctl, :action => act, :params => opt,
+                                        :jpmobile => options[:jpmobile]
 
       error_log(body) if Page.error
     rescue => e
