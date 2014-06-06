@@ -120,6 +120,11 @@ class Organization::Group < ActiveRecord::Base
     publish_page(content, options)
   end
 
+  def public_smart_phone_path
+    return '' unless public_uri
+    "#{content.site.public_path}/_smartphone#{public_uri}"
+  end
+
   private
 
   def set_defaults
