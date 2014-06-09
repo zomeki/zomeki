@@ -77,10 +77,10 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
     result_message = ['再構築：コンテンツ']
 
     contents.each do |content|
-      ctl = content.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/admin/tool/')
-      act = 'rebuild'
-      prm = params.merge(content_id: content.id)
       begin
+        ctl = content.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/admin/tool/')
+        act = 'rebuild'
+        prm = params.merge(content_id: content.id)
         result_message << content.name
         result_message << render_component_into_view(:controller => ctl, :action => act, :params => prm)
       rescue => e
