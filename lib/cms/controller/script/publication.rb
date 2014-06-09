@@ -15,15 +15,16 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
   
   def publish_page(item, params = {})
-    if Script.options
+    if ::Script.options
       path = params[:uri].to_s.sub(/\?.*/, '')
       return false if Script.options.is_a?(Array) && !Script.options.include?(path)
       return false if Script.options.is_a?(Regexp) && Script.options !~ path
     end
     
     site = params[:site] || @site
-    res  = item.publish_page(render_public_as_string(params[:uri], :site => site),
-      :path => params[:path], :dependent => params[:dependent])
+    rendered = render_public_as_string(params[:uri], site: site,
+                                       jpmobile: (request.smart_phone? ? envs_to_request_as_smart_phone : nil))
+    res  = item.publish_page(rendered, :path => params[:path], :dependent => params[:dependent])
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
     
@@ -60,16 +61,15 @@ class Cms::Controller::Script::Publication < ApplicationController
           item.publish_page(render_public_as_string(uri, :site => site), :path => path, :dependent => dep)
         end
       rescue TimeoutError => e
-        puts "Error: #{uri}"
+        error_log "#{uri} Timeout"
       rescue => e
-        puts "Error: #{uri}"
-        puts "#{e}"
+        error_log "#{uri}\n#{e.message}"
       end
     end
     
     return res
   rescue => e
-    puts "Error: #{e}"
+    error_log e.message
     return false
   end
   
