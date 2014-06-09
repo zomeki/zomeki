@@ -1,9 +1,9 @@
 ZomekiCMS::Application.routes.draw do
   mod = "cms"
-  
+
   get "/_preview/:site/(*path)" => "cms/admin/preview#index",
     :as => :cms_preview
-  
+
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :navi_concepts,
@@ -98,7 +98,7 @@ ZomekiCMS::Application.routes.draw do
           get :change
         end
       end
-    
+
     ## node
     resources :node_directories,
       :controller  => "admin/node/directories",
@@ -109,7 +109,7 @@ ZomekiCMS::Application.routes.draw do
     resources :node_sitemaps,
       :controller  => "admin/node/sitemaps",
       :path        => ":parent/node_sitemaps"
-    
+
     ## piece
     resources :piece_frees,
       :controller  => "admin/piece/frees"
@@ -130,13 +130,13 @@ ZomekiCMS::Application.routes.draw do
     post 'tool_rebuild_contents' => 'admin/tool/rebuild#rebuild_contents'
     post 'tool_rebuild_nodes' => 'admin/tool/rebuild#rebuild_nodes'
     match 'tool_rebuild' => 'admin/tool/rebuild#index', as: 'tool_rebuild', via: [:get, :post]
-    get 'tool_search' => 'admin/tool/search#index', as: 'tool_search'
-    get 'tool_link_check' => 'admin/tool/link_check#index', as: 'tool_link_check'
-    get 'tool_convert' => 'admin/tool/convert#index', as: 'tool_convert'
-    get "tool_convert_file_list(/:site_url(/*path))" => "admin/tool/convert#file_list",
-      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }
-    get "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting'
-    get "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site'
+    match 'tool_search' => 'admin/tool/search#index', as: 'tool_search', via: [:get, :post]
+    match 'tool_link_check' => 'admin/tool/link_check#index', as: 'tool_link_check', via: [:get, :post]
+    match 'tool_convert' => 'admin/tool/convert#index', as: 'tool_convert', via: [:get, :post]
+    match "tool_convert_file_list(/:site_url(/*path))" => "admin/tool/convert#file_list",
+      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }, via: [:get, :post]
+    match "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting', via: [:get, :post]
+    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site', via: [:get, :post]
   end
 
   ## public
