@@ -8,7 +8,7 @@
 
   <%- @items.each do |item| -%>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: left;"><%= link_to item.referer, item.referer, target: '_blank' %></td>
+    <td style="text-align: left;"><%= item.referer ? link_to(item.referer, item.referer, target: '_blank') : '不明' %></td>
     <td style="text-align: left; width: 100px;"><%= item.remote_addr %></td>
     <td style="text-align: left;"><%= item.user_agent %></td>
     <td style="text-align: left; width: 150px;"><%=i18n_l item.created_at %></td>
