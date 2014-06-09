@@ -10,10 +10,6 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
       rs = render_component_into_view(:controller => 'cms/script/nodes', :action => 'publish')
       flash.now[:notice] = "ページを書き出しました。"
     end
-
-    user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D201 Safari/9537.53'
-    jpmobile = Jpmobile::Mobile::AbstractMobile.carrier('HTTP_USER_AGENT' => user_agent)
-    @jpmobile = {'HTTP_USER_AGENT' => user_agent, 'rack.jpmobile' => jpmobile}
   end
   
   def index
@@ -120,7 +116,7 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
         node.publish_page(render_public_as_string(node.public_uri, site: node.site))
 
         if ::File.exist?(node.public_path)
-          rendered = render_public_as_string(node.public_uri, site: node.site, jpmobile: @jpmobile)
+          rendered = render_public_as_string(node.public_uri, site: node.site, jpmobile: envs_to_request_as_smart_phone)
           FileUtils.mkdir_p ::File.dirname(node.public_smart_phone_path)
           ::File.open(node.public_smart_phone_path, 'w'){|f| f.write rendered }
         else
