@@ -70,6 +70,8 @@ ZomekiCMS::Application.routes.draw do
       :controller => "admin/storage_files",
       :path       => "storage_files(/*path)",
       :format     => false
+    resources :operation_logs,
+      :controller => "admin/operation_logs"
   end
   
   match "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}/:parent/inline_files/files/:name.:format" => 'sys/admin/inline/files#download'
