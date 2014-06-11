@@ -18,6 +18,7 @@ protected
     if item.publishable? && item.publish(render_public_as_string(item.public_uri))
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || '公開処理が完了しました。'
+      Sys::OperationLog.log(request, :item => item)
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
@@ -36,6 +37,7 @@ protected
     if item.closable? && item.close
       location       = options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || '非公開処理が完了しました。'
+      Sys::OperationLog.log(request, :item => item)
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
