@@ -9,19 +9,24 @@ class Sys::Admin::StorageFilesController < Cms::Controller::Admin::Base
   @navi  = []
   
   def pre_dispatch
-    return error_auth unless Core.user.has_auth?(:manager)
+    return error_auth unless Core.user.has_auth?(:designer)
     
     sites   = Cms::Site.find(:all, :order => :id)
     @roots  = []
     @roots << ["sites", "sites"]
-    @roots << ["public", "public"]
+    @roots << ["public", "public"] if Core.user.root?
     @roots << ["upload", "upload"]
   end
   
   def validate_path
+    return error_auth if !Core.user.root? && params[:path] =~ /^public/
+
     @path = ::File.join(Rails.root.to_s, params[:path].to_s)
     #return http_error(404) if params[:path] && !::Storage.exists?(@path)
-    
+
+    return error_auth if params[:path] =~ /^sites\/\d{2}\/\d{2}\/\d{2}\// && params[:path] !~ /^#{::File.join('sites', format('%08d', Core.site.id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5'))}/
+
+
     @dir = params[:path]
     @roots.each do |dir, path|
       if @dir.to_s =~ /^#{Regexp.escape(dir)}(\/|$)/
@@ -70,7 +75,10 @@ class Sys::Admin::StorageFilesController < Cms::Controller::Admin::Base
     @dirs  = []
     @files = []
     files  = ::Storage.entries(@path)
-    files.each {|name| @dirs << name if ::Storage.directory?("#{@path}/#{name}") && "#{@path}/#{name}" !~ /^#{@public_path}\d{2}\/\d{8}\/config$/ && name !~ /^_/ }
+    files.each { |name|
+      next if params[:path] =~ /^sites\/\d{2}\/\d{2}\// && "#{@path}/#{name}" !~ /^#{::File.join(Rails.root.to_s, 'sites', format('%08d', Core.site.id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5'))}/
+      @dirs << name if ::Storage.directory?("#{@path}/#{name}") && "#{@path}/#{name}" !~ /^#{@public_path}\d{2}\/\d{8}\/config$/ && name !~ /^_/
+    }
     files.each {|name| @files << name if ::Storage.file?("#{@path}/#{name}")}
     
     @items = @dirs.sort + @files.sort
