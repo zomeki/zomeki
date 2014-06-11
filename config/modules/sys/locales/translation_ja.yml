@@ -93,3 +93,18 @@ ja:
         file: "ファイル"
         name: "保存ファイル名"
         title: "表示ファイル名"
+
+      sys/operation_log:
+        id: "ID"
+        created_at: "操作日時"
+        updated_at: "更新日時"
+        user_id: "ユーザID（内部ID）"
+        user_name: "ユーザ名"
+        ipaddr: "IPアドレス"
+        uri: "URL"
+        action: "操作"
+        item: "操作アイテム"
+        item_model: "操作アイテム種別"
+        item_id: "操作アイテムID"
+        item_unid: "操作アイテムUNID"
+        item_name: "操作アイテム名"

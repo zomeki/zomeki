@@ -151,7 +151,7 @@ class Survey::Form < ActiveRecord::Base
     return users.uniq
   end
 
-  def approve(user)
+  def approve(user, request=nil)
     return unless state_approvable?
 
     approval_requests.each do |approval_request|
@@ -165,7 +165,10 @@ class Survey::Form < ActiveRecord::Base
       end
     end
 
-    update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
+    if approval_requests.all?{|r| r.finished? }
+      update_column(:state, 'approved')
+      Sys::OperationLog.log(request, :item => self) unless request.blank?
+    end
   end
 
   def publish

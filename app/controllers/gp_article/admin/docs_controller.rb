@@ -248,7 +248,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def approve
-    @item.approve(Core.user) if @item.approvers.include?(Core.user)
+    @item.approve(Core.user, request) if @item.approvers.include?(Core.user)
     redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
   end
 

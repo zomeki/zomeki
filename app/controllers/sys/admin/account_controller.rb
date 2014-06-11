@@ -27,6 +27,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
 
     cookies.delete :sys_login_referrer
+    Sys::OperationLog.log(request, :user => current_user)
 
     # システム管理者以外は所属サイトにのみログインできる
     unless current_user.root? || current_user.sites.include?(Core.site)
@@ -47,6 +48,8 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     cookies.delete :auth_token
     cookies.delete :cms_site
     reset_session
+
+    Sys::OperationLog.log(request, :user => current_user)
     redirect_to('action' => 'login')
   end
   
