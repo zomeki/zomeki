@@ -240,13 +240,14 @@ class GpArticle::Content::Doc < Cms::Content
 
   def rewrite_configs
     if node = public_node
-      line = ["RewriteRule ^#{node.public_uri}",
-              '((\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d).*)',
-              " #{public_path.gsub(/.*(\/_contents\/)/, '\\1')}/#{node.name}/$2/$3/$4/$5/$6/$1 [L]"].join
-      [line]
+      []
     else
       []
     end
+  end
+
+  def public_path
+    site.public_path
   end
 
   private

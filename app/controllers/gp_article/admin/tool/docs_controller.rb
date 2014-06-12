@@ -11,6 +11,9 @@ class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
         if doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: content.site))
           doc.publish_page(render_public_as_string("#{doc.public_uri}index.html.r", site: content.site),
                            :path => "#{doc.public_path}.r", :dependent => :ruby)
+          doc.rebuild(render_public_as_string("#{doc.public_uri}index.html", site: content.site, jpmobile: envs_to_request_as_smart_phone),
+                      :path => doc.public_smart_phone_path, :dependent => :smart_phone)
+
           results[:ok] += 1
         end
       rescue => e
