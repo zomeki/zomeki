@@ -220,13 +220,13 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_path
-    if name =~ /^[0-9]{13}$/
-      _name = name.gsub(/^((\d{4})(\d\d)(\d\d)(\d\d)(\d\d).*)$/, '\2/\3/\4/\5/\6/\1')
-    else
-      _name = ::File.join(name[0..0], name[0..1], name[0..2], name)
-    end
-    node_name = content.public_node.try(:name) || 'docs'
-    "#{content.public_path}/#{node_name}/#{_name}/#{filename_base}.html"
+    return '' unless public_uri
+    "#{content.public_path}#{public_uri}#{filename_base}.html"
+  end
+
+  def public_smart_phone_path
+    return '' unless public_uri
+    "#{content.public_path}/_smartphone#{public_uri}#{filename_base}.html"
   end
 
   def public_uri(without_filename: false)
@@ -326,7 +326,11 @@ class GpArticle::Doc < ActiveRecord::Base
     return false unless self.state_public?
     @save_mode = :publish
     publish_page(content, options)
-    publish_files
+    #TODO: ファイル書き出し要再検討
+    @public_files_path = "#{::File.dirname(public_smart_phone_path)}/file_contents" if options[:dependent] == :smart_phone
+    result = publish_files
+    @public_files_path = nil if options[:dependent] == :smart_phone
+    return result
   end
 
   def bread_crumbs(doc_node)
@@ -664,6 +668,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_files_path
+    return @public_files_path if @public_files_path
     "#{::File.dirname(public_path)}/file_contents"
   end
 
