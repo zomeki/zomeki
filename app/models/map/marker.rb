@@ -28,6 +28,36 @@ class Map::Marker < ActiveRecord::Base
 
   belongs_to :doc, :class_name => 'GpArticle::Doc' # Not saved to database
 
+  def public_uri
+    return '' unless content.public_node
+    "#{content.public_node.public_uri}#{name}/"
+  end
+
+  def public_file_uri
+    return '' if public_uri.blank? || files.empty?
+    "#{public_uri}file_contents/#{files.first.name}"
+  end
+
+  def public_path
+    return '' unless content.public_node
+    "#{content.public_node.public_path}#{name}/"
+  end
+
+  def public_file_path
+    return '' if public_path.blank? || files.empty?
+    "#{public_path}file_contents/#{files.first.name}"
+  end
+
+  def public_smart_phone_path
+    return '' unless content.public_node
+    "#{content.public_node.public_smart_phone_path}#{name}/"
+  end
+
+  def public_smart_phone_file_path
+    return '' if public_smart_phone_path.blank? || files.empty?
+    "#{public_smart_phone_path}file_contents/#{files.first.name}"
+  end
+
   private
 
   def set_defaults
