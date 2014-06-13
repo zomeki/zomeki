@@ -27,7 +27,8 @@ contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect
                                          model: ['GpArticle::Doc',
                                                  'GpCategory::CategoryType',
                                                  'Organization::Group',
-                                                 'AdBanner::Banner']).order(:name) -%>
+                                                 'AdBanner::Banner',
+                                                 'Map::Marker']).order(:name) -%>
 <%= form_tag(tool_rebuild_contents_path) do -%>
   <%= select_tag 'target_content_ids',
                  options_for_select(target_contents.map{|c| ["#{c.name}（#{c.model_name}）", c.id] }), multiple: true, size: 10 %>
