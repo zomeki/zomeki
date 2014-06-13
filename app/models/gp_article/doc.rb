@@ -320,6 +320,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.state = 'public' unless self.state_public?
     return false unless save(:validate => false)
     publish_page(content, path: public_path, uri: public_uri)
+    publish_files
   end
 
   def rebuild(content, options={})
