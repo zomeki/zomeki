@@ -49,8 +49,10 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
       begin
         uri = "#{node.public_uri}?node_id=#{node.id}"
         publish_page(node, :uri => uri, :site => node.site, :path => node.public_path)
+      rescue Script::InterruptException => e
+        raise e
       rescue => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
       end
       return
     end
@@ -63,11 +65,14 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
         publish_page(node, :uri => node.public_uri, :site => node.site, :path => node.public_path)
         res = render_component_into_view :controller => model, :action => 'publish', :params => params.merge(node: node)
+
+      rescue Script::InterruptException => e
+        raise e
       rescue LoadError => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
         return
       rescue Exception => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
         return
       end
     end
@@ -87,6 +92,7 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
   def publish_by_task
     item = params[:item]
     if item.state == 'recognized' && item.model == 'Cms::Page'
+      Script.current
       info_log "-- Publish: #{item.class}##{item.id}"
       item = Cms::Node::Page.find(item.id)
       uri  = "#{item.public_uri}?node_id=#{item.id}"
@@ -105,6 +111,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
       info_log %Q!OK: Published to "#{path}"!
       params[:task].destroy
+
+      Script.success
     end
     render text: 'OK'
   rescue => e
@@ -115,6 +123,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
   def close_by_task
     item = params[:item]
     if item.state == 'public' && item.model == 'Cms::Page'
+      Script.current
+
       info_log "-- Close: #{item.class}##{item.id}"
       item = Cms::Node::Page.find(item.id)
 
@@ -122,6 +132,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
       info_log 'OK: Closed'
       params[:task].destroy
+
+      Script.success
     end
     render text: 'OK'
   rescue => e
