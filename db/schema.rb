@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140606101607) do
+ActiveRecord::Schema.define(:version => 20140612060058) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1558,6 +1558,22 @@ ActiveRecord::Schema.define(:version => 20140606101607) do
     t.integer  "item_id"
     t.integer  "item_unid"
     t.string   "item_name"
+  end
+
+  create_table "sys_processes", :force => true do |t|
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.datetime "started_at"
+    t.datetime "closed_at"
+    t.integer  "user_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "interrupt"
+    t.integer  "total"
+    t.integer  "current"
+    t.integer  "success"
+    t.integer  "error"
+    t.text     "message",    :limit => 2147483647
   end
 
   create_table "sys_publishers", :force => true do |t|
