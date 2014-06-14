@@ -13,6 +13,7 @@ class PortalArticle::Script::DocsController < Cms::Controller::Script::Publicati
     begin
       item = params[:item]
       if item.state == 'recognized'
+        Script.current
         puts "-- Publish: #{item.class}##{item.id}"
         uri  = "#{item.public_uri}?doc_id=#{item.id}"
         path = "#{item.public_path}"
@@ -27,6 +28,7 @@ class PortalArticle::Script::DocsController < Cms::Controller::Script::Publicati
         
         puts "OK: Published"
         params[:task].destroy
+        Script.success
       end
     rescue => e
       puts "Error: #{e}"
@@ -38,12 +40,14 @@ class PortalArticle::Script::DocsController < Cms::Controller::Script::Publicati
     begin
       item = params[:item]
       if item.state == 'public'
+        Script.current
         puts "-- Close: #{item.class}##{item.id}"
         
         item.close
         
         puts "OK: Closed"
         params[:task].destroy
+        Script.success
       end
     rescue => e
       puts "Error: #{e}"

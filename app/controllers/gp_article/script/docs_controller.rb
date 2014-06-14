@@ -10,6 +10,8 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
 
   def publish_by_task
     if (item = params[:item]).try(:state_approved?)
+      Script.current
+      
       info_log "-- Publish: #{item.class}##{item.id}"
       uri = item.public_uri.to_s
       path = item.public_path.to_s
@@ -23,6 +25,8 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
 
       info_log %Q!OK: Published to "#{path}"!
       params[:task].destroy
+      
+      Script.success
     end
     render text: 'OK'
   rescue => e
@@ -32,12 +36,14 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
 
   def close_by_task
     if (item = params[:item]).try(:state_public?)
+      Script.current
       info_log "-- Close: #{item.class}##{item.id}"
 
       item.close
 
       info_log 'OK: Closed'
       params[:task].destroy
+      Script.success
     end
     render text: 'OK'
   rescue => e
