@@ -15,6 +15,8 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
   
   def publish_page(item, params = {})
+    Script.current
+
     if ::Script.options
       path = params[:uri].to_s.sub(/\?.*/, '')
       return false if Script.options.is_a?(Array) && !Script.options.include?(path)
@@ -27,7 +29,9 @@ class Cms::Controller::Script::Publication < ApplicationController
     res  = item.publish_page(rendered, :path => params[:path], :dependent => params[:dependent])
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
-    
+
+    Script.success if item.published?
+
     ## ruby html
     uri = params[:uri]
     if uri =~ /\.html$/
@@ -62,14 +66,15 @@ class Cms::Controller::Script::Publication < ApplicationController
           item.publish_page(rendered, :path => path, :dependent => dep)
         end
       rescue TimeoutError => e
-        error_log "#{uri} Timeout"
+        Script.error "#{uri} Timeout"
       rescue => e
-        error_log "#{uri}\n#{e.message}"
+        Script.error "#{uri}\n#{e.message}"
       end
     end
     
     return res
   rescue => e
+    Script.error "#{uri}\n#{e.message}"
     error_log e.message
     return false
   end

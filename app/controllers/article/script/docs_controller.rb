@@ -16,6 +16,8 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
     begin
       item = params[:item]
       if item.state == 'recognized'
+        Script.current
+
         puts "-- Publish: #{item.class}##{item.id}"
         uri  = "#{item.public_uri}?doc_id=#{item.id}"
         path = "#{item.public_path}"
@@ -34,6 +36,7 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
         params[:task].destroy
 
         sweep_cache_for_update item
+        Script.success
       end
     rescue => e
       puts "Error: #{e}"
@@ -47,6 +50,7 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
     begin
       item = params[:item]
       if item.state == 'public'
+        Script.current
         puts "-- Close: #{item.class}##{item.id}"
         before_update_for_sweeper item
 
@@ -56,6 +60,7 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
         params[:task].destroy
 
         sweep_cache_for_update item
+        Script.success
       end
     rescue => e
       puts "Error: #{e}"
