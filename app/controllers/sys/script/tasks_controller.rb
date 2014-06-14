@@ -4,6 +4,8 @@ class Sys::Script::TasksController < ApplicationController
                      .order(:process_at)
                      .includes(:unid_data)
 
+    Script.total tasks.size
+
     return render(:text => 'No Tasks') if tasks.empty?
 
     tasks.each do |task|
@@ -23,6 +25,7 @@ class Sys::Script::TasksController < ApplicationController
         params.merge!({:unid => unid, :task => task, :item => item})
         render_component_into_view :controller => ctl, :action => act, :params => params
       rescue => e
+        Script.error e
         puts "Error: #{e}"
       end
     end

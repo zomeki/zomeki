@@ -2,11 +2,16 @@
 require 'digest/md5'
 class Cms::Script::TalkTasksController < Cms::Controller::Script::Publication
   def exec
-    Cms::TalkTask.find(:all, :select => :id, :order => "id").each do |v|
+    tasks = Cms::TalkTask.find(:all, :select => :id, :order => "id")
+
+    Script.total tasks.size
+
+    tasks.each do |v|
       task = Cms::TalkTask.find_by_id(v[:id])
       next unless task
-      
+
       begin
+        Script.current
 clean_statics = false
 if clean_statics
         if File.exist?("#{task.path}.mp3")
@@ -21,10 +26,14 @@ else
           rs = true
         end
 end
+        Script.success if rs
         task.destroy
         raise "MakeSoundError" unless rs
+      rescue Script::InterruptException => e
+        raise e
       rescue Exception => e
         puts "#{e}: #{task.path}"
+        Script.error "#{e}: #{task.path}"
         #error_log "#{e} #{task.path}"
       end
     end
