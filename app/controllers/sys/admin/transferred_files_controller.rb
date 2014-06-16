@@ -23,8 +23,6 @@ class Sys::Admin::TransferredFilesController < Cms::Controller::Admin::Base
 
   def show
     @item = Sys::TransferredFile.new.find(params[:id])
-#    return error_auth unless @item.readable?
-
     _show @item
   end
 
@@ -41,7 +39,6 @@ class Sys::Admin::TransferredFilesController < Cms::Controller::Admin::Base
   end
 
   def destroy
-#    @item = Sys::User.new.find(params[:id])
-#    _destroy(@item)
+    return error_auth
   end
 end
