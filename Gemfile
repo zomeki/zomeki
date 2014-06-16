@@ -28,6 +28,8 @@ gem 'whenever', :require => false
 gem 'hpricot', '0.8.6'
 gem 'tamtam', '0.0.3'
 
+gem 'rsync', '~> 1.0.8'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

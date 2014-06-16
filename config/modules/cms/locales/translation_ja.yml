@@ -30,6 +30,10 @@ ja:
         portal_group_business_ids: "業種"
         portal_group_attribute_ids: "属性"
         portal_group_area_ids: "地域"
+        setting_transfer_dest_user: "転送先ユーザ名"
+        setting_transfer_dest_host: "転送先サーバホスト"
+        setting_transfer_dest_dir: "転送先サーバディレクトリ"
+        setting_transfer_dest_domain: "転送先サイトURL"
 
       cms/site_basic_auth_user:
         state: "状態"
