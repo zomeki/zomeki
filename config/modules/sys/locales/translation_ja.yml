@@ -108,3 +108,13 @@ ja:
         item_id: "操作アイテムID"
         item_unid: "操作アイテムUNID"
         item_name: "操作アイテム名"
+
+      sys/transferred_file:
+        created_at: "転送日時"
+        site_id: "サイト"
+        version: "転送バージョン"
+        operation: "操作"
+        parent_dir: "対象ディレクトリ"
+        path: "ファイル"
+        file_type: "ファイルタイプ"
+        destination: "転送先"

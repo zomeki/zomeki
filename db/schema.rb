@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140612060058) do
+ActiveRecord::Schema.define(:version => 20140613022833) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1627,6 +1627,21 @@ ActiveRecord::Schema.define(:version => 20140612060058) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "sys_transferred_files", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "version"
+    t.string   "operation"
+    t.string   "file_type"
+    t.string   "parent_dir"
+    t.string   "path"
+    t.string   "destination"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "sys_transferred_files", ["created_at"], :name => "index_sys_transferred_files_on_created_at"
+  add_index "sys_transferred_files", ["version"], :name => "index_sys_transferred_files_on_version"
 
   create_table "sys_unid_relations", :force => true do |t|
     t.integer "unid",     :null => false
