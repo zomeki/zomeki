@@ -1,9 +1,9 @@
 ZomekiCMS::Application.routes.draw do
   mod = "sys"
-  
+
   ## script
   match "/_script/#{mod}/run/*path" => "#{mod}/script/runner#run"
-  
+
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     match "tests" => "admin/tests#index",
@@ -12,7 +12,7 @@ ZomekiCMS::Application.routes.draw do
       :as => :tests_mail
     match "tests_link_check" => "admin/tests/link_check#index",
       :as => :tests_link_check
-    
+
     resources :maintenances,
       :controller  => "admin/maintenances"
     resources :messages,
@@ -70,9 +70,11 @@ ZomekiCMS::Application.routes.draw do
       :controller => "admin/storage_files",
       :path       => "storage_files(/*path)",
       :format     => false
+    resources :transferred_files,
+      :controller  => "admin/transferred_files"
     resources :operation_logs,
       :controller => "admin/operation_logs"
   end
-  
+
   match "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}/:parent/inline_files/files/:name.:format" => 'sys/admin/inline/files#download'
 end

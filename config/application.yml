@@ -1,12 +1,19 @@
 sys:
   #暗号化パスワード
   crypt_pass: pass
-  
+
   #承認者候補に他所属の管理者を表示
   recognizers_include_admin: false
 
   #自動リンクチェック
   auto_link_check: true
+
+  # 書き出しファイル転送設定
+  #transfer_to_publish: true
+  transfer_opts: "-rlptvz --delete"
+  transfer_opt_exclude: "config/rsync/public_exclude.lst"
+  transfer_opt_include: "config/rsync/public_include.lst"
+  transfer_opt_remote_shell: "ssh -p 22"
 
 cms:
   #ページ数付きページ書き出し数

@@ -1,0 +1,19 @@
+<%= form_for :item, :url => '',  :html => {:method => :get, :class => 'search'} do |f| %>
+<table>
+
+  <tr>
+    <th>転送バージョン</th>
+    <td ><%= text_field_tag 's_version', params[:s_version], :style => 'width: 120px; ime-mode: disabled;' %></td>
+    <th>ファイル</th>
+    <td ><%= text_field_tag 's_path', params[:s_path], :style => 'width: 120px;' %></td>
+    <th>操作</th>
+    <td><%= select_tag 's_operation', options_for_select(Sys::TransferredFile.new.operations, params[:s_operation]), :include_blank => true %></td>
+
+    <td class="submitters">
+      <%= submit_tag '検索',   :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+  </tr>
+
+</table>
+<!-- end .search --><% end %>

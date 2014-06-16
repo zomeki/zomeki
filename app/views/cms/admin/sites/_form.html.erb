@@ -105,6 +105,24 @@ areas      = PortalGroup::Area.root_items(cond)
   </tr>
 </table>
 
+<p class="form">ファイル転送設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:setting_transfer_dest_user) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_user, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_host) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_host, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_dir) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_dir, :class => 'url' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_domain) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_domain, :class => 'url' %></td>
+  </tr>
+</table>
+
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_category_ids_0,
       :with => :item_portal_group_id, :on => 'change', :url => categories_portal_group_groups_path(0)) %>
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_business_ids_0,
