@@ -100,4 +100,22 @@
 </table>
 <% end %>
 
+<p class="form">ファイル転送設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:setting_transfer_dest_user) %></th>
+    <td><%= @item.setting_transfer_dest_user %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_host) %></th>
+    <td><%= @item.setting_transfer_dest_host %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_dir) %></th>
+    <td><%= @item.setting_transfer_dest_dir %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_domain) %></th>
+    <td><%= @item.setting_transfer_dest_domain %></td>
+  </tr>
+</table>
+
 <%= creator_view @item %>
