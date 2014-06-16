@@ -9,7 +9,7 @@ sys:
   auto_link_check: true
 
   # 書き出しファイル転送設定
-  #transfer_to_publish: true
+  transfer_to_publish: false
   transfer_opts: "-rlptvz --delete"
   transfer_opt_exclude: "config/rsync/public_exclude.lst"
   transfer_opt_include: "config/rsync/public_include.lst"
