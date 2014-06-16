@@ -1,0 +1,29 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:site_id) %></th>
+    <td><%= safe{@item.site.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:version) %></th>
+    <td><%= @item.version %></td>
+  </tr><tr>
+    <th>転送日時</th>
+    <td colspan="3"><%= safe{@item.created_at.strftime("%Y-%m-%d %H:%M:%S")} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:operation) %></th>
+    <td><%= @item.operation_label %></td>
+  </tr><tr>
+    <th><%= @item.locale(:file_type) %></th>
+    <td><%= @item.file_type_label %></td>
+  </tr><tr>
+    <th><%= @item.locale(:parent_dir) %></th>
+    <td><%= @item.parent_dir %></td>
+  </tr><tr>
+    <th><%= @item.locale(:path) %></th>
+    <td><%= @item.path %></td>
+  </tr><tr>
+    <th><%= @item.locale(:destination) %></th>
+    <td><%= @item.destination %></td>
+  </tr>
+</table>
+
+<br />
