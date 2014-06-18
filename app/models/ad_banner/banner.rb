@@ -52,6 +52,16 @@ class AdBanner::Banner < ActiveRecord::Base
     "#{content.public_node.public_path}#{name}"
   end
 
+  def image_mobile_path
+    return '' unless content.public_node
+    "#{content.public_node.public_mobile_path}#{name}"
+  end
+
+  def image_smart_phone_path
+    return '' unless content.public_node
+    "#{content.public_node.public_smart_phone_path}#{name}"
+  end
+
   def link_uri
     return '' unless content.public_node
     "#{content.public_node.public_uri}#{token}"
@@ -59,11 +69,15 @@ class AdBanner::Banner < ActiveRecord::Base
 
   def publish_or_close_image
     if published?
-      FileUtils.mkdir_p ::File.dirname(image_path)
-      FileUtils.cp upload_path, image_path
+      [image_path, image_mobile_path, image_smart_phone_path].each do |path|
+        FileUtils.mkdir_p ::File.dirname(path)
+        FileUtils.cp upload_path, path
+      end
     else
-      FileUtils.rm image_path if ::File.exist?(image_path)
-      FileUtils.rmdir ::File.dirname(image_path)
+      [image_path, image_mobile_path, image_smart_phone_path].each do |path|
+        FileUtils.rm image_path if ::File.exist?(path)
+        FileUtils.rmdir ::File.dirname(path)
+      end
     end
   end
 
