@@ -37,7 +37,7 @@ module Cms::Model::Base::Page::TalkTask
   end
   
   def delete_talk_tasks
-    publishers.destroy_all
+    talk_tasks.destroy_all
     return true
   end
 end
