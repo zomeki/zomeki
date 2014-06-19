@@ -6,7 +6,7 @@ module Cms::Model::Base::Page::Publisher
       :dependent => :destroy
     mod.after_save :close_page
   end
-  
+
   def public_status
     return published_at ? '公開中' : '非公開'
   end
@@ -27,12 +27,12 @@ module Cms::Model::Base::Page::Publisher
     params = []
     options[:params].each {|k, v| params << "#{k}=#{v}" } if options[:params]
     params = params.size > 0 ? "?#{params.join('&')}" : ""
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}" 
+    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}"
   end
 
   def publish_uri(options = {})
     site = options[:site] || Page.site
-    "#{site.full_uri}_publish/#{format('%08d', site.id)}#{public_uri}" 
+    "#{site.full_uri}_publish/#{format('%08d', site.id)}#{public_uri}"
   end
 
   def publishable
@@ -70,15 +70,15 @@ module Cms::Model::Base::Page::Publisher
     return false unless editable?
     return state == 'public'# && published_at
   end
-  
+
   def mobile_page?
     false
   end
-  
+
   def published?
     @published
   end
-  
+
   def publish_page(content, options = {})
     @published = false
     return false if content.nil?
@@ -94,6 +94,9 @@ module Cms::Model::Base::Page::Publisher
     pub  = publishers.find(:first, :conditions => cond)
 
     return true if mobile_page?
+    if options[:dependent].to_s =~ /ruby$/i
+      return true if !Zomeki.config.application['cms.use_kana']
+    end
     return true if hash && pub && hash == pub.content_hash && ::File.exist?(path)
 
 clean_statics = false
@@ -120,7 +123,7 @@ end
     pub.save if pub.changed?
     return true
   end
-  
+
   def close_page(options = {})
     publishers.destroy_all
     return true
