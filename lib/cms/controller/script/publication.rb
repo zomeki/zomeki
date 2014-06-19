@@ -15,12 +15,12 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
 
   def publish_page(item, params = {})
-    Script.current
+    ::Script.current
 
     if ::Script.options
       path = params[:uri].to_s.sub(/\?.*/, '')
-      return false if Script.options.is_a?(Array) && !Script.options.include?(path)
-      return false if Script.options.is_a?(Regexp) && Script.options !~ path
+      return false if ::Script.options.is_a?(Array) && !::Script.options.include?(path)
+      return false if ::Script.options.is_a?(Regexp) && ::Script.options !~ path
     end
 
     site = params[:site] || @site
@@ -30,7 +30,7 @@ class Cms::Controller::Script::Publication < ApplicationController
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
 
-    Script.success if item.published?
+    ::Script.success if item.published?
 
     ## ruby html
     return true unless Zomeki.config.application['cms.use_kana']
@@ -67,15 +67,15 @@ class Cms::Controller::Script::Publication < ApplicationController
           item.publish_page(rendered, :path => path, :dependent => dep)
         end
       rescue TimeoutError => e
-        Script.error "#{uri} Timeout"
+        ::Script.error "#{uri} Timeout"
       rescue => e
-        Script.error "#{uri}\n#{e.message}"
+        ::Script.error "#{uri}\n#{e.message}"
       end
     end
 
     return res
   rescue => e
-    Script.error "#{uri}\n#{e.message}"
+    ::Script.error "#{uri}\n#{e.message}"
     error_log e.message
     return false
   end
