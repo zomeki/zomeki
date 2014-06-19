@@ -2,6 +2,11 @@
 require 'digest/md5'
 class Cms::Script::TalkTasksController < Cms::Controller::Script::Publication
   def exec
+    if !Zomeki.config.application['cms.use_kana']
+      Script.log "use_kana is disabled (application.yml)"
+      return render(:text => "OK")
+    end
+
     tasks = Cms::TalkTask.find(:all, :select => :id, :order => "id")
 
     Script.total tasks.size
@@ -39,12 +44,12 @@ end
     end
     render :text => "OK"
   end
-  
+
   def make_sound(task)
     content = ::File.new(task.path).read
     #hash = Digest::MD5.new.update(content.to_s).to_s
     #return true if hash == task.content_hash && ::File.exist?("#{task.path}.mp3")
-    
+
     jtalk = Cms::Lib::Navi::Jtalk.new
     jtalk.make(content)
     mp3 = jtalk.output
