@@ -288,6 +288,20 @@ protected
       
       publish_page(content, :path => public_path, :uri => public_uri)
     end
+
+    def rebuild(content, options={})
+      return false unless self.state == 'public'
+      @save_mode = :publish
+
+      if rep = replaced_page
+        rep.destroy if rep.directory == 0
+      end
+
+      options[:path] ||= public_path
+      options[:uri] ||= public_uri
+
+      publish_page(content, options)
+    end
     
     def close
       @save_mode = :close
