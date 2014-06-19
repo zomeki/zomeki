@@ -23,8 +23,8 @@ class Cms::Admin::Node::PagesController < Cms::Admin::Node::BaseController
     _update @item do
       send_recognition_request_mail(@item) if @item.state == 'recognize'
       publish_by_update(@item) if @item.state == 'public'
-      @item.close if !@item.public?
-      
+      @item.close unless @item.public?
+
       respond_to do |format|
         format.html { return redirect_to(cms_nodes_path) }
       end
@@ -55,6 +55,8 @@ class Cms::Admin::Node::PagesController < Cms::Admin::Node::BaseController
     item.public_uri = "#{item.public_uri}?node_id=#{item.id}"
     if item.publish(render_public_as_string(item.public_uri))
       publish_ruby(item)
+      item.rebuild(render_public_as_string(item.public_uri, jpmobile: envs_to_request_as_smart_phone),
+                   :path => item.public_smart_phone_path, :dependent => :smart_phone)
       flash[:notice] = "公開処理が完了しました。"
     else
       flash[:notice] = "公開処理に失敗しました。"
