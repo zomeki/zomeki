@@ -5,7 +5,7 @@ class Map::Admin::Tool::MarkersController < Cms::Controller::Admin::Base
     results = {ok: 0, ng: 0}
     errors = []
 
-    if (node = content.public_node)
+    content.public_nodes.each do |node|
       begin
         node.publish_page(render_public_as_string(node.public_uri, site: node.site))
 
@@ -34,7 +34,9 @@ class Map::Admin::Tool::MarkersController < Cms::Controller::Admin::Base
         errors << "エラー： #{node.id}, #{node.title}, #{e.message}"
         error_log("Rebuild: #{e.message}")
       end
-    else
+    end
+
+    if content.public_nodes.empty?
       results[:ng] += 1
       errors << 'エラー： ディレクトリが作成されていません。'
     end

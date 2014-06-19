@@ -9,7 +9,7 @@
       var position_options = {
         enableHighAccuracy: true,
         timeout           : 27000,
-        maximumAge 				: 30000
+        maximumAge  : 0
       };
 
   function renderMap(default_latitude, default_longitude, set_markers){
@@ -103,8 +103,6 @@
         };
       myMap = new google.maps.Map(document.getElementById("canvas"), mapOptions);
       var currentPos = new google.maps.LatLng(default_latitude, default_longitude);
-      //currentPosition["lat"] = default_latitude;
-      //currentPosition["lng"] = default_longitude;
       myMap.panTo(currentPos);
       setMarker();
     }
@@ -141,7 +139,7 @@
         );
         var setIcon ;
       for(key in marker_list){
-        if(window.navigator && window.navigator.geolocation){
+        if(window.navigator && window.navigator.geolocation && currentPosition && currentPosition["lat"] && currentPosition["lng"]){
           distance = calcDistance(marker_list[key]["lat"], marker_list[key]["lng"],currentPosition["lat"],currentPosition["lng"]);
           if(distance > 2){
             setIcon = purpleIcon;
