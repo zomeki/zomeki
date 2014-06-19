@@ -56,19 +56,24 @@ module Article::Controller::Feed
   end
 
   def to_atom(docs)
+    _feed_updated = lambda do |entries, updated_at|
+      entry = entries.max_by {|entry| eval("entry.#{updated_at}.to_i") }
+      eval("entry.#{updated_at}") rescue Time.now
+    end
+
     xml = Builder::XmlMarkup.new(:indent => 2)
     xml.instruct! :xml, :version => 1.0, :encoding => 'UTF-8'
     xml.feed 'xmlns' => 'http://www.w3.org/2005/Atom' do
 
       xml.id      "tag:#{Page.site.domain},#{Page.site.created_at.strftime('%Y')}:#{Page.current_node.public_uri}"
       xml.title   @feed_name
-      xml.updated Time.now.strftime('%Y-%m-%dT%H:%M:%S%z').sub(/([0-9][0-9])$/, ':\1')
+      xml.updated _feed_updated.call(docs, :published_at).strftime('%Y-%m-%dT%H:%M:%S%z').sub(/([0-9][0-9])$/, ':\1')
       xml.link    :rel => 'alternate', :href => @node_uri
       xml.link    :rel => 'self', :href => @req_uri, :type => 'application/atom+xml', :title => @feed_name
 
       docs.each do |doc|
         next unless doc.published_at
-        
+
         xml.entry do
           xml.id      "tag:#{Page.site.domain},#{doc.created_at.strftime('%Y')}:#{doc.public_uri}"
           xml.title   doc.title
