@@ -12,6 +12,7 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     return make_dictionary if params[:do] == 'make_dictionary'
     
     item = Cms::KanaDictionary.new#.readable
+    item.and :site_id, Core.site.id
     item.page  params[:page], params[:limit]
     item.order params[:sort], 'name, id'
     @items = item.find(:all)
@@ -21,6 +22,7 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   def show
     @item = Cms::KanaDictionary.new.find(params[:id])
     return error_auth unless @item.readable?
+    return error_auth unless @item.site_id == Core.site.id
     
     _show @item
   end
@@ -42,17 +44,22 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     return test if params[:do] == 'test'
     
     @item = Cms::KanaDictionary.new(params[:item])
+    @item.site_id = Core.site.id
     _create @item
   end
   
   def update
     @item = Cms::KanaDictionary.new.find(params[:id])
+    return error_auth unless @item.site_id == Core.site.id
+
     @item.attributes = params[:item]
     _update @item
   end
   
   def destroy
     @item = Cms::KanaDictionary.new.find(params[:id])
+    return error_auth unless @item.site_id == Core.site.id
+
     _destroy @item
   end
   

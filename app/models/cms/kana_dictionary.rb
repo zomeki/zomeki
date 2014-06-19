@@ -59,7 +59,7 @@ class Cms::KanaDictionary < ActiveRecord::Base
     return true
   end
   
-  def self.make_dic_file
+  def self.make_dic_file(site_id=nil)
     mecab_index = Zomeki.config.application['cms.mecab_index']
     mecab_dic   = Zomeki.config.application['cms.mecab_dic']
     
