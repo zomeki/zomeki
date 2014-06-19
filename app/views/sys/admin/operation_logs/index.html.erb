@@ -13,7 +13,7 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, sys_operation_log_path(:id => item.id) %></td>
     <td><%= item.user_name %></td>
-    <td><%= item.action %></td>
+    <td><%= item.action_text %></td>
     <td><%= item.item_model %><%= " (#{truncate(item.item_name, :length => 20)})" if item.item_name %></td>
     <td style="text-align: center;"><%= item.ipaddr %></td>
     <td style="text-align: center;"><%= safe{item.created_at.strftime('%Y-%m-%d %H:%M')} %></td>

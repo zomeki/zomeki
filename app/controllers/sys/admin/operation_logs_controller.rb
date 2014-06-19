@@ -80,7 +80,7 @@ protected
         row << item.user_name.to_s
         row << item.ipaddr.to_s
         row << item.uri.to_s
-        row << item.action.to_s
+        row << item.action_text.to_s
         row << item.item_model.to_s
         row << item.item_id.to_s
         row << item.item_unid.to_s
