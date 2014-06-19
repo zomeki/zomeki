@@ -17,6 +17,7 @@ class Sys::OperationLog < ActiveRecord::Base
     log.action    = params[:do]
     log.action    = params[:action] if params[:do].blank?
     log.ipaddr    = request.remote_addr
+    log.site_id   = Core.site.id rescue 0
 
     if user = options[:user]
       log.user_id   = user.id
@@ -25,6 +26,7 @@ class Sys::OperationLog < ActiveRecord::Base
       log.user_id   = user.id
       log.user_name = user.name
     end
+
 
     if item = options[:item]
       log.item_model  = item.class.to_s

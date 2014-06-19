@@ -15,6 +15,7 @@ class Sys::Admin::OperationLogsController < Cms::Controller::Admin::Base
     @action_type_options = [["作成","create"], ["更新","update"], ["承認","recognize"], ["削除","destroy"], ["公開","publish"], ["非公開","close"], ["ログイン","login"], ["ログアウト","logout"]]
    
     item = Sys::OperationLog.new
+    item.and :site_id, Core.site.id
  
     if !params[:start_date].blank?
       item.and :created_at, ">", params[:start_date]
@@ -41,6 +42,7 @@ class Sys::Admin::OperationLogsController < Cms::Controller::Admin::Base
   
   def show
     @item = Sys::OperationLog.find(params[:id])
+    return error_auth if Core.site.id != @item.site_id
     
     _show @item
   end
