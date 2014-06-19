@@ -64,7 +64,7 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   end
   
   def make
-    res = Cms::KanaDictionary.make_dic_file
+    res = Cms::KanaDictionary.make_dic_file(Core.site.id)
     if res == true
       flash[:notice] = '辞書を更新しました。'
     else
@@ -78,12 +78,12 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     @mode = true
     
     if params[:yomi_kana]
-      render :inline => Cms::Lib::Navi::Kana.convert(params[:body])
+      render :inline => Cms::Lib::Navi::Kana.convert(params[:body], Core.site.id)
     elsif params[:talk_kana]
-      render :inline => Cms::Lib::Navi::Jtalk.make_text(params[:body])
+      render :inline => Cms::Lib::Navi::Jtalk.make_text(params[:body], Core.site.id)
     elsif params[:talk_file]
       jtalk = Cms::Lib::Navi::Jtalk.new
-      jtalk.make params[:body]
+      jtalk.make params[:body], {:site_id => Core.site.id}
       file = jtalk.output
       send_file(file[:path], :type => file[:path], :filename => 'sound.mp3', :disposition => 'inline')
     end

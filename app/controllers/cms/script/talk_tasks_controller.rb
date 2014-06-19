@@ -46,7 +46,7 @@ end
     #return true if hash == task.content_hash && ::File.exist?("#{task.path}.mp3")
     
     jtalk = Cms::Lib::Navi::Jtalk.new
-    jtalk.make(content)
+    jtalk.make(content, {:site_id => task.site_id})
     mp3 = jtalk.output
     return false unless mp3
     return false if ::File.stat(mp3[:path]).size == 0
