@@ -13,9 +13,11 @@ class Cms::Public::TalkController < ApplicationController
     uri = "#{request.env['SCRIPT_URI'].gsub(/^(.*?\/\/.*?)\/.*/, '\1')}#{uri}"
     res = Util::Http::Request.send(uri)
     return http_error(404) if res.status != 200
-    
+
+    site_id = Page.site.id rescue nil
+
     jtalk = Cms::Lib::Navi::Jtalk.new
-    jtalk.make res.body
+    jtalk.make res.body, {:site_id => site_id}
     file = jtalk.output
     send_file(file[:path], :type => file[:mime_type], :filename => 'sound.mp3', :disposition => 'inline')
     
