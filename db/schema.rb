@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140613022833) do
+ActiveRecord::Schema.define(:version => 20140618101050) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1544,6 +1544,7 @@ ActiveRecord::Schema.define(:version => 20140613022833) do
   add_index "sys_object_privileges", ["item_unid", "action"], :name => "item_unid"
 
   create_table "sys_operation_logs", :force => true do |t|
+    t.integer  "site_id"
     t.integer  "loggable_id"
     t.string   "loggable_type"
     t.integer  "user_id"
