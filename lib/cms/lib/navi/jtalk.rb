@@ -1,12 +1,12 @@
 # encoding: utf-8
 class Cms::Lib::Navi::Jtalk
   
-  def self.make_text(html)
+  def self.make_text(html, site_id=nil)
     require 'MeCab'
     require "cgi"
     
     ## settings
-    mecab_rc = Cms::KanaDictionary.mecab_rc
+    mecab_rc = Cms::KanaDictionary.mecab_rc(site_id)
     
     ## trim
     html.gsub!(/(\r\n|\r|\n)+/, " ")
@@ -96,7 +96,9 @@ class Cms::Lib::Navi::Jtalk
     parts = []
     buf   = ""
     
-    self.class.make_text(text).split(/[ 。]/).each do |str|
+    site_id = options[:site_id] rescue nil
+    
+    self.class.make_text(text, site_id).split(/[ 。]/).each do |str|
       buf << " " if !buf.blank?
       buf << str
       if buf.size >= talk_strlen
