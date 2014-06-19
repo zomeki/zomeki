@@ -28,8 +28,6 @@ class Script
     cmd    = "#{ruby} #{runner} -e #{Rails.env} \"Script.run('#{path}', #{opts})\""
     system("#{cmd} >/dev/null &")
 
-    dump cmd
-
     return true
   end
 
@@ -72,6 +70,7 @@ class Script
   end
 
   def self.total(num = 1)
+    return unless defined? @@proc
     if num.is_a?(Fixnum)
       @@proc.total += num
     else
@@ -85,6 +84,7 @@ class Script
   end
 
   def self.current(num = 1)
+    return unless defined? @@proc
     @@proc.current += num
     if (@@proc.current % @@reflesh) == 0
       value = @@proc.interrupted?
@@ -97,6 +97,7 @@ class Script
   end
 
   def self.success(num = 1)
+    return unless defined? @@proc
     @@proc.success += num
     if num > 0 && (@@proc.success % @@reflesh) == 0
       @@proc.updated_at = DateTime.now
@@ -106,6 +107,7 @@ class Script
   end
 
   def self.error(message = nil)
+    return unless defined? @@proc
     if message
       @@proc.error += 1
       self.log "Error: #{message}"
@@ -114,6 +116,7 @@ class Script
   end
 
   def self.log(message)
+    return unless defined? @@proc
     if !message.blank?
       @@proc.message = "" if @@proc.message.blank?
       @@proc.message += "#{message}\n"
