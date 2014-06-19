@@ -312,6 +312,7 @@ class GpArticle::Doc < ActiveRecord::Base
     return false unless super
     publishers.destroy_all unless publishers.empty?
     FileUtils.rm_rf(::File.dirname(public_path))
+    FileUtils.rm_rf(::File.dirname(public_smart_phone_path))
     return true
   end
 
@@ -327,7 +328,7 @@ class GpArticle::Doc < ActiveRecord::Base
     return false unless self.state_public?
     @save_mode = :publish
     publish_page(content, options)
-    #TODO: ファイル書き出し要再検討
+    #TODO: スマートフォン向けファイル書き出し要再検討
     @public_files_path = "#{::File.dirname(public_smart_phone_path)}/file_contents" if options[:dependent] == :smart_phone
     result = publish_files
     @public_files_path = nil if options[:dependent] == :smart_phone
