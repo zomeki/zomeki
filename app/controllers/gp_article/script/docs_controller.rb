@@ -4,7 +4,7 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
     path = @node.public_path.to_s
     publish_page(@node, :uri => "#{uri}index.rss", :path => "#{path}index.rss", :dependent => :rss)
     publish_page(@node, :uri => "#{uri}index.atom", :path => "#{path}index.atom", :dependent => :atom)
-    publish_more(@node, :uri => uri, :path => path, :first => 2)
+    publish_more(@node, :uri => uri, :path => path, :limit => 5)
     render text: 'OK'
   end
 
