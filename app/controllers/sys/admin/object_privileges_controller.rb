@@ -5,6 +5,7 @@ class Sys::Admin::ObjectPrivilegesController < Cms::Controller::Admin::Base
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:manager)
     @parent = Sys::RoleName.new.find(params[:parent])
+    return error_auth unless @parent.site_id == Core.site.id
   end
   
   def index
