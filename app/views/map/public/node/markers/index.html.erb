@@ -53,7 +53,7 @@
         <%- end -%>
       </td>
       <%- end -%>
-      <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
+      <td class="markerTitle"><%= marker.doc ? link_to(title_replace(marker.doc, @content.title_style), marker.doc.public_uri) : marker.title %></td>
       <td class="marker"><%= link_to_function '表示', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
     </tr>
     <%- end -%>
