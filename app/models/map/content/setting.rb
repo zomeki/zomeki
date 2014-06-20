@@ -11,12 +11,8 @@ class Map::Content::Setting < Cms::ContentSetting
     comment: '（例 /images/sample.jpg ）'
   set_config :marker_order, name: '並び順',
     options: Map::Content::Marker::MARKER_ORDER_OPTIONS
-
-  def upper_text
-  end
-
-  def lower_text
-  end
+  set_config :title_style, name: "タイトル表示形式",
+    form_type: :text, upper_text: "<p><strong>タイトル：</strong>@title@ <strong>サブタイトル：</strong>@subtitle@ <strong>概要：</strong>@summary@ "
 
   def category_ids
     extra_values[:category_ids] || []
