@@ -1,5 +1,5 @@
 <li class="category <%= category.name %>">
-  <%- escaped_category = "#{category.category_type.name}/#{category.path_from_root_category}".gsub('/', '___') -%>
+  <%- escaped_category = "#{category.category_type.name}/#{category.path_from_root_category}".gsub('/', '@') -%>
   <%= link_to category.title, "#{@piece.target_node.public_uri}index_#{escaped_category}.html" %>
   <%- unless category.public_children.empty? -%>
   <ul class="level<%= category.public_children.first.level_no %>">
