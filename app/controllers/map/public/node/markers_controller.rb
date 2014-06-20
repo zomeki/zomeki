@@ -10,7 +10,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     @content = Map::Content::Marker.find_by_id(@node.content.id)
     return http_error(404) unless @content
 
-    category = params[:category] ? params[:category] : params[:escaped_category].to_s.gsub('___', '/')
+    category = params[:category] ? params[:category] : params[:escaped_category].to_s.gsub('@', '/')
     @specified_category = find_category_by_specified_path(category)
   end
 

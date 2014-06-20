@@ -7,7 +7,7 @@ class Map::Script::MarkersController < Cms::Controller::Script::Publication
 
     @node.content.public_categories.each do |top_category|
       top_category.public_descendants.each do |category|
-        escaped_category = "#{category.category_type.name}/#{category.path_from_root_category}".gsub('/', '___')
+        escaped_category = "#{category.category_type.name}/#{category.path_from_root_category}".gsub('/', '@')
         file = "index_#{escaped_category}"
 
         publish_more(@node, uri: @node.public_uri, file: file, limit: 2, path: @node.public_path,
