@@ -43,14 +43,10 @@ module Map::MapHelper
   def title_replace(doc, doc_style)
     return unless doc
 
-    doc_title    ||= h(doc.title) # maker.title
-    doc_subtitle ||= doc.subtitle
-    doc_summary  ||= doc.summary
-
     contents = {
-      title:    content_tag(:span, doc_title,    class: 'title'),
-      subtitle: content_tag(:span, doc_subtitle, class: 'subtitle'),
-      summary:  content_tag(:span, doc_summary,  class: 'summary'),
+      title:    content_tag(:span, link_to(doc.title, doc.public_uri), class: 'title'),
+      subtitle: content_tag(:span, doc.subtitle, class: 'subtitle'),
+      summary:  doc.summary,
       }
 
     if Page.mobile?
