@@ -8,6 +8,7 @@
 /upload/
 
 /config/core.yml
+/config/mecab/sites/
 /config/mecab/zomeki.dic
 /config/virtual-hosts/sites.conf
 /config/virtual-hosts/zomeki.conf
