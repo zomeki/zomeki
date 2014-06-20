@@ -100,10 +100,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.validate_word_dictionary # replace validate word
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
 
-    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
-      @item.body = Util::AccessibilityChecker.modify @item.body
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+        @item.body = Util::AccessibilityChecker.modify @item.body
+      end
     end
-
+    
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
       check_results = @item.check_links_in_body
       self.class.helpers.large_flash(flash, :key => :link_check_result,
@@ -111,13 +113,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(failed_template) if params[:link_check_in_body]
     end
 
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
-      check_results = Util::AccessibilityChecker.check @item.body
-      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
-                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(failed_template) if params[:accessibility_check]
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+        check_results = Util::AccessibilityChecker.check @item.body
+        self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                       :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+        return render(failed_template) if params[:accessibility_check]
+      end
     end
-
+    
     @item.concept = @content.concept
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
@@ -160,8 +164,10 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.validate_word_dictionary #replace validate word 
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
 
-    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
-      @item.body = Util::AccessibilityChecker.modify @item.body
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+        @item.body = Util::AccessibilityChecker.modify @item.body
+      end
     end
 
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
@@ -171,13 +177,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(failed_template) if params[:link_check_in_body]
     end
 
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
-      check_results = Util::AccessibilityChecker.check @item.body
-      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
-                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(failed_template) if params[:accessibility_check]
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+        check_results = Util::AccessibilityChecker.check @item.body
+        self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                       :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+        return render(failed_template) if params[:accessibility_check]
+      end
     end
-
+    
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?

@@ -52,7 +52,7 @@
       </div>
       <div>
         <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
-        <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
+        <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' if Zomeki.config.application['cms.enable_accessibility_check'] %>
       </div>
     </div>
 
