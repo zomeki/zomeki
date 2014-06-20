@@ -92,6 +92,10 @@ class Map::Content::Marker < Cms::Content
     setting_value(:default_image).to_s
   end
 
+  def title_style
+    setting_value(:title_style)
+  end
+
   def sort_markers(markers)
     case setting_value(:marker_order)
     when 'time_asc'
