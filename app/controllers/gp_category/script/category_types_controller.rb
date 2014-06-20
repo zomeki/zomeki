@@ -3,7 +3,7 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
   def publish
     uri  = "#{@node.public_uri}"
     path = "#{@node.public_path}"
-    publish_more(@node, :uri => uri, :path => path, :first => 2, :dependent => :more)
+    publish_more(@node, :uri => uri, :path => path, :limit => 5, :dependent => :more)
 
     category_types = if (id = params[:target_id]).present?
                        @node.content.public_category_types.where(id: id)
