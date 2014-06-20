@@ -82,7 +82,7 @@ class Cms::Controller::Script::Publication < ApplicationController
 
   def publish_more(item, params = {})
     stopp = nil
-    limit = Zomeki.config.application["cms.publish_more_pages"].to_i rescue 0
+    limit = params[:limit] || Zomeki.config.application["cms.publish_more_pages"].to_i rescue 0
     limit = (limit < 1 ? 1 : 1 + limit)
     file  = params[:file] || 'index'
     first = params[:first] || 1
