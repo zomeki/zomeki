@@ -23,7 +23,7 @@ cms:
   use_kana: true
 
   # Accessibility check setting
-  enable_accessibility_check: false
+  enable_accessibility_check: true
 
   # Kana settings
   mecab_index: "/usr/local/libexec/mecab/mecab-dict-index"
