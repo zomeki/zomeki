@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140619042546) do
+ActiveRecord::Schema.define(:version => 20140620015953) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1600,6 +1600,7 @@ ActiveRecord::Schema.define(:version => 20140619042546) do
   add_index "sys_recognitions", ["user_id"], :name => "user_id"
 
   create_table "sys_role_names", :force => true do |t|
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"

@@ -22,6 +22,9 @@ cms:
   # Kana, Talk
   use_kana: true
 
+  # Accessibility check setting
+  enable_accessibility_check: true
+
   # Kana settings
   mecab_index: "/usr/local/libexec/mecab/mecab-dict-index"
   mecab_dic: "/usr/local/lib/mecab/dic/ipadic"
