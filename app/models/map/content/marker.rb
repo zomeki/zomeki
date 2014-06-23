@@ -93,7 +93,7 @@ class Map::Content::Marker < Cms::Content
   end
 
   def title_style
-    setting_value(:title_style)
+    setting_value(:title_style).to_s
   end
 
   def sort_markers(markers)
