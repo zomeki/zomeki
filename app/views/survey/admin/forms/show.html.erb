@@ -62,7 +62,7 @@
         <%- @item.approval_requests.each do |approval_request| -%>
         <tr>
           <td><%= approval_request.approval_flow.approvals.map{|a|
-            approvers = a.approvers.pluck(:name).join('、')
+            approvers = a.approvers_label
             a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;') :
                                                      content_tag(:span, approvers, style: 'padding: 4px;')
             }.join(' ＞ ').html_safe %></td>
