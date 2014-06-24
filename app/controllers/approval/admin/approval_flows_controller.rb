@@ -52,7 +52,12 @@ class Approval::Admin::ApprovalFlowsController < Cms::Controller::Admin::Base
     params[:approvals].each do |key, value|
       next unless value.is_a?(Array)
       approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key)
-      approval.approver_ids = value
+      approval.assignments.destroy_all
+      value.each_with_index do |uids, ogid|
+        uids.split(",").each do |uid|
+          approval.assignments.create(user_id: uid, or_group_id: ogid)
+        end
+      end
     end
   end
 end

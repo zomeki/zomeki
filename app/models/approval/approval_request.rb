@@ -32,7 +32,9 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
     transaction do
       histories.create(operator: user, reason: 'approve', comment: '')
-      current_assignments.find_by_user_id(user.id).update_attribute(:approved_at, Time.now)
+      if assignment = current_assignments.find_by_user_id(user.id)
+        current_assignments.where(or_group_id: assignment.or_group_id).update_all(approved_at: Time.now)
+      end
       current_assignments.reload # flush cache
     end
 
@@ -43,7 +45,9 @@ class Approval::ApprovalRequest < ActiveRecord::Base
         transaction do
           increment!(:current_index)
           current_assignments.destroy_all
-          current_approver_ids = current_approval.approver_ids
+          current_approval.assignments.each do |assignment|
+            current_assignments.create(user_id: assignment.user_id, or_group_id: assignment.or_group_id) 
+          end
           reload # flush cache
         end
         yield('progress') if block_given?
@@ -81,7 +85,9 @@ class Approval::ApprovalRequest < ActiveRecord::Base
     transaction do
       update_column(:current_index, min_index)
       current_assignments.destroy_all
-      current_approver_ids = current_approval.approver_ids
+      current_approval.assignments.each do |assignment|
+        current_assignments.create(user_id: assignment.user_id, or_group_id: assignment.or_group_id) 
+      end
       reload # flush cache
     end
   end
@@ -90,6 +96,10 @@ class Approval::ApprovalRequest < ActiveRecord::Base
 
   def set_defaults
     self.current_index = min_index if has_attribute?(:current_index) && current_index.nil?
-    self.current_approver_ids = current_approval.approver_ids if current_approvers.empty?
+    if current_approvers.empty?
+      current_approval.assignments.each do |assignment|
+        current_assignments.build(user_id: assignment.user_id, or_group_id: assignment.or_group_id) 
+      end
+    end
   end
 end
