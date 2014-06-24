@@ -219,30 +219,7 @@
     <%= render 'cms/admin/_partial/many_inquiries/form', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab4">
-    <%- if @content.approval_content_approval_flow -%>
-    <table class="show">
-      <tr>
-        <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
-          <%- unless approval_flows.empty? -%>
-          <table class="approval noDesign">
-            <%- approval_flows.each do |approval_flow| -%>
-            <tr>
-              <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
-              <td><%= approval_flow.approvals.map{|a|
-                approvers = a.approvers.pluck(:name).join('、')
-                content_tag(:span, approvers, style: 'padding: 4px;')
-                }.join(' ＞ ').html_safe %></td>
-            </tr>
-            <%- end -%>
-          </table>
-          <%- end -%>
-        </td>
-      </tr>
-    </table>
-    <%- else -%>
-    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
-    <%- end -%>
+    <%= render 'approval/admin/_partial/form', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab5">
     <table class="show">

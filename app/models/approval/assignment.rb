@@ -4,5 +4,13 @@ class Approval::Assignment < ActiveRecord::Base
   belongs_to :assignable, :polymorphic => true
   belongs_to :user, :class_name => 'Sys::User'
 
-  validates_presence_of :assignable_type, :assignable_id, :user_id
+  validates :user_id, presence: true
+
+  def user_label
+    user.try(:name)
+  end
+
+  def user_id_label
+    user_id
+  end
 end
