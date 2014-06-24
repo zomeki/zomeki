@@ -13,6 +13,12 @@ class Approval::Approval < ActiveRecord::Base
 
   after_initialize :set_defaults
 
+  def approvers_label
+    assignments.group_by{|assignments| assignments.or_group_id}.map{|og, assignments_by_og|
+      assignments_by_og.map{|a| a.user_label}.join("or")
+    }.join("、")
+  end
+
   private
 
   def set_defaults
