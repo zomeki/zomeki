@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140620015953) do
+ActiveRecord::Schema.define(:version => 20140623014502) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20140620015953) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.datetime "approved_at"
+    t.integer  "or_group_id"
   end
 
   add_index "approval_assignments", ["assignable_type", "assignable_id"], :name => "index_approval_assignments_on_assignable_type_and_assignable_id"
