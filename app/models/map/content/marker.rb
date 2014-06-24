@@ -7,6 +7,8 @@ class Map::Content::Marker < Cms::Content
 
   has_many :markers, :foreign_key => :content_id, :class_name => 'Map::Marker', :dependent => :destroy
 
+  after_initialize :set_default_settings
+
   def public_nodes
     nodes.public
   end
@@ -112,5 +114,11 @@ class Map::Content::Marker < Cms::Content
     else
       markers
     end
+  end
+
+  private
+
+  def set_default_settings
+    in_settings[:title_style] = '@title@' unless setting_value(:title_style)
   end
 end
