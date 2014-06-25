@@ -26,6 +26,8 @@ class Sys::Group < ActiveRecord::Base
 
   validates :name_en, :presence => true, :uniqueness => {:scope => :parent_id}, :format => /\A[0-9A-Za-z\._-]*\z/i
 
+  validate :validate_sites
+
   before_destroy :before_destroy
   after_save :copy_name_en_as_url_name
   
@@ -92,5 +94,9 @@ private
 
   def copy_name_en_as_url_name
     Organization::Group.where(sys_group_code: code).update_all(name: name_en)
+  end
+
+  def validate_sites
+    errors.add(:base, 'サイトは必ずひとつ以上選択してください。') if sites.empty?
   end
 end

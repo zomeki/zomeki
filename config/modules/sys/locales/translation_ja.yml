@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       sys/user: "ユーザ"
+      sys/group: "グループ"
     attributes:
       sys/sequence:
         created_at: "作成日時"
