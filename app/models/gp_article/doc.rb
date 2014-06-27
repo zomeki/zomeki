@@ -374,6 +374,7 @@ class GpArticle::Doc < ActiveRecord::Base
     when :replace
       new_doc.prev_edition = self
       new_doc.in_tasks = self.in_tasks
+      new_doc.in_creator = {'group_id' => creator.group_id, 'user_id' => creator.user_id}
     else
       new_doc.name = nil
       new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
