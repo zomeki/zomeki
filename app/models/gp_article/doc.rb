@@ -447,7 +447,11 @@ class GpArticle::Doc < ActiveRecord::Base
   def editable?
     result = super
     return result unless result.nil? # See "Sys::Model::Auth::EditableGroup"
-    return editable_group.all?
+    return editable_group.all? || approval_participators.include?(Core.user)
+  end
+
+  def publishable?
+    super || approval_participators.include?(Core.user)
   end
 
   def formated_display_published_at
