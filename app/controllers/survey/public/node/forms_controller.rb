@@ -82,12 +82,12 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
   def render_survey_layout(action = action_name)
     @piece = Survey::Piece::Form.find_by_id(params[:piece])
-    return render(:text => '') unless @piece
+#    return render(:text => '') unless @piece
 
     Page.layout = Cms::Layout.new({
-      head:             @piece.head_css,
-      mobile_head:      @piece.head_css,
-      smart_phone_head: @piece.head_css,
+      head:             @piece.try(:head_css) || '',
+      mobile_head:      @piece.try(:head_css) || '',
+      smart_phone_head: @piece.try(:head_css) || '',
       body:             '[[content]]',
       mobile_body:      '[[content]]',
       smart_phone_body: '[[content]]'
