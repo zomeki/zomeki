@@ -197,6 +197,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      update_file_names
 
       @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
@@ -447,6 +448,18 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
       GpCategory::Publisher.register_categories(@old_category_ids | @new_category_ids)
       GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
+    end
+  end
+
+  def update_file_names
+    if (file_names = params[:file_names]).kind_of?(Hash)
+      new_body = @item.body
+      file_names.each do |key, value|
+        file = @item.files.where(id: key).first
+        next if file.nil? || file.name == value
+        new_body = new_body.gsub("file_contents/#{value}", "file_contents/#{file.name}")
+      end
+      @item.update_column(:body, new_body) unless @item.body == new_body
     end
   end
 end
