@@ -230,6 +230,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def publish
     @item.update_column(:published_at, Core.now)
+    @item.send(:set_display_attributes)
     _publish(@item) { publish_ruby(@item) }
   end
 
