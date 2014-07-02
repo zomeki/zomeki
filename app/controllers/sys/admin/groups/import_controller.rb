@@ -68,6 +68,8 @@ class Sys::Admin::Groups::ImportController < Cms::Controller::Admin::Base
       group.tel          = data[:tel]
       group.outline_uri  = data[:outline_uri]
       group.email        = data[:email]
+
+      group.sites << Core.site if group.new_record?
       
       next unless group.changed?
       status = group.new_record? ? 0 : 1
