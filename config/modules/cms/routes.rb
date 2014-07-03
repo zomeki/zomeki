@@ -98,7 +98,43 @@ ZomekiCMS::Application.routes.draw do
           get :change
         end
       end
-
+    resources :tool_convert_downloads,
+      :controller  => "admin/tool/convert_downloads",
+      :path        => "tool_convert_downloads"
+    resources :tool_convert_files,
+      :controller  => "admin/tool/convert_files",
+      :path        => "tool_convert_files"
+    match "tool_convert_files(/:site_url(/*path))" => "admin/tool/convert_files#index",
+      as: 'tool_convert_files', :format => false, :constraints => { :site_url => /[^\/]+/ }
+    resources :tool_convert_settings,
+      :controller  => "admin/tool/convert_settings",
+      :path        => "tool_convert_settings"
+    resources :tool_convert_imports,
+      :controller  => "admin/tool/convert_imports",
+      :path        => "tool_convert_imports" do
+        collection do
+          get :filename_options
+        end
+      end
+    resources :tool_convert_docs,
+      :controller  => "admin/tool/convert_docs",
+      :path        => "tool_convert_docs" do
+        collection do
+          get :export, :destroy_all
+        end
+      end
+    resources :tool_convert_links,
+      :controller  => "admin/tool/convert_links",
+      :path        => "tool_convert_links"
+    resources :tool_diff_users,
+      :controller  => "admin/tool/diff_users",
+      :path        => "tool_diff_users" do
+        collection do
+          get  :import, :copy, :export, :user_update, :change_log
+          post :import
+        end
+      end
+      
     ## node
     resources :node_directories,
       :controller  => "admin/node/directories",
@@ -132,11 +168,11 @@ ZomekiCMS::Application.routes.draw do
     match 'tool_rebuild' => 'admin/tool/rebuild#index', as: 'tool_rebuild', via: [:get, :post]
     match 'tool_search' => 'admin/tool/search#index', as: 'tool_search', via: [:get, :post]
     match 'tool_link_check' => 'admin/tool/link_check#index', as: 'tool_link_check', via: [:get, :post]
-    match 'tool_convert' => 'admin/tool/convert#index', as: 'tool_convert', via: [:get, :post]
-    match "tool_convert_file_list(/:site_url(/*path))" => "admin/tool/convert#file_list",
-      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }, via: [:get, :post]
-    match "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting', via: [:get, :post]
-    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site', via: [:get, :post]
+#    match 'tool_convert' => 'admin/tool/convert#index', as: 'tool_convert', via: [:get, :post]
+#    match "tool_convert_file_list(/:site_url(/*path))" => "admin/tool/convert#file_list",
+#      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }, via: [:get, :post]
+#    match "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting', via: [:get, :post]
+#    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site', via: [:get, :post]
   end
 
   ## public

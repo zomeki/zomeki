@@ -1,0 +1,43 @@
+<%= render 'cms/admin/tool/convert/menu' %>
+
+<table class="show">
+  <tr>
+    <th>サイトURL</th>
+    <td>
+      <select name="site_url" id="site_url" style="width: 400px;">
+        <option></option>
+        <% Tool::Convert.all_site_urls.each do |site| -%>
+        <option <%= site == @rel_path ? "selected=selected" : "" %>><%= site %></option>
+        <% end -%>
+      </select>
+    </td>
+  </tr>
+</table>
+
+<% if @site_url.present? %>
+<div class="navi">
+  <%= @full_path.gsub(@base_uri[0], @base_uri[1]) %>
+</div>
+<% end %>
+
+<div class="actionMenu">
+  <%
+    path    = (::File.dirname(@path) == '.') ? nil : ::File.dirname(@path)
+    parent  = path ? "#{cms_tool_convert_files_path}/#{@site_url}/#{path}" : "#{cms_tool_convert_files_path}/#{@site_url}"
+  %>
+  <%= link_to "上へ", parent if @path != "" && !params[:do] && @item.directory? %>
+  <%= link_to "一覧", parent if @item.file? %>
+</div>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  (function () {
+    $("#site_url").change(function(){
+      $( "#site_url option:selected" ).each(function() {
+        window.location = "<%= "#{cms_tool_convert_files_path}/" %>" + $(this).text();
+        return false;
+      });
+    });
+  })();
+});
+<%- end -%>
