@@ -4,7 +4,11 @@ ja:
       cms/content: "コンテンツ"
       cms/piece: "ピース"
       cms/site: "サイト"
-      tool/convert_setting: "変換情報"
+      tool/convert_download: "ダウンロード"
+      tool/convert_setting: "変換設定"
+      tool/convert_import: "書き込み"
+      tool/convert_doc: "変換記事"
+      tool/convert_link: "リンク変換"
 
     attributes:
       cms/concept:
@@ -170,7 +174,67 @@ ja:
         email: メールアドレス
         note: 備考
 
+      tool/convert_download:
+        site_url: サイトURL
+        include_dir: 取得対象ディレクトリ
+        state: 状態
+        start_at: 開始日時
+        end_at: 終了日時
+        remark: 備考
+        message: メッセージ
+        created_at: 作成日時
+        updated_at: 更新日時
+
       tool/convert_setting:
         site_url: サイトURL
         title_tag: タイトル対象タグ
         body_tag: 本文対象タグ
+        updated_at_tag: 更新日対象タグ
+        updated_at_regexp: 更新日正規表現
+        creator_group_from_url_regexp: 作成者グループURL正規表現
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      tool/convert_import:
+        state: 状態
+        site_url: サイトURL
+        site_filename: ファイル名
+        content_id: コンテンツ
+        overwrite: 上書きオプション
+        start_at: 開始日時
+        end_at: 終了日時
+        message: メッセージ
+        total_num: 計
+        created_num: 作成
+        updated_num: 更新
+        nonupdated_num: 非更新
+        skipped_num: 非記事
+        link_total_num: リンク処理数
+        link_processed_num: リンク処理済数
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      tool/convert_doc:
+        docable_type: 移行先記事クラス名
+        doc_content: 移行先記事コンテンツ
+        doc_name: 移行先記事名
+        doc_public_uri: 移行先URL
+        file_path: 移行元ファイルパス
+        uri_path: 移行元URL
+        site_url: サイトURL
+        title: タイトル
+        body: 本文
+        created_at: 作成日時
+        updated_at: 更新日時
+        published_at: 公開日時
+
+      tool/convert_link:
+        concept_id: コンセプト
+        linkable_id: 変換対象
+        linkable_type: 変換対象クラス
+        urls: 変換リンク
+        urls_size: 変換リンク数
+        before_body: 変換前
+        after_body: 変換後
+        created_at: 作成日時
+        updated_at: 更新日時
