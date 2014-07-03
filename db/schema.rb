@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140623014502) do
+ActiveRecord::Schema.define(:version => 20140703023830) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1710,24 +1710,79 @@ ActiveRecord::Schema.define(:version => 20140623014502) do
   add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
 
   create_table "tool_convert_docs", :force => true do |t|
-    t.string   "name"
-    t.string   "doc_class"
+    t.integer  "content_id"
+    t.integer  "docable_id"
+    t.string   "docable_type"
+    t.text     "doc_name"
+    t.text     "doc_public_uri"
+    t.text     "site_url"
     t.string   "file_path"
-    t.string   "uri_path"
-    t.string   "host"
+    t.text     "uri_path"
     t.text     "title"
+    t.text     "body",            :limit => 2147483647
+    t.string   "page_updated_at"
+    t.string   "page_group_code"
     t.datetime "published_at"
-    t.text     "body",         :limit => 2147483647
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+  end
+
+  add_index "tool_convert_docs", ["content_id"], :name => "index_tool_convert_docs_on_content_id"
+  add_index "tool_convert_docs", ["docable_id", "docable_type"], :name => "index_tool_convert_docs_on_docable_id_and_docable_type"
+  add_index "tool_convert_docs", ["uri_path"], :name => "index_tool_convert_docs_on_uri_path", :length => {"uri_path"=>255}
+
+  create_table "tool_convert_downloads", :force => true do |t|
+    t.string   "state"
+    t.text     "site_url"
+    t.text     "include_dir"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.string   "remark"
+    t.text     "message"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "tool_convert_imports", :force => true do |t|
+    t.string   "state"
+    t.text     "site_url"
+    t.string   "site_filename"
+    t.integer  "content_id"
+    t.integer  "overwrite"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.text     "message"
+    t.integer  "total_num"
+    t.integer  "created_num"
+    t.integer  "updated_num"
+    t.integer  "nonupdated_num"
+    t.integer  "skipped_num"
+    t.integer  "link_total_num"
+    t.integer  "link_processed_num"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "tool_convert_links", :force => true do |t|
+    t.integer  "concept_id"
+    t.integer  "linkable_id"
+    t.string   "linkable_type"
+    t.text     "urls"
+    t.text     "before_body",   :limit => 2147483647
+    t.text     "after_body",    :limit => 2147483647
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "tool_convert_settings", :force => true do |t|
     t.string   "site_url"
     t.text     "title_tag"
     t.text     "body_tag"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.text     "updated_at_tag"
+    t.text     "updated_at_regexp"
+    t.text     "creator_group_from_url_regexp"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   add_index "tool_convert_settings", ["site_url"], :name => "index_tool_convert_settings_on_site_url"
