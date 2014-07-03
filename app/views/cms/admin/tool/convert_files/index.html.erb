@@ -1,0 +1,26 @@
+<table class="index directories">
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th>ファイル名</th>
+    <th style="width: 80px; text-align: right;">サイズ</th>
+    <th style="width: 120px; text-align: center;">更新日時</th>
+  </tr>
+  
+  <% @dirs.each do |item| %>
+  <tr class="directory">
+    <td style="text-align: center;"><%= link_to :show, "#{cms_tool_convert_files_path}/#{item.site_url}/#{item.path}?do=show" %> </td>
+    <td class="name"><%= link_to h(item.name), "#{cms_tool_convert_files_path}/#{item.site_url}/#{item.path}" %></td>
+    <td> </td>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+  </tr>
+  <% end %>
+  
+  <% @files.each do |item| %>
+  <tr class="file">
+    <td style="text-align: center;"><%= link_to :show, "#{cms_tool_convert_files_path}/#{item.site_url}/#{item.path}?do=show" %> </td>
+    <td class="name"><%= link_to h(item.name), "#{cms_tool_convert_files_path}/#{item.site_url}/#{item.path}" %></td>
+    <td style="text-align: right;"><%= number_format item.size(:kb) %> KB</td>
+    <td style="text-align: center;"><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
+  </tr>
+  <% end %>
+</table>

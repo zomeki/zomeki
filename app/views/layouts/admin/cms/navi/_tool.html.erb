@@ -3,5 +3,5 @@
 <%#= link_to "エクスポート", "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/export" , :class => (current == :export  ? 'current' : '') %>
 <%#= link_to "インポート"  , "/#{ZomekiCMS::ADMIN_URL_PREFIX}/cms/import" , :class => (current == :import  ? 'current' : '') %>
 <%= link_to 'リンクチェック', tool_link_check_path, class: (current == :link_check ? 'current' : '') %>
-<%= link_to 'コンバート', tool_convert_path, class: (current == :convert ? 'current' : '') %>
+<%= link_to 'コンバート', cms_tool_convert_downloads_path, class: (current == :convert ? 'current' : '') %>
 
