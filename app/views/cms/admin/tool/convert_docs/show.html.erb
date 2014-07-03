@@ -1,0 +1,42 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :uri_path %></th>
+    <td><%= @item.uri_path %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :file_path %></th>
+    <td><%= @item.file_path %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :doc_content %></th>
+    <td><%= link_to @item.content.try(:name), gp_article_docs_path(content: @item.content) if @item.content %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :doc_name %></th>
+    <td><%= link_to @item.doc_name, gp_article_doc_path(content: @item.doc.content, id: @item.doc.id) if @item.doc %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :doc_public_uri %></th>
+    <td><%= link_to @item.doc_public_uri, @item.doc_public_uri %></td>
+  </tr>
+    <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :body %></th>
+    <td><%=raw @item.body %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :published_at %></th>
+    <td><%=l @item.published_at if @item.published_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_at %></th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at %></th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>
