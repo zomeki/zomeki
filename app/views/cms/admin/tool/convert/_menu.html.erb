@@ -1,6 +1,9 @@
 <div class="actionMenu">
-  <%= link_to 'ダウンロード', tool_convert_path %>
-  <%= link_to 'ファイル一覧', tool_convert_file_list_path %>
-  <%= link_to '変換', tool_convert_setting_path %>
-  <%= link_to '書き込み', tool_convert_import_site_path %>
+  <%= link_to 'ダウンロード', cms_tool_convert_downloads_path %>
+  <%= link_to 'ファイル一覧', cms_tool_convert_files_path %>
+  <%= link_to '変換設定', cms_tool_convert_settings_path %>
+  <%= link_to '書き込み', cms_tool_convert_imports_path %>
+  <span class="separator"></span>
+  <%= link_to '書き込み済一覧', cms_tool_convert_docs_path %>
+  <%= link_to 'リンク変換', cms_tool_convert_links_path %>
 </div>
