@@ -309,6 +309,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def close_page(options={})
+    return true if will_replace?
     return false unless super
     publishers.destroy_all unless publishers.empty?
     FileUtils.rm_rf(::File.dirname(public_path))
