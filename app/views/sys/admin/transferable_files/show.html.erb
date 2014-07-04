@@ -3,15 +3,6 @@
     <th><%= @item.locale(:site_id) %></th>
     <td><%= safe{@item.site.name} %></td>
   </tr><tr>
-    <th><%= @item.locale(:version) %></th>
-    <td><%= @item.version %></td>
-  </tr><tr>
-    <th><%= @item.locale(:created_at) %></th>
-    <td><%= safe{@item.created_at.strftime("%Y-%m-%d %H:%M:%S")} %></td>
-  </tr><tr>
-    <th><%= @item.locale(:user_name) %></th>
-    <td><%= safe{@item.user.name} %></td>
-  </tr><tr>
     <th><%= @item.locale(:operated_at) %></th>
     <td><%= safe{@item.operated_at.strftime("%Y-%m-%d %H:%M:%S")} %></td>
   </tr><tr>
