@@ -70,6 +70,13 @@ ZomekiCMS::Application.routes.draw do
       :controller => "admin/storage_files",
       :path       => "storage_files(/*path)",
       :format     => false
+    resources :transferable_files,
+      :controller  => "admin/transferable_files" do
+        collection do
+          get  :refresh
+          post :transfer_all
+        end
+      end
     resources :transferred_files,
       :controller  => "admin/transferred_files"
     resources :operation_logs,

@@ -110,12 +110,29 @@ ja:
         item_unid: "操作アイテムUNID"
         item_name: "操作アイテム名"
 
-      sys/transferred_file:
-        created_at: "転送日時"
+      sys/transferable_file:
         site_id: "サイト"
-        version: "転送バージョン"
+        version: "バージョン"
         operation: "操作"
         parent_dir: "対象ディレクトリ"
         path: "ファイル"
-        file_type: "ファイルタイプ"
+        file_type: "種別"
         destination: "転送先"
+        operated_at: "操作日時"
+        operator_name: "操作ユーザ"
+        item: "ファイル情報"
+
+      sys/transferred_file:
+        created_at: "転送日時"
+        site_id: "サイト"
+        version: "バージョン"
+        operation: "操作"
+        parent_dir: "対象ディレクトリ"
+        path: "ファイル"
+        file_type: "種別"
+        destination: "転送先"
+        operated_at: "操作日時"
+        operator_name: "操作ユーザ"
+        item: "ファイル情報"
+        user_name: "転送ユーザ"
+
