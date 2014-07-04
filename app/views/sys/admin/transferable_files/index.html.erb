@@ -1,0 +1,45 @@
+<%= render :partial => 'search' %>
+
+<%= form_tag(transfer_all_sys_transferable_files_path, :method => :post, :id => 'form_items') do %>
+<%= hidden_field_tag 'transfer_selected', 'true' %>
+
+<table class="index">
+
+  <tr>
+    <th style="width: 30px; text-align: center;"><%= check_box_tag "select_all", true, false, {} %></th>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="width: 130px;">対象ディレクトリ</th>
+    <th style="width: ;">ファイル</th>
+    <th style="width: ;">ファイル情報</th>
+    <th style="width: 60px; text-align: center;">操作</th>
+    <th style="width: 120px; text-align: center;">操作日時</th>
+    <th style="width: 120px;">操作ユーザ</th>
+    <th style="width: 60px; text-align: center;">表示</th>
+
+  </tr>
+
+  <% for item in @items %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= check_box_tag "selected_ids[#{item.id}]", true, false, {:class => 'selector'} if item.file? %></td>
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => item) %></td>
+    <td><%= item.parent_dir %></td>
+    <td><%= item.path %></td>
+    <td><%= item.item_name%></td>
+    <td style="text-align: center;"><%= item.operation_label %></td>
+    <td style="text-align: center;"><%= safe{item.operated_at.strftime('%Y-%m-%d %H:%M')} %></td>
+    <td><%= item.operator_name %></td>
+    <td style="text-align: center;"><%= link_to '表示', "#{@site.uri}#{item.path}", :target => '_blank' if @site && item.file? %></td>
+  </tr>
+  <% end %>
+
+</table>
+<% end %>
+<%= paginate @items %>
+
+<script>
+//<![CDATA[
+  $('#select_all').on('change', function() {
+    $('input.selector:checkbox').prop('checked', $(this).is(':checked'));
+  });
+//]]>
+</script>
