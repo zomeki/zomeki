@@ -29,15 +29,43 @@ module Sys::Model::Base::Transfer
   def item_info(attr)
     return @item_info[attr] || '-' if @item_info
 
-    if pub = Sys::Publisher.where(:path => "#{parent_dir}#{path}").order('id DESC').first
+    # cms_data_files
+    if path =~ /^_files\/.+?$/
+      #data = Cms::DataFile.find_by_public_path("#{parent_dir}#{_path}")
+      "#{parent_dir}#{_path}" =~ /sites\/.*\/(.*?)\/public\/_files\/.*\/(.*?)\/(.*?)$/i
+      _site_id = $1.to_i rescue 0;
+      _id      = $2[0 .. -2].to_i rescue 0;
+      if log = Sys::OperationLog.where(:site_id => _site_id, :item_id => _id, :item_model => 'Cms::DataFile').order('id DESC').first
+        @item_info = {}
+        @item_info[:item_id]       = log.item_id
+        @item_info[:item_unid]     = log.item_unid
+        @item_info[:item_model]    = log.item_model
+        @item_info[:item_name]     = "データファイル：#{log.item_name}";
+        @item_info[:operated_at]   = log.created_at
+        @item_info[:operator_id]   = log.user_id
+        @item_info[:operator_name] = log.user_name
+        return @item_info[attr] || '-'
+      end
+    end
+
+    _path       = path
+    _attachment = nil
+    if path =~ /^.+?\/file_contents\/(.+?)$/
+      # sys_files
+      _attachment = $1
+      _path = path.gsub(/\/file_contents\/.+?$/, '/index.html')
+    end
+
+    # sys_publishers
+    if pub = Sys::Publisher.where(:path => "#{parent_dir}#{_path}").order('id DESC').first
       if log = Sys::OperationLog.where(:item_unid => pub.unid).order('id DESC').first
         @item_info = {}
-        @item_info[:item_id]      = log.item_id
-        @item_info[:item_unid]    = log.item_unid
-        @item_info[:item_model]   = log.item_model
-        @item_info[:item_name]    = log.item_name
-        @item_info[:operated_at]  = log.created_at
-        @item_info[:operator_id]  = log.user_id
+        @item_info[:item_id]       = log.item_id
+        @item_info[:item_unid]     = log.item_unid
+        @item_info[:item_model]    = log.item_model
+        @item_info[:item_name]     = _attachment ? "#{log.item_name}（添付ファイル：#{_attachment}）" : log.item_name;
+        @item_info[:operated_at]   = log.created_at
+        @item_info[:operator_id]   = log.user_id
         @item_info[:operator_name] = log.user_name
         return @item_info[attr] || '-'
       end
