@@ -70,9 +70,15 @@ module Sys::Model::Base::Transfer
         @item_info[:item_unid]     = log.item_unid
         @item_info[:item_model]    = log.item_model
         @item_info[:item_name]     = _attachment ? "#{log.item_name}（添付ファイル：#{_attachment}）" : log.item_name;
-        @item_info[:operated_at]   = log.created_at
-        @item_info[:operator_id]   = log.user_id
-        @item_info[:operator_name] = log.user_name
+        if pub.updated_at - 2*60 > log.updated_at
+          # by process
+          @item_info[:operated_at]   = pub.created_at
+        else
+          @item_info[:operated_at]   = log.created_at
+          @item_info[:operator_id]   = log.user_id
+          @item_info[:operator_name] = log.user_name
+        end
+
         return @item_info[attr] || '-'
       end
     end
