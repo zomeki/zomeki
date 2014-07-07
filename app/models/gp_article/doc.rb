@@ -818,6 +818,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def validate_accessibility_check
+    return unless Zomeki.config.application['cms.enable_accessibility_check']
     check_results = Util::AccessibilityChecker.check body
 
     if check_results != [] && !ignore_accessibility_check
