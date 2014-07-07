@@ -26,6 +26,10 @@ module Sys::Model::Base::Transfer
     file_type.to_s == 'file'
   end
 
+  def operation_is?(op)
+    operation.to_s == op.to_s
+  end
+
   def item_info(attr)
     return @item_info[attr] || '-' if @item_info
 
@@ -57,7 +61,9 @@ module Sys::Model::Base::Transfer
     end
 
     # sys_publishers
-    if pub = Sys::Publisher.where(:path => "#{parent_dir}#{_path}").order('id DESC').first
+    pub = Sys::Publisher.where(:path => "#{parent_dir}#{_path}").order('id DESC').first
+    pub ||= Sys::Closer.where(:path => "#{parent_dir}#{_path}").order('id DESC').first
+    if pub
       if log = Sys::OperationLog.where(:item_unid => pub.unid).order('id DESC').first
         @item_info = {}
         @item_info[:item_id]       = log.item_id
