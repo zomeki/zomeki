@@ -13,10 +13,14 @@ module Sys::Lib::File::Transfer
     _files   = options[:files]
     _version = options[:version] || Time.now.to_i
 
+    result = {:version => _version, :sites => {} }
+
     _sites.each do |site|
       site = Cms::Site.find_by_id(site) if site.is_a?(Integer)
       _settings = get_transfer_site_settings site
       next if _settings.size <= 0
+
+      result[:sites][site.id] = []
 
       dest_addr = _settings[:dest_dir]
       dest = if _settings[:dest_user].to_s != '' && _settings[:dest_host].to_s != ''
@@ -45,45 +49,45 @@ module Sys::Lib::File::Transfer
 
       _rsync = lambda do |src, dest, command_opts|
         rsync(src, dest, command_opts) do |res|
-          if _logging && res.success?
-            parent_dir = src.gsub(/#{Rails.root}/, '.')
-            res.changes.each do |change|
-              update_type = change.update_type
-              file_type   = change.file_type
-              next if update_type == :no_update
-              operation = if ([:sent, :recv].include?(update_type) && change.timestamp == :new) ||
-                (file_type == :directory && update_type == :change)
-                :create
-              elsif update_type == :message && change.summary == 'deleting'
-                :delete
-              elsif [change.checksum, change.size, change.timestamp].include?(:changed)
-                :update
-              end
-              # save
-              attrs = {
-                :site_id     => site.id,
-                :user_id     => _user_id,
-                :version     => _version,
-                :operation   => operation,
-                :file_type   => file_type,
-                :parent_dir  => parent_dir,
-                :path        => change.filename,
-                :destination => dest_addr,
-              }
-              model = _trial ? Sys::TransferableFile : Sys::TransferredFile;
-              model = model.new(attrs)
-              model.user_id = _user_id
-              if model.file?
-                model.item_id       = model.item_info :item_id
-                model.item_unid     = model.item_info :item_unid
-                model.item_model    = model.item_info :item_model
-                model.item_name     = model.item_info :item_name
-                model.operated_at   = model.item_info :operated_at
-                model.operator_id   = model.item_info :operator_id
-                model.operator_name = model.item_info :operator_name
-              end
-              model.save
+          return res unless _logging
+
+          parent_dir = src.gsub(/#{Rails.root}/, '.')
+          res.changes.each do |change|
+            update_type = change.update_type
+            file_type   = change.file_type
+            next if update_type == :no_update
+            operation = if ([:sent, :recv].include?(update_type) && change.timestamp == :new) ||
+              (file_type == :directory && update_type == :change)
+              :create
+            elsif update_type == :message && change.summary == 'deleting'
+              :delete
+            elsif [change.checksum, change.size, change.timestamp].include?(:changed)
+              :update
             end
+            # save
+            attrs = {
+              :site_id     => site.id,
+              :user_id     => _user_id,
+              :version     => _version,
+              :operation   => operation,
+              :file_type   => file_type,
+              :parent_dir  => parent_dir,
+              :path        => change.filename,
+              :destination => dest_addr,
+            }
+            model = _trial ? Sys::TransferableFile : Sys::TransferredFile;
+            model = model.new(attrs)
+            model.user_id = _user_id
+            if model.file?
+              model.item_id       = model.item_info :item_id
+              model.item_unid     = model.item_info :item_unid
+              model.item_model    = model.item_info :item_model
+              model.item_name     = model.item_info :item_name
+              model.operated_at   = model.item_info :operated_at
+              model.operator_id   = model.item_info :operator_id
+              model.operator_name = model.item_info :operator_name
+            end
+            model.save
           end
         end
       end
@@ -94,24 +98,25 @@ module Sys::Lib::File::Transfer
       if _files
         if common_include_file = create_include_pattern_file(_files, common_src.gsub(/#{Rails.root}/, '.'))
           options = _ready_options.call(common_include_file, 'common')
-          _rsync.call(common_src, dest, options)
+          result[:sites][site.id] << _rsync.call(common_src, dest, options).status
+
           common_include_file.unlink
         end
         if site_include_file = create_include_pattern_file(_files, site_src.gsub(/#{Rails.root}/, '.'))
           options = _ready_options.call(site_include_file, 'site')
-          _rsync.call(site_src, dest, options)
+          result[:sites][site.id] << _rsync.call(site_src, dest, options).status
           site_include_file.unlink
         end
       else
         # sync all
         options = _ready_options.call(nil, 'common')
-        _rsync.call(common_src, dest, options)
+        result[:sites][site.id] << _rsync.call(common_src, dest, options).status
         options = _ready_options.call(nil, 'site')
-        _rsync.call(site_src, dest, options)
+        result[:sites][site.id] << _rsync.call(site_src, dest, options).status
       end
 
     end
-    _version
+    result
   rescue
     nil
   end

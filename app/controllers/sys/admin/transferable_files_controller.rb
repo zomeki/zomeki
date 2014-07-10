@@ -36,12 +36,21 @@ class Sys::Admin::TransferableFilesController < Cms::Controller::Admin::Base
       selected_ids = params[:selected_ids] ? params[:selected_ids].keys : [];
       success = false if selected_ids.size == 0
     end
-    version = transfer_files(:files => selected_ids, :logging => true, :sites => [@site])
+    result = transfer_files(:files => selected_ids, :logging => true, :sites => [@site]) || {:version => nil, :sites => {} }
+
+    infos    = result[:sites][@site.id]
+    messages = ""
+    infos.each do |info|
+      unless info[:success]
+        success = false
+        messages << " [#{info[:code].to_s}:#{info[:message].to_s}]"
+      end
+    end
 
     # refresh
     _refresh
 
-    flash[:notice] = success ? "転送処理が完了しました。（バージョン：#{version}）" : "転送処理に失敗しました。";
+    flash[:notice] = success ? "転送処理が完了しました。（バージョン：#{result[:version].to_s}）" : "転送処理でエラーが発生しました。（バージョン：#{result[:version].to_s}）#{messages}";
     redirect_to sys_transferable_files_path
   end
 
