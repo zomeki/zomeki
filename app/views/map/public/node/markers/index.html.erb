@@ -10,7 +10,9 @@
     <%- @markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
                      '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
-                     '<%= @content.icon_image(marker.categories.first, true) %>');
+                     '<%= @content.icon_image(marker.categories.include?(@specified_category) ? @specified_category
+                                                                                              : marker.categories.first, true) %>');
+
     <%- end -%>
   });
   <%- end -%>
