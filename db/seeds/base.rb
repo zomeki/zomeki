@@ -10,7 +10,7 @@ map_key    = Util::Config.load :core, :map_key
 ## ---------------------------------------------------------
 ## sys
 
-first_group = Sys::Group.create!(
+first_group = Sys::Group.new(
   :parent_id => 0,
   :level_no  => 1,
   :sort_no   => 1,
@@ -21,8 +21,9 @@ first_group = Sys::Group.create!(
   :name      => 'トップ',
   :name_en   => 'top'
 )
+first_group.save(validate: false)
 
-zomeki_group = Sys::Group.create!(
+zomeki_group = Sys::Group.new(
   :parent_id => first_group.id,
   :level_no  => 2,
   :sort_no   => 2,
@@ -33,6 +34,7 @@ zomeki_group = Sys::Group.create!(
   :name      => 'ぞめき',
   :name_en   => 'zomeki'
 )
+zomeki_group.save(validate: false)
 
 first_user = Sys::User.create!(
   :state    => 'enabled',
