@@ -67,7 +67,7 @@ class Gnav::Piece::Doc < Cms::Piece
   private
 
   def set_default_settings
-    in_settings['list_style'] = '@title(@date @group)' if setting_value(:list_style).nil?
+    in_settings['list_style'] = '@title@(@date@ @group@)' if setting_value(:list_style).nil?
     in_settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
   end
 end
