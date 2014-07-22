@@ -8,7 +8,7 @@
   google.maps.event.addDomListener(window, 'load', function (event) {
     map = new Map('map_canvas', <%= @markers.empty? ? "#{default_latitude}, #{default_longitude}"
                                                     : "#{@markers.first.try(:latitude)}, #{@markers.first.try(:longitude)}" %>);
-    <%- @markers.each do |marker| -%>
+    <%- @all_markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
                      '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
                      '<%= @content.icon_image(marker.categories.include?(@specified_category) ? @specified_category

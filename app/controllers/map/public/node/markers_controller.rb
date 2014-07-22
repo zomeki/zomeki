@@ -23,9 +23,9 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
                 @content.public_markers
               end
 
-    markers = @content.sort_markers(markers.to_a.concat(doc_markers))
+    @all_markers = @content.sort_markers(markers.to_a.concat(doc_markers))
 
-    @markers = markers.paginate(page: params[:page], per_page: 30)
+    @markers = @all_markers.paginate(page: params[:page], per_page: 30)
   end
 
   def file_content
