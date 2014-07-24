@@ -6,8 +6,8 @@
   <%= javascript_tag do -%>
   var map;
   google.maps.event.addDomListener(window, 'load', function (event) {
-    <%- unless @markers.empty?
-          bounds = @markers.inject(min: {}, max: {}){|result, marker|
+    <%- unless @all_markers.empty?
+          bounds = @all_markers.inject(min: {}, max: {}){|result, marker|
                      min = result[:min]
                      max = result[:max]
                      m_lat = marker.latitude.to_f
