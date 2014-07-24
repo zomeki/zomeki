@@ -51,6 +51,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       when 'map_relation'
         extra_values[:map_content_id] = params[:map_content_id].to_i
         extra_values[:lat_lng] = params[:lat_lng]
+        extra_values[:marker_icon_category] = params[:marker_icon_category]
       when 'inquiry_setting'
         extra_values[:state] = params[:state]
         extra_values[:display_fields] = params[:display_fields] || []
