@@ -269,6 +269,12 @@
   </div>
   <div id="tab6">
     <table class="show">
+      <%- if @content.map_content_marker -%>
+      <tr>
+        <th><%= f.label :marker_state %></th>
+        <td><%= f.radio_buttons :marker_state, @item.class::MARKER_STATE_OPTIONS %></td>
+      </tr>
+      <%- end -%>
       <%- if @content.marker_icon_category_enabled? -%>
       <tr>
         <%- grouped_options = @marker_category_types.map do |category_type|
@@ -277,12 +283,6 @@
             end -%>
         <th><%= f.label :marker_icon_category_id %></th>
         <td><%= f.select :marker_icon_category_id, grouped_options_for_select(grouped_options, @item.marker_icon_category_id), include_blank: true %></td>
-      </tr>
-      <%- end -%>
-      <%- if @content.map_content_marker -%>
-      <tr>
-        <th><%= f.label :marker_state %></th>
-        <td><%= f.radio_buttons :marker_state, @item.class::MARKER_STATE_OPTIONS %></td>
       </tr>
       <%- end -%>
       <%- @marker_category_types.each do |category_type| -%>
