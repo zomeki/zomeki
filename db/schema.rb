@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140707061405) do
+ActiveRecord::Schema.define(:version => 20140724072750) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -761,6 +761,7 @@ ActiveRecord::Schema.define(:version => 20140707061405) do
     t.boolean  "feature_1"
     t.boolean  "feature_2"
     t.string   "filename_base"
+    t.integer  "marker_icon_category_id"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -963,6 +964,7 @@ ActiveRecord::Schema.define(:version => 20140707061405) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
+    t.integer  "icon_category_id"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|

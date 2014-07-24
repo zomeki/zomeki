@@ -66,6 +66,7 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
                                    doc: d, created_at: d.display_published_at, updated_at: d.display_published_at)
           marker.categories = d.marker_categories
           marker.files = d.files
+          marker.icon_category = d.marker_icon_category
           markers << marker
         end
       end

@@ -182,6 +182,10 @@
   <div id="tab6">
     <table class="show">
       <tr>
+        <th><%= @item.locale :marker_icon_category_id %></th>
+        <td><%= @item.marker_icon_category.try(:title) %></td>
+      </tr>
+      <tr>
         <th><%= @item.locale :marker_state %></th>
         <td><%= @item.marker_state_text %></td>
       </tr>

@@ -26,6 +26,7 @@ class Map::Marker < ActiveRecord::Base
 
   scope :public, where(state: 'public')
 
+  belongs_to :icon_category, :class_name => 'GpCategory::Category'
   belongs_to :doc, :class_name => 'GpArticle::Doc' # Not saved to database
 
   def public_uri
