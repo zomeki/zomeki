@@ -277,12 +277,10 @@
       <%- end -%>
       <%- if @content.marker_icon_category_enabled? -%>
       <tr>
-        <%- grouped_options = @marker_category_types.map do |category_type|
-              option = [category_type.title]
-              option << @content.marker_category_type_categories_for_option(category_type)
-            end -%>
         <th><%= f.label :marker_icon_category_id %></th>
-        <td><%= f.select :marker_icon_category_id, grouped_options_for_select(grouped_options, @item.marker_icon_category_id), include_blank: true %></td>
+        <td><%= f.select :marker_icon_category_id, options_for_select(marker_icon_categories_for_option(@content.map_content_marker),
+                                                                      @item.marker_icon_category_id),
+                                                   include_blank: true %></td>
       </tr>
       <%- end -%>
       <%- @marker_category_types.each do |category_type| -%>
