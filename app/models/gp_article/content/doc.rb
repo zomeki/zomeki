@@ -146,6 +146,10 @@ class GpArticle::Content::Doc < Cms::Content
                            category_type, include_descendants: include_descendants) || []
   end
 
+  def marker_icon_category_enabled?
+    setting_extra_value(:map_relation, :marker_icon_category) == 'enabled'
+  end
+
   def map_related?
     setting_value(:map_relation) == 'enabled'
   end

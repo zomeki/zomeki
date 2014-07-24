@@ -216,6 +216,13 @@ $(document).ready(function () {
     <th>デフォルト座標</th>
     <td><%= text_field_tag 'lat_lng', @item.extra_values[:lat_lng], style: 'width: 400px;' %>（緯度,経度）</td>
   </tr>
+  <tr>
+    <th>マーカーアイコン用カテゴリ</th>
+    <td>
+      <%= radio_button_tag 'marker_icon_category', 'enabled', @item.extra_values[:marker_icon_category] == 'enabled' %><%= label_tag 'marker_icon_category_enabled', '使用する' %>
+      <%= radio_button_tag 'marker_icon_category', 'disabled', @item.extra_values[:marker_icon_category] != 'enabled' %><%= label_tag 'marker_icon_category_disabled', '使用しない' %>
+    </td>
+  </tr>
 </table>
 <%- end -%>
 

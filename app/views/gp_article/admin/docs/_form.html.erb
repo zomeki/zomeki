@@ -269,6 +269,7 @@
   </div>
   <div id="tab6">
     <table class="show">
+      <%- if @content.marker_icon_category_enabled? -%>
       <tr>
         <%- grouped_options = @marker_category_types.map do |category_type|
               option = [category_type.title]
@@ -277,6 +278,7 @@
         <th><%= f.label :marker_icon_category_id %></th>
         <td><%= f.select :marker_icon_category_id, grouped_options_for_select(grouped_options, @item.marker_icon_category_id), include_blank: true %></td>
       </tr>
+      <%- end -%>
       <%- if @content.map_content_marker -%>
       <tr>
         <th><%= f.label :marker_state %></th>
