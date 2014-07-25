@@ -62,7 +62,7 @@ module GpArticle::GpArticleHelper
                                     .where(table[:name].matches('GpCategory::Category % icon_image'))
     settings.map do |s|
       category_id = /\AGpCategory::Category (\d+) icon_image\z/.match(s.name)[1]
-      category = GpCategory::Category.find(cetegory_id)
+      category = GpCategory::Category.find(category_id)
       ["#{category.title}（#{category.category_type.title}） - #{s.value}", category.id]
     end
   end
