@@ -55,8 +55,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
     if node.model == 'Cms::Page'
       begin
         uri = "#{node.public_uri}?node_id=#{node.id}"
-        publish_page(node, :uri => uri, :site => node.site, :path => node.public_path)
-        publish_page(node, :uri => uri, :site => node.site, :path => node.public_smart_phone_path, :smart_phone => true)
+        publish_page(node, uri: uri, site: node.site, path: node.public_path,
+                                                      smart_phone_path: node.public_smart_phone_path)
       rescue Script::InterruptException => e
         raise e
       rescue => e

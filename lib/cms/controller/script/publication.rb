@@ -30,6 +30,12 @@ class Cms::Controller::Script::Publication < ApplicationController
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
 
+    if (smart_phone_path = params[:smart_phone_path])
+      rendered = render_public_as_string(params[:uri], site: site, jpmobile: envs_to_request_as_smart_phone)
+      res = item.publish_page(rendered, path: smart_phone_path, dependent: "#{params[:dependent]}_smart_phone")
+      return false unless res
+    end
+
     ::Script.success if item.published?
 
     ## ruby html
