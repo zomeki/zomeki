@@ -19,7 +19,10 @@ class GpArticle::Public::Node::ArchivesController < Cms::Controller::Public::Bas
                                        .and(docs[:display_published_at].lteq(ended_at)))
                                 .order('display_published_at DESC, published_at DESC')
 
-    http_error(404) if @docs.empty?
+    if @docs.empty?
+      warn_log 'No archived docs'
+      http_error(404)
+    end
 
     header_format = @month ? '%Y年%-m月' : '%Y年'
     @items = @docs.inject([]) do |result, doc|
