@@ -30,9 +30,9 @@ class Cms::Controller::Script::Publication < ApplicationController
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
 
-    if (smart_phone_path = params[:smart_phone_path]).present?
+    if params[:smart_phone_path].present?
       rendered = render_public_as_string(params[:uri], site: site, jpmobile: envs_to_request_as_smart_phone)
-      res = item.publish_page(rendered, path: smart_phone_path, dependent: "#{params[:dependent]}_smart_phone")
+      res = item.publish_page(rendered, path: params[:smart_phone_path], dependent: "#{params[:dependent]}_smart_phone")
       return false unless res
     end
 
@@ -55,6 +55,11 @@ class Cms::Controller::Script::Publication < ApplicationController
 
     #uri  = (params[:uri] =~ /\.html$/ ? "#{params[:uri]}.r" : "#{params[:uri]}index.html.r")
     path = (params[:path] =~ /\.html$/ ? "#{params[:path]}.r" : "#{params[:path]}index.html.r")
+    smart_phone_path = if params[:smart_phone_path].present?
+        params[:smart_phone_path] =~ /\.html$/ ? "#{params[:smart_phone_path]}.r" : "#{params[:smart_phone_path]}index.html.r"
+      else
+        nil
+      end
     dep  = params[:dependent] ? "#{params[:dependent]}/ruby" : "ruby"
 
     ruby = nil
@@ -71,6 +76,10 @@ class Cms::Controller::Script::Publication < ApplicationController
         timeout(60) do
           rendered = render_public_as_string(uri, site: site, jpmobile: (params[:smart_phone] ? envs_to_request_as_smart_phone : nil))
           item.publish_page(rendered, :path => path, :dependent => dep)
+          if smart_phone_path
+            rendered = render_public_as_string(uri, site: site, jpmobile: envs_to_request_as_smart_phone)
+            item.publish_page(rendered, path: smart_phone_path, dependent: "#{dep}_smart_phone")
+          end
         end
       rescue TimeoutError => e
         ::Script.error "#{uri} Timeout"
