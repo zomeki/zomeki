@@ -30,7 +30,7 @@ class Cms::Controller::Script::Publication < ApplicationController
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
 
-    if (smart_phone_path = params[:smart_phone_path])
+    if (smart_phone_path = params[:smart_phone_path]).present?
       rendered = render_public_as_string(params[:uri], site: site, jpmobile: envs_to_request_as_smart_phone)
       res = item.publish_page(rendered, path: smart_phone_path, dependent: "#{params[:dependent]}_smart_phone")
       return false unless res
@@ -96,8 +96,10 @@ class Cms::Controller::Script::Publication < ApplicationController
       page = (p == 1 ? "" : ".p#{p}")
       uri  = "#{params[:uri]}#{file}#{page}.html"
       path = "#{params[:path]}#{file}#{page}.html"
+      smart_phone_path = (params[:smart_phone_path].present? ? "#{params[:smart_phone_path]}#{file}#{page}.html" : nil)
       dep  = "#{params[:dependent]}#{page}"
-      rs   = publish_page(item, :uri => uri, :site => params[:site], :path => path, :dependent => dep, :smart_phone => params[:smart_phone])
+      rs = publish_page(item, uri: uri, site: params[:site], path: path, smart_phone_path: smart_phone_path,
+                              dependent: dep, smart_phone: params[:smart_phone])
       unless rs
         stopp = p
         break
