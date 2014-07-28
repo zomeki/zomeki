@@ -24,8 +24,19 @@ class GpArticle::Admin::Tool::DocsController < Cms::Controller::Admin::Base
     end
 
     begin
-      render_component_into_view :controller => '/gp_article/script/docs', :action => 'publish',
-                                 :params => {node_id: content.public_node.id}
+      content.public_nodes.each do |node|
+        target_controller = case node.model
+                            when 'GpArticle::Doc'
+                              '/gp_article/script/docs'
+                            when 'GpArticle::Archive'
+                              '/gp_article/script/archives'
+                            else
+                              nil
+                            end
+        next unless target_controller
+        render_component_into_view :controller => target_controller, :action => 'publish',
+                                   :params => {node_id: node.id}
+      end
       results[:ok] += 1
     rescue => e
       results[:ng] += 1
