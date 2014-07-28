@@ -3,6 +3,7 @@ ZomekiCMS::Application.routes.draw do
 
   ## script
   get "/_script/#{mod}/script/docs/publish" => "#{mod}/script/docs#publish"
+  get "/_script/#{mod}/script/archives/publish" => "#{mod}/script/archives#publish"
 
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
