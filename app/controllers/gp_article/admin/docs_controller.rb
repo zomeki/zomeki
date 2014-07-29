@@ -443,7 +443,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first) &&
        (top_page = root_node.children.where(name: 'index.html').first)
       ::Script.delay(queue: 'publish_top_page')
-              .run("cms/script/nodes/publish?all=all&target_module=cms&target_node_id[]=#{top_page.id}", force: true)
+              .run("cms/script/nodes/publish?target_module=cms&target_node_id=#{top_page.id}", force: true)
     end
 
     if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
