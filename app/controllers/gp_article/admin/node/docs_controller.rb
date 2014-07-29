@@ -1,4 +1,4 @@
-class GpArticle::Admin::Node::DocsController < Cms::Admin::Node::BaseController
+class GpArticle::Admin::Node::DocsController < Cms::Admin::Node::DirectoriesController
   after_filter :publish_node, only: [:update]
 
   private
