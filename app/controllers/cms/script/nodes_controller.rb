@@ -71,7 +71,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
         model = node.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/script/')
         return unless "#{model.camelize}Controller".constantize.publishable?
 
-        publish_page(node, :uri => node.public_uri, :site => node.site, :path => node.public_path)
+        publish_page(node, uri: node.public_uri, site: node.site, path: node.public_path,
+                                                      smart_phone_path: node.public_smart_phone_path)
         res = render_component_into_view :controller => model, :action => 'publish', :params => params.merge(node: node)
 
       rescue Script::InterruptException => e
