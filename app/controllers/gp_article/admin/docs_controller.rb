@@ -216,6 +216,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def destroy
+    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+    @new_category_ids = []
     _destroy(@item) do
       send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
       publish_related_pages
