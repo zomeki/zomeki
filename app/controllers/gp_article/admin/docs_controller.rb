@@ -251,6 +251,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   def close(item)
     super
+    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+    @new_category_ids = []
     publish_related_pages
   end
 
