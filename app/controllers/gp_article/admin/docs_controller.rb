@@ -218,6 +218,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def destroy
     _destroy(@item) do
       send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
+      publish_related_pages
     end
   end
 
