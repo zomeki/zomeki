@@ -10,9 +10,9 @@ class Map::Script::MarkersController < Cms::Controller::Script::Publication
         escaped_category = "#{category.category_type.name}/#{category.path_from_root_category}".gsub('/', '@')
         file = "index_#{escaped_category}"
 
-        publish_more(@node, uri: @node.public_uri, file: file, limit: 2, path: @node.public_path,
+        publish_more(@node, uri: @node.public_uri, file: file, path: @node.public_path,
                      dependent: "more_#{file}")
-        publish_more(@node, uri: @node.public_uri, file: file, limit: 2, path: @node.public_smart_phone_path,
+        publish_more(@node, uri: @node.public_uri, file: file, path: @node.public_smart_phone_path,
                      dependent: "more_smart_phone_#{file}", smart_phone: true)
       end
     end
