@@ -232,9 +232,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish
-    @item.update_column(:published_at, Core.now)
-    @item.send(:set_display_attributes)
-    _publish(@item) { publish_ruby(@item) }
+    @item.update_attribute(:state, 'public')
+    _publish(@item) do
+      publish_ruby(@item)
+      @item.rebuild(render_public_as_string(@item.public_uri, jpmobile: envs_to_request_as_smart_phone),
+                    :path => @item.public_smart_phone_path, :dependent => :smart_phone)
+    end
   end
 
   def publish_by_update(item)
