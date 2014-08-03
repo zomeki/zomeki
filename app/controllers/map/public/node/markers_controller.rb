@@ -26,6 +26,8 @@ class Map::Public::Node::MarkersController < Cms::Controller::Public::Base
     @all_markers = @content.sort_markers(markers.to_a.concat(doc_markers))
 
     @markers = @all_markers.paginate(page: params[:page], per_page: 30)
+
+    return http_error(404) if @markers.current_page > @markers.total_pages
   end
 
   def file_content
