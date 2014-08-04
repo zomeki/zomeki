@@ -73,7 +73,7 @@ class Cms::Controller::Script::Publication < ApplicationController
 
     if ruby
       begin
-        timeout(60) do
+        timeout(600) do
           rendered = render_public_as_string(uri, site: site, jpmobile: (params[:smart_phone] ? envs_to_request_as_smart_phone : nil))
           item.publish_page(rendered, :path => path, :dependent => dep)
           if smart_phone_path
