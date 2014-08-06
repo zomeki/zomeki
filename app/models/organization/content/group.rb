@@ -96,7 +96,7 @@ class Organization::Content::Group < Cms::Content
 
   def set_default_settings
     in_settings[:article_relation] = ARTICLE_RELATION_OPTIONS.last.last unless setting_value(:article_relation)
-    in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
+    in_settings[:doc_style] = '@title@(@publish_date@ @group@)' unless setting_value(:doc_style)
     in_settings[:date_style] = '%Y年%m月%d日' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:num_docs] = '10' unless setting_value(:num_docs)
