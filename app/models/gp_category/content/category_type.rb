@@ -108,7 +108,7 @@ class GpCategory::Content::CategoryType < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:list_style] = '@title@(@date@ @group@)' unless setting_value(:list_style)
+    in_settings[:list_style] = '@title@(@publish_date@ @group@)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:feed] = 'enabled' unless setting_value(:feed)
