@@ -145,7 +145,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       share_to_sns if @item.state_public?
 
-      publish_related_pages
+      publish_related_pages if @item.state_public?
     end
   end
 
@@ -211,7 +211,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       share_to_sns if @item.state_public?
 
-      publish_related_pages
+      publish_related_pages if @item.state_public?
     end
   end
 
@@ -232,11 +232,19 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish
+    @old_category_ids = if @item.will_replace?
+                          @item.prev_edition.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+                        else
+                          []
+                        end
+    @new_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+
     @item.update_attribute(:state, 'public')
     _publish(@item) do
       publish_ruby(@item)
       @item.rebuild(render_public_as_string(@item.public_uri, jpmobile: envs_to_request_as_smart_phone),
                     :path => @item.public_smart_phone_path, :dependent => :smart_phone)
+      publish_related_pages
     end
   end
 
