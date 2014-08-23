@@ -113,6 +113,8 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
         return http_error(404) if @docs.current_page > @docs.total_pages
         render :more
       else
+        return http_error(404) if params[:page]
+
         vc = view_context
         rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
             tm = @content.template_modules.find_by_name($1)
