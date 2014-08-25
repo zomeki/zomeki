@@ -5,6 +5,8 @@ require 'will_paginate/array'
 class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::Node::BaseController
   def index
     if (template = @content.index_template)
+      return http_error(404) if params[:page]
+
       vc = view_context
       rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
           tm = @content.template_modules.find_by_name($1)
