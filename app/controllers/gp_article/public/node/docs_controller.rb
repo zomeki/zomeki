@@ -50,6 +50,8 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def show
+    params[:filename_base], params[:format] = 'index', 'html' unless params[:filename_base]
+
     @item = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) if @item.nil? || @item.filename_base != params[:filename_base]
     if @group
