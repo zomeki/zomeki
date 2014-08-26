@@ -33,6 +33,11 @@ addEvent(window, 'load', function() {
       position: new google.maps.LatLng(<%= marker.lat %>, <%= marker.lng %>),
       map: map
     });
+
+    <%- if item.content.respond_to?(:map_content_marker) && (map_content = item.content.map_content_marker) -%>
+    marker<%= idx %>.setIcon('<%= map_content.icon_image(item.marker_icon_category || item.marker_categories.first) %>');
+    <%- end -%>
+
     var infowindow<%= idx %> = new google.maps.InfoWindow({
       content: '<%= marker.name.gsub(/'/, "\\\\'").gsub(/\r\n|\r|\n/, "<br />") %>',
       disableAutoPan: false
