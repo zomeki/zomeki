@@ -27,6 +27,12 @@ centos() {
   su - zomeki -c 'cd /var/share/zomeki && bundle install --path vendor/bundle --without development test'
 
   cp /var/share/zomeki/config/samples/zomeki_logrotate /etc/logrotate.d/.
+
+  cp /var/share/zomeki/config/samples/reload_httpd.sh /root/. && chmod 755 /root/reload_httpd.sh
+  ROOT_CRON_TXT='/var/share/zomeki/config/samples/root_cron.txt'
+  crontab -l > $ROOT_CRON_TXT
+  grep -s reload_httpd.sh $ROOT_CRON_TXT || echo '0,30 * * * * /root/reload_httpd.sh' >> $ROOT_CRON_TXT
+  crontab $ROOT_CRON_TXT
 }
 
 others() {
