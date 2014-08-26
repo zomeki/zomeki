@@ -158,7 +158,8 @@ class Cms::Site < ActiveRecord::Base
 
   def self.put_virtual_hosts_config
     conf = make_virtual_hosts_config
-    Util::File.put("#{Rails.root}/config/virtual-hosts/sites.conf", :data => conf)
+    Util::File.put Rails.root.join('config/virtual-hosts/sites.conf'), data: conf
+    FileUtils.touch Rails.root.join('tmp/reload_virtual_hosts.txt')
   end
 
   def basic_auth_enabled?
