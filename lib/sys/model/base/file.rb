@@ -93,6 +93,7 @@ module Sys::Model::Base::File
 
                 Magick::Image.read(file.path).first unless not_image
               when Sys::Lib::File::NoUploadedFile
+                self.skip_upload(true)
                 Magick::Image.from_blob(file.read).first if file.image?
               else
                 raise %Q!"#{file.class}" is not supported.!
@@ -100,7 +101,7 @@ module Sys::Model::Base::File
       if image && image.format.in?(%w!GIF JPEG PNG!)
         image.auto_orient!
         image.resize_to_fit!(image_resize.to_i) if image_resize.present?
-        image.write(file.path)
+        image.write(file.path) unless skip_upload?
 
         # Overwrite browser declaration
         self.mime_type = case image.format
@@ -111,7 +112,7 @@ module Sys::Model::Base::File
                          when 'PNG'
                            'image/png'
                          end
-        self.size = File.size(file.path)
+        self.size = File.size(file.path) unless skip_upload?
 
         self.image_is = 1
         self.image_width = image.columns

@@ -428,7 +428,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     files.each do |f|
       Sys::File.new(f.attributes).tap do |new_file|
-        new_file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+        new_file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path, :mime_type => new_file.mime_type)
         new_file.unid = nil
         new_file.parent_unid = new_doc.unid
         new_file.save
