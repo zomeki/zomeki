@@ -11,8 +11,9 @@ class AdBanner::Admin::Tool::BannersController < Cms::Controller::Admin::Base
         results[:ok] += 1
       rescue => e
         results[:ng] += 1
-        errors << "エラー： #{banner.id}, #{banner.title}, #{e.message}"
-        error_log("Rebuild: #{e.message}")
+        message = e.message.force_encoding(Encoding::UTF_8).scrub
+        errors << "エラー： #{banner.id}, #{banner.title}, #{message}"
+        error_log("Rebuild: #{message}")
       end
     end
 
