@@ -2,14 +2,23 @@
 class Tool::Convert::PageParser
 
   def parse(file_path, uri_path, conf)
+    require 'kconv'
     page = Tool::Convert::PageInfo.new
     page.file_path = file_path
     page.uri_path = uri_path
 
-    html = Nokogiri::HTML(open(page.file_path))
+    html = open(page.file_path, "r:binary").read
+    html = Nokogiri::HTML(html.toutf8, nil, 'utf-8')
+
     page.title = html.xpath(conf.title_xpath).inner_text.strip
     page.body = html.xpath(conf.body_xpath).inner_html
-    page.updated_at = html.xpath(conf.updated_at_xpath).inner_html
+
+    page.updated_at = html.xpath(conf.updated_at_xpath).inner_html unless conf.updated_at_xpath.blank?
+
+    if page.updated_at.blank?
+      file = ::File::stat(page.file_path)
+      page.updated_at = file.mtime.strftime("%Y-%m-%d")
+    end
 
     if conf.updated_at_regexp.present? && page.updated_at =~ Regexp.new(conf.updated_at_regexp)
       page.updated_at = "#{$1}-#{$2}-#{$3}"
