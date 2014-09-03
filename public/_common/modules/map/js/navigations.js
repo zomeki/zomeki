@@ -5,17 +5,27 @@
   var navigationPath = null;
   var currentPosition= new Object();
   var currentMarker;
+  var position_options = {
+    enableHighAccuracy: true,
+    timeout           : 27000,
+    maximumAge  : 0
+  };
 
-      var position_options = {
-        enableHighAccuracy: true,
-        timeout           : 27000,
-        maximumAge  : 0
-      };
-
+  var positionIcon = new google.maps.MarkerImage(
+                'http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png',
+                new google.maps.Size(32,32),
+                new google.maps.Point(0,0),
+                new google.maps.Point(16,32)
+              );
+  var defaultIcon = new google.maps.MarkerImage(
+                'http://maps.google.co.jp/mapfiles/ms/icons/blue-dot.png',
+                new google.maps.Size(32,32),
+                new google.maps.Point(0,0),
+                new google.maps.Point(16,32)
+              );
   function renderMap(default_latitude, default_longitude, set_markers){
     if(window.navigator && window.navigator.geolocation){
       window.navigator.geolocation.watchPosition(function(pos) {
-
       if(myMap==null){
       marker_list = set_markers;
       var mapOptions = {
@@ -31,22 +41,8 @@
         var currentPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
         currentPosition["lat"] = pos.coords.latitude;
         currentPosition["lng"] = pos.coords.longitude;
-
-        new google.maps.Circle({
-          map: myMap,
-          center: currentPos,
-          radius: pos.coords.accuracy,
-          strokeColor: '#0088ff',
-          strokeOpacity: 0.8,
-          strokeWeight: 1,
-          fillColor: '#0088ff',
-          fillOpacity: 0.2
-        });
-
-
         myMap.panTo(currentPos);
         setMarker();
-
         }
 
         currentPosition["lat"] = pos.coords.latitude;
@@ -54,21 +50,12 @@
         if(currentMarker){
           currentMarker.position = currentPos;
         }else{
-          var defaultIcon = new google.maps.MarkerImage(
-              'http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png',
-              new google.maps.Size(32,32),
-              new google.maps.Point(0,0),
-              new google.maps.Point(16,32)
-            );
           currentMarker = new google.maps.Marker({
             position: currentPos,
-            icon: defaultIcon
+            icon: positionIcon
           });
           currentMarker.setMap(myMap);
         }
-
-
-
     }, function() {
       if(myMap==null){
           marker_list = set_markers;
@@ -108,59 +95,25 @@
     }
   }
 
-  function calcDistance(lat1, lng1, lat2, lng2){
-     var radianLat1 = lat1 * ( Math.PI  / 180 );
-     var radianLng1 = lng1 * ( Math.PI  / 180 );
-     var radianLat2 = lat2 * ( Math.PI  / 180 );
-     var radianLng2 = lng2 * ( Math.PI  / 180 );
-     var earth_radius = 6378.1;
-     var diffLat =  ( radianLat1 - radianLat2 );
-     var diffLng =  ( radianLng1 - radianLng2 );
-     var sinLat = Math.sin( diffLat / 2  );
-     var sinLng = Math.sin( diffLng / 2  );
-     var a = Math.pow(sinLat, 2.0) + Math.cos(radianLat1) * Math.cos(radianLat2) * Math.pow(sinLng, 2.0);
-     var distance = earth_radius * 2 * Math.asin(Math.min(1, Math.sqrt(a)));
-     return distance;
-  }
-
   function setMarker(){
     if(marker_list){
-      var blueIcon = new google.maps.MarkerImage(
-          'http://maps.google.co.jp/mapfiles/ms/icons/ltblue-dot.png',
-          new google.maps.Size(32,32),
-          new google.maps.Point(0,0),
-          new google.maps.Point(16,32)
-        );
-        var purpleIcon = new google.maps.MarkerImage(
-          'http://maps.google.co.jp/mapfiles/ms/icons/purple-dot.png',
-          new google.maps.Size(32,32),
-          new google.maps.Point(0,0),
-          new google.maps.Point(16,32)
-        );
-        var setIcon ;
+
       for(key in marker_list){
-        if(window.navigator && window.navigator.geolocation && currentPosition && currentPosition["lat"] && currentPosition["lng"]){
-          distance = calcDistance(marker_list[key]["lat"], marker_list[key]["lng"],currentPosition["lat"],currentPosition["lng"]);
-          if(distance > 2){
-            setIcon = purpleIcon;
-          }else{
-            setIcon = blueIcon;
-          }
-        }else{
-          setIcon = purpleIcon;
-        }
-        markers[key] = new google.maps.Marker({
-          map: myMap,
-          position: new google.maps.LatLng(marker_list[key]["lat"], marker_list[key]["lng"]),
-          icon: setIcon
-        });
+      var options = {
+        position: new google.maps.LatLng(marker_list[key]["lat"], marker_list[key]["lng"]),
+        title: marker_list[key]["title"],
+        map: myMap
+      };
+      if (marker_list[key]["icon_url"]) {
+        options.icon = marker_list[key]["icon_url"];
+      }else{
+        options.icon = defaultIcon;
+      }
+        markers[key] = new google.maps.Marker(options);
         attachMarkerEvent(markers[key], marker_list[key]["item_id"]);
         markers[key].setMap(myMap);
       }
     }
-
-
-
   }
 
   function attachMarkerEvent(marker, marker_id){
