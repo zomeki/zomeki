@@ -15,6 +15,8 @@ class Map::Public::Node::NavigationsController < Cms::Controller::Public::Base
   end
 
   def index
+    http_error(404) if params[:page]
+
     markers = if @specified_category
                 categorizations = GpCategory::Categorization.arel_table
                 @content.public_markers.joins(:categorizations)
