@@ -14,7 +14,7 @@ class Tool::Convert::PageInfo
   end
 
   def updated_from?(date)
-    return true if @updated_at.blank?
+    return true if @updated_at.blank? || date.blank?
     return Time.parse(date) < Time.parse(@updated_at)
   end
 end
