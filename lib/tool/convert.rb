@@ -14,6 +14,7 @@ class Tool::Convert
   end
 
   def self.child_dirs(dir)
+    return [] if !::File.exist?(dir)
     dirs = [dir]
     Dir::entries(dir).sort.each do |name|
       next if name =~ /^\.+/ || ::FileTest.file?(File.join(dir, name))
