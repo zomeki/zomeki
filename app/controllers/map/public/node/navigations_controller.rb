@@ -10,7 +10,8 @@ class Map::Public::Node::NavigationsController < Cms::Controller::Public::Base
     @content = Map::Content::Marker.find_by_id(@node.content.id)
     return http_error(404) unless @content
 
-    @specified_category = find_category_by_specified_path(params[:category])
+    category = params[:category] ? params[:category] : params[:escaped_category].to_s.gsub('@', '/')
+    @specified_category = find_category_by_specified_path(category)
   end
 
   def index
@@ -56,6 +57,7 @@ class Map::Public::Node::NavigationsController < Cms::Controller::Public::Base
                                    doc: d, created_at: d.display_published_at, updated_at: d.display_published_at)
           marker.categories = d.marker_categories
           marker.files = d.files
+          marker.icon_category = d.marker_icon_category
           markers << marker
         end
       end
