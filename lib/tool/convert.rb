@@ -4,7 +4,7 @@ class Tool::Convert
 
   def self.download_site(conf)
     return if conf.site_url.blank?
-    com = "wget -rqNE -P #{SITE_BASE_DIR} #{conf.site_url}"
+    com = "wget -rqNE --restrict-file-names=nocontrol -P #{SITE_BASE_DIR} #{conf.site_url}"
     com << " -I #{conf.include_dir}" if conf.include_dir.present?
     system com
   end
@@ -17,6 +17,10 @@ class Tool::Convert
     return [] if !::File.exist?(dir)
     dirs = [dir]
     Dir::entries(dir).sort.each do |name|
+      unless name.valid_encoding?
+        dump "#{name} :: directory name encode error.."
+        next
+      end
       next if name =~ /^\.+/ || ::FileTest.file?(File.join(dir, name))
       dirs += child_dirs(File.join(dir, name))
     end
