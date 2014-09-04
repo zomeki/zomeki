@@ -151,7 +151,7 @@ class Cms::Layout < ActiveRecord::Base
       dir  = (path =~ /^\/_common\//) ? "#{Rails.root}/public" : site.public_path
       file = "#{dir}#{path}"
       if FileTest.exist?(file)
-        d = NKF.nkf('-w', ::File.new(file).read.to_s)
+        d = ::File.read(file).encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
         m = d.gsub(/(\r\n|\n|\r)/, "\n").gsub(/^@import ['"](.*?)['"];/) do |m2|
           p = m2.gsub(/.*?["'](.*?)["'].*/, '\1')
           p = ::File.expand_path(p, ::File.dirname(path)) if p =~ /^\./
