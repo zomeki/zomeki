@@ -1,0 +1,7 @@
+<%- unless @category_types.empty? -%>
+<ul>
+  <%- @category_types.each do |category_type| -%>
+  <li><%= link_to category_type.title, category_type.public_uri %></li>
+  <%- end -%>
+</ul>
+<%- end -%>
