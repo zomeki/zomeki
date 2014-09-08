@@ -1,0 +1,20 @@
+<%= render(layout: 'gp_category/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :setting_state %></th>
+    <td colspan="3"><%= @item.class::SETTING_OPTIONS.detect{|lo| lo.last == @item.setting_value(:setting_state) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :category_type_id %></th>
+    <td><%= @item.category_type.try(:title) %></td>
+    <th><%= @item.locale :category_id %></th>
+    <td><%= @item.category.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :layer %></th>
+    <td colspan="3"><%= @item.class::LAYER_OPTIONS.detect{|lo| lo.last == @item.setting_value(:layer) }.try(:first) %></td>
+  </tr>
+</table>
+<%- end -%>
