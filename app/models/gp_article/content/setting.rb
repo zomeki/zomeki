@@ -9,7 +9,7 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :word_dictionary, name: "本文/単語変換辞書",
     form_type: :text, lower_text: "CSV形式（例　対象文字,変換後文字 ）"
   set_config :list_style, name: "#{GpArticle::Doc.model_name.human}表示形式",
-    form_type: :text_area, comment_upper: I18n.t('comments.doc_style').html_safe
+    form_type: :text_area, comment_upper: 'doc_style_tags'
   set_config :date_style, name: "#{GpArticle::Doc.model_name.human}日付形式",
     comment: I18n.t('comments.date_style').html_safe
   set_config :time_style, name: "#{GpArticle::Doc.model_name.human}時間形式",
