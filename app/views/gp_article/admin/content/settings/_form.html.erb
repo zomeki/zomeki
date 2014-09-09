@@ -47,7 +47,11 @@
         <% end %>
       <%- else -%>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+        <%- if @item.config[:comment_upper] == 'doc_style_tags' -%>
+        <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+        <%- else -%>
         <%= @item.config[:comment_upper] %>
+        <%- end -%>
         <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
         <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
       <%- end -%>
