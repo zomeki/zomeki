@@ -62,12 +62,14 @@ module DocHelper
       update_time: update_time,
       summary: doc.summary.blank? ? '' : content_tag(:span, doc.summary, class: 'summary'),
       group: doc.creator.blank? ? '' : content_tag(:span, doc.creator.group.name, class: 'group'),
-      category_link: doc.categories.blank? ? '' : doc.categories.map{|c|
-        content_tag(:span, link_to(c.title, c.public_uri),
-                    class: "category #{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}") }.join(', '),
-      category: doc.categories.blank? ? '' : doc.categories.map{|c|
-        content_tag(:span, c.title,
-                    class: "category #{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}") }.join(', '),
+      category_link: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c|
+          content_tag(:span, link_to(c.title, c.public_uri),
+                      class: "#{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}")
+        }.join.html_safe, class: 'category'),
+      category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c|
+          content_tag(:span, c.title,
+                    class: "#{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}")
+        }.join.html_safe, class: 'category'),
       image_link: doc_image_link.blank? ? '' : content_tag(:span, doc_image_link, class: 'image'),
       image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
       body_beginning: doc.body.blank? ? '' : content_tag(:span, "#{file_path_expanded_body(doc)}#{content_tag(:div, link_to(doc.body_more_link_text, doc.public_uri), class: 'continues') if doc.body_more.present? }".html_safe, class: 'body'),
