@@ -16,4 +16,8 @@ class Tool::ConvertSetting < ActiveRecord::Base
   def updated_at_xpath
     Tool::Convert::Common.convert_to_xpath(updated_at_tag)
   end
+
+  def category_xpath
+    Tool::Convert::Common.convert_to_xpath(category_tag)
+  end
 end

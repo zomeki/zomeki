@@ -192,6 +192,8 @@ ja:
         updated_at_tag: 更新日対象タグ
         updated_at_regexp: 更新日正規表現
         creator_group_from_url_regexp: 作成者グループURL正規表現
+        category_tag: カテゴリ対象タグ
+        category_regexp: カテゴリ正規表現
         created_at: 作成日時
         updated_at: 更新日時
 
