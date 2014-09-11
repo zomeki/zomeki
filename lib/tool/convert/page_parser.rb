@@ -41,6 +41,16 @@ class Tool::Convert::PageParser
       end
     end
 
+    page.category_name = nil
+    page.category_name = html.xpath(conf.category_xpath).inner_html unless conf.category_xpath.blank?
+    
+    if conf.category_regexp.present? && page.category_name =~ Regexp.new(conf.category_regexp)
+      page.category_name = $1
+    elsif conf.category_xpath.blank? && conf.category_regexp.present? && html.inner_html =~ Regexp.new(conf.category_regexp)
+      page.category_name = $1
+    end
+    dump "抜き出しカテゴリ名：#{page.category_name}" if page.category_name.present?
+
     return page
   end
 end

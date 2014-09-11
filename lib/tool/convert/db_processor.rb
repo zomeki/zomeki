@@ -59,6 +59,15 @@ class Tool::Convert::DbProcessor
     end
 
     if @doc.save
+      if @doc.category_ids.blank? && page.category_name.present? && @doc.content_id.present?
+        if @doc.content.visible_category_types.present? &&
+          cates = GpCategory::Category.where(category_type_id: @doc.content.visible_category_types.map(&:id))
+                    .where(title: page.category_name)
+          page.category_ids = page.category_ids.present? ? page.category_ids+cates.map(&:id) : cates.map(&:id)
+          dump "設定カテゴリ：#{cates.map(&:title).join(', ')}"
+        end
+      end
+
       if @doc.category_ids.blank? && page.category_ids.present?
         @doc.category_ids = page.category_ids
       end
