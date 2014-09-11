@@ -30,6 +30,14 @@
       <th><%= @item.locale(:creator_group_from_url_regexp) %></th>
       <td><%= f.text_field :creator_group_from_url_regexp, style: 'width: 500px;' %> (例：\/soshiki\/(\d+)\/)</td>
     </tr>
+    <tr>
+      <th><%= @item.locale(:category_tag) %></th>
+      <td><%= f.text_field :category_tag, style: 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:category_regexp) %></th>
+      <td><%= f.text_field :category_regexp, style: 'width: 500px;' %> (例：<%= '<div class="category[\d]+">([^<\/]+)<\/div>' %>)</td>
+    </tr>
   </table>
   <%= submit :update %>
 <% end %>
