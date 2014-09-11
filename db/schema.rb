@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140724072750) do
+ActiveRecord::Schema.define(:version => 20140911060510) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1828,6 +1828,8 @@ ActiveRecord::Schema.define(:version => 20140724072750) do
     t.text     "updated_at_tag"
     t.text     "updated_at_regexp"
     t.text     "creator_group_from_url_regexp"
+    t.text     "category_tag"
+    t.text     "category_regexp"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
   end
