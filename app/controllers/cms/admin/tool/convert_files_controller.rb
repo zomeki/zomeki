@@ -3,7 +3,7 @@ class Cms::Admin::Tool::ConvertFilesController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
-    return error_auth unless Core.user.root?
+    return error_auth unless Core.user.has_auth?(:manager)
   end
 
   def index
