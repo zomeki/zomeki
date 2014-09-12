@@ -3,7 +3,7 @@ class Cms::Admin::Tool::ConvertDownloadsController < Cms::Controller::Admin::Bas
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
-    return error_auth unless Core.user.root?
+    return error_auth unless Core.user.has_auth?(:manager)
     @item = Tool::ConvertDownload.find(params[:id]) if params[:id].present?
     @items = Tool::ConvertDownload.order('created_at desc').paginate(page: params[:page], per_page: 10)
   end

@@ -3,7 +3,7 @@ class Cms::Admin::Tool::ConvertSettingsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
-    return error_auth unless Core.user.root?
+    return error_auth unless Core.user.has_auth?(:manager)
     @item = Tool::ConvertSetting.new(params[:item])
     if @item.site_url.present? && Tool::ConvertSetting.find_by_site_url(@item.site_url).present?
       @item = Tool::ConvertSetting.find_by_site_url(@item.site_url)
