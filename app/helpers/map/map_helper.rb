@@ -23,7 +23,10 @@ module Map::MapHelper
   def marker_image(marker)
     unless (doc = marker.doc)
       file = marker.files.first
+      return '' unless file.parent.content.public_node
       return image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")
+    else
+      return '' unless doc.content.public_node
     end
 
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
