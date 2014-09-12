@@ -3,7 +3,7 @@ class Cms::Admin::Tool::ConvertLinksController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
-    return error_auth unless Core.user.root?
+    return error_auth unless Core.user.has_auth?(:manager)
     @item = Tool::ConvertLink.find(params[:id]) if params[:id].present?
     @items = Tool::ConvertLink.order('created_at desc').paginate(page: params[:page], per_page: 10)
   end
