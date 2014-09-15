@@ -45,7 +45,6 @@ class Cms::Site < ActiveRecord::Base
   after_save { save_file_transfer(:site_id => id) }
 
   before_destroy :block_last_deletion
-  after_destroy { FileUtils.remove_entry_secure root_path, true }
 
   def states
     [['公開','public']]
