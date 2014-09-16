@@ -48,7 +48,7 @@
   <tr>
     <th><%= @item.locale :doc_style %></th>
     <td>
-      <%=raw t('comments.doc_style') %>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
       <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
     </td>
   </tr>
@@ -110,3 +110,5 @@ $(document).ready(function () {
 });
 <%- end -%>
 <%- end -%>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>

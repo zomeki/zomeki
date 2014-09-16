@@ -9,7 +9,11 @@
     <th>設定値</th>
     <td>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+      <%- if @item.config[:comment_upper] == 'doc_style_tags' -%>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+      <%- else -%>
       <%= @item.config[:comment_upper] %>
+      <%- end -%>
       <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
     </td>
@@ -21,7 +25,7 @@
   <tr>
     <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
     <td>
-      <%=raw t('comments.doc_style') %>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
       <%= text_area_tag :category_type_doc_style, @item.extra_values[:category_type_doc_style], size: '100x10' %>
     </td>
   </tr>
@@ -39,7 +43,7 @@
   <tr>
     <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
     <td>
-      <%=raw t('comments.doc_style') %>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
       <%= text_area_tag :category_doc_style, @item.extra_values[:category_doc_style], size: '100x10' %>
     </td>
   </tr>
@@ -57,7 +61,7 @@
   <tr>
     <th><%= GpArticle::Doc.model_name.human %>表示形式</th>
     <td>
-      <%=raw t('comments.doc_style') %>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
       <%= text_area_tag :doc_doc_style, @item.extra_values[:doc_doc_style], size: '100x10' %>
     </td>
   </tr>
@@ -87,3 +91,5 @@
   </tr>
 </table>
 <%- end -%>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>

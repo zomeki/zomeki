@@ -41,7 +41,6 @@ ja:
       default: "の画像と文字が一致しません。"
 
   comments:
-    doc_style: <p><strong>タイトル：</strong>@title@ <strong>サブタイトル：</strong>@subtitle@ <strong>公開日時：</strong>@publish_date@ <strong>更新日時：</strong>@update_date@ <strong>公開時間：</strong>@publish_time@ <strong>更新時間：</strong>@update_time@<br /><strong>概要：</strong>@summary@ <strong>組織：</strong>@group@<br /><strong>カテゴリ（リンクなし）：</strong>@category@ <strong>カテゴリ（リンクあり）：</strong>@category_link@<br /><strong>添付画像（リンクなし）：</strong>@image@ <strong>添付画像（リンクあり）：</strong>@image_link@<br /><strong>記事本文（追記含む）：</strong>@body@ <strong>記事本文（追記以外）：</strong>@body_beginning@ <strong>記事本文（文字数指定）：</strong>@body_123@<br /><strong>作成者：</strong>@user@ <strong>コメント数：</strong>@comment_count@</p>
     list_style: <strong>公開日時：</strong>@publish_date@ <strong>タイトル：</strong>@title@ <strong>組織：</strong>@group@ <strong>カテゴリ：</strong>@category@
     date_style: <strong>年：</strong>%Y <strong>月：</strong>%m <strong>日：</strong>%d <strong>曜日：</strong>%A <strong>曜日（省略）：</strong>%a
     time_style: <strong>時：</strong>%H <strong>分：</strong>%M <strong>秒：</strong>%S
