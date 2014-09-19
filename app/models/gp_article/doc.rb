@@ -722,8 +722,8 @@ class GpArticle::Doc < ActiveRecord::Base
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
     self.share_to_sns_with ||= SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with)
     self.body_more_link_text ||= '続きを読む' if self.has_attribute?(:body_more_link_text)
-    self.feature_1 = FEATURE_1_OPTIONS.first.last if self.has_attribute?(:feature_1) && self.feature_1.nil?
-    self.feature_2 = FEATURE_2_OPTIONS.first.last if self.has_attribute?(:feature_2) && self.feature_2.nil?
+    self.feature_1 = content.feature_settings[:feature_1] if self.has_attribute?(:feature_1) && self.feature_1.nil?
+    self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil?
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
   end
 
