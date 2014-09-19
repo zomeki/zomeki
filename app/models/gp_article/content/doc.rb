@@ -10,6 +10,7 @@ class GpArticle::Content::Doc < Cms::Content
   SNS_SHARE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   BLOG_FUNCTIONS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   BROKEN_LINK_NOTIFICATION_OPTIONS = [['通知する', 'enabled'], ['通知しない', 'disabled']]
+  FEATURE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope { where(model: 'GpArticle::Doc') }
 
@@ -258,6 +259,15 @@ class GpArticle::Content::Doc < Cms::Content
     site.public_path
   end
 
+  def feature_settings_enabled?
+    setting_value(:feature_settings) == 'enabled'
+  end
+
+  def feature_settings
+    {feature_1: setting_extra_value(:feature_settings, :feature_1) != 'false',
+     feature_2: setting_extra_value(:feature_settings, :feature_2) != 'false'}
+  end
+
   private
 
   def set_default_settings
@@ -274,5 +284,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:sns_share_relation] = SNS_SHARE_RELATION_OPTIONS.first.last unless setting_value(:sns_share_relation)
     in_settings[:blog_functions] = BLOG_FUNCTIONS_OPTIONS.last.last unless setting_value(:blog_functions)
     in_settings[:broken_link_notification] = BROKEN_LINK_NOTIFICATION_OPTIONS.first.last unless setting_value(:broken_link_notification)
+    in_settings[:feature_settings] = FEATURE_SETTINGS_OPTIONS.last.last unless setting_value(:feature_settings)
   end
 end

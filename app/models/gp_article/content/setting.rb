@@ -51,6 +51,9 @@ class GpArticle::Content::Setting < Cms::ContentSetting
   set_config :broken_link_notification, name: 'リンク切れ通知',
     options: GpArticle::Content::Doc::BROKEN_LINK_NOTIFICATION_OPTIONS,
     form_type: :radio_buttons
+  set_config :feature_settings, name: '記事表示設定',
+    options: GpArticle::Content::Doc::FEATURE_SETTINGS_OPTIONS,
+    form_type: :radio_buttons
 
   after_initialize :set_defaults
 

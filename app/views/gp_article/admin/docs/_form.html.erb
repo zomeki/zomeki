@@ -140,6 +140,7 @@
         </td>
       </tr>
       <%- end -%>
+      <%- if @content.feature_settings_enabled? -%>
       <tr>
         <th><%= f.label :feature_1 %></th>
         <td><%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %></td>
@@ -148,6 +149,7 @@
         <th><%= f.label :feature_2 %></th>
         <td><%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %></td>
       </tr>
+      <%- end -%>
       <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
       <tr>
         <th><%= f.label :raw_tags %></th>
