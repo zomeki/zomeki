@@ -81,7 +81,7 @@ module DocHelper
     if Page.mobile?
       contents[:title]
     else
-      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/){|m| content_tag(:span, link_to($1, doc.public_uri), class: 'doc') }
+      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| content_tag(:span, link_to($1.html_safe, doc.public_uri), class: 'doc') }
       doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
