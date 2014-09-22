@@ -59,6 +59,8 @@ module GpCategory::GpCategoryHelper
   end
 
   def docs_1(template_module: nil, ct_or_c: nil, docs: nil)
+    return '' if docs.empty?
+
     content_tag(:section, class: template_module.name) do
       html = docs.inject(''){|tags, doc|
           tags << content_tag(template_module.wrapper_tag) do
@@ -79,6 +81,8 @@ module GpCategory::GpCategoryHelper
   end
 
   def docs_3(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
+    return '' if categorizations.empty?
+
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << content_tag(:section, class: category.name) do
@@ -106,6 +110,8 @@ module GpCategory::GpCategoryHelper
   end
 
   def docs_5(template_module: nil, ct_or_c: nil, groups: nil, docs: nil)
+    return '' if docs.empty?
+
     content_tag(:section, class: template_module.name) do
       groups.inject(''){|tags, group|
         tags << content_tag(:section, class: group.code) do
@@ -131,6 +137,8 @@ module GpCategory::GpCategoryHelper
   end
 
   def docs_7(template_module: nil, categories: nil, categorizations: nil)
+    return '' if categorizations.empty?
+
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
@@ -139,6 +147,8 @@ module GpCategory::GpCategoryHelper
   end
 
   def docs_8(template_module: nil, categories: nil, categorizations: nil)
+    return '' if categorizations.empty?
+
     content_tag(:section, class: template_module.name) do
       categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
