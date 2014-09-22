@@ -30,9 +30,10 @@
   </tr>
   <tr>
     <th><%= f.label :doc_style %></th>
-    <td>
+    <td class="cke_editor_wrapper">
       <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
-      <%= f.text_area :doc_style, size: '100x10' %>
+      <%= init_ckeditor %>
+      <%= f.text_area :doc_style, :class => 'body ckeditor' %>
     </td>
   </tr>
   <tr>
