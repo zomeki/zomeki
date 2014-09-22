@@ -151,8 +151,10 @@ module GpCategory::GpCategoryHelper
       cats = categorizations.where(category_id: category.public_descendants.map(&:id))
       next if cats.empty?
 
-      docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
-                                                      .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
+      all_docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
+                                                          .order('display_published_at DESC, published_at DESC')
+      docs = all_docs.limit(template_module.num_docs)
+
       html = content_tag(:h2, category.title)
       doc_tags = docs.inject(''){|t, d|
                    t << content_tag(template_module.wrapper_tag,
@@ -171,7 +173,11 @@ module GpCategory::GpCategoryHelper
           end
       end
 
-      html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: category)), class: 'more')
+      if all_docs.count > template_module.num_docs
+        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: category)), class: 'more')
+      else
+        html
+      end
     end
   end
 end
