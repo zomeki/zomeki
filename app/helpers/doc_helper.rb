@@ -54,7 +54,7 @@ module DocHelper
                   end
 
     contents = {
-      title_link: title_link.blank? ? '' : content_tag(:span, title_link, class: 'title'),
+      title_link: title_link.blank? ? '' : content_tag(:span, title_link, class: 'title_link'),
       title: doc.title.blank? ? '' : content_tag(:span, doc.title, class: 'title'),
       subtitle: doc.subtitle.blank? ? '' : content_tag(:span, doc.subtitle, class: 'subtitle'),
       publish_date: publish_date,
@@ -82,7 +82,7 @@ module DocHelper
     if Page.mobile?
       contents[:title_link]
     else
-      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| link_to($1.html_safe, doc.public_uri) }
+      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| link_to($1.html_safe, doc.public_uri, class: 'doc_link') }
       doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
