@@ -67,7 +67,7 @@ module GpCategory::GpCategoryHelper
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
       if ct_or_c
-        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
+        html << content_tag(:div, link_to('一覧へ', ct_or_c.public_uri), class: 'more')
       else
         html
       end
