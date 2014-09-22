@@ -4,11 +4,11 @@ module DocHelper
 
     link_to_options = link_to_doc_options(doc)
 
-    doc_title = if link_to_options
-                  link_to *([doc.title] + link_to_options)
-                else
-                  h doc.title
-                end
+    title_link = if link_to_options
+                   link_to *([doc.title] + link_to_options)
+                 else
+                   h doc.title
+                 end
 
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
 
@@ -54,7 +54,8 @@ module DocHelper
                   end
 
     contents = {
-      title: doc_title.blank? ? '' : content_tag(:span, doc_title, class: 'title'),
+      title_link: title_link.blank? ? '' : content_tag(:span, title_link, class: 'title'),
+      title: doc.title.blank? ? '' : content_tag(:span, doc.title, class: 'title'),
       subtitle: doc.subtitle.blank? ? '' : content_tag(:span, doc.subtitle, class: 'subtitle'),
       publish_date: publish_date,
       update_date: update_date,
@@ -79,12 +80,13 @@ module DocHelper
       }
 
     if Page.mobile?
-      contents[:title]
+      contents[:title_link]
     else
-      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| content_tag(:span, link_to($1.html_safe, doc.public_uri), class: 'doc') }
+      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| link_to($1.html_safe, doc.public_uri) }
       doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
+        '@title_link@' => contents[:title_link],
         '@title@' => contents[:title],
         '@subtitle@' => contents[:subtitle],
         '@publish_date@' => contents[:publish_date],
