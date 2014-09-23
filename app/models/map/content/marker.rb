@@ -119,6 +119,6 @@ class Map::Content::Marker < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:title_style] = '@title@' unless setting_value(:title_style)
+    in_settings[:title_style] = '@title_link@' unless setting_value(:title_style)
   end
 end
