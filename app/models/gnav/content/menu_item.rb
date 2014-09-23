@@ -30,7 +30,7 @@ class Gnav::Content::MenuItem < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:list_style] = '@title@(@publish_date@ @group@)' unless setting_value(:list_style)
+    in_settings[:list_style] = '@title_link@(@publish_date@ @group@)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
   end
 end
