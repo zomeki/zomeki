@@ -13,6 +13,12 @@ namespace :zomeki do
         info_log "#{ps.piece.class.name}(#{ps.piece_id}):#{ps.piece.title}(#{ps.piece.name})"
         ps.update_column(:value, ps.value.gsub('@title@', '@title_link@'))
       end
+
+      gctm = GpCategory::TemplateModule.arel_table
+      GpCategory::TemplateModule.where(gctm[:doc_style].matches('%@title@%')).each do |tm|
+        info_log "#{tm.class.name}(#{tm.id}):#{tm.title}(#{tm.name})"
+        tm.update_column(:doc_style, tm.doc_style.gsub('@title@', '@title_link@'))
+      end
     end
   end
 end
