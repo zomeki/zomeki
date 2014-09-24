@@ -6,6 +6,7 @@ namespace :zomeki do
       clean_feeds
       clean_statics('r')
       clean_statics('mp3')
+      clean_pagings
     end
 
     namespace :feeds do
@@ -57,5 +58,16 @@ def clean_statics(base_ext)
       info_log "DELETED: #{file}"
       File.delete(file)
     end
+  end
+end
+
+def clean_pagings
+  Dir[Rails.root.join('sites/**/*.p?.html')].each do |base_file|
+    info_log "DELETED: #{base_file}"
+    File.delete(base_file)
+
+    next unless File.exist?(file = base_file.sub(/\.p\d+\.html\z/, '.html'))
+    info_log "DELETED: #{file}"
+    File.delete(file)
   end
 end
