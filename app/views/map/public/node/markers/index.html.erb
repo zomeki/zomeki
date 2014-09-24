@@ -33,7 +33,7 @@
 
     <%- @all_markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
-                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
+                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '').gsub("'", '&#x27;') %>',
                      '<%= @content.icon_image(marker.icon_category || (marker.categories.include?(@specified_category) ? @specified_category
                                                                                                                        : marker.categories.first), true) %>');
 
