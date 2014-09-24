@@ -47,15 +47,17 @@ module Map::MapHelper
     return unless doc
 
     contents = {
-      title:    content_tag(:span, link_to(doc.title, doc.public_uri), class: 'title'),
+      title_link: content_tag(:span, link_to(doc.title, doc.public_uri), class: 'title_link'),
+      title: content_tag(:span, doc.title, class: 'title'),
       subtitle: content_tag(:span, doc.subtitle, class: 'subtitle'),
       summary:  doc.summary,
       }
 
     if Page.mobile?
-      contents[:title]
+      contents[:title_link]
     else
       doc_style.gsub(/@\w+@/, {
+        '@title_link@' => contents[:title_link],
         '@title@'    => contents[:title],
         '@subtitle@' => contents[:subtitle],
         '@summary@'  => contents[:summary],
