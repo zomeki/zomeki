@@ -39,24 +39,26 @@ class Sys::Admin::Groups::ExportController < Cms::Controller::Admin::Base
 
   def export_groups
     csv = CSV.generate do |csv|
-      csv << [:code, :parent_code, :state, :web_state, :level_no, :sort_no,
-        :layout_id, :ldap, :ldap_version, :name, :name_en, :tel, :outline_uri, :email]
+      csv << [:code, :parent_code, :state, :level_no, :sort_no,:ldap,
+        :ldap_version, :name, :name_en, :address, :tel, :tel_attend, :fax,
+        :email, :note]
       all_groups.each do |group|
         row = []
         row << group.code
         row << group.parent.code
         row << group.state
-        row << group.web_state
         row << group.level_no
         row << group.sort_no
-        row << group.layout_id
         row << group.ldap
         row << group.ldap_version
         row << group.name
         row << group.name_en
+        row << group.address
         row << group.tel
-        row << group.outline_uri
+        row << group.tel_attend
+        row << group.fax
         row << group.email
+        row << group.note
         csv << row
       end
     end
@@ -66,8 +68,15 @@ class Sys::Admin::Groups::ExportController < Cms::Controller::Admin::Base
 
   def export_users
     csv = CSV.generate do |csv|
-      csv << [:account, :state, :name, :name_en, :email, :auth_no, :password, :ldap, :ldap_version,
+
+      csv << if Core.user.root?
+        [:account, :state, :name, :name_en, :email, :auth_no, :password, :ldap, :ldap_version,
+        :group_code, :admin_creatable, :site_creatable]
+      else
+        [:account, :state, :name, :name_en, :email, :auth_no, :password, :ldap, :ldap_version,
         :group_code]
+      end
+
       item = Sys::User.new
       item.join ['JOIN sys_users_groups AS sug ON sug.user_id = sys_users.id',
                  'JOIN cms_site_belongings AS csb ON csb.group_id = sug.group_id'].join(' ')
@@ -86,6 +95,8 @@ class Sys::Admin::Groups::ExportController < Cms::Controller::Admin::Base
         row << user.ldap
         row << user.ldap_version
         row << user.groups[0].code
+        row << user.admin_creatable if Core.user.root?
+        row << user.site_creatable if Core.user.root?
         csv << row
       end
     end
