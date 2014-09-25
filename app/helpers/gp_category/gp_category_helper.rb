@@ -191,7 +191,7 @@ module GpCategory::GpCategoryHelper
       end
 
       if all_docs.count > template_module.num_docs
-        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: category)), class: 'more')
+        html << content_tag(:div, link_to('一覧へ', category.public_uri), class: 'more')
       else
         html
       end
