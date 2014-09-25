@@ -181,7 +181,7 @@ private
   
   def self.recognize_site
     case @@mode
-    when 'system'
+    when ZomekiCMS::ADMIN_URL_PREFIX.sub(/\A_/, '')
       @@site          = self.get_site_by_cookie || find_site_by_script_uri(@@script_uri) || Cms::Site.order(:id).first
       Page.site       = @@site
       @@internal_uri  = @@request_uri
