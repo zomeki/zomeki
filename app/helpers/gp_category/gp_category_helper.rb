@@ -58,7 +58,7 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_1(template_module: nil, ct_or_c: nil, docs: nil)
+  def docs_1(template_module: nil, ct_or_c: nil, docs: nil, all_docs: nil)
     return '' if docs.empty?
 
     content_tag(:section, class: template_module.name) do
@@ -68,7 +68,7 @@ module GpCategory::GpCategoryHelper
             end
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
-      if ct_or_c && template_module.num_docs < docs.count
+      if ct_or_c && docs.count < all_docs.count
         html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
       else
         html
@@ -76,8 +76,8 @@ module GpCategory::GpCategoryHelper
     end
   end
 
-  def docs_2(template_module: nil, ct_or_c: nil, docs: nil)
-    docs_1(template_module: template_module, ct_or_c: ct_or_c, docs: docs)
+  def docs_2(template_module: nil, ct_or_c: nil, docs: nil, all_docs: nil)
+    docs_1(template_module: template_module, ct_or_c: ct_or_c, docs: docs, all_docs: all_docs)
   end
 
   def docs_3(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)

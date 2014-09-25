@@ -88,9 +88,10 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
                          end
                   docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                  docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+                  all_docs = docs.order('display_published_at DESC, published_at DESC')
+                  docs = all_docs.limit(tm.num_docs)
                   vc.send(tm.module_type, template_module: tm,
-                          ct_or_c: @category, docs: docs)
+                          ct_or_c: @category, docs: docs, all_docs: all_docs)
                 end
               when 'docs_3', 'docs_4'
                 if vc.respond_to?(tm.module_type) && category_type.internal_category_type
