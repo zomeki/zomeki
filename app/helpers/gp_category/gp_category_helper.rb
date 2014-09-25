@@ -102,7 +102,7 @@ module GpCategory::GpCategoryHelper
           }.call
 
         if inner_content.present?
-          tags << content_tag(:section, inner_content, class: category.name)
+          tags << content_tag(:section, "#{template_module.upper_text}#{inner_content}#{template_module.lower_text}", class: category.name)
         else
           tags
         end
