@@ -12,7 +12,7 @@ class GpArticle::Content::Doc < Cms::Content
   BROKEN_LINK_NOTIFICATION_OPTIONS = [['通知する', 'enabled'], ['通知しない', 'disabled']]
   FEATURE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   WRAPPER_TAG_OPTIONS = [['li', 'li'], ['article', 'article']]
-  DOC_LIST_STYLE_OPTIONS = [['日付毎', 'by_date'], ['通常', 'simple']]
+  DOC_LIST_STYLE_OPTIONS = [['日付毎', 'by_date'], ['記事一覧', 'simple']]
 
   default_scope { where(model: 'GpArticle::Doc') }
 
