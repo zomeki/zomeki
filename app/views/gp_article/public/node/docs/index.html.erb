@@ -6,7 +6,13 @@
   </ul>
   <%- end -%>
   <div class="docs">
-    <%- if @content.doc_list_style == 'by_date' %>
+    <%- if @content.doc_list_style == 'simple' %>
+      <%=raw '<ul>' if @content.wrapper_tag == 'li' %>
+      <%- @docs.each do |doc| -%>
+      <%= content_tag @content.wrapper_tag, doc_replace(doc, @content.list_style, @content.date_style) %>
+      <%- end -%>
+      <%=raw '</ul>' if @content.wrapper_tag == 'li' %>
+  <%- else -%>
       <% @items.each_with_index do |item, idx| %>
       <%- if item[:date] -%>
       <%=raw '</ul>' if @content.wrapper_tag == 'li' && idx.nonzero? %>
@@ -16,12 +22,6 @@
       <%= content_tag @content.wrapper_tag, doc_replace(item[:doc], @content.list_style, @content.date_style) %>
       <%- end -%>
       <%=raw '</ul>' if @content.wrapper_tag == 'li' && @items.present? %>
-    <%- else -%>
-      <%=raw '<ul>' if @content.wrapper_tag == 'li' %>
-      <%- @docs.each do |doc| -%>
-      <%= content_tag @content.wrapper_tag, doc_replace(doc, @content.list_style, @content.date_style) %>
-      <%- end -%>
-      <%=raw '</ul>' if @content.wrapper_tag == 'li' %>
     <%- end -%>
   </div>
   <%= paginate @docs %>
