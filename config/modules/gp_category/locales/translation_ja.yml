@@ -41,6 +41,8 @@ ja:
         doc_style: 記事表示形式
         num_docs: 表示件数
         updated_at: 更新日時
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト
       gp_category/piece/doc:
         list_count: 表示件数
         date_style: 日付形式

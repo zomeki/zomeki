@@ -67,74 +67,76 @@ class GpCategory::Public::Node::CategoriesController < GpCategory::Public::Node:
             tm = @content.template_modules.find_by_name($1)
             next unless tm
 
-            case tm.module_type
-            when 'categories_1', 'categories_2', 'categories_3'
-              if vc.respond_to?(tm.module_type)
-                @category.public_children.inject(''){|tags, child|
-                  tags << vc.content_tag(:section, class: child.name) do
-                      html = vc.content_tag(:h2, vc.link_to(child.title, child.public_uri))
-                      html << vc.send(tm.module_type, template_module: tm,
-                                      categories: child.public_children)
-                    end
-                }
-              end
-            when 'docs_1', 'docs_2'
-              if vc.respond_to?(tm.module_type)
-                docs = case tm.module_type
-                       when 'docs_1'
-                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
-                       when 'docs_2'
-                         find_public_docs_with_category_id(@category.id)
-                       end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+            result = case tm.module_type
+              when 'categories_1', 'categories_2', 'categories_3'
+                if vc.respond_to?(tm.module_type)
+                  @category.public_children.inject(''){|tags, child|
+                    tags << vc.content_tag(:section, class: child.name) do
+                        html = vc.content_tag(:h2, vc.link_to(child.title, child.public_uri))
+                        html << vc.send(tm.module_type, template_module: tm,
+                                        categories: child.public_children)
+                      end
+                  }
+                end
+              when 'docs_1', 'docs_2'
+                if vc.respond_to?(tm.module_type)
+                  docs = case tm.module_type
+                         when 'docs_1'
+                           find_public_docs_with_category_id(@category.public_descendants.map(&:id))
+                         when 'docs_2'
+                           find_public_docs_with_category_id(@category.id)
+                         end
+                  docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-                vc.send(tm.module_type, template_module: tm,
-                        ct_or_c: @category, docs: docs)
-              end
-            when 'docs_3', 'docs_4'
-              if vc.respond_to?(tm.module_type) && category_type.internal_category_type
-                docs = case tm.module_type
-                       when 'docs_3'
-                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
-                       when 'docs_4'
-                         find_public_docs_with_category_id(@category.id)
-                       end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+                  docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+                  vc.send(tm.module_type, template_module: tm,
+                          ct_or_c: @category, docs: docs)
+                end
+              when 'docs_3', 'docs_4'
+                if vc.respond_to?(tm.module_type) && category_type.internal_category_type
+                  docs = case tm.module_type
+                         when 'docs_3'
+                           find_public_docs_with_category_id(@category.public_descendants.map(&:id))
+                         when 'docs_4'
+                           find_public_docs_with_category_id(@category.id)
+                         end
+                  docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-                vc.send(tm.module_type, template_module: tm,
-                        ct_or_c: @category,
-                        categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
-              end
-            when 'docs_5', 'docs_6'
-              if vc.respond_to?(tm.module_type)
-                docs = case tm.module_type
-                       when 'docs_5'
-                         find_public_docs_with_category_id(@category.public_descendants.map(&:id))
-                       when 'docs_6'
-                         find_public_docs_with_category_id(@category.id)
-                       end
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+                  categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
+                  vc.send(tm.module_type, template_module: tm,
+                          ct_or_c: @category,
+                          categories: category_type.internal_category_type.public_root_categories, categorizations: categorizations)
+                end
+              when 'docs_5', 'docs_6'
+                if vc.respond_to?(tm.module_type)
+                  docs = case tm.module_type
+                         when 'docs_5'
+                           find_public_docs_with_category_id(@category.public_descendants.map(&:id))
+                         when 'docs_6'
+                           find_public_docs_with_category_id(@category.id)
+                         end
+                  docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                docs = docs.joins(:creator => :group)
-                groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
-                vc.send(tm.module_type, template_module: tm,
-                        ct_or_c: @category,
-                        groups: groups, docs: docs)
-              end
-            when 'docs_7', 'docs_8'
-              if view_context.respond_to?(tm.module_type)
-                docs = find_public_docs_with_category_id(@category.public_descendants.map(&:id))
-                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+                  docs = docs.joins(:creator => :group)
+                  groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
+                  vc.send(tm.module_type, template_module: tm,
+                          ct_or_c: @category,
+                          groups: groups, docs: docs)
+                end
+              when 'docs_7', 'docs_8'
+                if view_context.respond_to?(tm.module_type)
+                  docs = find_public_docs_with_category_id(@category.public_descendants.map(&:id))
+                  docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
-                vc.send(tm.module_type, template_module: tm,
-                        categories: @category.children, categorizations: categorizations)
+                  categorizations = GpCategory::Categorization.where(categorizable_type: 'GpArticle::Doc', categorizable_id: docs.pluck(:id), categorized_as: 'GpArticle::Doc')
+                  vc.send(tm.module_type, template_module: tm,
+                          categories: @category.children, categorizations: categorizations)
+                end
+              else
+                ''
               end
-            else
-              ''
-            end
+
+            "#{tm.upper_text}#{result}#{tm.lower_text}"
           end
 
         render text: vc.content_tag(:div, rendered.html_safe, class: 'contentGpCategory contentGpCategoryCategory')

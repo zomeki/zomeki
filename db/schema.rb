@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140911060510) do
+ActiveRecord::Schema.define(:version => 20140925063453) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -897,6 +897,8 @@ ActiveRecord::Schema.define(:version => 20140911060510) do
     t.integer  "num_docs"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.text     "upper_text"
+    t.text     "lower_text"
   end
 
   add_index "gp_category_template_modules", ["content_id"], :name => "index_gp_category_template_modules_on_content_id"
