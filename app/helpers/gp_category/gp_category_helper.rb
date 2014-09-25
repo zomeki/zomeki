@@ -150,21 +150,23 @@ module GpCategory::GpCategoryHelper
   def docs_7(template_module: nil, categories: nil, categorizations: nil)
     return '' if categorizations.empty?
 
-    content_tag(:section, class: template_module.name) do
-      categories.inject(''){|tags, category|
+    content = categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: false)
-      }.html_safe
-    end
+      }
+    return '' if content.blank?
+
+    content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
   end
 
   def docs_8(template_module: nil, categories: nil, categorizations: nil)
     return '' if categorizations.empty?
 
-    content_tag(:section, class: template_module.name) do
-      categories.inject(''){|tags, category|
+    content = categories.inject(''){|tags, category|
         tags << category_section(category, template_module: template_module, categorizations: categorizations, with_child_categories: true)
-      }.html_safe
-    end
+      }
+    return '' if content.blank?
+
+    content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
   end
 
   def category_section(category, template_module: nil, categorizations: nil, with_child_categories: nil)
