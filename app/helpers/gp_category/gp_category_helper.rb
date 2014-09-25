@@ -69,7 +69,7 @@ module GpCategory::GpCategoryHelper
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
       if ct_or_c
-        html << content_tag(:div, link_to('一覧へ', ct_or_c.public_uri), class: 'more')
+        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
       else
         html
       end
@@ -83,9 +83,8 @@ module GpCategory::GpCategoryHelper
   def docs_3(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
     return '' if categorizations.empty?
 
-    content_tag(:section, class: template_module.name) do
-      categories.inject(''){|tags, category|
-        tags << content_tag(:section, class: category.name) do
+    content = categories.inject(''){|tags, category|
+        inner_content = lambda{
             cats = categorizations.where(category_id: category.public_descendants.map(&:id))
             next if cats.empty?
 
@@ -100,9 +99,17 @@ module GpCategory::GpCategoryHelper
             html << doc_tags
 
             html << content_tag(:div, link_to('一覧へ', more_link("c_#{category.name}", template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
-          end
+          }.call
+
+        if inner_content.present?
+          tags << content_tag(:section, inner_content, class: category.name)
+        else
+          tags
+        end
       }.html_safe
-    end
+    return '' if content.blank?
+
+    content_tag(:section, content, class: template_module.name)
   end
 
   def docs_4(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
