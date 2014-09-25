@@ -70,7 +70,7 @@ Map.prototype.move_to = function (id) {
     var destination = this._markers[id];
     if (destination) {
       this._map_canvas.panTo(destination.position);
-      this._map_canvas.setZoom(12);
+      this._map_canvas.setZoom(16);
       destination.open_info_window();
     }
   }
