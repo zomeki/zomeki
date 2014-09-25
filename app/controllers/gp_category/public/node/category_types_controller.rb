@@ -12,35 +12,37 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
           tm = @content.template_modules.find_by_name($1)
           next unless tm
 
-          case tm.module_type
-          when 'categories_1', 'categories_2', 'categories_3'
-            if vc.respond_to?(tm.module_type)
-              @content.public_category_types.inject(''){|tags, category_type|
-                tags << vc.content_tag(:section, class: category_type.name) do
-                    html = vc.content_tag(:h2, vc.link_to(category_type.title, category_type.public_uri))
-                    html << vc.send(tm.module_type, template_module: tm,
-                                    categories: category_type.public_root_categories)
-                  end
-              }
-            end
-          when 'docs_1'
-            if vc.respond_to?(tm.module_type)
-              category_ids = @content.public_category_types.inject([]){|ids, category_type|
-                ids.concat(category_type.public_root_categories.inject([]){|is, category|
-                  is.concat(category.public_descendants.map(&:id))
-                })
-              }
+          result = case tm.module_type
+            when 'categories_1', 'categories_2', 'categories_3'
+              if vc.respond_to?(tm.module_type)
+                @content.public_category_types.inject(''){|tags, category_type|
+                  tags << vc.content_tag(:section, class: category_type.name) do
+                      html = vc.content_tag(:h2, vc.link_to(category_type.title, category_type.public_uri))
+                      html << vc.send(tm.module_type, template_module: tm,
+                                      categories: category_type.public_root_categories)
+                    end
+                }
+              end
+            when 'docs_1'
+              if vc.respond_to?(tm.module_type)
+                category_ids = @content.public_category_types.inject([]){|ids, category_type|
+                  ids.concat(category_type.public_root_categories.inject([]){|is, category|
+                    is.concat(category.public_descendants.map(&:id))
+                  })
+                }
 
-              docs = find_public_docs_with_category_id(category_ids)
-              docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+                docs = find_public_docs_with_category_id(category_ids)
+                docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-              docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
-              vc.send(tm.module_type, template_module: tm,
-                      ct_or_c: nil, docs: docs)
+                docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+                vc.send(tm.module_type, template_module: tm,
+                        ct_or_c: nil, docs: docs)
+              end
+            else
+              ''
             end
-          else
-            ''
-          end
+
+          "#{tm.upper_text}#{result}#{tm.lower_text}"
         end
 
       render text: vc.content_tag(:div, rendered.html_safe, class: 'contentGpCategory contentGpCategoryCategoryTypes')
