@@ -61,19 +61,22 @@ module GpCategory::GpCategoryHelper
   def docs_1(template_module: nil, ct_or_c: nil, docs: nil, all_docs: nil)
     return '' if docs.empty?
 
-    content_tag(:section, class: template_module.name) do
-      html = docs.inject(''){|tags, doc|
-          tags << content_tag(template_module.wrapper_tag) do
-              doc_replace(doc, template_module.doc_style, @content.date_style, @content.time_style)
-            end
-        }.html_safe
-      html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
-      if ct_or_c && docs.count < all_docs.count
-        html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
-      else
-        html
-      end
-    end
+    content = lambda{
+        html = docs.inject(''){|tags, doc|
+            tags << content_tag(template_module.wrapper_tag) do
+                doc_replace(doc, template_module.doc_style, @content.date_style, @content.time_style)
+              end
+          }.html_safe
+        html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
+        if ct_or_c && docs.count < all_docs.count
+          html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
+        else
+          html
+        end
+      }.call
+    return '' if content.blank?
+
+    content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
   end
 
   def docs_2(template_module: nil, ct_or_c: nil, docs: nil, all_docs: nil)
