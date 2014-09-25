@@ -102,14 +102,14 @@ module GpCategory::GpCategoryHelper
           }.call
 
         if inner_content.present?
-          tags << content_tag(:section, "#{template_module.upper_text}#{inner_content}#{template_module.lower_text}", class: category.name)
+          tags << content_tag(:section, inner_content, class: category.name)
         else
           tags
         end
       }.html_safe
     return '' if content.blank?
 
-    content_tag(:section, content, class: template_module.name)
+    content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
   end
 
   def docs_4(template_module: nil, ct_or_c: nil, categories: nil, categorizations: nil)
