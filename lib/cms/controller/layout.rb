@@ -209,11 +209,11 @@ module Cms::Controller::Layout
         end
         body_doc.css('link[href^="/"]').each do |link_tag|
           href = link_tag.attribute('href').to_s
-          link_tag.set_attribute('href', "#{ssl_uri}#{href}") if href =~ /^\/_(layouts|themes)/
+          link_tag.set_attribute('href', "#{ssl_uri}#{href}") if href =~ /^\/_(layouts|themes|file|emfiles)/
         end
         body_doc.css('img[src^="/"]').each do |src_tag|
           src = src_tag.attribute('src').to_s
-          src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes)/
+          src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes|file|emfiles)/
         end
       end
       body = body_doc.to_s
