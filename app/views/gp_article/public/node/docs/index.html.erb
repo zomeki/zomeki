@@ -7,12 +7,14 @@
   <%- end -%>
   <div class="docs">
     <% @items.each_with_index do |item, idx| %>
-    <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
-    <h2 class="date"><%= item[:date] %></h2><ul>
+    <%- if item[:date] -%>
+    <%=raw '</ul>' if @content.wrapper_tag == 'li' && idx.nonzero? %>
+    <h2 class="date"><%= item[:date] %></h2>
+    <%=raw '<ul>' if @content.wrapper_tag == 'li' %>
     <%- end -%>
-    <li><%= render 'gp_article/public/shared/doc', doc: item[:doc], list_style: @content.list_style, date_style: @content.date_style %></li>
+    <%= content_tag @content.wrapper_tag, doc_replace(item[:doc], @content.list_style, @content.date_style) %>
     <%- end -%>
-    <%= '</ul>'.html_safe unless @items.empty? -%>
+    <%=raw '</ul>' if @content.wrapper_tag == 'li' && @items.present? -%>
   </div>
   <%= paginate @docs %>
 </div>

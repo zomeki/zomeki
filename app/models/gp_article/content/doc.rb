@@ -11,6 +11,7 @@ class GpArticle::Content::Doc < Cms::Content
   BLOG_FUNCTIONS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   BROKEN_LINK_NOTIFICATION_OPTIONS = [['通知する', 'enabled'], ['通知しない', 'disabled']]
   FEATURE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  WRAPPER_TAG_OPTIONS = [['li', 'li'], ['article', 'article']]
 
   default_scope { where(model: 'GpArticle::Doc') }
 
@@ -266,6 +267,10 @@ class GpArticle::Content::Doc < Cms::Content
   def feature_settings
     {feature_1: setting_extra_value(:feature_settings, :feature_1) != 'false',
      feature_2: setting_extra_value(:feature_settings, :feature_2) != 'false'}
+  end
+
+  def wrapper_tag
+    setting_extra_value(:list_style, :wrapper_tag) || WRAPPER_TAG_OPTIONS.first.last
   end
 
   private

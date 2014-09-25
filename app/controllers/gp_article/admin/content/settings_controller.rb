@@ -37,7 +37,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
 
     if @item.name.in?('gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting',
                       'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation',
-                      'blog_functions', 'feature_settings')
+                      'blog_functions', 'feature_settings', 'list_style')
       extra_values = @item.extra_values
 
       case @item.name
@@ -75,6 +75,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
       when 'feature_settings'
         extra_values[:feature_1] = params[:feature_1]
         extra_values[:feature_2] = params[:feature_2]
+      when 'list_style'
+        extra_values[:wrapper_tag] = params[:wrapper_tag]
       end
 
       @item.extra_values = extra_values

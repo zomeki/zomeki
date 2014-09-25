@@ -347,4 +347,13 @@ $(document).ready(function () {
 </table>
 <%- end -%>
 
+<%- if @item.name == 'list_style' -%>
+<table class="show">
+  <tr>
+    <th>タグ</th>
+    <td><%= select_tag :wrapper_tag, options_for_select(GpArticle::Content::Doc::WRAPPER_TAG_OPTIONS, @item.extra_values[:wrapper_tag]) %></td>
+  </tr>
+</table>
+<%- end -%>
+
 <%= render 'gp_article/admin/shared/doc_style_tags' %>
