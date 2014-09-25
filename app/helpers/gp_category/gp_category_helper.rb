@@ -68,7 +68,7 @@ module GpCategory::GpCategoryHelper
             end
         }.html_safe
       html = content_tag(:ul, html) if template_module.wrapper_tag == 'li'
-      if ct_or_c
+      if ct_or_c && template_module.num_docs < docs.count
         html << content_tag(:div, link_to('一覧へ', more_link(template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
       else
         html
