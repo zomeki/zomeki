@@ -109,7 +109,7 @@ module GpCategory::GpCategoryHelper
         else
           tags
         end
-      }.html_safe
+      }
     return '' if content.blank?
 
     content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
@@ -122,8 +122,7 @@ module GpCategory::GpCategoryHelper
   def docs_5(template_module: nil, ct_or_c: nil, groups: nil, docs: nil)
     return '' if docs.empty?
 
-    content_tag(:section, class: template_module.name) do
-      groups.inject(''){|tags, group|
+    content = groups.inject(''){|tags, group|
         tags << content_tag(:section, class: group.code) do
             docs = docs.where(Sys::Group.arel_table[:id].eq(group.id))
                        .limit(template_module.num_docs).order('display_published_at DESC, published_at DESC')
@@ -138,8 +137,10 @@ module GpCategory::GpCategoryHelper
 
             html << content_tag(:div, link_to('一覧へ', more_link("g_#{group.code}", template_module: template_module, ct_or_c: ct_or_c)), class: 'more')
           end
-      }.html_safe
-    end
+      }
+    return '' if content.blank?
+
+    content_tag(:section, "#{template_module.upper_text}#{content}#{template_module.lower_text}".html_safe, class: template_module.name)
   end
 
   def docs_6(template_module: nil, ct_or_c: nil, groups: nil, docs: nil)
