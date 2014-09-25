@@ -92,6 +92,13 @@ class Cms::Site < ActiveRecord::Base
     "#{Core.full_uri}_publish/#{format('%08d', id)}/"
   end
 
+  def full_ssl_uri
+    return nil unless Sys::Setting.use_common_ssl?
+    url  = Sys::Setting.setting_extra_value(:common_ssl, :common_ssl_uri)
+    url += "_ssl/#{format('%08d', id)}/"
+    return url
+  end
+
   def has_mobile?
     !mobile_full_uri.blank?
   end

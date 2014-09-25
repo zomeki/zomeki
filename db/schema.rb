@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140911060510) do
+ActiveRecord::Schema.define(:version => 20140917081341) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1632,6 +1632,15 @@ ActiveRecord::Schema.define(:version => 20140911060510) do
   end
 
   add_index "sys_sequences", ["name", "version"], :name => "index_sys_sequences_on_name_and_version", :unique => true
+
+  create_table "sys_settings", :force => true do |t|
+    t.string   "name"
+    t.text     "value"
+    t.integer  "sort_no"
+    t.text     "extra_value"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "sys_tasks", :force => true do |t|
     t.integer  "unid"
