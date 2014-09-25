@@ -12,6 +12,7 @@ class GpArticle::Content::Doc < Cms::Content
   BROKEN_LINK_NOTIFICATION_OPTIONS = [['通知する', 'enabled'], ['通知しない', 'disabled']]
   FEATURE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   WRAPPER_TAG_OPTIONS = [['li', 'li'], ['article', 'article']]
+  DOC_LIST_STYLE_OPTIONS = [['日付毎', 'by_date'], ['通常', 'simple']]
 
   default_scope { where(model: 'GpArticle::Doc') }
 
@@ -273,6 +274,10 @@ class GpArticle::Content::Doc < Cms::Content
     setting_extra_value(:list_style, :wrapper_tag) || WRAPPER_TAG_OPTIONS.first.last
   end
 
+  def doc_list_style
+    setting_value(:doc_list_style).to_s
+  end
+
   private
 
   def set_default_settings
@@ -290,5 +295,6 @@ class GpArticle::Content::Doc < Cms::Content
     in_settings[:blog_functions] = BLOG_FUNCTIONS_OPTIONS.last.last unless setting_value(:blog_functions)
     in_settings[:broken_link_notification] = BROKEN_LINK_NOTIFICATION_OPTIONS.first.last unless setting_value(:broken_link_notification)
     in_settings[:feature_settings] = FEATURE_SETTINGS_OPTIONS.last.last unless setting_value(:feature_settings)
+    in_settings[:doc_list_style] = DOC_LIST_STYLE_OPTIONS.first.last unless setting_value(:doc_list_style)
   end
 end
