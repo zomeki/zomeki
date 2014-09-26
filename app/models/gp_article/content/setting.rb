@@ -12,6 +12,8 @@ class GpArticle::Content::Setting < Cms::ContentSetting
     options: GpArticle::Content::Doc::DOC_LIST_STYLE_OPTIONS
   set_config :list_style, name: "#{GpArticle::Doc.model_name.human}表示形式",
     form_type: :text_area, comment_upper: 'doc_style_tags'
+  set_config :rel_docs_style, name: "関連#{GpArticle::Doc.model_name.human}表示形式",
+    form_type: :text_area, comment_upper: 'doc_style_tags'
   set_config :date_style, name: "#{GpArticle::Doc.model_name.human}日付形式",
     comment: I18n.t('comments.date_style').html_safe
   set_config :time_style, name: "#{GpArticle::Doc.model_name.human}時間形式",
