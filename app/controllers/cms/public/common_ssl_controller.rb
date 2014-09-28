@@ -4,7 +4,7 @@ class Cms::Public::CommonSslController < ApplicationController
   
   def index
     path = Core.request_uri.gsub(/^#{Regexp.escape(cms_common_ssl_path)}/, "")
-    render_ssl(path, :mobile => Page.mobile?, :preview => true)
+    render_ssl(path, :mobile => Page.mobile?, :smart_phone => request.smart_phone?, :preview => true)
   end
 
   def render_ssl(path, options = {})
@@ -15,6 +15,7 @@ class Cms::Public::CommonSslController < ApplicationController
     Page.site   = options[:site] || Core.site
     Page.uri    = path
     Page.mobile = options[:mobile]
+    Page.smart_phone = options[:smart_phone]
 
     return http_error(404) if Page.site.blank?
 
@@ -40,7 +41,7 @@ class Cms::Public::CommonSslController < ApplicationController
       return redirect_to ::File.join(Page.site.full_uri, path) if node !~ /^\/_public\/survey\/node_forms/
     end
 
-    component_response = render_component :controller => ctl, :action => act, :params => params
+    component_response = render_component :controller => ctl, :action => act, :params => params, :jpmobile => (Page.smart_phone? ? envs_to_request_as_smart_phone : nil)
     response.content_type = component_response.content_type unless component_response.class == String
   end
 
