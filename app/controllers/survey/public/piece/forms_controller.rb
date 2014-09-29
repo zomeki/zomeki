@@ -14,6 +14,10 @@ class Survey::Public::Piece::FormsController < Sys::Controller::Public::Base
     target_form = @piece.target_form
     return render(:text => '') unless target_form
 
-    @target_form_public_uri = "#{public_node.public_uri}#{target_form.name}"
+    if Sys::Setting.use_common_ssl?
+      @target_form_public_uri = "#{Page.site.full_ssl_uri.sub(/\/\z/, '')}#{public_node.public_uri}#{target_form.name}"
+    else
+      @target_form_public_uri = "#{public_node.public_uri}#{target_form.name}"
+    end
   end
 end

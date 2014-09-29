@@ -13,6 +13,8 @@ ZomekiCMS::Application.routes.draw do
     match "tests_link_check" => "admin/tests/link_check#index",
       :as => :tests_link_check
 
+    resources :settings,
+      :controller  => "admin/settings"
     resources :maintenances,
       :controller  => "admin/maintenances"
     resources :messages,
