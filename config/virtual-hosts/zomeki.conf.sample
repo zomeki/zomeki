@@ -17,4 +17,15 @@ NameVirtualHost *:80
     Include /var/share/zomeki/sites/00/00/00/01/00000001/config/rewrite.conf
 </VirtualHost>
 
+#<VirtualHost 192.168.0.1:443>
+#    ServerName ssl.zomeki.example.com:443
+#    AddType text/x-component .htc
+#    Alias /_common/ "/var/share/zomeki/public/_common/"
+#    DocumentRoot /var/share/zomeki/sites
+#    Include /var/share/zomeki/config/rewrite/ssl.conf
+#    SSLEngine on
+#    SSLCertificateFile /etc/httpd/conf/ssl.crt/zomeki.crt
+#    SSLCertificateKeyFile /etc/httpd/conf/ssl.key/zomeki.key
+#</VirtualHost>
+
 Include /var/share/zomeki/config/virtual-hosts/sites.conf

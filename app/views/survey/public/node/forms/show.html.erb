@@ -12,7 +12,7 @@ $(document).ready(function () {
 <div class="surveyForm">
   <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
-  <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
+  <%= form_for(@form_answer, url: "#{@ssl_full_uri if params[:piece]}#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
     <%= f.error_messages %>
 
     <%- unless @form_answer.form.public_questions.empty? -%>
