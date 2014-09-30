@@ -43,6 +43,7 @@ class Cms::Admin::LayoutsController < Cms::Controller::Admin::Base
     @item = Cms::Layout.new.find(params[:id])
     @item.attributes = params[:item]
     _update(@item, :location => url_for(:action => :edit)) do
+      Core.set_concept(session, @item.concept_id)
       @item.put_css_files
     end
   end
