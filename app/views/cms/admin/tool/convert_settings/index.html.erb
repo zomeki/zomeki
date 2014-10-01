@@ -2,21 +2,21 @@
   <%= error_messages_for :item %>
   <table class="show">
     <tr>
-      <th><%= @item.locale(:site_url) %></th>
+      <th><%= @item.locale(:site_url) %> <span class="note">※</span></th>
       <td>
         <%= f.select :site_url, Tool::Convert.all_site_urls.collect {|s| [ s, s ] }, { include_blank: true }, {id: "site_url", style: "width: 400px;"} %>
       </td>
     </tr>
   </table>
-  
+
   <table class="show">
     <tr>
-      <th><%= @item.locale(:title_tag) %></th>
+      <th><%= @item.locale(:title_tag) %> <span class="note">※</span></th>
       <td><%= f.text_field :title_tag, style: 'width: 500px;' %></td>
     </tr>
     <tr>
-      <th><%= @item.locale(:body_tag) %></th>
-      <td><%= f.text_field :body_tag, style: 'width: 500px;' %></td>
+      <th><%= @item.locale(:body_tag) %> <span class="note">※</span></th>
+      <td><%= f.text_field :body_tag, style: 'width: 500px;' %> </td>
     </tr>
     <tr>
       <th><%= @item.locale(:updated_at_tag) %></th>
