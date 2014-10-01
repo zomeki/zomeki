@@ -22,18 +22,17 @@ class Cms::Admin::Tool::ConvertSettingsController < Cms::Controller::Admin::Base
     if @item.new_record?
       if @item.save
         flash[:notice] = "登録処理が完了しました。（#{I18n.l Time.now}）"
-        redirect_to cms_tool_convert_settings_path("item[site_url]" => @item.site_url)
       else
-        flash.now[:alert] = '登録処理に失敗しました。'
+        flash[:alert] = '登録処理に失敗しました。'
       end
     else
       if @item.update_attributes(params[:item])
         flash[:notice] = "更新処理が完了しました。（#{I18n.l Time.now}）"
-        redirect_to cms_tool_convert_settings_path("item[site_url]" => @item.site_url) 
       else
-        flash.now[:alert] = '更新処理に失敗しました。'
+        flash[:alert] = '更新処理に失敗しました。'
       end
     end
+    redirect_to cms_tool_convert_settings_path("item[site_url]" => @item.site_url)
   end
 
   def destroy
