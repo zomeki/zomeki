@@ -18,12 +18,12 @@ class Tool::Convert::DbProcessor
           @process_type = 'updated'
         end
       else
-        @doc = conf.content.model.constantize.new
+        @doc = conf.content.model.constantize.new(content_id: conf.content_id)
         @process_type = 'created'
       end
     else
       @cdoc = Tool::ConvertDoc.new
-      @doc = conf.content.model.constantize.new
+      @doc = conf.content.model.constantize.new(content_id: conf.content_id)
       @process_type = 'created'
     end
 
