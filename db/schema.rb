@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140925063453) do
+ActiveRecord::Schema.define(:version => 20141002060748) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1807,6 +1807,7 @@ ActiveRecord::Schema.define(:version => 20140925063453) do
     t.string   "site_filename"
     t.integer  "content_id"
     t.integer  "overwrite"
+    t.integer  "keep_filename"
     t.datetime "start_at"
     t.datetime "end_at"
     t.text     "message"
@@ -1839,6 +1840,8 @@ ActiveRecord::Schema.define(:version => 20140925063453) do
     t.text     "updated_at_tag"
     t.text     "updated_at_regexp"
     t.text     "creator_group_from_url_regexp"
+    t.integer  "creator_group_relation_type"
+    t.text     "creator_group_url_relations"
     t.text     "category_tag"
     t.text     "category_regexp"
     t.datetime "created_at",                    :null => false
