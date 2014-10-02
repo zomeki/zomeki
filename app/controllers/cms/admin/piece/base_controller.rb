@@ -40,6 +40,7 @@ class Cms::Admin::Piece::BaseController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
     
     _update @item do
+      Core.set_concept(session, @item.concept_id)
       respond_to do |format|
         format.html { return redirect_to(cms_pieces_path) }
       end
