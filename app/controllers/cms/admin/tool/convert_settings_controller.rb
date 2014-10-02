@@ -12,6 +12,7 @@ class Cms::Admin::Tool::ConvertSettingsController < Cms::Controller::Admin::Base
   end
 
   def index
+    @item.creator_group_relation_type = 0 unless @item.creator_group_relation_type.present?
   end
 
   def show
