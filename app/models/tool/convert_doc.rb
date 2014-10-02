@@ -16,6 +16,10 @@ class Tool::ConvertDoc < ActiveRecord::Base
     @latest_doc = docable_type.constantize.where(name: doc_name).order('updated_at desc').first
   end
 
+  def source_uri
+    "http://#{uri_path.to_s.gsub(/.htm.html$/, '.htm')}"
+  end
+
   def self.search_with_criteria(criteria = {})
     criteria ||= {}
 

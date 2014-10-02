@@ -5,6 +5,7 @@ class Tool::ConvertImport < ActiveRecord::Base
 
   STATE_OPTIONS = [['実行中', 'process'], ['終了', 'end']]
   OVERWRITE_OPTIONS = [['更新のみ上書きする', 0], ['全て上書きする', 1]]
+  KEEP_FILENAME_OPTIONS = [['ファイル名を引き継がない', 0], ['ファイル名を引き継ぐ', 1]]
 
   belongs_to :content, :class_name => 'Cms::Content'
 
@@ -34,6 +35,10 @@ class Tool::ConvertImport < ActiveRecord::Base
     OVERWRITE_OPTIONS.rassoc(overwrite).try(:first)
   end
 
+  def keep_filename_label
+    KEEP_FILENAME_OPTIONS.rassoc(keep_filename).try(:first)
+  end
+
   def import
     update_attributes(state: 'process', start_at: Time.now)
     Tool::Convert.import_site(self)
@@ -56,6 +61,7 @@ private
 
   def set_defaults
     self.overwrite ||= 0
+    self.keep_filename ||= 0
     self.created_num ||= 0
     self.updated_num ||= 0
     self.nonupdated_num ||= 0

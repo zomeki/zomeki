@@ -222,12 +222,12 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_path
-    return '' unless public_uri
+    return '' if public_uri.blank?
     "#{content.public_path}#{public_uri}#{filename_base}.html"
   end
 
   def public_smart_phone_path
-    return '' unless public_uri
+    return '' if public_uri.blank?
     "#{content.public_path}/_smartphone#{public_uri}#{filename_base}.html"
   end
 
@@ -314,8 +314,12 @@ class GpArticle::Doc < ActiveRecord::Base
     return true if will_replace?
     return false unless super
     publishers.destroy_all unless publishers.empty?
-    FileUtils.rm_rf(::File.dirname(public_path))
-    FileUtils.rm_rf(::File.dirname(public_smart_phone_path))
+    if p = public_path
+      FileUtils.rm_rf(::File.dirname(public_path)) unless p.blank?
+    end
+    if p = public_smart_phone_path
+      FileUtils.rm_rf(::File.dirname(public_smart_phone_path)) unless p.blank?
+    end
     return true
   end
 
