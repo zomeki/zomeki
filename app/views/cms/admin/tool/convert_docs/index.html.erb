@@ -13,7 +13,7 @@
   <%- @items.each do |item| -%>
     <tr class="<%= cycle('cycle', '')%>">
       <td style="text-align: center;"><%= link_to :show, cms_tool_convert_doc_path(id: item.id) %> </td>
-      <td style="text-align: left;"><%= link_to item.uri_path, "http://#{item.uri_path}", target: 'blank' %></td>
+      <td style="text-align: left;"><%= link_to item.source_uri, item.source_uri, target: 'blank' %></td>
       <td style="text-align: left;"><%= link_to item.doc_public_uri, item.doc_public_uri, target: 'blank' %></td>
       <td style="text-align: left;"><%= link_to item.doc_name, gp_article_doc_path(content: item.latest_doc.content, id: item.latest_doc.id) if item.latest_doc %></td>
       <td style="text-align: left;"><%= item.title %></td>

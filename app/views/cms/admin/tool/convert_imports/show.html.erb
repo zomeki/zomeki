@@ -12,6 +12,10 @@
     <td><%= @item.overwrite_label %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :keep_filename %></th>
+    <td><%= @item.keep_filename_label %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :state %></th>
     <td><%= @item.state_label %></td>
   </tr>

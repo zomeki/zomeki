@@ -17,4 +17,8 @@ class Tool::Convert::PageInfo
     return true if @updated_at.blank? || date.blank?
     return Time.parse(date) < Time.parse(@updated_at)
   end
+
+  def doc_filename_base
+    File.basename(uri_path, '.*').to_s.gsub(/.htm$/, '').gsub('.', '_')
+  end
 end
