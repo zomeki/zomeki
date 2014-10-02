@@ -187,11 +187,14 @@ module Cms::Controller::Layout
   end
 
   def convert_ssl_uri(body)
+    return body if Core.request_uri =~ /^\/_preview\//
     return body unless Sys::Setting.use_common_ssl?
 
     # フォームへのリンクをhttpsに、その他はhttpに変換
-    form_nodes = Cms::Node.where(model: 'Survey::Form', site_id: Page.site.id).map{|f| f.public_uri }
-    if form_nodes
+    form_nodes = Cms::Node.where(model: 'Survey::Form', site_id: Page.site.id)
+    form_nodes = form_nodes.select {|f| Survey::Content::Form.find_by_id(f.content.id).use_common_ssl? }
+    form_nodes = form_nodes.map{|f| f.public_uri }
+    unless form_nodes.blank?
       body_doc = Nokogiri::HTML.fragment(body)
       ssl_uri = Page.site.full_ssl_uri.sub(/\/\z/, '')
       body_doc.css(*form_nodes.map{|n| %Q!a[href^="#{n}"]! }).each do |a_tag|
