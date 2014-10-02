@@ -170,37 +170,40 @@ module GpCategory::GpCategoryHelper
   end
 
   def category_section(category, template_module: nil, categorizations: nil, with_child_categories: nil)
-    content_tag(:section, class: category.name) do
-      cats = categorizations.where(category_id: category.public_descendants.map(&:id))
-      next if cats.empty?
+    content = lambda{
+        cats = categorizations.where(category_id: category.public_descendants.map(&:id))
+        next if cats.empty?
 
-      all_docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
-                                                          .order('display_published_at DESC, published_at DESC')
-      docs = all_docs.limit(template_module.num_docs)
+        all_docs = cats.first.categorizable_type.constantize.where(id: cats.pluck(:categorizable_id))
+                                                            .order('display_published_at DESC, published_at DESC')
+        docs = all_docs.limit(template_module.num_docs)
 
-      html = content_tag(:h2, category.title)
-      doc_tags = docs.inject(''){|t, d|
-                   t << content_tag(template_module.wrapper_tag,
-                                    doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
-                 }.html_safe
-      doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
-      html << doc_tags
+        html = content_tag(:h2, category.title)
+        doc_tags = docs.inject(''){|t, d|
+                     t << content_tag(template_module.wrapper_tag,
+                                      doc_replace(d, template_module.doc_style, @content.date_style, @content.time_style))
+                   }.html_safe
+        doc_tags = content_tag(:ul, doc_tags) if template_module.wrapper_tag == 'li'
+        html << doc_tags
 
-      if with_child_categories && category.children.present?
-        html << content_tag(:section) do
-            content_tag(:ul) do
-              category.children.inject(''){|tags, child|
-                tags << content_tag(:li, link_to(child.title, child.public_uri))
-              }.html_safe
+        if with_child_categories && category.children.present?
+          html << content_tag(:section) do
+              content_tag(:ul) do
+                category.children.inject(''){|tags, child|
+                  tags << content_tag(:li, link_to(child.title, child.public_uri))
+                }.html_safe
+              end
             end
-          end
-      end
+        end
 
-      if all_docs.count > template_module.num_docs
-        html << content_tag(:div, link_to('一覧へ', category.public_uri), class: 'more')
-      else
-        html
-      end
-    end
+        if all_docs.count > template_module.num_docs
+          html << content_tag(:div, link_to('一覧へ', category.public_uri), class: 'more')
+        else
+          html
+        end
+      }.call
+    return '' if content.blank?
+
+    content_tag(:section, content, class: category.name)
   end
 end
