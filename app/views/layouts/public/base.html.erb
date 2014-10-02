@@ -17,11 +17,15 @@
   <%= csrf_meta_tags %>
   <%- end -%>
 
-  <%- if Sys::Setting.use_common_ssl? && Page.current_node.model == 'Survey::Form'
+  <%- if Core.request_uri =~ /^\/_ssl/ && Sys::Setting.use_common_ssl? && Page.current_node.model == 'Survey::Form'
+    if Survey::Content::Form.find_by_id(Page.current_node.content.id).use_common_ssl?
       ssl_uri = Page.site.full_ssl_uri.sub(/\/\z/, '')
       tag = "#{Page.layout.head_tag(request)}".gsub(/href=("|')\/_(layouts|themes)/) {
         "href=#{$1}#{ssl_uri}/_#{$2}"
       }
+    else
+      tag = Page.layout.head_tag(request)
+    end
     -%>
   <%= tag.html_safe %>
   <%- else -%>
