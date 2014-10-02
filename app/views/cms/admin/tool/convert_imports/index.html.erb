@@ -17,6 +17,10 @@
       <th><%= @item.locale(:overwrite) %></th>
       <td><%= f.radio_buttons :overwrite, @item.class::OVERWRITE_OPTIONS %></td>
     </tr>
+    <tr>
+      <th><%= @item.locale(:keep_filename) %></th>
+      <td><%= f.radio_buttons :keep_filename, @item.class::KEEP_FILENAME_OPTIONS %></td>
+    </tr>
   </table>
   <%= submit "書き込む" %>
 <%- end -%>

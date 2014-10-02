@@ -18,19 +18,19 @@ class Tool::Convert::DbProcessor
           @process_type = 'updated'
         end
       else
-        @doc = conf.content.model.constantize.new
+        @doc = conf.content.model.constantize.new(content_id: conf.content_id)
         @process_type = 'created'
       end
     else
       @cdoc = Tool::ConvertDoc.new
-      @doc = conf.content.model.constantize.new
+      @doc = conf.content.model.constantize.new(content_id: conf.content_id)
       @process_type = 'created'
     end
 
     dump @process_type
 
     @doc.state ||= conf.doc_state
-    @doc.filename_base = File.basename(page.uri_path, '.*').to_s.gsub('.', '_') if @doc.new_record?
+    @doc.filename_base = page.doc_filename_base if @doc.new_record? && conf.keep_filename == 1
     @doc.content_id = conf.content.id if conf.content
     @doc.concept_id = conf.content.concept_id if conf.content
     @doc.ignore_accessibility_check = conf.ignore_accessibility_check
@@ -42,11 +42,11 @@ class Tool::Convert::DbProcessor
     @doc.published_at = page.updated_at || Time.now
     @doc.display_published_at = page.updated_at || Time.now
     @doc.recognized_at = page.updated_at || Time.now
-    @doc.href = ''
-    @doc.subtitle = ''
-    @doc.summary = ''
-    @doc.mobile_title = ''
-    @doc.mobile_body = ''
+    @doc.href ||= ''
+    @doc.subtitle ||= ''
+    @doc.summary ||= ''
+    @doc.mobile_title ||= ''
+    @doc.mobile_body ||= ''
 
     if @doc.inquiries.blank? && page.inquiry_group_id.present?
       @doc.inquiries.build(

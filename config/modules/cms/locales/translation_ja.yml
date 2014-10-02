@@ -203,6 +203,7 @@ ja:
         site_filename: ファイル名
         content_id: コンテンツ
         overwrite: 上書きオプション
+        keep_filename: ファイル名オプション
         start_at: 開始日時
         end_at: 終了日時
         message: メッセージ
