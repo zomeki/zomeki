@@ -31,6 +31,15 @@
       <td><%= f.text_field :creator_group_from_url_regexp, style: 'width: 500px;' %> (例：\/soshiki\/(\d+)\/)</td>
     </tr>
     <tr>
+      <th><%= @item.locale(:creator_group_relation_type) %></th>
+      <td><%= f.radio_buttons :creator_group_relation_type, @item.class::GROUP_RELATION_OPTIONS %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:creator_group_url_relations) %></th>
+      <td><%= f.text_area :creator_group_url_relations, :class => 'body', :style => 'width: 500px' %>
+        <br />(例：<br />hisyo&gt;hisho[改行]<br />kikaku/hisyo&gt;101[改行])</td>
+    </tr>
+    <tr>
       <th><%= @item.locale(:category_tag) %></th>
       <td><%= f.text_field :category_tag, style: 'width: 500px;' %></td>
     </tr>
