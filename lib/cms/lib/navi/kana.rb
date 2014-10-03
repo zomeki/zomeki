@@ -9,6 +9,7 @@ class Cms::Lib::Navi::Kana
     mecab_rc = Cms::KanaDictionary.mecab_rc(site_id)
     
     str = str.to_utf8.gsub(/\r\n/, "\n")
+    str = str.gsub('é', '&eacute;')
     
     tmp = str.gsub(/[\r\n]/, "*")
     ["head", "style", "script", "ruby"].each do |name|

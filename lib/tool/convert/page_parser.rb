@@ -23,10 +23,21 @@ class Tool::Convert::PageParser
     if conf.updated_at_regexp.present? && page.updated_at =~ Regexp.new(conf.updated_at_regexp)
       page.updated_at = "#{$1}-#{$2}-#{$3}"
     end
-
     if conf.creator_group_from_url_regexp.present? && uri_path =~ Regexp.new(conf.creator_group_from_url_regexp)
       page.group_code = $1
-      if group = Sys::Group.find_by_code(page.group_code)
+
+      # convert group string
+      page.group_code = conf.creator_group_url_relations_map[page.group_code] if conf.creator_group_url_relations_map.has_key?(page.group_code)
+
+      if conf.relate_url_to_group_name_en?
+        group = Sys::Group.find_by_name_en(page.group_code)
+      elsif conf.relate_url_to_group_name?
+        group = Sys::Group.find_by_name(page.group_code)
+      else
+        group = Sys::Group.find_by_code(page.group_code)
+      end
+
+      if group
         page.creator_group_id = group.id
         page.creator_user_id = Sys::User.where("name like '#{group.name}%'").first.try(:id)
 
@@ -43,7 +54,7 @@ class Tool::Convert::PageParser
 
     page.category_name = nil
     page.category_name = html.xpath(conf.category_xpath).inner_html unless conf.category_xpath.blank?
-    
+
     if conf.category_regexp.present? && page.category_name =~ Regexp.new(conf.category_regexp)
       page.category_name = $1
     elsif conf.category_xpath.blank? && conf.category_regexp.present? && html.inner_html =~ Regexp.new(conf.category_regexp)
