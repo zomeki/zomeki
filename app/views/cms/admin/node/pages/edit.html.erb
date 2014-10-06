@@ -1,4 +1,4 @@
-<%= form_for :item, :url => {:action => :update}, :html => {:method => :put} do |f| %>
+<%= form_for @item, :as => :item, :url => {:action => :update}, :html => {:method => :put} do |f| %>
   
 <%= error_messages_for :item %>
 

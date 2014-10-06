@@ -4,6 +4,6 @@
 <%= raw @body %>
 </div>
 
-<%= render :partial => 'cms/public/_partial/inquiries/view', :locals => {:item => @item} %>
+<%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
 <!-- end .contentPage --></div>

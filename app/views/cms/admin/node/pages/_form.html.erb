@@ -100,7 +100,9 @@ function setText(element, text ) {
   </tr>
 </table>
 
-<%= inquiry_form f %>
+<br /><p class="form">連絡先設定</p>
+<%= render 'cms/admin/_partial/many_inquiries/form', {f: f, item: @item} %>
+<%#= inquiry_form f %>
 <%= task_form f %>
 <%= recognizer_form f %>
 <%= creator_form f %>
