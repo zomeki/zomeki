@@ -27,7 +27,7 @@ class Cms::Admin::Tool::ConvertImportsController < Cms::Controller::Admin::Base
     end
 
     site_filenames.each do |f|
-      next if f.blank?
+      next if f.blank? && site_filenames.size > 1
       _item = params[:item]
       _item[:site_filename] = f
 
