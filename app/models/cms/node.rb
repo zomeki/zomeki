@@ -258,11 +258,12 @@ protected
 
   class Page < Cms::Node
     include Sys::Model::Rel::Recognition
-    include Cms::Model::Rel::Inquiry
+    include Cms::Model::Rel::ManyInquiry
+#    include Cms::Model::Rel::Inquiry
     include Sys::Model::Rel::Task
     
-    validate :validate_inquiry,
-      :if => %Q(state == 'public')
+#    validate :validate_inquiry,
+#      :if => %Q(state == 'public')
     validate :validate_recognizers,
       :if => %Q(state == "recognize")
     
@@ -329,10 +330,20 @@ protected
       
       item.in_recognizer_ids  = recognition.recognizer_ids if recognition
       
-      if inquiry != nil && inquiry.group_id == Core.user.group_id
-        item.in_inquiry = inquiry.attributes
-      else
-        item.in_inquiry = {:group_id => Core.user.group_id}
+#      if inquiry != nil && inquiry.group_id == Core.user.group_id
+#        item.in_inquiry = inquiry.attributes
+#      else
+#        item.in_inquiry = {:group_id => Core.user.group_id}
+#      end
+
+      inquiries.each_with_index do |inquiry, i|
+        if i == 0
+          attrs = inquiry.attributes
+          attrs[:group_id] = Core.user.group_id
+          item.inquiries.build(inquiry.attributes)
+        else
+          item.inquiries.build(inquiry.attributes)
+        end
       end
       
       return false unless item.save(:validate => false)
