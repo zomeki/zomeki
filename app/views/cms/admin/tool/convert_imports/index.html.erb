@@ -7,7 +7,9 @@
     </tr>
     <tr>
       <th><%= @item.locale(:site_filename) %></th>
-      <td><%= f.select :site_filename, @item.site_filename_options, { include_blank: true } %></td>
+      <td><%= select_tag 'item[site_filename]', options_for_select(@item.site_filename_options),
+                id: 'item_site_filename', include_blank: true, multiple: true, size: 10 %>
+    </td>
     </tr>
     <tr>
       <th><%= @item.locale(:content_id) %></th>
