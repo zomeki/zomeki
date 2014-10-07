@@ -73,6 +73,28 @@ class GpCalendar::Event < ActiveRecord::Base
     GpCalendar::Holiday.public.all_with_content_and_criteria(content, criteria).first.title rescue nil
   end
 
+  def public_path
+    node = content.public_nodes.where(model: 'GpCalendar::Event').first
+    return '' unless node
+    "#{node.public_path}#{name}"
+  end
+
+  def public_files_path
+    return '' if public_path.blank?
+    "#{public_path}/file_contents"
+  end
+
+  def publish_files
+    return if public_files_path.blank?
+    @save_mode = :publish
+    super
+  end
+
+  def close_files
+    @save_mode = :close
+    super
+  end
+
   private
 
   def set_defaults

@@ -1,6 +1,6 @@
-class GpCalendar::Script::TodaysEventsController < Cms::Controller::Script::Publication
+class GpCalendar::Script::TodaysEventsController < GpCalendar::Script::BaseController
   def publish
-    info_log 'GpCalendar::Script::TodaysEventsController#publish'
+    publish_without_months
     render text: 'OK'
   rescue => e
     error_log e.message

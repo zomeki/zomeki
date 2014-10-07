@@ -17,6 +17,10 @@ class GpCalendar::Content::Event < Cms::Content
     public_nodes.order(:id).first
   end
 
+  def public_events
+    events.public
+  end
+
   def categories
     setting = GpCalendar::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     return [] unless setting

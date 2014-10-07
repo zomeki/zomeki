@@ -3,6 +3,8 @@ class GpCalendar::Public::Node::EventsController < GpCalendar::Public::Node::Bas
   skip_filter :render_public_layout, :only => [:file_content]
 
   def index
+    http_error(404) if params[:page]
+
     year_month = @year_only ? @date.strftime('%Y') : @date.strftime('%Y%m')
 
     criteria = {year_month: year_month}
