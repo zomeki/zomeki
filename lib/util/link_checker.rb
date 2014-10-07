@@ -16,18 +16,20 @@ class Util::LinkChecker
       link_check = Cms::LinkCheck.create
     end
 
-    GpArticle::Content::Doc.find_by_site_id(Core.site.id).all_docs.each do |doc|
-      doc.links.each do |link|
-        uri = URI.parse(link.url)
-        url = unless uri.absolute?
-                next unless uri.path =~ /^\//
-                "#{doc.content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
-              else
-                uri.to_s
-              end
+    GpArticle::Content::Doc.where(site_id: Core.site.id).each do |c|
+      c.all_docs.each do |doc|
+        doc.links.each do |link|
+          uri = URI.parse(link.url)
+          url = unless uri.absolute?
+                  next unless uri.path =~ /^\//
+                  "#{doc.content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
+                else
+                  uri.to_s
+                end
 
-        link_check.logs.create(link_checkable: doc, title: doc.title,
-                               body: link.body, url: url)
+          link_check.logs.create(link_checkable: doc, title: doc.title,
+                                 body: link.body, url: url)
+        end
       end
     end
 
