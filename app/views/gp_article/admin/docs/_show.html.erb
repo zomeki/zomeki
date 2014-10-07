@@ -69,7 +69,7 @@
         <th colspan="2"><%= @item.locale :body %></th>
       </tr>
       <tr>
-        <td colspan="2"><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+        <td colspan="2"><%=raw @item.body.gsub(/("|')file_contents\//, '\1' + %Q(#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
       </tr>
       <%- unless @item.links_in_body.empty? -%>
       <tr>
