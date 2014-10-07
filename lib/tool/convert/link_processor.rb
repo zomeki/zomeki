@@ -43,15 +43,18 @@ class Tool::Convert::LinkProcessor
     doc = cdoc.latest_doc
     return self unless doc
 
+    @after_body = html.inner_html
+
     @clinks.each do |clink|
       if clink.filename.present? && !doc.files.find_by_name(clink.filename)
         if file = create_file(doc, clink)
           doc.files.push(file)
         end
       end
+      @after_body = @after_body.gsub(clink.url, clink.after_url)
     end
 
-    doc.body = @after_body = html.inner_html
+    doc.body = @after_body
     doc.ignore_accessibility_check = conf.ignore_accessibility_check
     doc.publish_files
     unless doc.save
