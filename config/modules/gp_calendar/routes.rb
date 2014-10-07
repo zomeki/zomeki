@@ -1,6 +1,11 @@
 ZomekiCMS::Application.routes.draw do
   mod = 'gp_calendar'
 
+  ## script
+  get "/_script/#{mod}/script/calendar_styled_events/publish" => "#{mod}/script/calendar_styled_events#publish"
+  get "/_script/#{mod}/script/events/publish" => "#{mod}/script/events#publish"
+  get "/_script/#{mod}/script/todays_events/publish" => "#{mod}/script/todays_events#publish"
+
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :content_base,
