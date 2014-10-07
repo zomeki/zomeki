@@ -77,7 +77,7 @@ private
     uri.host ||= uri_path.split('/')[0]
 
     if uri.path
-      if !uri.path.include?('/') && !uri.fragment
+      if (!uri.path.include?('/') || uri.path =~ /^[^\/\.]/) && !uri.fragment
         uri.path = "/#{uri_path.split('/')[1...-1].join('/')}/#{uri.path}"
       end
       uri.path = uri.path.gsub(/[\/]+/, '/')
