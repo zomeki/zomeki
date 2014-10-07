@@ -89,7 +89,7 @@ class Tool::Convert
         dump "#{db.process_type_label},#{db.cdoc.class.name},#{db.cdoc.id},#{db.cdoc.docable_type},#{db.cdoc.docable_id}"
       else
         conf.skipped_num += 1
-        dump "非記事"
+        dump "非記事（#{'タイトル' if page.title.blank?}#{'本文' if page.body.blank?}無し）"
       end
 
       conf.save if i % 100 == 0
