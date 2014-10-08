@@ -10,6 +10,10 @@
       <td><%= f.text_field :include_dir, class: 'title' %></td>
     </tr>
     <tr>
+      <th><%= f.label :recursive_level %></th>
+      <td><%= f.select :recursive_level, Tool::ConvertDownload::RECURSIVE_LEVEL_OPTIONS %></td>
+    </tr>
+    <tr>
       <th><%= f.label :remark %></th>
       <td><%= f.text_field :remark, class: 'title' %></td>
     </tr>

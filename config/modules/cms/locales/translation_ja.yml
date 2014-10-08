@@ -180,6 +180,7 @@ ja:
         state: 状態
         start_at: 開始日時
         end_at: 終了日時
+        recursive_level: 再帰ダウンロード階層数
         remark: 備考
         message: メッセージ
         created_at: 作成日時
