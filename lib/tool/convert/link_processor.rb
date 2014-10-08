@@ -115,7 +115,7 @@ private
   end
 
   def convert_file_link(uri, clink)
-    file_path = "#{Tool::Convert::SITE_BASE_DIR}#{uri.to_s.gsub(%r{^\w+://}, '')}"
+    file_path = "#{Tool::Convert::SITE_BASE_DIR}#{URI.unescape(uri.to_s).gsub(%r{^\w+://}, '')}"
 
     if File.file?(file_path)
       clink.file_path = file_path
