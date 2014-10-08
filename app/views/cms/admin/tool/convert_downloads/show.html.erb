@@ -12,6 +12,10 @@
     <td><%= @item.state_label %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :recursive_level %></th>
+    <td><%= @item.recursive_level_label %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :remark %></th>
     <td><%= @item.remark %></td>
   </tr>
