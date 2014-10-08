@@ -6,6 +6,7 @@ class Tool::Convert
     return if conf.site_url.blank?
     com = "wget -rqNE --restrict-file-names=nocontrol -P #{SITE_BASE_DIR} #{conf.site_url}"
     com << " -I #{conf.include_dir}" if conf.include_dir.present?
+    com << " -l #{conf.recursive_level}" if conf.recursive_level
     system com
   end
 
