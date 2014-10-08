@@ -101,7 +101,7 @@ private
       linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}index.html").first
     end
     # 他記事へのリンク(.html補完)
-    if !linked_cdoc && !uri.path.include?('.')
+    if !linked_cdoc && (!uri.path.include?('.') || uri.path[-4..-1] == '.htm' )
       linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}.html").first
     end
 
@@ -115,7 +115,7 @@ private
   end
 
   def convert_file_link(uri, clink)
-    file_path = "#{Tool::Convert::SITE_BASE_DIR}#{uri.to_s.gsub(%r{^\w+://}, '')}"
+    file_path = "#{Tool::Convert::SITE_BASE_DIR}#{URI.unescape(uri.to_s).gsub(%r{^\w+://}, '')}"
 
     if File.file?(file_path)
       clink.file_path = file_path
