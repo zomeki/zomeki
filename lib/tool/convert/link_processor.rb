@@ -101,7 +101,7 @@ private
       linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}index.html").first
     end
     # 他記事へのリンク(.html補完)
-    if !linked_cdoc && !uri.path.include?('.')
+    if !linked_cdoc && (!uri.path.include?('.') || uri.path[-4..-1] == '.htm' )
       linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}.html").first
     end
 
