@@ -75,19 +75,8 @@ private
   end
 
   def normalize_url(url, uri_path)
-    uri = URI.parse(url)
-    uri.scheme ||= 'http'
-    uri.host ||= uri_path.split('/')[0]
-
-    if uri.path
-      if (!uri.path.include?('/') || uri.path =~ /^[^\/\.]/) && !uri.fragment
-        uri.path = "/#{uri_path.split('/')[1...-1].join('/')}/#{uri.path}"
-      end
-      uri.path = uri.path.gsub(/[\/]+/, '/')
-    else
-      uri.path = '/'
-    end
-
+    uri = URI.parse("http://#{uri_path}").merge(url)
+    uri.path = '/' unless uri.path
     uri
   rescue => e
     nil
