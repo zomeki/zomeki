@@ -94,11 +94,18 @@ private
       linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}.html").first
     end
 
+    uri = uri.dup
+    uri.scheme = uri.host = nil
+
     if linked_cdoc
-      clink.after_url = linked_cdoc.doc_public_uri
-      clink.after_url += '#' + uri.fragment if uri.fragment
+      uri.path = ""
+      if linked_cdoc == clink.cdoc
+        clink.after_url = uri.to_s
+      else
+        clink.after_url = linked_cdoc.doc_public_uri
+        clink.after_url += uri.to_s
+      end
     else
-      uri.scheme = uri.host = nil
       clink.after_url = uri.to_s
     end
   end
