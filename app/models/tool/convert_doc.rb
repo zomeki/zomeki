@@ -26,7 +26,7 @@ class Tool::ConvertDoc < ActiveRecord::Base
     rel = scoped
     if criteria[:keyword].present?
       words = criteria[:keyword].split(/[ 　]+/)
-      conds = [:title, :uri_path, :doc_name, :doc_public_uri].map do |field|
+      conds = [:title, :uri_path, :doc_name, :doc_public_uri, :body].map do |field|
         words.map{|w| arel_table[field].matches("%#{w}%")}.inject(&:and)
       end
       rel = rel.where(conds.inject(&:or))

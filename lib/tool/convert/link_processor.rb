@@ -37,13 +37,12 @@ class Tool::Convert::LinkProcessor
         @clinks << clink
         e[clink.attr] = clink.after_url
         e['class'] = "iconFile icon#{clink.ext.capitalize}" if clink.tag == 'a' && clink.filename.present?
+        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url)
       end
     end
 
     doc = cdoc.latest_doc
     return self unless doc
-
-    @after_body = html.inner_html
 
     @clinks.each do |clink|
       if clink.filename.present? && !doc.files.find_by_name(clink.filename)
@@ -51,10 +50,9 @@ class Tool::Convert::LinkProcessor
           doc.files.push(file)
         end
       end
-      @after_body = @after_body.gsub(clink.url, clink.after_url)
     end
 
-    doc.body = @after_body
+    doc.body = @after_body = html.inner_html
     doc.ignore_accessibility_check = conf.ignore_accessibility_check
     doc.publish_files
     unless doc.save

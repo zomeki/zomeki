@@ -36,7 +36,7 @@ class Tool::Convert::DbProcessor
     @doc.ignore_accessibility_check = conf.ignore_accessibility_check
     @doc.title = page.title
     @doc.body = page.body
-    @doc.in_creator = { 'group_id' => page.creator_group_id || 2, 'user_id' => page.creator_user_id || 1 }
+    @doc.in_creator = { 'group_id' => page.creator_group_id, 'user_id' => page.creator_user_id }
     @doc.created_at ||= page.updated_at || Time.now
     @doc.updated_at ||= page.updated_at || Time.now
     @doc.published_at = page.updated_at || Time.now
