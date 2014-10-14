@@ -243,3 +243,10 @@ ja:
         after_body: 変換後
         created_at: 作成日時
         updated_at: 更新日時
+
+      ## tool
+      cms/model/tool/export:
+        concept_id: "コンセプト"
+      cms/model/tool/import:
+        concept_id: "コンセプト"
+        file: "ファイル"
