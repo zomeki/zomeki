@@ -175,6 +175,8 @@ ZomekiCMS::Application.routes.draw do
 #      as: 'tool_convert_file_list', :format => false, :constraints => { :site_url => /[^\/]+/ }, via: [:get, :post]
 #    match "tool_convert_setting" => "admin/tool/convert#convert_setting", as: 'tool_convert_setting', via: [:get, :post]
 #    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site', via: [:get, :post]
+    match "tool_export"  => "admin/tool/export#index", via: [:get, :post]
+    match "tool_import"  => "admin/tool/import#index", via: [:get, :post]
   end
 
   ## public
