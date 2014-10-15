@@ -37,7 +37,7 @@ class Tool::Convert::LinkProcessor
         @clinks << clink
         e[clink.attr] = clink.after_url
         e['class'] = "iconFile icon#{clink.ext.capitalize}" if clink.tag == 'a' && clink.filename.present?
-        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url)
+        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url) if e.attributes['onclick']
       end
     end
 
