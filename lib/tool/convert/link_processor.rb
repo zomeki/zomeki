@@ -10,11 +10,11 @@ class Tool::Convert::LinkProcessor
     host = cdoc.site_url.split('/')[0]
 
     html = Nokogiri::HTML.fragment(@body)
-    html.xpath("./a[@href]|.//a[@href]|./img[@src]|.//img[@src]").each do |e|
+    html.xpath("./a[@href]|.//a[@href]|./area[@href]|.//area[@href]|./img[@src]|.//img[@src]").each do |e|
       clink = Tool::Convert::Link.new
       clink.cdoc = cdoc
       clink.tag = e.name
-      clink.attr = e.name == 'a' ? 'href' : 'src'
+      clink.attr = ['a', 'area'].include?(e.name) ? 'href' : 'src'
       clink.url = e[clink.attr].to_s.dup
       clink.after_url = clink.url.dup
 
@@ -37,7 +37,7 @@ class Tool::Convert::LinkProcessor
         @clinks << clink
         e[clink.attr] = clink.after_url
         e['class'] = "iconFile icon#{clink.ext.capitalize}" if clink.tag == 'a' && clink.filename.present?
-        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url)
+        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url) if e.attributes['onclick']
       end
     end
 
