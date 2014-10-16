@@ -1,6 +1,6 @@
 class Sys::Script::TasksController < ApplicationController
   def exec
-    tasks = Sys::Task.where(Sys::Task.arel_table[:process_at].lteq(5.minutes.ago))
+    tasks = Sys::Task.where(Sys::Task.arel_table[:process_at].lteq(3.minutes.since))
                      .order(:process_at)
                      .includes(:unid_data)
 
