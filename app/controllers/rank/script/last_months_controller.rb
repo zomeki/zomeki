@@ -1,9 +1,2 @@
-class Rank::Script::LastMonthsController < Cms::Controller::Script::Publication
-  def publish
-    info_log 'Rank::Script::LastMonthsController#publish'
-    render text: 'OK'
-  rescue => e
-    error_log e.message
-    render text: e.message
-  end
+class Rank::Script::LastMonthsController < Rank::Script::BaseController
 end
