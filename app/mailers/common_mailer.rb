@@ -17,7 +17,7 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "#{content.name}（#{content.site.name}）：回答メール"
+         subject: "#{@form_answer.form.title}（#{content.site.name}）：回答メール"
   end
 
   def approval_request(approval_request: nil, preview_url: nil, approve_url: nil, from: nil, to: nil)
