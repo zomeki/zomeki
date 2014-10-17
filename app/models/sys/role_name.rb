@@ -7,4 +7,18 @@ class Sys::RoleName < ActiveRecord::Base
     :class_name => 'Sys::UsersRole', :dependent => :destroy
     
   validates_presence_of :name, :title
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+
+      case n
+      when 's_keyword'
+        self.and_keywords v, :title, :name
+      end
+    end if params.size != 0
+
+    return self
+  end
+
 end
