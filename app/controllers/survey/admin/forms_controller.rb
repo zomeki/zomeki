@@ -129,6 +129,22 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     redirect_to url_for(:action => :show), notice: '公開処理が完了しました。'
   end
 
+  def duplicate(item)
+    if dupe_item = item.duplicate
+      flash[:notice] = '複製処理が完了しました。'
+      respond_to do |format|
+        format.html { redirect_to url_for(:action => :index) }
+        format.xml  { head :ok }
+      end
+    else
+      flash[:notice] = "複製処理に失敗しました。"
+      respond_to do |format|
+        format.html { redirect_to url_for(:action => :show) }
+        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   private
 
   def set_approval_requests
