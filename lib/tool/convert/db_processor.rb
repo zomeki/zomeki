@@ -41,7 +41,8 @@ class Tool::Convert::DbProcessor
     @doc.updated_at ||= page.updated_at || Time.now
     @doc.published_at = page.updated_at || Time.now
     @doc.display_published_at = page.updated_at || Time.now
-    @doc.recognized_at = page.updated_at || Time.now
+    @doc.display_updated_at   = page.updated_at || Time.now
+    @doc.recognized_at      = page.updated_at || Time.now
     @doc.href ||= ''
     @doc.subtitle ||= ''
     @doc.summary ||= ''

@@ -4,11 +4,13 @@ class Sys::Admin::RoleNamesController < Cms::Controller::Admin::Base
   
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:manager)
+    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
   
   def index
     item = Sys::RoleName.new#.readable
     item.and :site_id, Core.site.id
+    item.search(params)
     item.page  params[:page], params[:limit]
     item.order params[:sort], :name
     @items = item.find(:all)

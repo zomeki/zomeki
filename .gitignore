@@ -6,6 +6,7 @@
 /sites/
 /tmp/
 /upload/
+/wget_sites/
 
 /config/core.yml
 /config/mecab/sites/
