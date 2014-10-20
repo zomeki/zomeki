@@ -10,6 +10,8 @@ class Rank::Public::Node::PreviousDaysController < Cms::Controller::Public::Base
   end
 
   def index
+    http_error(404) if params[:page]
+
     @term   = 'previous_days'
     @target = 'pageviews'
     @ranks  = rank_datas(@content, @term, @target, 20)

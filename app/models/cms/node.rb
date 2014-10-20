@@ -98,7 +98,7 @@ class Cms::Node < ActiveRecord::Base
   
   def inherited_concept(key = nil)
     if !@_inherited_concept
-      concept_id = concept_id
+      concept_id = self.concept_id
       parents_tree.each do |r|
         concept_id = r.concept_id if r.concept_id
       end unless concept_id
