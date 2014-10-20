@@ -171,6 +171,31 @@ class Survey::Form < ActiveRecord::Base
     end
   end
 
+  def duplicate
+    item = self.class.new(self.attributes)
+    item.id            = nil
+    item.unid          = nil
+    item.created_at    = nil
+    item.updated_at    = nil
+
+    item.name  = nil
+    item.title = item.title.gsub(/^(【複製】)*/, "【複製】")
+    item.state = "draft"
+
+    return false unless item.save(:validate => false)
+
+    # piece_settings
+    questions.each do |question|
+      dupe_question = Survey::Question.new(question.attributes)
+      dupe_question.form_id   = item.id
+      dupe_question.created_at = nil
+      dupe_question.updated_at = nil
+      dupe_question.save(:validate => false)
+    end
+
+    return item
+  end
+
   def publish
     return unless state_approved?
     approval_requests.destroy_all
