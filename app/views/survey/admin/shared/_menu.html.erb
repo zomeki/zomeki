@@ -34,4 +34,9 @@
   <%= link_to '公開', url_for(action: 'publish'), :method => :post, :confirm => '公開してもよろしいですか？' if @item.state_approved? && @item.approval_participators.include?(Core.user) %>
     <%- end -%>
   <%- end -%>
+  <% if params[:action] == 'show' %>
+    <% if Core.user.has_priv?(:create, :item => Core.concept) %>
+    <%= link_to '複製', {:do => :duplicate}, :confirm => "複製してよろしいですか？" %>
+    <% end %>
+  <% end %>
 </div>

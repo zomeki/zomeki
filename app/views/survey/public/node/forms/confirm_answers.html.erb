@@ -8,6 +8,7 @@
           <%= label_tag "question_answer_#{question.id}", question.title %>
         </div>
 
+        <% if question.form_type != 'free' %>
         <div class="answer_content">
           <%= hidden_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- case question.form_type -%>
@@ -23,6 +24,7 @@
             <%= @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- end -%>
         </div>
+        <% end %>
 
         <%- if question.description.present? -%>
         <div class="body"><%=raw question.description %></div>
