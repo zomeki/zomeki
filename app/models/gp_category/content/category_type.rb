@@ -10,13 +10,15 @@ class GpCategory::Content::CategoryType < Cms::Content
   has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => :sort_no, :dependent => :destroy
   has_many :templates, :foreign_key => :content_id, :class_name => 'GpCategory::Template', :dependent => :destroy
   has_many :template_modules, :foreign_key => :content_id, :class_name => 'GpCategory::TemplateModule', :dependent => :destroy
-  has_many :nodes, :foreign_key => :content_id, :class_name => 'Cms::Node',
-           :conditions => ["#{Cms::Node.table_name}.model = ?", 'GpCategory::CategoryType']
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
   def public_node
-    nodes.public.order(:id).first
+    public_nodes.order(:id).first
   end
 
 #TODO: DEPRECATED
