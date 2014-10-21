@@ -5,16 +5,16 @@ class GpCategory::Admin::Tool::CategoryTypesController < Cms::Controller::Admin:
     results = {ok: 0, ng: 0}
     errors = []
 
-    if content.public_node
-      content.category_types.each do |category_type|
+    if (nodes = content.public_nodes).count > 0
+      nodes.each do |node|
         begin
-          render_component_into_view :controller => '/gp_category/script/category_types', :action => 'publish',
-                                     :params => {target_id: [category_type.id], node_id: content.public_node.id}
+          ctrl = node.model.underscore.pluralize.sub(/\A(.+?)\//, '/\1/script/')
+          render_component_into_view controller: ctrl, action: 'publish',
+                                     params: {node_id: node.id}
           results[:ok] += 1
         rescue => e
           results[:ng] += 1
-          errors << "エラー： #{category_type.id}, #{category_type.title}, #{e.message}"
-          error_log("Rebuild: #{e.message}")
+          error_log("Failed to rebuild: #{e.message}")
         end
       end
     else
