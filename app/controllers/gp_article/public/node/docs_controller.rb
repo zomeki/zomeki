@@ -104,7 +104,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
         when id
           @content.all_docs.find_by_id(id)
         when name
-          nil
+          @content.public_docs.find_by_name(name) || @content.preview_docs.find_by_name(name)
         else
           @content.public_docs
         end
