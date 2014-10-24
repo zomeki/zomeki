@@ -26,7 +26,7 @@ $(document).ready(function () {
 
         <div class="answer_content">
           <%- case question.form_type -%>
-          <%- when 'text_field' -%>
+          <%- when 'text_field', 'text_field_email' -%>
             <%= text_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute %>
             <%- if question.form_text_max_length -%>
             <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>

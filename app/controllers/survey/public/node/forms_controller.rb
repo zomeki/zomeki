@@ -21,7 +21,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     @form_answer = @form.form_answers.build(answered_url: "#{@content.site.full_uri.sub(/\/+$/, '')}#{@content.public_node.public_uri}#{@form.name}",
                                             answered_url_title: @form.title,
                                             remote_addr: request.remote_addr, user_agent: request.user_agent)
-    
+
     render_survey_layout
   end
 
@@ -77,10 +77,14 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def send_mail_and_redirect_to_finish
+    ## send mail to admin
     CommonMailer.survey_receipt(form_answer: @form_answer, from: @content.mail_from, to: @content.mail_to)
                 .deliver if @content.mail_from.present? && @content.mail_to.present?
 
-    dump Core.request_uri
+    ## send mail to answer
+    CommonMailer.survey_auto_reply(form_answer: @form_answer, from: @content.mail_from, to: @form_answer.reply_to)
+            .deliver if @content.auto_reply? && @content.mail_from.present? && @form_answer.reply_to.present?
+
     if Core.request_uri =~ /^\/_ssl\/([0-9]+).*/
       redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish") #?piece=#{params[:piece]}
     else

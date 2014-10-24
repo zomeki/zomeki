@@ -30,6 +30,14 @@ class Survey::Content::Form < Cms::Content
     setting_value(:mail_to).to_s
   end
 
+  def upper_reply_text
+    setting_value(:upper_reply_text).to_s
+  end
+
+  def lower_reply_text
+    setting_value(:lower_reply_text).to_s
+  end
+
   def approval_content_approval_flow
     Approval::Content::ApprovalFlow.find_by_id(setting_extra_value(:approval_relation, :approval_content_id))
   end
@@ -40,6 +48,10 @@ class Survey::Content::Form < Cms::Content
 
   def use_captcha?
     setting_value('captcha') == 'enabled'
+  end
+
+  def auto_reply?
+    setting_value(:auto_reply) == 'send'
   end
 
   def use_common_ssl?

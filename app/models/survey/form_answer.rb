@@ -27,6 +27,13 @@ class Survey::FormAnswer < ActiveRecord::Base
     answers.detect{|a| a.question_id == question.id }
   end
 
+  def reply_to
+    if q = form.automatic_reply_question
+      answers.each {|a| return a.content if a.question_id == q.id }
+    end
+    nil
+  end
+
   private
 
   def validate_base
