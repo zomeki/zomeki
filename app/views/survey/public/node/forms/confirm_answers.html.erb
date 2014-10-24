@@ -12,7 +12,7 @@
         <div class="answer_content">
           <%= hidden_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- case question.form_type -%>
-          <%- when 'text_field' -%>
+          <%- when 'text_field', 'text_field_email' -%>
             <%= @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- when 'text_area' -%>
             <%=simple_format @form_answer.detect_answer_by_question(question).try(:content) %>

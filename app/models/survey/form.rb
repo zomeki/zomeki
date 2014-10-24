@@ -80,6 +80,18 @@ class Survey::Form < ActiveRecord::Base
     questions.public
   end
 
+  def automatic_reply?
+    return true if automatic_reply_question
+    false
+  end
+
+  def automatic_reply_question
+    public_questions.each do |q|
+      return q if q.email_field?
+    end
+    return nil
+  end
+
   def open?
     now = Time.now
     return false if opened_at && opened_at > now

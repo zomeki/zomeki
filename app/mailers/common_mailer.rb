@@ -20,6 +20,18 @@ class CommonMailer < ActionMailer::Base
          subject: "#{@form_answer.form.title}（#{content.site.name}）：回答メール"
   end
 
+  def survey_auto_reply(form_answer: nil, from: nil, to: nil)
+    raise ArgumentError.new('form_answer required.') unless form_answer.kind_of?(Survey::FormAnswer)
+    raise ArgumentError.new("emails required. (from: #{from}, to: #{to})") if from.to_s.blank? || to.to_s.blank?
+
+    @content = form_answer.form.content
+    @form_answer = form_answer
+
+    mail from: from,
+         to: to,
+         subject: "#{@form_answer.form.title}（#{@content.site.name}）：自動返信メール"
+  end
+
   def approval_request(approval_request: nil, preview_url: nil, approve_url: nil, from: nil, to: nil)
     raise ArgumentError.new('approval_request required.') if approval_request.nil?
     raise ArgumentError.new('preview_url required.') if preview_url.nil?
