@@ -16,4 +16,9 @@ menus2.delete("")
     <span class="separator"></span>
     <%=raw menus2.join(' ') %>
   <%- end -%>
+  <% if params[:action] == 'show' %>
+    <% if Core.user.has_priv?(:create, :item => Core.concept) %>
+    <%= link_to :duplicate, {:do => :duplicate}, :confirm => "複製してよろしいですか？" %>
+    <% end %>
+  <% end %>
 </div>

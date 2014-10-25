@@ -43,6 +43,22 @@ class GpTemplate::Admin::TemplatesController < Cms::Controller::Admin::Base
     _destroy @item
   end
 
+  def duplicate(item)
+    if dupe_item = item.duplicate
+      flash[:notice] = '複製処理が完了しました。'
+      respond_to do |format|
+        format.html { redirect_to gp_template_templates_path }
+        format.xml  { head :ok }
+      end
+    else
+      flash[:notice] = "複製処理に失敗しました。"
+      respond_to do |format|
+        format.html { redirect_to url_for(:action => :show) }
+        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   def form
     @template_values = params[:item] && params[:item][:template_values] ? params[:item][:template_values] : {}
     render 'form', :layout => false
