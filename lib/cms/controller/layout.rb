@@ -218,6 +218,10 @@ module Cms::Controller::Layout
           src = src_tag.attribute('src').to_s
           src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes|file|emfiles)/
         end
+        body_doc.css('script[src^="/"]').each do |src_tag|
+          src = src_tag.attribute('src').to_s
+          src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes|file|emfiles)/
+        end
       end
       body = body_doc.to_s
     end
