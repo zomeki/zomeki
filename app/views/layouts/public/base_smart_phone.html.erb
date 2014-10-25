@@ -22,6 +22,9 @@
       tag = "#{Page.layout.head_tag(request)}".gsub(/href=("|')\/_(layouts|themes)/) {
         "href=#{$1}#{ssl_uri}/_#{$2}"
       }
+      tag = tag.gsub(/src=("|')\/_(layouts|themes)/) {
+        "src=#{$1}#{ssl_uri}/_#{$2}"
+      }
     else
       tag = Page.layout.head_tag(request)
     end
