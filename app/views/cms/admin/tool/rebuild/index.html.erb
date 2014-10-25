@@ -31,7 +31,8 @@ contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect
                                                  'Map::Marker',
                                                  'GpCalendar::Event',
                                                  'Tag::Tag',
-                                                 'Rank::Rank']).order(:name) -%>
+                                                 'Rank::Rank',
+                                                 'Gnav::MenuItem']).order(:name) -%>
 <%= form_tag(tool_rebuild_contents_path) do -%>
   <%= select_tag 'target_content_ids',
                  options_for_select(target_contents.map{|c| ["#{c.name}（#{c.model_name}）", c.id] }), multiple: true, size: 10 %>

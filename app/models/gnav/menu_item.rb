@@ -27,24 +27,24 @@ class Gnav::MenuItem < ActiveRecord::Base
 
   after_initialize :set_defaults
 
-  def public_uri=(uri)
-    @public_uri = uri
-  end
-
   def public_uri
-    return @public_uri if @public_uri
-    return '' unless node = content.menu_item_node
-    @public_uri = "#{node.public_uri}#{name}/"
+    return '' unless node = content.public_node
+    "#{node.public_uri}#{name}/"
   end
 
-  def public_full_uri=(uri)
-    @public_full_uri = uri
+  def public_path
+    return '' unless node = content.public_node
+    "#{node.public_path}#{name}/"
+  end
+
+  def public_smart_phone_path
+    return '' unless node = content.public_node
+    "#{node.public_smart_phone_path}#{name}/"
   end
 
   def public_full_uri
-    return @public_full_uri if @public_full_uri
-    return '' unless node = content.menu_item_node
-    @public_full_uri = "#{node.public_full_uri}#{name}/"
+    return '' unless node = content.public_node
+    "#{node.public_full_uri}#{name}/"
   end
 
   def categories

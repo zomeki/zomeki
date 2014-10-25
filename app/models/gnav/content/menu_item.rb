@@ -6,6 +6,15 @@ class Gnav::Content::MenuItem < Cms::Content
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
+  def public_node
+    public_nodes.order(:id).first
+  end
+
+#TODO: DEPRECATED
   def menu_item_node
     return @menu_item_node if @menu_item_node
     @menu_item_node = Cms::Node.where(state: 'public', content_id: id, model: 'Gnav::MenuItem').order(:id).first
