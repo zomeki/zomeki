@@ -5,19 +5,21 @@ class Organization::Admin::Tool::GroupsController < Cms::Controller::Admin::Base
     results = {ok: 0, ng: 0}
     errors = []
 
-    content.groups.each do |group|
-      begin
-        if group.rebuild(render_public_as_string("#{group.public_uri}index.html", site: content.site))
-          rendered = render_public_as_string("#{group.public_uri}index.html", site: content.site, jpmobile: envs_to_request_as_smart_phone)
-          group.publish_page(rendered, path: group.public_smart_phone_path)
-
+    if (nodes = content.public_nodes).count > 0
+      nodes.each do |node|
+        begin
+          ctrl = node.model.underscore.pluralize.sub(/\A(.+?)\//, '/\1/script/')
+          render_component_into_view controller: ctrl, action: 'publish',
+                                     params: {node_id: node.id}
           results[:ok] += 1
+        rescue => e
+          results[:ng] += 1
+          error_log("Failed to rebuild: #{e.message}")
         end
-      rescue => e
-        results[:ng] += 1
-        errors << "エラー： #{group.id}, #{group.name}, #{e.message}"
-        error_log("Rebuild: #{e.message}")
       end
+    else
+      results[:ng] += 1
+      errors << 'エラー： ディレクトリが作成されていません。'
     end
 
     messages = ["-- 成功 #{results[:ok]}件", "-- 失敗 #{results[:ng]}件"]
