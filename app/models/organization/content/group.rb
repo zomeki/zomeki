@@ -7,8 +7,12 @@ class Organization::Content::Group < Cms::Content
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
   def public_node
-    Cms::Node.where(state: 'public', content_id: id, model: 'Organization::Group').order(:id).first
+    public_nodes.order(:id).first
   end
 
   def refresh_groups
