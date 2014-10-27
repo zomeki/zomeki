@@ -169,8 +169,8 @@ ja:
         group_id: 課
         charge: 室・担当
         address: 住所
-        tel: 電話番号
-        fax: ファクシミリ
+        tel: TEL
+        fax: FAX
         email: メールアドレス
         note: 備考
 
