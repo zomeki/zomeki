@@ -4,7 +4,7 @@ class GpArticle::Content::Doc < Cms::Content
   MAP_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   APPROVAL_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   INQUIRY_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  INQUIRY_FIELD_OPTIONS = [['住所', 'address'], ['電話番号', 'tel'], ['ファクシミリ', 'fax'], ['メールアドレス', 'email'], ['備考', 'note']] # ['課', 'group_id'], ['室・担当', 'charge'],
+  INQUIRY_FIELD_OPTIONS = [['住所', 'address'], ['TEL', 'tel'], ['FAX', 'fax'], ['メールアドレス', 'email'], ['備考', 'note']] # ['課', 'group_id'], ['室・担当', 'charge'],
   FEED_DISPLAY_OPTIONS = [['表示する', 'enabled'], ['表示しない', 'disabled']]
   TAG_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   SNS_SHARE_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
