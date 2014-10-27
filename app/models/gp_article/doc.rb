@@ -782,7 +782,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def extract_links(html, all)
-    links = Nokogiri::HTML.parse(html).css('a').map {|a| {body: a.text, url: a.attribute('href').value} }
+    links = Nokogiri::HTML.parse(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
     return links if all
     links.select do |link|
       uri = URI.parse(link[:url])
