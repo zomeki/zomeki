@@ -29,7 +29,7 @@ class CommonMailer < ActionMailer::Base
 
     mail from: from,
          to: to,
-         subject: "#{@form_answer.form.title}（#{@content.site.name}）：自動返信メール"
+         subject: "#{@form_answer.form.title}（#{@content.site.name}）：受信確認自動返信メール"
   end
 
   def approval_request(approval_request: nil, preview_url: nil, approve_url: nil, from: nil, to: nil)
