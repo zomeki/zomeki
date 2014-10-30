@@ -210,6 +210,10 @@ module Cms::Controller::Layout
           href = a_tag.attribute('href').to_s
           a_tag.set_attribute('href', "#{site_full_uri}#{href}") unless href =~ Regexp.new("\\A#{form_nodes.join('|')}")
         end
+        body_doc.css('area[href^="/"]').each do |a_tag|
+          href = a_tag.attribute('href').to_s
+          a_tag.set_attribute('href', "#{site_full_uri}#{href}") unless href =~ Regexp.new("\\A#{form_nodes.join('|')}")
+        end
         body_doc.css('link[href^="/"]').each do |link_tag|
           href = link_tag.attribute('href').to_s
           link_tag.set_attribute('href', "#{ssl_uri}#{href}") if href =~ /^\/_(layouts|themes|file|emfiles)/
