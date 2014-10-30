@@ -108,6 +108,6 @@ module DocHelper
   end
 
   def file_path_expanded_body(doc)
-    doc.body.gsub('"file_contents/', %Q("#{doc.public_uri(without_filename: true)}file_contents/))
+    doc.body.gsub(/("|')file_contents\//){|m| %Q(#{$1}#{doc.public_uri(without_filename: true)}file_contents/) }
   end
 end
