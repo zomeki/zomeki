@@ -241,6 +241,13 @@ class Cms::Node < ActiveRecord::Base
     children_in_route.public
   end
   
+  def set_inquiry_group
+    inquiries.each_with_index do |inquiry, i|
+      next if i != 0
+      inquiry.group_id = in_creator["group_id"]
+    end
+  end
+
 protected
   def remove_file
     close_page# rescue nil
@@ -340,7 +347,7 @@ protected
         if i == 0
           attrs = inquiry.attributes
           attrs[:group_id] = Core.user.group_id
-          item.inquiries.build(inquiry.attributes)
+          item.inquiries.build(attrs)
         else
           item.inquiries.build(inquiry.attributes)
         end

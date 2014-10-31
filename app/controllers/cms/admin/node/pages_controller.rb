@@ -19,6 +19,7 @@ class Cms::Admin::Node::PagesController < Cms::Admin::Node::BaseController
     @item.state      = "draft"
     @item.state      = "recognize" if params[:commit_recognize]
     @item.state      = "public"    if params[:commit_public]
+    @item.set_inquiry_group if Core.user.root?
     
     _update @item do
       send_recognition_request_mail(@item) if @item.state == 'recognize'

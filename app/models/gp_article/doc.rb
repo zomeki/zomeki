@@ -398,7 +398,7 @@ class GpArticle::Doc < ActiveRecord::Base
       if i == 0
         attrs = inquiry.attributes
         attrs[:group_id] = Core.user.group_id
-        new_doc.inquiries.build(inquiry.attributes)
+        new_doc.inquiries.build(attrs)
       else
         new_doc.inquiries.build(inquiry.attributes)
       end
@@ -684,6 +684,13 @@ class GpArticle::Doc < ActiveRecord::Base
   def public_files_path
     return @public_files_path if @public_files_path
     "#{::File.dirname(public_path)}/file_contents"
+  end
+
+  def set_inquiry_group
+    inquiries.each_with_index do |inquiry, i|
+      next if i != 0
+      inquiry.group_id = in_creator["group_id"]
+    end
   end
 
   private
