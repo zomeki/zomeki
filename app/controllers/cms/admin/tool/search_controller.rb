@@ -22,7 +22,9 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
     item.and :site_id, Core.site.id
     item.and :model, "Cms::Page"
     item.and Condition.new do |c|
+      c.or :title, 'LIKE', "%#{@item.keyword}%"
       c.or :body, 'LIKE', "%#{@item.keyword}%"
+      c.or :mobile_title, 'LIKE', "%#{@item.keyword}%"
       c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
     end
     item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, c.public_uri] }
@@ -34,7 +36,9 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
       item = Article::Doc.new
       item.and :content_id, content.id
       item.and Condition.new do |c|
+        c.or :title, 'LIKE', "%#{@item.keyword}%"
         c.or :body, 'LIKE', "%#{@item.keyword}%"
+        c.or :mobile_title, 'LIKE', "%#{@item.keyword}%"
         c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
       end
       item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, article_doc_path(c.content, c.id)] }
@@ -47,7 +51,9 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
       item = PortalArticle::Doc.new
       item.and :content_id, content.id
       item.and Condition.new do |c|
+        c.or :title, 'LIKE', "%#{@item.keyword}%"
         c.or :body, 'LIKE', "%#{@item.keyword}%"
+        c.or :mobile_title, 'LIKE', "%#{@item.keyword}%"
         c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
       end
       item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, portal_article_doc_path(c.content, c.id)] }
@@ -60,7 +66,11 @@ class Cms::Admin::Tool::SearchController < Cms::Controller::Admin::Base
       item = GpArticle::Doc.new
       item.and :content_id, content.id
       item.and Condition.new do |c|
+        c.or :title, 'LIKE', "%#{@item.keyword}%"
+        c.or :subtitle, 'LIKE', "%#{@item.keyword}%"
+        c.or :summary, 'LIKE', "%#{@item.keyword}%"
         c.or :body, 'LIKE', "%#{@item.keyword}%"
+        c.or :mobile_title, 'LIKE', "%#{@item.keyword}%"
         c.or :mobile_body, 'LIKE', "%#{@item.keyword}%"
       end
       item.find(:all, :order => :id).each {|c| group[1] << [c.id, c.title, gp_article_doc_path(c.content, c.id)] }
