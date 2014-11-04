@@ -45,7 +45,7 @@ end
 def self.check_h(text)
     h_num = 1
     check = true
-    text.scan(/<h(\d)\s*>/){ |h|
+    text.scan(/<h(\d).*?>/){ |h|
     num = $1.to_i
 
     if num == 1 || num == 2 || h_num == num || (h_num + 1) == num
@@ -204,15 +204,14 @@ end
 
 def self.modify_h(text)
     h_num = 1
-    return text.gsub(/<h(\d)\s*>(.*?)<\/h(\d)\s*>/m){ |h|
+    return text.gsub(/<h(\d)(.*?)>(.*?)<\/h(\d)\s*?>/m){ |h|
     num = $1.to_i
-
     if num == 1 || num == 2 || h_num == num || (h_num + 1) == num
       h_num = num
       h
     else
-      h_num += 1 if h_num == 1
-      "<h#{h_num}>#{$2}</h#{h_num}>"
+      h_num += 1
+      "<h#{h_num}#{$2}>#{$3}</h#{h_num}>"
     end
     }
 end

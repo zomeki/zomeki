@@ -1,6 +1,6 @@
 「<%= @form_answer.form.content.name %>：<%= @form_answer.form.title %>」に回答が届きました。
 
-<% @form_answer.form.questions.where("form_type <> 'free'").each_with_index do |question, index| %>
+<% @form_answer.form.public_questions.where("form_type <> 'free'").each_with_index do |question, index| %>
 ■<%= question.title %>
 <%= @form_answer.answers.where(question_id: question.id).first.try(:content) %>
 

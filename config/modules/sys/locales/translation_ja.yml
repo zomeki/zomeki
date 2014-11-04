@@ -34,8 +34,8 @@ ja:
         ldap_version: "LDAP同期バージョン"
         web_state: "Web公開"
         address: "住所"
-        tel: "電話番号"
-        fax: "ファクシミリ"
+        tel: "TEL"
+        fax: "FAX"
         outline_uri: "業務概要URL"
         note: "備考"
 

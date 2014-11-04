@@ -4,6 +4,13 @@
   <tr>
     <th>フォルダ</th>
     <td><%= select_tag 's_node_id', options_for_select(@nodes.collect{|i| [i.name, i.id]}, @parent.id), :include_blank => 'すべて' %></td>
+    <th>ファイル名</th>
+    <td><%= text_field_tag 's_keyword', params[:s_keyword], :style => 'width: 150px;' %></td>
+    <% if Core.user.has_auth?(:manager) %>
+    <td><%= select_tag('s_target', options_for_select(Cms::Concept.new.targets, params[:s_target]))%></td>
+    <% end %>
+    <th>並び順</th>
+    <td><%= select_tag('s_sort', options_for_select([["50音順","name1"],["更新日順","updated_at"]], params[:s_sort]))%></td>
     <td class="submitters">
       <%= submit_tag '検索',     :name => :search %>
       <%= submit_tag 'リセット', :name => :reset %>

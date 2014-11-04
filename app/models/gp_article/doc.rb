@@ -398,7 +398,7 @@ class GpArticle::Doc < ActiveRecord::Base
       if i == 0
         attrs = inquiry.attributes
         attrs[:group_id] = Core.user.group_id
-        new_doc.inquiries.build(inquiry.attributes)
+        new_doc.inquiries.build(attrs)
       else
         new_doc.inquiries.build(inquiry.attributes)
       end
@@ -686,6 +686,13 @@ class GpArticle::Doc < ActiveRecord::Base
     "#{::File.dirname(public_path)}/file_contents"
   end
 
+  def set_inquiry_group
+    inquiries.each_with_index do |inquiry, i|
+      next if i != 0
+      inquiry.group_id = in_creator["group_id"]
+    end
+  end
+
   private
 
   def name_validity
@@ -782,7 +789,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def extract_links(html, all)
-    links = Nokogiri::HTML.parse(html).css('a').map {|a| {body: a.text, url: a.attribute('href').value} }
+    links = Nokogiri::HTML.parse(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
     return links if all
     links.select do |link|
       uri = URI.parse(link[:url])

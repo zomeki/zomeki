@@ -47,7 +47,7 @@ module Rank::Controller::Rank
 
       logger.info "Success: #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}"
       flash[:notice] = "取り込みが完了しました。 （取り込み開始日は #{Date.parse(first_date).to_s} です）"
-    rescue Garb::AuthenticationRequest::AuthError => e
+    rescue Garb::AuthError => e
       logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
       flash[:alert] = "認証エラーです。 （#{content.setting_value(:username)} ）"
     rescue => e
