@@ -262,7 +262,10 @@ class GpArticle::Doc < ActiveRecord::Base
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
     filename = without_filename || filename_base == 'index' ? '' : "#{filename_base}.html"
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
+
+    path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
+    d = Zomeki.config.application['cms.preview_domain']
+    d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 
   def state_options

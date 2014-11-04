@@ -223,7 +223,9 @@ class Survey::Form < ActiveRecord::Base
     return nil unless public_uri
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}#{params.present? ? "?#{params}" : ''}"
+    path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}#{params.present? ? "?#{params}" : ''}"
+    d = Zomeki.config.application['cms.preview_domain']
+    d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 
   def sitemap_visible?
