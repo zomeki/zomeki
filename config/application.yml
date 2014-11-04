@@ -17,6 +17,10 @@ sys:
   transfer_opt_remote_shell: "ssh -p 22"
 
 cms:
+  # プレビューURL（ドメイン）
+  # 'site'(default) or 'core'
+  preview_domain: "site"
+
   #ページ数付きページ書き出し数
   publish_more_pages: 10
 

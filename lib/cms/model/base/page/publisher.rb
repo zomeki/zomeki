@@ -27,7 +27,10 @@ module Cms::Model::Base::Page::Publisher
     params = []
     options[:params].each {|k, v| params << "#{k}=#{v}" } if options[:params]
     params = params.size > 0 ? "?#{params.join('&')}" : ""
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}"
+
+    path = "_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}"
+    d = Zomeki.config.application['cms.preview_domain']
+    d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 
   def publish_uri(options = {})
