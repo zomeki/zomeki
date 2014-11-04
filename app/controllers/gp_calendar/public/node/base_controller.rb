@@ -79,7 +79,8 @@ class GpCalendar::Public::Node::BaseController < Cms::Controller::Public::Base
   end
 
   def filter_events_by_specified_category(events)
-    if (category = find_category_by_specified_path(params[:category]))
+    path = params[:category] ? params[:category] : params[:escaped_category].to_s.gsub('@', '/')
+    if (category = find_category_by_specified_path(path))
       @events.reject! do |e|
         next true unless e.respond_to?(:category_ids)
         (e.category_ids & category.public_descendants.map(&:id)).empty?
