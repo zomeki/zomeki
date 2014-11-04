@@ -20,10 +20,19 @@ class GpCalendar::Script::BaseController < Cms::Controller::Script::Publication
     path = @node.public_path.to_s
     smart_phone_path = @node.public_smart_phone_path.to_s
 
+    files = @node.content.public_categories.map{|c| "index_#{c.category_type.name}@#{c.path_from_root_category.gsub('/', '@')}" }
+
     publish_more(@node, uri: uri, path: path, smart_phone_path: smart_phone_path, dependent: uri)
+    files.each do |file|
+      publish_more(@node, uri: uri, path: path, smart_phone_path: smart_phone_path, dependent: "#{uri}#{file}", file: file)
+    end
     prms.each do |prm|
       publish_more(@node, uri: "#{uri}#{prm}", path: "#{path}#{prm}", smart_phone_path: "#{smart_phone_path}#{prm}",
                           dependent: "#{uri}#{prm}")
+      files.each do |file|
+        publish_more(@node, uri: "#{uri}#{prm}", path: "#{path}#{prm}", smart_phone_path: "#{smart_phone_path}#{prm}",
+                            dependent: "#{uri}#{prm}#{file}", file: file)
+      end
     end
 
     events_table = GpCalendar::Event.arel_table
