@@ -10,6 +10,8 @@ class Organization::Script::GroupsController < Cms::Controller::Script::Publicat
       g_path = group.public_path
       g_smart_phone_path = group.public_smart_phone_path
       publish_more(@node, uri: g_uri, path: g_path, smart_phone_path: g_smart_phone_path, dependent: g_uri)
+      publish_more(@node, uri: g_uri, path: g_path, smart_phone_path: g_smart_phone_path, dependent: "#{g_uri}more",
+                   file: 'more')
     end
 
     render text: 'OK'
