@@ -7,6 +7,8 @@ class Tag::Public::Node::TagsController < Cms::Controller::Public::Base
   end
 
   def index
+    return render(text: '') if Core.publish
+
     if @content.tags.empty?
       http_error(404)
     else
