@@ -13,7 +13,7 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
   end
 
   def show
-    http_error(404) if params[:page]
+    http_error(404) if params[:page] && !@more
 
     @group = @content.find_group_by_path_from_root(params[:group_names])
     return http_error(404) unless @group.try(:public?)
