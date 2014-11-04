@@ -44,6 +44,8 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
   end
 
   def publish_category(cat, follow_children: true)
+    publish_category_for_template_modules(cat)
+
     cat_path = "#{cat.category_type.name}/#{cat.path_from_root_category}/"
     uri = "#{@node.public_uri}#{cat_path}"
     path = "#{@node.public_path}#{cat_path}"
@@ -71,6 +73,32 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
 
     cat.public_children.each do |c|
       publish_category(c)
+    end
+  end
+
+  def publish_category_for_template_modules(cat)
+    public_path = cat.content.site.public_path
+
+    vc = view_context
+    t = cat.inherited_template
+    modules = t.containing_modules
+    modules.each do |m|
+      case m.module_type
+      when 'docs_1', 'docs_2'
+        link = vc.more_link(template_module: m, ct_or_c: cat)
+
+        uri = "#{File.dirname(link)}/"
+        path = "#{public_path}#{uri}"
+        smart_phone_path = "#{public_path}/_smartphone#{uri}"
+        file = File.basename(link, '.html')
+
+        publish_more(cat.category_type, uri: uri, path: path, smart_phone_path: smart_phone_path,
+                                        dependent: "#{uri}#{file}", file: file)
+      when 'docs_3', 'docs_4'
+#        vc.more_link("c_#{category.name}", template_module: m, ct_or_c: cat)
+      when 'docs_5', 'docs_6'
+#        vc.more_link("g_#{group.code}", template_module: m, ct_or_c: cat)
+      end
     end
   end
 end
