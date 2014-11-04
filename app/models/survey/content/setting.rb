@@ -10,12 +10,8 @@ class Survey::Content::Setting < Cms::ContentSetting
   set_config :common_ssl, :name => '共有SSL',
     :options => Survey::Content::Form::SSL_OPTIONS,
     :form_type => :radio_buttons
-  set_config :auto_reply, :name => "自動返信",
+  set_config :auto_reply, :name => "自動返信メール",
     :options => [['返信する','send'],['返信しない','none']]
-  set_config :upper_reply_text, :name => "自動返信テキスト（上部）",
-    :form_type => :text
-  set_config :lower_reply_text, :name => "自動返信テキスト（下部）",
-    :form_type => :text
 
   validate :validate_value
 

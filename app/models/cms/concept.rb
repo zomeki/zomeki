@@ -31,6 +31,10 @@ class Cms::Concept < ActiveRecord::Base
     end
   end
   
+  def targets
+    [['現在のコンセプトから','current'], ['すべてのコンセプトから','all']]
+  end
+
   def readable_children
     item = Cms::Concept.new
     item.has_priv(:read, :user => Core.user)

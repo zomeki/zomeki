@@ -13,9 +13,9 @@ return if !item.inquiries.any?(&:visible?)
     <%- if item.inquiry_display_field?(:address) && inquiry.address.present?
      -%><div class="address">住所： <%= inquiry.address %></div><%- end -%>
     <%- if item.inquiry_display_field?(:tel) && inquiry.tel.present?
-     -%><div class="tel">電話番号： <%= tel_to inquiry.tel %><%= inquiry.tel_attend %></div><%- end -%>
+     -%><div class="tel">TEL： <%= tel_to inquiry.tel %><%= inquiry.tel_attend %></div><%- end -%>
     <%- if item.inquiry_display_field?(:fax) && inquiry.fax.present?
-     -%><div class="fax">ファクシミリ： <%= inquiry.fax %></div><%- end -%>
+     -%><div class="fax">FAX： <%= inquiry.fax %></div><%- end -%>
     <%- if item.inquiry_display_field?(:email) && inquiry.email.present?
      -%><div class="email">メールアドレス： <%= email_to inquiry.email %></div><%- end -%>
     <%- if item.inquiry_display_field?(:note) && inquiry.note.present?

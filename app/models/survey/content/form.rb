@@ -31,11 +31,11 @@ class Survey::Content::Form < Cms::Content
   end
 
   def upper_reply_text
-    setting_value(:upper_reply_text).to_s
+    setting_extra_values(:auto_reply)[:upper_reply_text].to_s rescue nil
   end
 
   def lower_reply_text
-    setting_value(:lower_reply_text).to_s
+    setting_extra_values(:auto_reply)[:lower_reply_text].to_s rescue nil
   end
 
   def approval_content_approval_flow
