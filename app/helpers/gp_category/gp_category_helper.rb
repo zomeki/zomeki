@@ -16,7 +16,7 @@ module GpCategory::GpCategoryHelper
       options << 'f2'
     end
 
-    file = "more#{"_#{options.join('_-_')}" unless options.empty?}"
+    file = "more#{"_#{options.join('@')}" unless options.empty?}"
     "#{ct_or_c.public_uri}#{file}.html"
   end
 
