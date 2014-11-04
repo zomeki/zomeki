@@ -77,28 +77,48 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
   end
 
   def publish_category_for_template_modules(cat)
-    public_path = cat.content.site.public_path
-
-    vc = view_context
     t = cat.inherited_template
-    modules = t.containing_modules
-    modules.each do |m|
-      case m.module_type
+    tms = t.containing_modules
+    tms.each do |tm|
+      case tm.module_type
       when 'docs_1', 'docs_2'
-        link = vc.more_link(template_module: m, ct_or_c: cat)
-
-        uri = "#{File.dirname(link)}/"
-        path = "#{public_path}#{uri}"
-        smart_phone_path = "#{public_path}/_smartphone#{uri}"
-        file = File.basename(link, '.html')
-
-        publish_more(cat.category_type, uri: uri, path: path, smart_phone_path: smart_phone_path,
-                                        dependent: "#{uri}#{file}", file: file)
+        publish_link cat, view_context.more_link(template_module: tm, ct_or_c: cat)
       when 'docs_3', 'docs_4'
-#        vc.more_link("c_#{category.name}", template_module: m, ct_or_c: cat)
+        cat.category_type.internal_category_type.public_root_categories.each do |c|
+          publish_link cat, view_context.more_link("c_#{c.name}", template_module: tm, ct_or_c: cat)
+        end
       when 'docs_5', 'docs_6'
-#        vc.more_link("g_#{group.code}", template_module: m, ct_or_c: cat)
+        docs = case tm.module_type
+               when 'docs_5'
+                 find_public_docs_with_category_id(cat.public_descendants.map(&:id))
+               when 'docs_6'
+                 find_public_docs_with_category_id(cat.id)
+               end
+        docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
+
+        docs = docs.joins(:creator => :group)
+        groups = Sys::Group.where(id: docs.pluck(Sys::Group.arel_table[:id]).uniq)
+
+        groups.each do |group|
+          publish_link cat, view_context.more_link("g_#{group.code}", template_module: tm, ct_or_c: cat)
+        end
       end
     end
+  end
+
+  def publish_link(cat, link)
+    public_path = cat.content.site.public_path
+
+    uri = "#{File.dirname(link)}/"
+    path = "#{public_path}#{uri}"
+    smart_phone_path = "#{public_path}/_smartphone#{uri}"
+    file = File.basename(link, '.html')
+
+    publish_more(cat.category_type, uri: uri, path: path, smart_phone_path: smart_phone_path,
+                                    dependent: "#{uri}#{file}", file: file)
+  end
+
+  def find_public_docs_with_category_id(category_id)
+    GpArticle::Doc.all_with_content_and_criteria(nil, category_id: category_id).except(:order).mobile(::Page.mobile?).public
   end
 end
