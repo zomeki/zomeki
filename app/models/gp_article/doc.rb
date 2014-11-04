@@ -264,7 +264,7 @@ class GpArticle::Doc < ActiveRecord::Base
     filename = without_filename || filename_base == 'index' ? '' : "#{filename_base}.html"
 
     path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
-    d = Zomeki.config.application['cms.preview_domain']
+    d = Zomeki.config.application['sys.core_domain']
     d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 
@@ -506,6 +506,9 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_approval_request_mail
     subject = "#{content.name}（#{content.site.name}）：承認依頼メール"
 
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
     approval_requests.each do |approval_request|
       body = <<-EOT
 #{approval_request.requester.name}さんより「#{title}」についての承認依頼が届きました。
@@ -514,7 +517,7 @@ class GpArticle::Doc < ActiveRecord::Base
   １．PC用記事のプレビューにより文書を確認
     #{preview_uri(site: content.site)}
   ２．次のリンクから承認を実施
-    #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
+    #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
@@ -527,13 +530,16 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_approved_notification_mail
     subject = "#{content.name}（#{content.site.name}）：承認完了メール"
 
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
     approval_requests.each do |approval_request|
       next unless approval_request.finished?
 
       body = <<-EOT
 「#{title}」についての承認が完了しました。
   次のＵＲＬをクリックして公開処理を行ってください。
-  #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
+  #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
@@ -545,14 +551,21 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_passbacked_notification_mail(approval_request: nil, approver: nil, comment: '')
     return if approver.email.blank? || approval_request.requester.email.blank?
 
-    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
+    detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     CommonMailer.passbacked_notification(approval_request: approval_request, approver: approver, comment: comment, detail_url: detail_url,
                                          from: approver.email, to: approval_request.requester.email).deliver
   end
 
   def send_pullbacked_notification_mail(approval_request: nil, comment: '')
-    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
+    detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     approval_request.current_approvers.each do |approver|
       next if approver.email.blank? || approval_request.requester.email.blank?
