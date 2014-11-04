@@ -123,7 +123,11 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def send_approval_request_mail
-    approve_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
+
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
+    approve_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
     preview_url = self.preview_uri
 
     approval_requests.each do |approval_request|
@@ -136,7 +140,11 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def send_approved_notification_mail
-    publish_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
+
+    d = Zomeki.config.application['sys.core_domain']
+    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+
+    publish_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.survey_form_path(content: content, id: id)}"
 
     approval_requests.each do |approval_request|
       next unless approval_request.finished?
@@ -224,7 +232,7 @@ class Survey::Form < ActiveRecord::Base
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
     path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri}#{params.present? ? "?#{params}" : ''}"
-    d = Zomeki.config.application['cms.preview_domain']
+    d = Zomeki.config.application['sys.core_domain']
     d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 

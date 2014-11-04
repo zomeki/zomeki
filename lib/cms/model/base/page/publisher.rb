@@ -29,7 +29,7 @@ module Cms::Model::Base::Page::Publisher
     params = params.size > 0 ? "?#{params.join('&')}" : ""
 
     path = "_preview/#{format('%08d', site.id)}#{mobile}#{public_uri}#{params}"
-    d = Zomeki.config.application['cms.preview_domain']
+    d = Zomeki.config.application['sys.core_domain']
     d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
   end
 
