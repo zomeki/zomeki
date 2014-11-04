@@ -16,11 +16,11 @@ sys:
   transfer_opt_include: "config/rsync/public_include.lst"
   transfer_opt_remote_shell: "ssh -p 22"
 
-cms:
-  # プレビューURL（ドメイン）
+  # 管理画面URL（ドメイン）
   # 'site'(default) or 'core'
-  preview_domain: "site"
+  core_domain: "site"
 
+cms:
   #ページ数付きページ書き出し数
   publish_more_pages: 10
 
