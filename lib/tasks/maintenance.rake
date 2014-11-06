@@ -20,5 +20,16 @@ namespace :zomeki do
         tm.update_column(:doc_style, tm.doc_style.gsub('@title@', '@title_link@'))
       end
     end
+
+    desc 'Clean invalid links'
+    task(:clean_invalid_links => :environment) do
+      count = 0
+      GpArticle::Link.find_each do |l|
+        next if l.doc && l.doc.state_public?
+        l.destroy
+        count += 1
+      end
+      puts count > 0 ? "#{count} invalid links removed." : 'No invalid links.'
+    end
   end
 end

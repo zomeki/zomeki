@@ -837,6 +837,8 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def save_links
+    return unless state_public?
+
     lib = links_in_body
     links.each do |link|
       link.destroy unless lib.detect {|l| l[:body] == link.body && l[:url] == link.url }
