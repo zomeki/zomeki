@@ -78,6 +78,8 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
 
   def publish_category_for_template_modules(cat)
     t = cat.inherited_template
+    return unless t
+
     tms = t.containing_modules
     tms.each do |tm|
       case tm.module_type
