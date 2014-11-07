@@ -2,13 +2,13 @@
 class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   def login
     admin_uri = "/#{ZomekiCMS::ADMIN_URL_PREFIX}"
-    
+
     return redirect_to(admin_uri) if logged_in?
-    
+
     @uri = params[:uri] || cookies[:sys_login_referrer] || admin_uri
     @uri = @uri.gsub(/^http:\/\/[^\/]+/, '')
     return unless request.post?
-    
+
     unless new_login(params[:account], params[:password])
       flash[:alert] = 'ユーザＩＤ・パスワードを正しく入力してください。'
       respond_to do |format|
@@ -17,7 +17,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
       end
       return true
     end
-    
+
     if params[:remember_me] == "1"
       self.current_user.remember_me
       cookies[:auth_token] = {
@@ -52,7 +52,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     Sys::OperationLog.log(request, :user => current_user)
     redirect_to('action' => 'login')
   end
-  
+
   def info
     respond_to do |format|
       format.html { render }
@@ -69,7 +69,8 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
       return
     end
 
-    user = Sys::User.where(account: params[:account], email: params[:email]).first
+    sender = Sys::Setting.value(:pass_reminder_mail_sender)
+    user   = Sys::User.where(account: params[:account], email: params[:email]).first
 
     if (email = user.try(:email))
       token = Util::String::Token.generate_unique_token(Sys::User, :reset_password_token)
@@ -82,7 +83,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
 #{edit_admin_password_url(token: token)}
       EOT
 
-      send_mail('noreply', email, "【#{Core.site.try(:name).presence || 'ZOMEKI'}】パスワード再設定", body)
+      send_mail(sender, email, "【#{Core.site.try(:name).presence || 'ZOMEKI'}】パスワード再設定", body)
     end
 
     redirect_to admin_login_url, notice: 'メールにてパスワード再設定手順をお送りしました。'
