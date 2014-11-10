@@ -80,6 +80,7 @@ class GpArticle::Doc < ActiveRecord::Base
   before_save :set_published_at
   before_save :replace_public
   before_destroy :keep_edition_relation
+  after_destroy :close_page
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
