@@ -1,19 +1,7 @@
-<%
-
+<%-
 concepts = Cms::Concept.new.readable_children
-cond     = ["model LIKE '%::Doc' AND model != 'Newsletter::Doc' AND model != 'Laby::Doc' AND site_id = ?", Core.site.id] ##
-contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect{|c| [c.name, c.id]}
+-%>
 
-%>
-<p class="form">コンテンツ</p>
-<%= form_for(:item, :html => {:method => :post}) do |f| %>
-<%= hidden_field_tag :do, 'content' %>
-<%= f.select :content_id, contents, :include_blank => '全て' %>
-<%= f.submit '再構築', :onclick => "$('#message1').html('再構築を開始しました。そのままでお待ちください。');" %>
-<span id="message1" style="margin-left: 10px; color: #b40;"></span><br />
-<% end %>
-
-<br />
 <p class="form">スタイルシート</p>
 <%= form_for(:item, :html => {:method => :post}) do |f| %>
 <%= hidden_field_tag :do, 'styleseet' %>
