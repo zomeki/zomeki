@@ -25,6 +25,7 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
 
     load_sns_apps
     @item.load_file_transfer
+    @item.load_site_settings
 
     _show @item
   end

@@ -187,8 +187,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
 protected
   def send_recognition_request_mail(item, users = nil)
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : Core.site.full_uri;
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain Core.site, Core.site.full_uri
 
     mail_fr = Core.user.email
     mail_to = nil
@@ -208,8 +207,7 @@ protected
     return true unless item.recognition.user
     return true if item.recognition.user.email.blank?
 
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : Core.site.full_uri;
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain Core.site, Core.site.full_uri
 
     mail_fr = Core.user.email
     mail_to = item.recognition.user.email

@@ -11,6 +11,7 @@ class Cms::Site < ActiveRecord::Base
   include PortalGroup::Model::Rel::Site::Attribute
   include PortalGroup::Model::Rel::Site::Area
   include Sys::Model::Rel::FileTransfer
+  include Cms::Model::Rel::SiteSetting
 
   belongs_to :status, :foreign_key => :state,
     :class_name => 'Sys::Base::Status'
@@ -43,6 +44,9 @@ class Cms::Site < ActiveRecord::Base
 
   ## file transfer
   after_save { save_file_transfer(:site_id => id) }
+
+  ## site settings
+  after_save { save_site_settings(:site_id => id) }
 
   before_destroy :block_last_deletion
 

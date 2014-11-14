@@ -84,6 +84,17 @@ areas      = PortalGroup::Area.root_items(cond)
   </tr>
 </table>
 
+<br />
+<p class="form">管理画面設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:setting_site_admin_protocol) %></th>
+    <td><%= f.select :in_setting_site_admin_protocol, Cms::SiteSetting::AdminProtocol::ADMIN_PROTOCOLS, :include_blank => "" %></td>
+  </tr>
+</table>
+
+<br />
 <p class="form">SNS設定</p>
 
 <table class="show">

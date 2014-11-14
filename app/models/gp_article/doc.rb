@@ -264,8 +264,8 @@ class GpArticle::Doc < ActiveRecord::Base
     filename = without_filename || filename_base == 'index' ? '' : "#{filename_base}.html"
 
     path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
-    d = Zomeki.config.application['sys.core_domain']
-    d == 'core' ? "#{Core.full_uri}#{path}" : "#{site.full_uri}#{path}";
+    d = Cms::SiteSetting::AdminProtocol.core_domain site, site.full_uri, :freeze_protocol => true
+    "#{d}#{path}"
   end
 
   def state_options
@@ -506,8 +506,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_approval_request_mail
     subject = "#{content.name}（#{content.site.name}）：承認依頼メール"
 
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
 
     approval_requests.each do |approval_request|
       body = <<-EOT
@@ -530,8 +529,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_approved_notification_mail
     subject = "#{content.name}（#{content.site.name}）：承認完了メール"
 
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
 
     approval_requests.each do |approval_request|
       next unless approval_request.finished?
@@ -551,9 +549,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_passbacked_notification_mail(approval_request: nil, approver: nil, comment: '')
     return if approver.email.blank? || approval_request.requester.email.blank?
 
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
-
+    _core_uri  = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
     detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     CommonMailer.passbacked_notification(approval_request: approval_request, approver: approver, comment: comment, detail_url: detail_url,
@@ -562,9 +558,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def send_pullbacked_notification_mail(approval_request: nil, comment: '')
 
-    d = Zomeki.config.application['sys.core_domain']
-    _core_uri = (d == 'core') ? Core.full_uri : content.site.full_uri;
-
+    _core_uri  = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
     detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     approval_request.current_approvers.each do |approver|
