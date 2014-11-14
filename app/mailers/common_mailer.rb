@@ -96,9 +96,7 @@ class CommonMailer < ActionMailer::Base
 
   def commented_notification(comment)
     @doc = comment.doc
-
-    d = Zomeki.config.application['sys.core_domain']
-    @core_uri = (d == 'core') ? Core.full_uri : @doc.content.site.full_uri;
+    @core_uri = Cms::SiteSetting::AdminProtocol.core_domain @doc.content.site, @doc.content.site.full_uri
 
     from = comment.author_name
     from << " <#{comment.author_email}>" if comment.author_email.present?
