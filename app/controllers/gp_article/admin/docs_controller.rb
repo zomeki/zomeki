@@ -208,7 +208,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       publish_by_update(@item) if @item.state_public?
 
-      @item.close unless @item.public? # Never use "state_public?" here
+      @item.close if !@item.public? && !@item.will_replace? # Never use "state_public?" here
 
       release_document
 
