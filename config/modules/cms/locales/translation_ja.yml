@@ -38,6 +38,7 @@ ja:
         setting_transfer_dest_host: "転送先サーバホスト"
         setting_transfer_dest_dir: "転送先サーバディレクトリ"
         setting_transfer_dest_domain: "転送先サイトURL"
+        setting_site_admin_protocol: "プロトコル"
 
       cms/site_basic_auth_user:
         state: "状態"

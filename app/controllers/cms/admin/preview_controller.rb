@@ -44,8 +44,7 @@ protected
       admin_uri.path = '/'
     else
       #admin_uri = public_uri
-      d = Zomeki.config.application['sys.core_domain']
-      admin_uri = (d == 'core') ? Core.full_uri.to_s : public_uri;
+      admin_uri = Cms::SiteSetting::AdminProtocol.core_domain Page.site, public_uri.to_s, :freeze_protocol => true
     end
 
     mobile   = Page.mobile? ? 'm' : ''
