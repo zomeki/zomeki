@@ -17,9 +17,8 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
       uri = item.public_uri.to_s
       path = item.public_path.to_s
 
-      # Set published_at before render_public_as_string
-      item.update_column(:published_at, Time.now)
-      item.update_column(:display_published_at, item.published_at)
+      # Renew edition before render_public_as_string
+      item.update_attribute(:state, 'public')
 
       raise item.errors.full_messages unless item.publish(render_public_as_string(uri, :site => item.content.site))
 
