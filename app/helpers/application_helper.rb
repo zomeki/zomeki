@@ -56,6 +56,9 @@ module ApplicationHelper
         uri.gsub!(/\/(\?|$)/, "/index.html\\1")
         uri.gsub!(/\.p[0-9]+\.html/, ".html")
         uri.gsub!(/\.html/, ".p#{page}.html") if page.to_i > 1
+        uri.gsub!(/\&amp;page=\d+/, '')
+        uri.gsub!(/\?page=\d+/, '?')
+        uri.sub!(/\?\z/, '')
         %Q(href="#{uri})
       end
     end
