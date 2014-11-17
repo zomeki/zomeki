@@ -5,6 +5,7 @@ class Tag::Script::TagsController < Cms::Controller::Script::Publication
                         limit: 0)
 
     @node.content.tags.each do |tag|
+      next if tag.public_docs.blank?
       publish_more(@node, uri: tag.public_uri, path: CGI::unescape(tag.public_path),
                           smart_phone_path: CGI::unescape(tag.public_smart_phone_path), dependent: tag.public_uri)
     end
