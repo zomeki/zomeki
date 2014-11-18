@@ -152,6 +152,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def edit
+    @item.display_updated_at = nil
     return redirect_to(edit_gp_article_doc_url(@content, @item.duplicate(:replace))) if @item.state_public?
     render 'edit_smart_phone', layout: 'admin/gp_article_smart_phone' if Page.smart_phone?
   end
