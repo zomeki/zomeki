@@ -20,6 +20,8 @@ class PortalArticle::Script::DocsController < Cms::Controller::Script::Publicati
         
         if !item.publish(render_public_as_string(uri, :site => item.content.site))
           raise item.errors.full_messages
+        else
+          Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'publish')
         end
         if item.published? || !::File.exist?("#{path}.r")
           item.publish_page(render_public_as_string("#{uri}index.html.r", :site => item.content.site),
@@ -43,7 +45,9 @@ class PortalArticle::Script::DocsController < Cms::Controller::Script::Publicati
         Script.current
         puts "-- Close: #{item.class}##{item.id}"
         
-        item.close
+        if item.close
+          Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'close')
+        end
         
         puts "OK: Closed"
         params[:task].destroy
