@@ -94,7 +94,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
   def render_survey_layout(action = action_name)
     @piece = Survey::Piece::Form.find_by_id(params[:piece])
-#    return render(:text => '') unless @piece
+    return unless @piece
 
     Page.layout = Cms::Layout.new({
       head:             @piece.try(:head_css) || '',
