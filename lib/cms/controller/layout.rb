@@ -107,7 +107,9 @@ module Cms::Controller::Layout
         error_log(e.message)
       end
     end
-    
+
+    dump Page.content
+
     ## render the content
     body.gsub!("[[content]]", Page.content)
     
@@ -178,6 +180,7 @@ module Cms::Controller::Layout
 #      end
 #    end
     
+#    dump body
     body = convert_ssl_uri(body)
 
     body = last_convert_body(body)
@@ -229,6 +232,7 @@ module Cms::Controller::Layout
       end
       body = body_doc.to_s
     end
+
 
     return body
   end
