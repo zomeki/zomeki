@@ -26,6 +26,8 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
 
         if !item.publish(render_public_as_string(uri, :site => item.content.site))
           raise item.errors.full_messages
+        else
+          Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'publish')
         end
         if item.published? || !::File.exist?("#{path}.r")
           item.publish_page(render_public_as_string("#{uri}index.html.r", :site => item.content.site),
@@ -55,6 +57,8 @@ class Article::Script::DocsController < Cms::Controller::Script::Publication
         before_update_for_sweeper item
 
         item.close
+
+        Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'close')
 
         puts "OK: Closed"
         params[:task].destroy
