@@ -20,7 +20,11 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
       # Renew edition before render_public_as_string
       item.update_attribute(:state, 'public')
 
-      raise item.errors.full_messages unless item.publish(render_public_as_string(uri, :site => item.content.site))
+      if item.publish(render_public_as_string(uri, :site => item.content.site))
+        Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'publish')
+      else
+        raise item.errors.full_messages
+      end
 
       if item.published? || !::File.exist?("#{path}.r")
         uri_ruby = (uri =~ /\?/) ? uri.gsub(/\?/, 'index.html.r?') : "#{uri}index.html.r"
@@ -49,6 +53,8 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
 
       item.close
       publish_related_pages(item)
+
+      Sys::OperationLog.script_log(:item => item, :site => item.content.site, :action => 'close')
 
       info_log 'OK: Closed'
       params[:task].destroy

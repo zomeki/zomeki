@@ -109,6 +109,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
       unless item.publish(render_public_as_string(uri, site: item.site))
         raise item.errors.full_messages
+      else
+        Sys::OperationLog.script_log(:item => item, :site => item.site, :action => 'publish')
       end
 
       ruby_uri  = (uri =~ /\?/) ? uri.gsub(/(.*\.html)\?/, '\\1.r?') : "#{uri}.r"
@@ -137,7 +139,9 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
       info_log "-- Close: #{item.class}##{item.id}"
       item = Cms::Node::Page.find(item.id)
 
-      item.close
+      if item.close
+        Sys::OperationLog.script_log(:item => item, :site => item.site, :action => 'close')
+      end
 
       info_log 'OK: Closed'
       params[:task].destroy
