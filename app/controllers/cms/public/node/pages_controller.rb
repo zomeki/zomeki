@@ -32,5 +32,18 @@ protected
       
       response.body.gsub!("#{name}", value) if name != value
     end
+
+    if @item.pdf_in_body?(response.body)
+      html = <<-EOT
+<div class="adobeReader">
+  <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>
+  <a href="http://get.adobe.com/jp/reader/" target="_blank" title="Adobe Readerダウンロード">Adobe Readerダウンロード</a>
+</div>
+      EOT
+    else
+      html = ''
+    end
+
+    self.response_body = response.body.gsub("@adobe-reader-link@", html)
   end
 end

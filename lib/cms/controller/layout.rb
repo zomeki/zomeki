@@ -108,8 +108,6 @@ module Cms::Controller::Layout
       end
     end
 
-    dump Page.content
-
     ## render the content
     body.gsub!("[[content]]", Page.content)
     
