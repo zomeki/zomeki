@@ -12,7 +12,7 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, item.admin_uri %></td>
     <td><%= item.name %></td>
-    <td><%= item.title %></td>
+    <td><%= item.title %><%= " （更新用）" if item.replace_page? %></td>
     <td><%= item.model_name %></td>
     <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
     <td style="text-align: center;"><%= item.status.name %></td>
