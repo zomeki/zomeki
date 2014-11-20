@@ -492,6 +492,10 @@ class GpArticle::Doc < ActiveRecord::Base
     extract_links(self.mobile_body, all)
   end
 
+  def links_in_string(str, all=false)
+    extract_links(str, all)
+  end
+
   def broken_link_exists?
     @broken_link_exists_in_body
   end
