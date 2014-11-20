@@ -67,6 +67,11 @@ module Cms::FormHelper
     render :partial => 'cms/admin/_partial/pieces/view', :locals => locals
   end
 
+  def piece_base_menu(item, options = {})
+    locals = {:item => item}.merge(options)
+    render :partial => 'cms/admin/_partial/pieces/menu', :locals => locals
+  end
+
   def inquiry_form(form)
     item = form.object
     item ||= instance_variable_get("@#{form.object_name}")
@@ -138,4 +143,13 @@ function toggle_form(link, target, open_label, close_label, quick) {
     EOS
     f.html_safe
   end
+
+  def piece_replace_menu(item)
+    if rep = item.replace_page
+      %Q(<div class="noticeBox">更新用のピースが作成されています : #{link_to h(rep.title), rep.admin_uri}</div>).html_safe
+    elsif org = item.replaced_page
+      %Q(<div class="noticeBox">公開時に更新されるピース : #{link_to h(org.title), org.admin_uri}</div>).html_safe
+    end
+  end
+  
 end

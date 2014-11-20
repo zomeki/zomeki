@@ -8,6 +8,10 @@ module Cms::Model::Base::Piece
     [['公開','public'],['非公開','closed']]
   end
   
+  def public?
+    return state == "public"
+  end
+
   def content_name
     return content.name if content
     Cms::Lib::Modules.module_name(:cms)

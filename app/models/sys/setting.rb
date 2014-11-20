@@ -6,7 +6,7 @@ class Sys::Setting < Sys::Model::Base::Setting
     options: [['使用する', 'enabled'], ['使用しない', 'disabled']],
     form_type: :radio_buttons
   set_config :pass_reminder_mail_sender, :name => "パスワード変更メール送信元アドレス", :default => 'noreply'
-#  set_config :file_upload_max_size, :name => "添付ファイル最大サイズ", :comment => 'MB', :default => 50
+  set_config :file_upload_max_size, :name => "添付ファイル最大サイズ", :comment => 'MB', :default => 50
 
   validates_presence_of :name
 
