@@ -4,6 +4,7 @@ class Cms::Piece < ActiveRecord::Base
   include Cms::Model::Base::Piece
   include Cms::Model::Base::Page::Publisher
   include Sys::Model::Rel::Unid
+  include Sys::Model::Rel::UnidRelation
   include Sys::Model::Rel::Creator
   include Cms::Model::Rel::Site
   include Cms::Model::Rel::Concept
@@ -15,14 +16,24 @@ class Cms::Piece < ActiveRecord::Base
     :order => :sort_no, :dependent => :destroy
 
   attr_accessor :in_settings
+  attr_accessor :setting_save_skip
   
   validates_presence_of :state, :model, :name, :title
-  validates_uniqueness_of :name, :scope => :concept_id
+  validates_uniqueness_of :name, :scope => :concept_id,
+    :if => %Q(!replace_page?)
   validates_format_of :name, :with => /^[0-9a-zA-Z\-_]+$/, :if => "!name.blank?",
     :message => "は半角英数字、ハイフン、アンダースコアで入力してください。"
   
   after_save :save_settings
+  after_save :replace_new_piece
   
+  def replace_new_piece
+    if state == "public" && rep = replaced_page
+      rep.destroy
+    end
+    return true
+  end
+
   def in_settings
     unless read_attribute(:in_settings)
       values = {}
@@ -93,8 +104,49 @@ class Cms::Piece < ActiveRecord::Base
     setting_extra_values(name)[extra_name]
   end
 
+  def duplicate(rel_type = nil)
+    item = self.class.new(self.attributes)
+    item.id            = nil
+    item.unid          = nil
+    item.created_at    = nil
+    item.updated_at    = nil
+    item.recognized_at = nil
+    item.published_at  = nil
+
+    if rel_type == nil
+      item.name  = nil
+      item.title = item.title.gsub(/^(【複製】)*/, "【複製】")
+    elsif rel_type == :replace
+      item.state = "closed"
+    end
+
+    item.setting_save_skip = true
+    return false unless item.save(:validate => false)
+
+    # piece_settings
+    settings.each do |setting|
+      dupe_setting = Cms::PieceSetting.new(setting.attributes)
+      dupe_setting.piece_id   = item.id
+      dupe_setting.created_at = nil
+      dupe_setting.updated_at = nil
+      dupe_setting.save(:validate => false)
+    end
+
+    if rel_type == :replace
+      rel = Sys::UnidRelation.new
+      rel.unid     = item.unid
+      rel.rel_unid = self.unid
+      rel.rel_type = 'replace'
+      rel.save
+    end
+
+    return item
+  end
+  
 protected
   def save_settings
+    return true if setting_save_skip
+    
     in_settings.each do |name, value|
       name = name.to_s
       
