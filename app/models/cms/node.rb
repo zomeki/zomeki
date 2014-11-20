@@ -248,6 +248,10 @@ class Cms::Node < ActiveRecord::Base
     end
   end
 
+  def pdf_in_body?(html)
+    extract_links(html, false).any?{|l| l[:url] =~ /\.pdf$/i }
+  end
+
 protected
   def remove_file
     close_page# rescue nil
@@ -372,4 +376,19 @@ protected
   def set_defaults
     self.sitemap_state ||= SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state)
   end
+
+  def extract_links(html, all)
+    links = Nokogiri::HTML.parse(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
+    return links if all
+    links.select do |link|
+      uri = URI.parse(link[:url]) rescue nil
+      next false if uri.blank?
+      next true unless uri.absolute?
+      [URI::HTTP, URI::HTTPS, URI::FTP].include?(uri.class)
+    end
+  rescue => evar
+    warn_log evar.message
+    return []
+  end
+
 end
