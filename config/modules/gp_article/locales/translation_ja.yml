@@ -45,6 +45,9 @@ ja:
         feature_1: 新着記事表示
         feature_2: 記事表示
         marker_icon_category_id: マーカーアイコン用カテゴリ
+        display_published_at: 公開日時
+        display_updated_at: 最終更新日時
+        keep_display_updated_at: 自動更新しない
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
         inquiries/address: 連絡先（住所）
