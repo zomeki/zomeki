@@ -33,7 +33,8 @@ protected
       response.body.gsub!("#{name}", value) if name != value
     end
 
-    if @item.pdf_in_body?(response.body)
+    body = Nokogiri::HTML(response.body, nil, 'utf-8').xpath("//div[@class='contentPage']/div[@class='body']").inner_html
+    if @item.pdf_in_body?(body)
       html = <<-EOT
 <div class="adobeReader">
   <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>
