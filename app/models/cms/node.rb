@@ -378,7 +378,7 @@ protected
   end
 
   def extract_links(html, all)
-    links = Nokogiri::HTML.parse(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
+    links = Nokogiri::HTML.fragment(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
     return links if all
     links.select do |link|
       uri = URI.parse(link[:url]) rescue nil
