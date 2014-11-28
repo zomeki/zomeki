@@ -37,3 +37,17 @@ lower_text = @item.lower_text ? %Q(<div style="margin: 5px; line-height: 1.2;">#
   </tr>
 </table>
 <%- end -%>
+<%- if @item.name == 'file_upload_max_size' -%>
+<table class="show">
+  <tr>
+    <th>拡張子別アップロードサイズ</th>
+    <td><%= text_area_tag :extension_upload_max_size, @item.extra_values[:extension_upload_max_size], size: '100x10' %>
+      <div>
+        例：jpgファイルは1MB、gifファイルは5MBをアップロードサイズ上限として設定する。<br />
+        jpg, 1<br />
+        gif, 5
+      </div>
+    </td>
+  </tr>
+</table>
+<%- end -%>
