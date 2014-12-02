@@ -756,7 +756,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def set_display_attributes
     self.update_column(:display_published_at, self.published_at) unless self.display_published_at
-    self.update_column(:display_updated_at, self.updated_at) unless self.display_updated_at
+    self.update_column(:display_updated_at, self.updated_at) if self.display_updated_at.blank? || !self.keep_display_updated_at
   end
 
   def node_existence

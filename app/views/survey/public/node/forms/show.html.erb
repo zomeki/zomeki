@@ -21,7 +21,7 @@ $(document).ready(function () {
       <div class="question">
         <div class="question_content">
           <%= label_tag "question_#{question.id}", question.title %>
-          <% if question.required? && question.form_type != 'free' %><span class="note">※</span><% end %>
+          <% if question.required? && question.form_type != 'free' %><span class="note">※必須</span><% end %>
         </div>
 
         <div class="answer_content">

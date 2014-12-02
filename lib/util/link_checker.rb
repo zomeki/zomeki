@@ -37,6 +37,7 @@ class Util::LinkChecker
   end
 
   def self.check_url(url)
+    require 'httpclient'
     client = HTTPClient.new
 
     res = client.head(url)
@@ -67,6 +68,7 @@ class Util::LinkChecker
     {status: res.status, reason: res.reason, result: res.ok?}
   rescue => evar
     warn_log evar.message
+    dump evar.message
     {status: nil, reason: evar.message, result: false}
   end
 
