@@ -189,16 +189,19 @@
     <table class="show">
       <%- if @content.display_dates(:published_at) -%>
       <tr>
-        <th>公開日時</th>
+        <th><%= f.label :display_published_at %></th>
         <td><%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
                              :style => 'width: 150px;', :class => 'datetimepicker' %></td>
       </tr>
       <%- end -%>
       <%- if @content.display_dates(:updated_at) -%>
       <tr>
-        <th>最終更新日時</th>
-        <td><%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
-                             :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+        <th><%= f.label :display_updated_at %></th>
+        <td>
+          <%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
+                                                :style => 'width: 150px;', :class => 'datetimepicker' %>
+          <%= f.check_box :keep_display_updated_at %> <%= f.label :keep_display_updated_at %>
+        </td>
       </tr>
       <%- end -%>
     </table>

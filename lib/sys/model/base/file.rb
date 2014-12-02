@@ -70,6 +70,12 @@ module Sys::Model::Base::File
     return true if file.blank?
 
     maxsize = @maxsize || Sys::Setting.value(:file_upload_max_size).to_i
+
+    ext = ::File.extname(name.to_s).downcase
+    if _maxsize = Sys::Setting.get_upload_max_size(ext)
+      maxsize = _maxsize
+    end
+
     if file.size > maxsize.to_i  * (1024**2)
       errors.add :file, "が容量制限を超えています。＜#{maxsize}MB＞"
       return true
