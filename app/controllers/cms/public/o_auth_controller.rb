@@ -74,8 +74,8 @@ class Cms::Public::OAuthController < ApplicationController
               default_page = 'me'
               default_token = auth[:credential_token]
 
-              page_options = [['自分のタイムライン', default_page]]
-              token_options = [['自分', default_token]]
+              page_options = [['ページ：自分のタイムライン', default_page]]
+              token_options = [['投稿者：自分', default_token]]
 
               if res.kind_of?(Hash) && (data = res['data']).kind_of?(Array)
                 page_options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
