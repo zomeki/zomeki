@@ -11,3 +11,4 @@ ja:
         info_name: 名前
         credential_expires_at: 有効期限
         facebook_page: 投稿先
+        facebook_token: 投稿者
