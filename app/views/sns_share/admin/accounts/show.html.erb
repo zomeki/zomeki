@@ -25,6 +25,10 @@
     <td><%= l(Time.at(@item.credential_expires_at.to_i)) if @item.credential_expires_at.present? %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :facebook_token %></th>
+    <td><%= @item.facebook_token_text %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :facebook_page %></th>
     <td><%= @item.facebook_page_text %></td>
   </tr>

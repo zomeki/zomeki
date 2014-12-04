@@ -26,6 +26,18 @@ class SnsShare::Account < ActiveRecord::Base
     facebook_page_options.detect{|o| o.last == facebook_page }.try(:first) || ''
   end
 
+  def facebook_token_options=(options)
+    write_attribute(:facebook_token_options, YAML.dump(options.kind_of?(Array) ? options : []))
+  end
+
+  def facebook_token_options
+    YAML.load(read_attribute(:facebook_token_options).presence || '[]')
+  end
+
+  def facebook_token_text
+    facebook_token_options.detect{|o| o.last == facebook_token }.try(:first) || ''
+  end
+
   private
 
   def provider_existence

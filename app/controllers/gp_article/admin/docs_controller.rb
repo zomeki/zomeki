@@ -437,7 +437,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
         case account.provider
         when 'facebook'
-          fb = RC::Facebook.new(access_token: account.credential_token.presence)
+          fb = RC::Facebook.new(access_token: account.facebook_token)
           message = view_helpers.strip_tags(@item.send(@item.share_to_sns_with))
           info_log fb.post("#{account.facebook_page}/feed", message: message)
         when 'twitter'
