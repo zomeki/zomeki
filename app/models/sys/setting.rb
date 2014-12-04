@@ -18,7 +18,7 @@ class Sys::Setting < Sys::Model::Base::Setting
   
   def self.ext_upload_max_size_list
     return @ext_upload_max_size_list if @ext_upload_max_size_list
-    csv = Sys::Setting.setting_extra_value(:file_upload_max_size, :extension_upload_max_size)
+    csv = Sys::Setting.setting_extra_value(:file_upload_max_size, :extension_upload_max_size).to_s
     @ext_upload_max_size_list = {}
 
     csv.split(/(\r\n|\n)/u).each_with_index do |line, idx|
