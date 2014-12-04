@@ -70,12 +70,23 @@ class Cms::Public::OAuthController < ApplicationController
             fb = RC::Facebook.new(access_token: auth[:credential_token])
             if fb.authorized?
               res = fb.get('me/accounts')
-              options = [['自分のタイムライン', 'me']]
+
+              default_page = 'me'
+              default_token = auth[:credential_token]
+
+              page_options = [['自分のタイムライン', default_page]]
+              token_options = [['自分', default_token]]
+
               if res.kind_of?(Hash) && (data = res['data']).kind_of?(Array)
-                options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
-                auth[:facebook_page_options] = options
+                page_options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
+                auth[:facebook_page_options] = page_options
+
+                token_options.concat data.map{|d| ["投稿者：#{d['name']}", d['access_token']] }
+                auth[:facebook_token_options] = token_options
               end
-              auth[:facebook_page] = 'me'
+
+              auth[:facebook_page] = default_page
+              auth[:facebook_token] = default_token
             end
           rescue => e
             warn_log "Failed to get pages to post: #{e.message}"

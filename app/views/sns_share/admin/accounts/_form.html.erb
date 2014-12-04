@@ -25,8 +25,12 @@
     <td><%= l(Time.at(@item.credential_expires_at.to_i)) if @item.credential_expires_at.present? %></td>
   </tr>
   <tr>
+    <th><%= f.label :facebook_token %></th>
+    <td><%= f.select :facebook_token, @item.facebook_token_options %></td>
+  </tr>
+  <tr>
     <th><%= f.label :facebook_page %></th>
-    <td><%= f.select :facebook_page, @item.facebook_page_options, include_blank: true %></td>
+    <td><%= f.select :facebook_page, @item.facebook_page_options %></td>
   </tr>
   <%- end -%>
 </table>
