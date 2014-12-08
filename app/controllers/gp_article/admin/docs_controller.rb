@@ -215,6 +215,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       share_to_sns if @item.state_public?
 
       publish_related_pages if @item.state_public?
+
+      send_broken_link_notification(@item) if @item.state_closed? && @content.notify_broken_link? && @item.backlinks.present?
     end
   end
 
