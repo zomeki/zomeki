@@ -501,7 +501,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def backlinks
-    return self.class.none unless state_public?
+    return self.class.none unless state_public? || state_closed?
     links.engine.where(links.table[:url].matches("%#{self.public_uri(without_filename: true).sub(/\/$/, '')}%"))
   end
 

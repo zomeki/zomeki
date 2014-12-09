@@ -215,8 +215,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       share_to_sns if @item.state_public?
 
       publish_related_pages if @item.state_public?
-
-      send_broken_link_notification(@item) if @item.state_closed? && @content.notify_broken_link? && @item.backlinks.present?
     end
   end
 
@@ -266,10 +264,12 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def close(item)
-    super
-    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
-    @new_category_ids = []
-    publish_related_pages
+    _close(@item) do
+      @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+      @new_category_ids = []
+      publish_related_pages
+      send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
+    end
   end
 
   def duplicate(item)
