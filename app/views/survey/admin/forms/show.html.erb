@@ -62,7 +62,11 @@
         <%- @item.approval_requests.each do |approval_request| -%>
         <tr>
           <td><%= approval_request.approval_flow.approvals.map{|a|
-            approvers = a.approvers_label
+            approvers = if a.approval_type == 'select'
+              approval_request.select_assignments_label(a)
+            else
+              a.approvers_label
+            end
             a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;') :
                                                      content_tag(:span, approvers, style: 'padding: 4px;')
             }.join(' ＞ ').html_safe %></td>

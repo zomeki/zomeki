@@ -9,7 +9,11 @@
           <tr>
             <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
             <td><%= approval_flow.approvals.map{|approval|
-              content_tag(:span, approval.approvers_label, style: 'padding: 4px;')
+              if approval.select_approve?
+                render partial: 'approval/admin/_partial/select_assignments', locals: {item: item, approval: approval, approval_flow_id: approval_flow.id}
+              else
+                content_tag(:span, approval.approvers_label, style: 'padding: 4px;')
+              end
               }.join(" ＞ ").html_safe %></td>
           </tr>
           <%- end -%>

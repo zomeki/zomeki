@@ -163,7 +163,10 @@ class Survey::Form < ActiveRecord::Base
     approval_requests.each do |approval_request|
       users << approval_request.requester
       approval_request.approval_flow.approvals.each do |approval|
-        users.concat(approval.approvers)
+        _approvers = approval.approvers
+        ids = approval_request.select_assignments_ids(approval)
+        _approvers = _approvers.select{|a| ids.index(a.id.to_s)} if approval.select_approve?
+        users.concat(_approvers)
       end
     end
     return users.uniq

@@ -51,7 +51,9 @@ class Approval::Admin::ApprovalFlowsController < Cms::Controller::Admin::Base
 
     params[:approvals].each do |key, value|
       next unless value.is_a?(Array)
-      approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key)
+      approval = @item.approvals.find_by_index(key) || @item.approvals.create(index: key, approval_type: params[:approval_types][key])
+      approval.approval_type = params[:approval_types][key]
+      approval.save! if approval.changed?
       approval.assignments.destroy_all
       value.each_with_index do |uids, ogid|
         uids.split(",").each do |uid|
