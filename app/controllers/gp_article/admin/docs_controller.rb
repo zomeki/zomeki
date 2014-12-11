@@ -409,8 +409,24 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                         end
 
     approval_flow_ids.each do |approval_flow_id|
-      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
-      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+      request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+
+      assignments = {}.with_indifferent_access
+      if params.member?("assignment_ids_#{approval_flow_id}")
+        if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+            assignments["approval_#{approval_id}"] = "#{value}"
+          end
+        end
+      end
+
+      unless request
+        @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+        request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      end
+      request.select_assignment = assignments
+      request.save! if request.changed?
+      request.reset
     end
 
     @item.approval_requests.each do |approval_request|
@@ -425,7 +441,19 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                           []
                         end
 
-    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
+    if approval_flow_ids.empty?
+      @item.errors.add(:base, '承認フローを選択してください。')
+    else
+      approval_flow_ids.each do |approval_flow_id|
+        if params.member?("assignment_ids_#{approval_flow_id}") && params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+            params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+              @item.errors["承認者"] = "を選択してください。" if value.blank?
+            end
+          end
+        end
+      end
+    end
   end
 
   def share_to_sns
