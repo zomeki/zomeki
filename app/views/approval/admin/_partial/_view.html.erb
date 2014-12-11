@@ -8,7 +8,11 @@
           <%- item.approval_requests.each do |approval_request| -%>
           <tr>
             <td><%= approval_request.approval_flow.approvals.map{|approval|
-              approvers = approval.approvers_label
+              approvers = if approval.select_approve?
+                approval_request.select_assignments_label(approval)
+              else
+                approval.approvers_label
+              end
               approval == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;')
                                                             : content_tag(:span, approvers, style: 'padding: 4px;')
               }.join(' ＞ ').html_safe %></td>
