@@ -204,7 +204,7 @@ $(document).ready(function () {
   <tr>
     <th>コンテンツ</th>
     <td><%= select_tag 'calendar_content_id',
-                       options_from_collection_for_select(GpCalendar::Content::Event.all, :id, :name, @item.extra_values[:calendar_content_id]), include_blank: true %></td>
+                       options_from_collection_for_select(GpCalendar::Content::Event.where(site_id: Core.site.id), :id, :name, @item.extra_values[:calendar_content_id]), include_blank: true %></td>
   </tr>
 </table>
 <%- end -%>
