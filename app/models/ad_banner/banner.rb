@@ -7,6 +7,7 @@ class AdBanner::Banner < ActiveRecord::Base
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
+  TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
 
   default_scope order(:sort_no)
 
@@ -67,6 +68,10 @@ class AdBanner::Banner < ActiveRecord::Base
     "#{content.public_node.public_uri}#{token}"
   end
 
+  def target_text
+    TARGET_OPTIONS.detect{|o| o.last == self.target }.try(:first).to_s
+  end
+
   def publish_or_close_image
     if published?
       [image_path, image_mobile_path, image_smart_phone_path].each do |path|
@@ -93,8 +98,9 @@ class AdBanner::Banner < ActiveRecord::Base
   private
 
   def set_defaults
-    self.state   ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
-    self.sort_no ||= 10 if self.has_attribute?(:sort_no)
+    self.state    ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
+    self.target   ||= TARGET_OPTIONS.last.last if self.has_attribute?(:target)
+    self.sort_no  ||= 10 if self.has_attribute?(:sort_no)
   end
 
   def set_token
