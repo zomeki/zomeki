@@ -1,0 +1,81 @@
+<%
+
+users = []
+assignments_by_ogid = approval.assignments.group_by{|g| g.or_group_id }
+users = assignments_by_ogid.map{|_,assignments| [assignments.map{|a| a.user_label}.join("or"), assignments.map{|a| a.user_id_label}.join(',')]}
+
+user_ids = users.collect{|u| u[1].to_s}
+request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+
+in_name = "assignment_ids_#{approval_flow_id}[#{approval.id}]"
+e1_name = "assignments1_#{approval.id}"
+e2_name = "assignments2_#{approval.id}"
+e1_evt  = "moveSelectOptions(this.form, '##{e1_name}', '##{e2_name}');"
+e2_evt  = "moveSelectOptions(this.form, '##{e2_name}', '##{e1_name}');"
+
+e2_list = []
+if params.member?("assignment_ids_#{approval_flow_id}") && params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+  e2_list = params["assignment_ids_#{approval_flow_id}"]["#{approval.id}"] ? 
+    params["assignment_ids_#{approval_flow_id}"]["#{approval.id}"].to_s.split(' ').uniq : []
+else
+  e2_list = request ? request.select_assignment["approval_#{approval.id}"].to_s.split(' ').uniq : []
+end
+e2_list.each{|id| e2_list.delete(id) unless user_ids.index(id)}
+
+e1_opt  = []
+e2_opt  = []
+users.each {|u| e2_list.index(u[1].to_s) && !e2_opt.include?(u[1]) ? e2_opt << u : e1_opt << u }
+e1_opt  = options_for_select(e1_opt)
+e2_opt  = options_for_select(e2_opt)
+
+style   = "width: 240px; height: 140px;"
+e1_tag  = select_tag(e1_name, e1_opt, :multiple => true, :onDblClick => e1_evt, :style => style)
+e2_tag  = select_tag(e2_name, e2_opt, :multiple => true, :onDblClick => e2_evt, :style => style)
+
+%><script type="text/javascript">
+//<![CDATA[
+function moveSelectOptions(form, srcId, dstId) {
+  $(srcId + ' option:selected').each(function() {
+    var exist = false;
+    var srcOpt = $(this);
+
+    $(dstId + ' option').each(function() {
+      if ($(this).val() == srcOpt.val()) {
+        exist = true;
+        return;
+      }
+    });
+    if (!exist) {
+      $(dstId).append('<option value="' + srcOpt.val() + '">' + srcOpt.text() + '</option>');
+      srcOpt.remove();
+    }
+  });
+}
+//]]>
+</script>
+
+<%= hidden_field_tag in_name %>
+<table class="noDesign">
+  <tr>
+    <td>
+      <%= e1_tag %>
+      </td><td>
+      <input type="button" value="追加 →" onClick="<%= e1_evt %>" /><br /><br />
+      <input type="button" value="← 除外" onClick="<%= e2_evt %>" />
+      </td><td>
+      <div class="<%= 'field_with_errors' if @item.errors['承認者'].size > 0 %>" style="display:block;"><%= e2_tag %></div>
+    </td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('form').on('submit', function(e) {
+    var ids = [];
+    $('#<%= e2_name %> > option').each(function() {
+      ids.push($(this).val());
+    });
+    $('#<%= "assignment_ids_#{approval_flow_id}_#{approval.id}" %>').val(ids.join(' '));
+  });
+});
+<%- end -%>
