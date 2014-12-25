@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EPEL_RPM_URL="http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm"
-INSTALL_SCRIPTS_URL='https://raw.github.com/zomeki/zomeki-development/master/doc/install_scripts'
+INSTALL_SCRIPTS_URL='https://raw.githubusercontent.com/zomeki/zomeki-development/master/doc/install_scripts'
 
 echo '#### Prepare to install ####'
 
@@ -24,7 +24,7 @@ centos() {
   for file in ${files[@]}; do
     echo "$INSTALL_SCRIPTS_URL/$file" >> install_scripts.txt
     echo "./$file" >> install_all.sh
-    curl -LO "$INSTALL_SCRIPTS_URL/$file"
+    curl -fsSLO "$INSTALL_SCRIPTS_URL/$file"
     chmod 755 $file
   done
 
