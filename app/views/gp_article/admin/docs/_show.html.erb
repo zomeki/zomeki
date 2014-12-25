@@ -228,6 +228,8 @@
     <p class="form" style="margin-top: 0;">基本設定</p>
 
     <table class="show">
+      <%= concept_view @item, container: :tr %>
+      <%= layout_view @item, container: :tr %>
       <tr>
         <th><%= @item.locale :filename_base %></th>
         <td>

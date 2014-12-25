@@ -40,6 +40,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
+  belongs_to :layout, :foreign_key => :layout_id, :class_name => 'Cms::Layout'
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
