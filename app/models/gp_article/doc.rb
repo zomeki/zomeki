@@ -526,7 +526,9 @@ class GpArticle::Doc < ActiveRecord::Base
     #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
+      assginments = approval_request.current_select_assignments
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
+        next if !assginments.blank? && !assginments.include?(approver.id.to_s)
         next if approval_request.requester.email.blank? || approver.email.blank?
         CommonMailer.plain(from: approval_request.requester.email, to: approver.email, subject: subject, body: body).deliver
       end
