@@ -20,7 +20,7 @@ centos() {
 
   id zomeki || useradd -m zomeki
 
-  yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
+  yum -y install ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
   git clone https://github.com/zomeki/zomeki-development.git /var/share/zomeki
   chown -R zomeki:zomeki /var/share/zomeki
