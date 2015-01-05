@@ -1,1 +1,21 @@
-<%=raw @item.contact_information %>
+<%- if @piece.source == 'sys_group' -%>
+  <%- if (group = @item.sys_group) -%>
+    <%- if group.address.present? -%>
+    <div class="address"><%= group.class.human_attribute_name :address %>：<%= group.address %></div>
+    <%- end -%>
+    <%- if group.tel.present? -%>
+    <div class="tel"><%= group.class.human_attribute_name :tel %>：<%= group.tel %> <%= group.tel_attend %></div>
+    <%- end -%>
+    <%- if group.fax.present? -%>
+    <div class="fax"><%= group.class.human_attribute_name :fax %>：<%= group.fax %></div>
+    <%- end -%>
+    <%- if group.email.present? -%>
+    <div class="email"><%= group.class.human_attribute_name :email %>：<%= group.email %></div>
+    <%- end -%>
+    <%- if group.note.present? -%>
+    <div class="note"><%= group.note %></div>
+    <%- end -%>
+  <%- end -%>
+<%- else -%>
+  <%= @item.contact_information.html_safe %>
+<%- end -%>

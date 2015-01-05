@@ -15,3 +15,5 @@ ja:
         updated_at: 更新日時
         business_outline: 業務内容
         contact_information: 連絡先
+      organization/piece/contact_information:
+        in_settings_source: 取得元
