@@ -759,10 +759,10 @@ class GpArticle::Doc < ActiveRecord::Base
     self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil? && content
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
     if (node = content.public_node)
-      self.layout_id = node.layout_id
-      self.concept_id = node.concept_id
+      self.layout_id ||= node.layout_id
+      self.concept_id ||= node.concept_id
     else
-      self.concept_id = content.concept_id
+      self.concept_id ||= content.concept_id
     end
   end
 
