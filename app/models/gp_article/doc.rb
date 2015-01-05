@@ -526,7 +526,9 @@ class GpArticle::Doc < ActiveRecord::Base
     #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
+      assginments = approval_request.current_select_assignments
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
+        next if !assginments.blank? && !assginments.include?(approver.id.to_s)
         next if approval_request.requester.email.blank? || approver.email.blank?
         CommonMailer.plain(from: approval_request.requester.email, to: approver.email, subject: subject, body: body).deliver
       end
@@ -756,6 +758,12 @@ class GpArticle::Doc < ActiveRecord::Base
     self.feature_1 = content.feature_settings[:feature_1] if self.has_attribute?(:feature_1) && self.feature_1.nil? && content
     self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil? && content
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
+    if (node = content.public_node)
+      self.layout_id = node.layout_id
+      self.concept_id = node.concept_id
+    else
+      self.concept_id = content.concept_id
+    end
   end
 
   def set_display_attributes

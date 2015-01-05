@@ -15,7 +15,7 @@ end
 def centos
   puts "It's CentOS!"
 
-  system 'yum install -y mysql-server'
+  system 'yum -y install mysql-server'
 
   my_cnf = '/etc/my.cnf'
 

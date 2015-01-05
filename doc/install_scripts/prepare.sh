@@ -13,7 +13,7 @@ centos() {
   echo "It's CentOS!"
 
   rpm -ivh $EPEL_RPM_URL
-  yum install -y git
+  yum -y install git
 
   cd /usr/local/src
 
