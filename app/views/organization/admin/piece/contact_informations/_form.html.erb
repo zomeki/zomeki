@@ -4,7 +4,7 @@
 <table class="show">
   <tr>
     <th><%= @item.locale :in_settings_source %></th>
-    <td><%= f.array_radio_buttons  'in_settings[source]', @item.class::SOURCE_OPTIONS %></td>
+    <td><%= f.array_radio_buttons 'in_settings[source]', @item.class::SOURCE_OPTIONS %></td>
   </tr>
 </table>
 <%- end -%>
