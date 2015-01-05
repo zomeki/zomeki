@@ -6,7 +6,7 @@
 <ul class="ad_banner">
   <%- @banners.each do |banner| -%>
   <li class="banner"><%= link_to image_tag(banner.image_uri, alt: banner.title),
-                                 Core.publish ? banner.url : banner.link_uri, target: banner.target %></li>
+                                 banner.link_uri, target: banner.target %></li>
   <%- end -%>
 </ul>
 <%- end -%>
