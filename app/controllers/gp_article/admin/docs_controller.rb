@@ -124,7 +124,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
 
-    @item.concept = @content.concept
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
