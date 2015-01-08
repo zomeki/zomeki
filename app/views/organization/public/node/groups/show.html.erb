@@ -15,7 +15,10 @@
     <%- @group.public_children.each do |child| -%>
     <li>
       <span class="name"><%= link_to child.sys_group.name, child.public_uri %></span>
-      <div class="information"><%=simple_format child.business_outline %></div>
+      <div class="information">
+        <div class="outline"><%=simple_format child.outline %></div>
+        <div class="business_outline"><%=simple_format child.business_outline %></div>
+      </div>
     </li>
     <%- end -%>
   </ul>

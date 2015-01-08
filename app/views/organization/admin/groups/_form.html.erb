@@ -39,6 +39,13 @@
 
 <table class="show">
   <tr>
+    <th><%= f.label :outline %></th>
+    <td class="cke_editor_wrapper">
+      <%= init_ckeditor %>
+      <%= f.text_area :outline, :class => 'body ckeditor' %>
+    </td>
+  </tr>
+  <tr>
     <th><%= f.label :business_outline %></th>
     <td class="cke_editor_wrapper">
       <%= init_ckeditor %>
