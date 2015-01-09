@@ -7,7 +7,7 @@ class Organization::Group < ActiveRecord::Base
   include Cms::Model::Auth::Content
 
   attr_accessible :state, :name, :sys_group_code, :sitemap_state, :docs_order, :sort_no,
-                  :business_outline, :contact_information, :group_outline,
+                  :business_outline, :contact_information, :outline,
                   :concept_id, :layout_id, :more_layout_id, :in_creator
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
