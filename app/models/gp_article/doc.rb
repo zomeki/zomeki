@@ -4,6 +4,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Base::OperationLog
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::Editor
   include Sys::Model::Rel::EditableGroup
   include Sys::Model::Rel::File
   include Sys::Model::Rel::Task
