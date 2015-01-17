@@ -9,6 +9,7 @@
 /wget_sites/
 
 /config/core.yml
+/config/sns_apps.yml
 /config/mecab/sites/
 /config/mecab/zomeki.dic
 /config/virtual-hosts/sites.conf

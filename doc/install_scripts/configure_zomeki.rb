@@ -24,6 +24,9 @@ def centos
     db['production']['uri'] = "http://#{`hostname`.chomp}/"
   end
 
+  sns_apps_yml = '/var/share/zomeki/config/sns_apps.yml'
+  FileUtils.copy("#{sns_apps_yml}.sample", sns_apps_yml, preserve: true)
+
   sites_conf = '/var/share/zomeki/config/virtual-hosts/sites.conf'
   FileUtils.copy("#{sites_conf}.sample", sites_conf, preserve: true)
 
