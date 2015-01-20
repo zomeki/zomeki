@@ -3,6 +3,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Publication
 
+  include GpArticle::DocsCommon
+
   before_filter :hold_document, :only => [ :edit ]
   before_filter :check_intercepted, :only => [ :update ]
 
@@ -145,9 +147,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       publish_by_update(@item) if @item.state_public?
 
-      share_to_sns if @item.state_public?
+      share_to_sns(@item) if @item.state_public?
 
-      publish_related_pages if @item.state_public?
+      publish_related_pages(@item) if @item.state_public?
     end
   end
 
@@ -213,9 +215,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       release_document
 
-      share_to_sns if @item.state_public?
+      share_to_sns(@item) if @item.state_public?
 
-      publish_related_pages if @item.state_public?
+      publish_related_pages(@item) if @item.state_public?
     end
   end
 
@@ -224,7 +226,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @new_category_ids = []
     _destroy(@item) do
       send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
-      publish_related_pages
+      publish_related_pages(@item)
     end
   end
 
@@ -248,7 +250,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       publish_ruby(@item)
       @item.rebuild(render_public_as_string(@item.public_uri, jpmobile: envs_to_request_as_smart_phone),
                     :path => @item.public_smart_phone_path, :dependent => :smart_phone)
-      publish_related_pages
+      publish_related_pages(@item)
     end
   end
 
@@ -268,7 +270,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     _close(@item) do
       @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
       @new_category_ids = []
-      publish_related_pages
+      publish_related_pages(@item)
       send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
     end
   end
@@ -454,51 +456,6 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
           end
         end
       end
-    end
-  end
-
-  def share_to_sns
-    view_helpers = self.class.helpers
-
-    @item.sns_accounts.each do |account|
-      next if account.credential_token.blank?
-
-      begin
-        apps = YAML.load_file(Rails.root.join('config/sns_apps.yml'))[account.provider]
-
-        case account.provider
-        when 'facebook'
-          fb = RC::Facebook.new(access_token: account.facebook_token)
-          message = view_helpers.strip_tags(@item.send(@item.share_to_sns_with))
-          info_log fb.post("#{account.facebook_page}/feed", message: message)
-        when 'twitter'
-          if (app = apps[request.host])
-            tw = RC::Twitter.new(consumer_key: app['key'],
-                                 consumer_secret: app['secret'],
-                                 oauth_token: account.credential_token.presence,
-                                 oauth_token_secret: account.credential_secret.presence)
-            message = view_helpers.truncate(view_helpers.strip_tags(@item.send(@item.share_to_sns_with)), length: 140)
-            info_log tw.tweet(message)
-          end
-        end
-      rescue => e
-        warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
-      end
-    end
-  end
-
-  def publish_related_pages
-    Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
-
-    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first) &&
-       (top_page = root_node.children.where(name: 'index.html').first)
-      ::Script.delay(queue: 'publish_top_page')
-              .run("cms/script/nodes/publish?target_module=cms&target_node_id=#{top_page.id}", force: true)
-    end
-
-    if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
-      GpCategory::Publisher.register_categories(@old_category_ids | @new_category_ids)
-      GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
     end
   end
 
