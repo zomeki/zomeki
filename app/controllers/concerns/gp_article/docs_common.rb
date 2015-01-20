@@ -16,7 +16,15 @@ module GpArticle::DocsCommon
         case account.provider
         when 'facebook'
           fb = RC::Facebook.new(access_token: account.facebook_token)
-          message = view_helpers.strip_tags(item.send(item.share_to_sns_with))
+          message = if item.share_to_sns_with == 'body'
+                      m = view_helpers.strip_tags(item.body)
+                      unless (img_tags = Nokogiri::HTML.parse(item.body).css('img[src^="file_contents/"]')).empty?
+                        img_tags.each{|t| m << " #{item.public_full_uri}#{t.attributes['src'].value}" }
+                      end
+                      m
+                    else
+                      item.public_full_uri
+                    end
           info_log fb.post("#{account.facebook_page}/feed", message: message)
         when 'twitter'
           if (app = apps[request.host])

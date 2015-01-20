@@ -25,7 +25,7 @@ class GpArticle::Doc < ActiveRecord::Base
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   OGP_TYPE_OPTIONS = [['article', 'article']]
-  SHARE_TO_SNS_WITH_OPTIONS = [['SNS(OGP)の説明', 'og_description'], ['記事の内容', 'body']]
+  SHARE_TO_SNS_WITH_OPTIONS = [['OGP', 'og_description'], ['記事の内容', 'body']]
   FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
   FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
 
