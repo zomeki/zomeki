@@ -17,11 +17,14 @@ module GpArticle::DocsCommon
         when 'facebook'
           fb = RC::Facebook.new(access_token: account.facebook_token)
           message = if item.share_to_sns_with == 'body'
-                      m = view_helpers.strip_tags(item.body)
-                      unless (img_tags = Nokogiri::HTML.parse(item.body).css('img[src^="file_contents/"]')).empty?
-                        img_tags.each{|t| m << " #{item.public_full_uri}#{t.attributes['src'].value}" }
+                      html = Nokogiri::HTML::DocumentFragment.parse(item.body)
+                      unless (img_tags = html.css('img[src^="file_contents/"]')).empty?
+                        img_tags.each do |tag|
+                          tag.name = 'span'
+                          tag.inner_html = " #{item.public_full_uri}#{tag.attr('src')} "
+                        end
                       end
-                      m
+                      view_helpers.strip_tags(html.to_s)
                     else
                       item.public_full_uri
                     end
