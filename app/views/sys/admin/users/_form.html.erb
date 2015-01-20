@@ -25,12 +25,20 @@
   </tr><tr>
     <th><%= @item.locale(:state) %></th>
     <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
+<%- if @item.has_auth?(:manager) -%>
+  <%- if Core.user.root? || Core.user.admin_creatable? -%>
   </tr><tr>
     <th><%= @item.locale(:auth_no) %></th>
-<%- if Core.user.root? || Core.user.admin_creatable? -%>
     <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+  <%- end -%>
 <%- else -%>
+  </tr><tr>
+    <th><%= @item.locale(:auth_no) %></th>
+  <%- if Core.user.root? || Core.user.admin_creatable? -%>
+    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+  <%- else -%>
     <td><%= f.radio_buttons :auth_no, @item.authes_exclude_admin, :class => 'status' %></td>
+  <%- end -%>
 <%- end -%>
   </tr><tr>
     <th><%= @item.locale(:role_name) %></th>
