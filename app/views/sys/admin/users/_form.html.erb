@@ -33,17 +33,19 @@
     <th><%= @item.locale(:auth_no) %></th>
 <%- if @item.root? -%>
     <td><%= @item.auth_name %></td>
-<%- elsif @item.has_auth?(:manager) -%>
-  <%- if Core.user.root? || Core.user.admin_creatable? -%>
-    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
-  <%- else -%>
-    <td><%= @item.auth_name %></td>
-  <%- end -%>
 <%- else -%>
-  <%- if Core.user.root? || Core.user.admin_creatable? -%>
+  <%- if Core.user.root? || Core.user.admin_creatable? || Core.user == @item -%>
     <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
   <%- else -%>
+    <%- if @item.has_auth?(:manager) -%>
+      <%- if @item.admin_creatable? -%>
+    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+      <%- else -%>
+    <td><%= @item.auth_name %></td>
+      <%- end -%>
+    <%- else -%>
     <td><%= f.radio_buttons :auth_no, @item.authes_exclude_admin, :class => 'status' %></td>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
   </tr><tr>
