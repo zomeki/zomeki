@@ -24,16 +24,22 @@
     <td><%= f.text_field :email, :class => 'email' %></td>
   </tr><tr>
     <th><%= @item.locale(:state) %></th>
+<%- if @item.root? -%>
+    <td><%= @item.status.name %></td>
+<%- else -%>
     <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
-<%- if @item.has_auth?(:manager) -%>
-  <%- if Core.user.root? || Core.user.admin_creatable? -%>
+<%- end -%>
   </tr><tr>
     <th><%= @item.locale(:auth_no) %></th>
+<%- if @item.root? -%>
+    <td><%= @item.auth_name %></td>
+<%- elsif @item.has_auth?(:manager) -%>
+  <%- if Core.user.root? || Core.user.admin_creatable? -%>
     <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+  <%- else -%>
+    <td><%= @item.auth_name %></td>
   <%- end -%>
 <%- else -%>
-  </tr><tr>
-    <th><%= @item.locale(:auth_no) %></th>
   <%- if Core.user.root? || Core.user.admin_creatable? -%>
     <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
   <%- else -%>
