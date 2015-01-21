@@ -17,6 +17,8 @@ class Cms::LinkCheck < ActiveRecord::Base
       log.result = res[:result]
       log.checked = true
       log.save
+
+      break unless reload.in_progress
     end
 
     transaction do
