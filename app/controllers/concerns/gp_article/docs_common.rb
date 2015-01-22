@@ -16,19 +16,22 @@ module GpArticle::DocsCommon
         case account.provider
         when 'facebook'
           fb = RC::Facebook.new(access_token: account.facebook_token)
-          message = if item.share_to_sns_with == 'body'
+          options = if item.share_to_sns_with == 'body'
                       html = Nokogiri::HTML::DocumentFragment.parse(item.body)
-                      unless (img_tags = html.css('img[src^="file_contents/"]')).empty?
+                      if (img_tags = html.css('img[src^="file_contents/"]')).present?
                         img_tags.each do |tag|
                           tag.name = 'span'
                           tag.inner_html = " #{item.public_full_uri}#{tag.attr('src')} "
                         end
+                        {picture: "#{item.public_full_uri}#{img_tags.first.attr('src')}",
+                         message: view_helpers.strip_tags(html.to_s)}
+                      else
+                        {message: view_helpers.strip_tags(html.to_s)}
                       end
-                      view_helpers.strip_tags(html.to_s)
                     else
-                      item.public_full_uri
+                      {link: item.public_full_uri}
                     end
-          info_log fb.post("#{account.facebook_page}/feed", message: message)
+          info_log fb.post("#{account.facebook_page}/feed", options)
         when 'twitter'
           if (app = apps[request.host])
             tw = RC::Twitter.new(consumer_key: app['key'],
