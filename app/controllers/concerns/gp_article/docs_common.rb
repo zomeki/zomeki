@@ -19,10 +19,6 @@ module GpArticle::DocsCommon
           options = if item.share_to_sns_with == 'body'
                       html = Nokogiri::HTML::DocumentFragment.parse(item.body)
                       if (img_tags = html.css('img[src^="file_contents/"]')).present?
-                        img_tags.each do |tag|
-                          tag.name = 'span'
-                          tag.inner_html = " #{item.public_full_uri}#{tag.attr('src')} "
-                        end
                         {picture: "#{item.public_full_uri}#{img_tags.first.attr('src')}",
                          message: view_helpers.strip_tags(html.to_s)}
                       else
