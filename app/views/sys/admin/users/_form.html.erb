@@ -9,7 +9,7 @@
   </tr><tr>
 <%- end -%>
     <th><%= @item.locale(:in_group_id) %></th>
-    <td><%= f.select_with_tree :in_group_id, Core.site.groups.find(:all, :conditions => {:level_no => 2}, :order => :sort_no), :include_blank => true %></td>
+    <td><%= f.select_with_tree :in_group_id, Core.site.groups.where(level_no: 2).order(:sort_no), include_blank: true %></td>
   </tr><tr>
     <th><%= @item.locale(:account) %></th>
     <td><%= f.text_field :account, :class => 'id' %></td>
@@ -24,13 +24,29 @@
     <td><%= f.text_field :email, :class => 'email' %></td>
   </tr><tr>
     <th><%= @item.locale(:state) %></th>
+<%- if @item.root? -%>
+    <td><%= @item.status.name %></td>
+<%- else -%>
     <td><%= f.radio_buttons :state, @item.states, :class => 'status' %></td>
+<%- end -%>
   </tr><tr>
     <th><%= @item.locale(:auth_no) %></th>
-<%- if Core.user.root? || Core.user.admin_creatable? -%>
-    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+<%- if @item.root? -%>
+    <td><%= @item.auth_name %></td>
 <%- else -%>
+  <%- if Core.user.root? || Core.user.admin_creatable? || Core.user == @item -%>
+    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+  <%- else -%>
+    <%- if @item.has_auth?(:manager) -%>
+      <%- if @item.admin_creatable? -%>
+    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
+      <%- else -%>
+    <td><%= @item.auth_name %></td>
+      <%- end -%>
+    <%- else -%>
     <td><%= f.radio_buttons :auth_no, @item.authes_exclude_admin, :class => 'status' %></td>
+    <%- end -%>
+  <%- end -%>
 <%- end -%>
   </tr><tr>
     <th><%= @item.locale(:role_name) %></th>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150108050917) do
+ActiveRecord::Schema.define(:version => 20150116023258) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1455,8 +1455,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.string   "content_hash"
     t.datetime "published_at"
     t.datetime "republished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "sys_closers", ["unid", "dependent"], :name => "index_sys_closers_on_unid_and_dependent"
@@ -1473,6 +1473,14 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.datetime "updated_at"
     t.text     "group_ids"
     t.boolean  "all"
+  end
+
+  create_table "sys_editors", :force => true do |t|
+    t.integer  "parent_unid"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "user_id"
+    t.integer  "group_id"
   end
 
   create_table "sys_files", :force => true do |t|
@@ -1589,8 +1597,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
   end
 
   create_table "sys_processes", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.datetime "started_at"
     t.datetime "closed_at"
     t.integer  "user_id"
@@ -1648,8 +1656,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.text     "value"
     t.integer  "sort_no"
     t.text     "extra_value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "sys_tasks", :force => true do |t|
@@ -1682,8 +1690,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.integer  "item_unid"
     t.string   "item_model"
     t.string   "item_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "sys_transferable_files", ["user_id", "operator_id"], :name => "index_sys_transferable_files_on_user_id_and_operator_id"
@@ -1696,8 +1704,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.string   "parent_dir"
     t.string   "path"
     t.string   "destination"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "user_id"
     t.integer  "operator_id"
     t.string   "operator_name"
@@ -1749,7 +1757,7 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.datetime "reset_password_token_expires_at"
   end
 
-  create_table "sys_users_groups", :force => true do |t|
+  create_table "sys_users_groups", :id => false, :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -1806,8 +1814,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.integer  "recursive_level"
     t.string   "remark"
     t.text     "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "tool_convert_imports", :force => true do |t|
@@ -1827,8 +1835,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.integer  "skipped_num"
     t.integer  "link_total_num"
     t.integer  "link_processed_num"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "tool_convert_links", :force => true do |t|
@@ -1838,8 +1846,8 @@ ActiveRecord::Schema.define(:version => 20150108050917) do
     t.text     "urls"
     t.text     "before_body",   :limit => 2147483647
     t.text     "after_body",    :limit => 2147483647
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "tool_convert_settings", :force => true do |t|

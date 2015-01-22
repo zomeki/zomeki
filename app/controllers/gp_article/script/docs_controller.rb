@@ -1,4 +1,6 @@
 class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
+  include GpArticle::DocsCommon
+
   def publish
     uri = @node.public_uri.to_s
     path = @node.public_path.to_s
@@ -64,50 +66,5 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
   rescue => e
     error_log e.message
     render text: 'NG'
-  end
-
-  private
-
-  def share_to_sns(item)
-    view_helpers = self.class.helpers
-
-    item.sns_accounts.each do |account|
-      next if account.credential_token.blank?
-
-      begin
-        apps = YAML.load_file(Rails.root.join('config/sns_apps.yml'))[account.provider]
-
-        case account.provider
-        when 'facebook'
-          fb = RC::Facebook.new(access_token: account.facebook_token)
-          message = view_helpers.strip_tags(item.send(item.share_to_sns_with))
-          info_log fb.post("#{account.facebook_page}/feed", message: message)
-        when 'twitter'
-          if (app = apps[request.host])
-            tw = RC::Twitter.new(consumer_key: app['key'],
-                                 consumer_secret: app['secret'],
-                                 oauth_token: account.credential_token.presence,
-                                 oauth_token_secret: account.credential_secret.presence)
-            message = view_helpers.truncate(view_helpers.strip_tags(item.send(item.share_to_sns_with)), length: 140)
-            info_log tw.tweet(message)
-          end
-        end
-      rescue => e
-        warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
-      end
-    end
-  end
-
-  def publish_related_pages(item)
-    Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
-
-    if (root_node = item.content.site.nodes.public.where(parent_id: 0).first) &&
-       (top_page = root_node.children.where(name: 'index.html').first)
-      ::Script.delay(queue: 'publish_top_page')
-              .run("cms/script/nodes/publish?target_module=cms&target_node_id=#{top_page.id}", force: true)
-    end
-
-    GpCategory::Publisher.register_categories(item.category_ids)
-    GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
   end
 end

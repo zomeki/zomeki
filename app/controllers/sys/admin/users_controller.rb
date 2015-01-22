@@ -13,7 +13,6 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
     
     item = Sys::User.new
     item.search params
-    item.and 'sys_users.id', '<>', 1 unless Core.user.root?
     item.page  params[:page], params[:limit]
     item.order params[:sort], "LPAD(account, 15, '0')"
 
@@ -28,8 +27,6 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
   def show
     @item = Sys::User.new.find(params[:id])
     return error_auth unless @item.readable?
-    return error_auth if !Core.user.root? && @item.root?
-    
     _show @item
   end
 

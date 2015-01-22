@@ -172,6 +172,7 @@ MySQLをインストールします
 
 設定ファイルのサンプルをコピーします。
 
+  # cp -p /var/share/zomeki/config/sns_apps.yml.sample /var/share/zomeki/config/sns_apps.yml
   # cp -p /var/share/zomeki/config/virtual-hosts/sites.conf.sample /var/share/zomeki/config/virtual-hosts/sites.conf
 
 設定ファイルのサンプルをコピーして変更します。
