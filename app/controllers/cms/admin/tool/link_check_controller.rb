@@ -4,19 +4,22 @@ class Cms::Admin::Tool::LinkCheckController < Cms::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:designer)
+    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+
+    params[:limit] ||= '30'
   end
 
   def index
     link_check = Util::LinkChecker.check_in_progress
 
     if request.post?
-      unless link_check
+      #unless link_check
 #TODO: Consider to execute check
-        Thread.fork {
+        #Thread.fork {
           Util::LinkChecker.check
-        }
-        sleep 3
-      end
+        #}
+        #sleep 3
+      #end
 
       redirect_to tool_link_check_url
     else
@@ -40,6 +43,8 @@ class Cms::Admin::Tool::LinkCheckController < Cms::Controller::Admin::Base
                   @logs
                 end
       end
+      @logs = @logs.paginate(page: params[:page], per_page: params[:limit])
+
     end
   end
 end
