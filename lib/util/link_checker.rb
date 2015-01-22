@@ -2,9 +2,9 @@
 class Util::LinkChecker
   def self.check
     in_progress = check_in_progress
-    in_progress.destroy if in_progress && in_progress.created_at < 30.minutes.ago
-    if in_progress.nil? || in_progress.destroyed?
-      link_check = Cms::LinkCheck.find_by_checked(false) || plan_check
+    in_progress.update_column(:in_progress, false) if in_progress
+    if in_progress.nil? || !in_progress.in_progress
+      link_check = plan_check
       link_check.execute
     end
   end
