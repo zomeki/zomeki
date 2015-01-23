@@ -1,10 +1,12 @@
 # encoding: utf-8
 class Cms::Public::Node::PagesController < Cms::Controller::Public::Base
+  def pre_dispatch
+    return http_error(404) unless @item = Cms::Node::Page.find_by_id(Page.current_node.id)
+  end
+
   def index
     return http_error(404) if params[:page]
 
-    @item = Cms::Node::Page.find(Page.current_node.id)
-    
     if Core.mode == 'preview' && params[:node_id]
       cond = {:id => params[:node_id], :parent_id => @item.parent_id, :name => @item.name}
       return http_error(404) unless @item = Cms::Node::Page.find(:first, :conditions => cond)
