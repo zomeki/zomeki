@@ -20,9 +20,9 @@ module GpArticle::DocsCommon
                       html = Nokogiri::HTML::DocumentFragment.parse(item.body)
                       if (img_tags = html.css('img[src^="file_contents/"]')).present?
                         {picture: "#{item.public_full_uri}#{img_tags.first.attr('src')}",
-                         message: view_helpers.strip_tags(html.to_s)}
+                         name: item.title, message: view_helpers.strip_tags(html.to_s), link: item.public_full_uri}
                       else
-                        {message: view_helpers.strip_tags(html.to_s)}
+                        {name: item.title, message: view_helpers.strip_tags(html.to_s), link: item.public_full_uri}
                       end
                     else
                       {link: item.public_full_uri}
