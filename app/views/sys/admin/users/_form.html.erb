@@ -39,9 +39,9 @@
   <%- else -%>
     <%- if @item.has_auth?(:manager) -%>
       <%- if @item.admin_creatable? -%>
-    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
-      <%- else -%>
     <td><%= @item.auth_name %></td>
+      <%- else -%>
+    <td><%= f.radio_buttons :auth_no, @item.authes, :class => 'status' %></td>
       <%- end -%>
     <%- else -%>
     <td><%= f.radio_buttons :auth_no, @item.authes_exclude_admin, :class => 'status' %></td>
