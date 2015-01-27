@@ -18,7 +18,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     criteria[:date] = Date.parse(criteria[:date]) rescue nil
     @events = GpCalendar::Holiday.all_with_content_and_criteria(@content, criteria).where(kind: :event)
     @events.each do |event|
-      event.started_on = Time.now.year
+      event.started_on = Time.now.year if event.repeat?
       @items << event if event.started_on
     end
 
