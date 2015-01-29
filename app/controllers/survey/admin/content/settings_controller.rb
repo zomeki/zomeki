@@ -23,7 +23,7 @@ class Survey::Admin::Content::SettingsController < Cms::Controller::Admin::Base
     @item.value = params[:item][:value]
 
     case @item.name
-    when 'approval_content_id'
+    when 'approval_relation'
       @item.extra_values do |ev|
         ev[:approval_content_id] = params[:approval_content_id].to_i
       end
