@@ -28,7 +28,8 @@ class GpCalendar::Event < ActiveRecord::Base
 
   validate :dates_range
 
-  scope :public, where(state: 'public')
+  scope :public, -> { where(state: 'public') }
+  scope :none, -> { where("#{self.table_name}.id IS NULL").where("#{self.table_name}.id IS NOT NULL") }
 
   def self.all_with_content_and_criteria(content, criteria)
     events = self.arel_table
