@@ -1,6 +1,7 @@
 # encoding: utf-8
 class GpCalendar::Content::Event < Cms::Content
   IMAGE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  EVENT_SYNC_OPTIONS = [['有効', 'enabled'], ['無効', 'disabled']]
 
   default_scope where(model: 'GpCalendar::Event')
 
@@ -72,11 +73,29 @@ class GpCalendar::Content::Event < Cms::Content
     setting_extra_value(:show_images, :image_cnt).to_i
   end
 
+  def event_sync_import?
+    setting_value(:event_sync_import) == 'enabled'
+  end
+
+  def event_sync_export?
+    setting_value(:event_sync_export) == 'enabled'
+  end
+
+  def event_sync_source_hosts
+    setting_extra_value(:event_sync_import, :source_hosts).to_s
+  end
+
+  def event_sync_destination_hosts
+    setting_extra_value(:event_sync_export, :destination_hosts).to_s
+  end
+
   private
 
   def set_default_settings
     in_settings[:list_style] = '@title_link@' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日（%a）' unless setting_value(:date_style)
     in_settings[:show_images] = 'visible' unless setting_value(:show_images)
+    in_settings[:event_sync_import] = 'disabled' unless setting_value(:event_sync_import)
+    in_settings[:event_sync_export] = 'disabled' unless setting_value(:event_sync_export)
   end
 end

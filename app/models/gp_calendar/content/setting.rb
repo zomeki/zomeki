@@ -13,6 +13,10 @@ class GpCalendar::Content::Setting < Cms::ContentSetting
     comment: '（例 /images/sample.jpg ）'
   set_config :show_qreki, name: '旧暦表示',
     options: [["表示する", 1], ["表示しない", 0]]
+  set_config :event_sync_import, name: 'イベント同期（インポート）',
+    options: GpCalendar::Content::Event::EVENT_SYNC_OPTIONS
+  set_config :event_sync_export, name: 'イベント同期（エクスポート）',
+    options: GpCalendar::Content::Event::EVENT_SYNC_OPTIONS
 
   def upper_text
   end

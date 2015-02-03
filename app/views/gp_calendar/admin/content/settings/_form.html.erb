@@ -103,3 +103,27 @@ $(document).ready(function () {
   </tr>
 </table>
 <%- end -%>
+
+<%- if @item.name == 'event_sync_import' -%>
+<table class="show">
+  <tr>
+    <th>イベント同期元ホスト</th>
+    <td>
+      <%= text_field_tag(:source_hosts, @item.extra_values[:source_hosts], style: 'width: 400px;') %>
+      （例 example.com,example.net,example.org ）
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'event_sync_export' -%>
+<table class="show">
+  <tr>
+    <th>イベント同期先ホスト</th>
+    <td>
+      <%= text_field_tag(:destination_hosts, @item.extra_values[:destination_hosts], style: 'width: 400px;') %>
+      （例 example.com,example.net,example.org ）
+    </td>
+  </tr>
+</table>
+<%- end -%>
