@@ -14,3 +14,19 @@
 <%- if @piece.lower_text.present? -%>
 <div class="lower_text"><%=raw @piece.lower_text %></div>
 <%- end -%>
+
+<%- if @piece.sort.last == 'random' -%>
+<%= javascript_tag do -%>
+function shuffle_children(id) {
+  var parent = $(id);
+  var children = parent.children();
+  for (var i = 0; i < children.length; i++) {
+    $(children[Math.floor(Math.random() * children.length)]).appendTo(parent);
+  }
+}
+
+$(document).ready(function () {
+  shuffle_children('#<%= @piece.css_id %> ul.ad_banner');
+});
+<%- end -%>
+<%- end -%>
