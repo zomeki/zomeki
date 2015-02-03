@@ -230,10 +230,12 @@ module Sys::Model::Base::File
     dst_h  = options[:height].to_f
     src_r    = (src_w / src_h)
     dst_r    = (dst_w / dst_h)
-    if dst_r > src_r
-      dst_w = (dst_h * src_r);
-    else
-      dst_h = (dst_w / src_r);
+    if !src_r.nan? && !dst_r.nan?
+      if dst_r > src_r
+        dst_w = (dst_h * src_r)
+      else
+        dst_h = (dst_w / src_r)
+      end
     end
 
     if options[:css]
