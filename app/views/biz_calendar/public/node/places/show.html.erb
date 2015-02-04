@@ -1,0 +1,42 @@
+<div class="calendarHolidays calendarLocationHolidays">
+
+  <div class="body"><%=raw @place.description %></div>
+
+  <div class="businessHours">
+    <h3>会館時間</h3>
+
+    <p>
+      <% @place.hours.public.each do |hour| %>
+      <%= safe{hour.target_date_label} %> <%= safe{"#{hour.business_hours_start_time.strftime("%H:%M")} ～ #{hour.business_hours_end_time.strftime("%H:%M")}"} %><br />
+      <% end %>
+    </p>
+  </div>
+
+  <div class="businessHoliday">
+    <h3>休館日</h3>
+
+    <p>
+      <% @place.holidays.public.each do |holiday| %>
+      <%= safe{holiday.target_date_label} %><br />
+      <% end %>
+    </p>
+  </div>
+
+  <% @months.each do |month| %>
+  <section class="month <%= month.strftime('%B').downcase %>">
+  <h2><%= month.strftime('%Y年%m月') %></h2>
+
+  <%= render 'calendar', month: month, place: @place %>
+
+  </section>
+  <% end %>
+
+  <% if @types = @content.visible_types %>
+  <ul class="attributeList">
+    <% @types.each do |type| %>
+      <li class="<%= type.name %>"><%= type.title %></li>
+    <% end %>
+  </ul>
+  <% end %>
+
+</div>

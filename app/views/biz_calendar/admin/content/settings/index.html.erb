@@ -1,0 +1,17 @@
+<table class="index">
+
+  <tr>
+    <th style="width: 60px; text-align: center;">編集</th>
+    <th style="width: 200px;">設定名</th>
+    <th style="">設定値</th>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :edit, url_for(:action => :edit, :id => item.name) %></td>
+    <td><%= item.config_name %></td>
+    <td><%= item.value_name || "未設定" %></td>
+  </tr>
+  <% end %>
+
+</table>
