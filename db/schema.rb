@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150116023258) do
+ActiveRecord::Schema.define(:version => 20150202073640) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -214,6 +214,76 @@ ActiveRecord::Schema.define(:version => 20150116023258) do
     t.string   "ipaddr"
     t.string   "user_agent"
   end
+
+  create_table "biz_calendar_bussiness_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.integer  "type_id"
+    t.date     "holiday_start_date"
+    t.date     "holiday_end_date"
+    t.string   "repeat_type"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "biz_calendar_bussiness_hours", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.date     "fixed_start_date"
+    t.date     "fixed_end_date"
+    t.string   "repeat_type"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.time     "business_hours_start_time"
+    t.time     "business_hours_end_time"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  create_table "biz_calendar_exception_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "biz_calendar_holiday_types", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "biz_calendar_holiday_types", ["content_id"], :name => "index_biz_calendar_holiday_types_on_content_id"
+
+  create_table "biz_calendar_places", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "url"
+    t.string   "title"
+    t.string   "summary"
+    t.string   "description"
+    t.string   "business_hours_state"
+    t.string   "business_hours_title"
+    t.string   "business_holiday_state"
+    t.string   "business_holiday_title"
+    t.integer  "sort_no"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "biz_calendar_places", ["content_id"], :name => "index_biz_calendar_places_on_content_id"
 
   create_table "calendar_events", :force => true do |t|
     t.integer  "unid"
