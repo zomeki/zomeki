@@ -1,0 +1,44 @@
+  <%
+
+
+
+
+%><table border="1">
+    <thead class="wdays">
+      <tr>
+        <th class="wday sun">日</th>
+        <th class="wday mon">月</th>
+        <th class="wday tue">火</th>
+        <th class="wday wed">水</th>
+        <th class="wday thu">木</th>
+        <th class="wday fri">金</th>
+        <th class="wday sat">土</th>
+      </tr>
+    </thead>
+    <tbody class="days">
+      <%- @weeks["#{month.strftime('%Y%m')}"].each do |week| -%>
+      <tr class="week">
+        <%- week.each do |day| -%><%
+          holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
+          not_holiday = @exception_holidays.member?(place.id) ? @exception_holidays[place.id].select{|e| day.between?(e.start_date, e.end_date) } : nil
+
+          is_holiday = not_holiday.empty? && !holidays.empty? ? true : false
+          _class  = ''
+          _class += ' prevMonth' if day < month.beginning_of_month
+          _class += ' nextMonth' if day > month.end_of_month
+          holidays.each {|h| _class += " #{h.type.name}" } if is_holiday
+        %>
+        <td class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= "#{_class}" %>">
+          <p class="date"><%= day.day %></p>
+
+          <% if is_holiday %>
+              <%- holidays.each do |holiday| -%>
+              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
+              <% end %>
+          <% end %>
+        </td>
+        <%- end -%>
+      </tr>
+      <%- end -%>
+    </tbody>
+  </table>

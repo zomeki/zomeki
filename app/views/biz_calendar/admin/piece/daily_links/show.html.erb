@@ -1,0 +1,10 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th>リンク先</th>
+    <td><%= "#{@item.target_node.title}（#{@item.target_node.name}）" if @item.target_node %></td>
+  </tr>
+</table>
+<%- end -%>
