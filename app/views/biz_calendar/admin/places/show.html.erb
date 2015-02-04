@@ -1,0 +1,31 @@
+<%= init_ckeditor :readOnly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:url) %></th>
+    <td><%= @item.url %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%= @item.title %></td>
+  </tr><tr>
+    <th><%= @item.locale(:summary) %></th>
+    <td><%=raw @item.summary %></td>
+  </tr><tr>
+    <th><%= @item.locale(:description) %></th>
+    <td><%=raw @item.description %></td>
+  </tr><tr>
+    <th><%= @item.locale(:business_hours_state) %></th>
+    <td><%= @item.class::BUSINESS_HOURS_STATE_OPTIONS.detect{|to| to.last == @item.business_hours_state }.try(:first) %></td>
+  </tr><tr>
+    <th><%= @item.locale(:business_holiday_state) %></th>
+    <td><%= @item.class::BUSINESS_HOLIDAY_STATE_OPTIONS.detect{|to| to.last == @item.business_holiday_state }.try(:first) %></td>
+  </tr><tr>
+    <th><%= @item.locale(:sort_no) %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>
+
+<%= creator_view @item %>

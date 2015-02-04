@@ -1,0 +1,55 @@
+<%
+
+types = @content.visible_types.order("id").collect{|c| [c.title, c.id]}
+
+%><span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'states' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:type_id) %> <span class="note">※</span></th>
+    <td><%= f.select :type_id, types, include_blank: true %></td>
+  </tr><tr>
+    <th><%= @item.locale(:holiday_date) %></th>
+    <td>
+      <%= f.text_field :holiday_start_date, :value => value_for_datepicker(f.object_name, :holiday_start_date),
+                             :style => 'width: 150px;', :class => 'datepicker' %>
+      &nbsp;&nbsp;～&nbsp;&nbsp;
+      <%= f.text_field :holiday_end_date, :value => value_for_datepicker(f.object_name, :holiday_end_date),
+                             :style => 'width: 150px;', :class => 'datepicker' %>
+    </td>
+  </tr><tr>
+    <th>対象条件</th>
+    <td>
+      <table id="categories">
+        <tbody>
+          <tr>
+            <th><%= @item.locale(:repeat_type) %></th>
+            <td><%= f.select :repeat_type, @item.class::REPEAT_OPTIONS, include_blank: true %></td>
+          </tr>
+          <tr>
+            <th><%= @item.locale(:start_date) %></th>
+            <td><%= f.text_field :start_date, :value => value_for_datepicker(f.object_name, :start_date),
+                             :style => 'width: 150px;', :class => 'datepicker' %></td>
+          </tr>
+          <tr>
+            <th><%= @item.locale(:end_date) %></th>
+            <td><%= f.text_field :end_date, :class => 'name' %></td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do -%>
+
+$(document).ready(function () {
+  <%= enable_datepicker_script -%>
+});
+
+<%- end -%>

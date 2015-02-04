@@ -1,0 +1,16 @@
+<%= init_ckeditor :readOnly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:start_date) %></th>
+    <td>
+      <%= safe{@item.start_date.strftime("%Y-%m-%d")} %>&nbsp;&nbsp;～&nbsp;&nbsp;
+      <%= safe{@item.end_date.strftime("%Y-%m-%d")} %>
+    </td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
