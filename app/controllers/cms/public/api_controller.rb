@@ -8,6 +8,7 @@ class Cms::Public::ApiController < Cms::Controller::Public::Base
                          (version = params[:version].to_s).blank?
     path = api_path.split('/')
     case path.shift
+    when 'authenticity_token'; render(json: {authenticity_token: form_authenticity_token})
     when 'gp_calendar'; gp_calendar(path: path, version: version)
     else render_404
     end
