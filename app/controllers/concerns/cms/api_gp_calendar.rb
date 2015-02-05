@@ -21,7 +21,7 @@ module Cms::ApiGpCalendar
       else render_405
       end
     when 'invoke'
-      if request.get?
+      if request.post?
         gp_calendar_sync_events_invoke(version)
       else render_405
       end
