@@ -44,7 +44,7 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
     end
     render text: 'OK'
   rescue => e
-    error_log e.message
+    error_log "#{__FILE__}:#{__LINE__} #{e.message}"
     render text: 'NG'
   end
 
@@ -64,7 +64,7 @@ class GpArticle::Script::DocsController < Cms::Controller::Script::Publication
     end
     render text: 'OK'
   rescue => e
-    error_log e.message
+    error_log "#{__FILE__}:#{__LINE__} #{e.message}"
     render text: 'NG'
   end
 end
