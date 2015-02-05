@@ -13,7 +13,9 @@ module Sys::Model::Rel::Editor
   
   def save_editor
     return false unless unid
-    
+
+    return false if Core.user_group.blank? || Core.user.blank?
+
     _editor = editors.build
     _editor.parent_unid = unid
     _editor.created_at  = Core.now
