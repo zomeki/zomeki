@@ -28,6 +28,10 @@ class BizCalendar::Content::Place < Cms::Content
     setting_value(:month_number).to_i
   end
 
+  def show_month_number
+    setting_value(:show_month_number).to_i
+  end
+
   private
 
   def set_default_settings

@@ -47,10 +47,10 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
     http_error(404) unless @place = @content.public_places.where(url: params[:name]).first
 
     Page.current_item = @place
-    Page.title = "#{@place.title}休館日"
+    Page.title = "#{@place.title}"
 
     @months = []
-    @month_num = 12
+    @month_num = @content.show_month_number
 
     dt = @today.beginning_of_month
     @months << dt

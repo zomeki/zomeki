@@ -2,8 +2,9 @@
 
   <div class="body"><%=raw @place.description %></div>
 
+  <% if @place.business_hours_state == 'visible' %>
   <div class="businessHours">
-    <h3>会館時間</h3>
+    <h3><%= @place.business_hours_title %></h3>
 
     <p>
       <% @place.hours.public.each do |hour| %>
@@ -11,9 +12,11 @@
       <% end %>
     </p>
   </div>
+  <% end %>
 
+  <% if @place.business_holiday_state == 'visible' %>
   <div class="businessHoliday">
-    <h3>休館日</h3>
+    <h3><%= @place.business_holiday_title %></h3>
 
     <p>
       <% @place.holidays.public.each do |holiday| %>
@@ -21,6 +24,7 @@
       <% end %>
     </p>
   </div>
+  <% end %>
 
   <% @months.each do |month| %>
   <section class="month <%= month.strftime('%B').downcase %>">
