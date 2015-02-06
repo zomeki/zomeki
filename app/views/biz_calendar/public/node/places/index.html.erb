@@ -6,25 +6,30 @@
 
   <div class="summary"><%=raw place.summary %></div>
 
+  <% if place.business_hours_state == 'visible' %>
   <div class="businessHours">
-  <h3>会館時間</h3>
+  <h3><%= place.business_hours_title %></h3>
 
-  <p>
+  <p><ul>
     <% place.hours.public.each do |hour| %>
-    <%= safe{hour.target_date_label} %> <%= safe{"#{hour.business_hours_start_time.strftime("%H:%M")} ～ #{hour.business_hours_end_time.strftime("%H:%M")}"} %><br />
+    <li><span class="date"><%= safe{hour.target_date_label} %></span>
+      <span class="time"><%= safe{"#{hour.business_hours_start_time.strftime("%H:%M")}～#{hour.business_hours_end_time.strftime("%H:%M")}"} %></li>
     <% end %>
-  </p>
+  </ul></p>
   </div>
+  <% end %>
 
+  <% if place.business_holiday_state == 'visible' %>
   <div class="businessHoliday">
-  <h3>休館日</h3>
+  <h3><%= place.business_holiday_title %></h3>
 
-  <p>
+  <p><ul>
     <% place.holidays.public.each do |holiday| %>
-    <%= safe{holiday.target_date_label} %><br />
+    <li><span class="date"><%= safe{holiday.target_date_label} %></date><li>
     <% end %>
-  </p>
+  </ul></p>
   </div>
+  <% end %>
 
   <% @months.each do |month| %>
   <section class="month <%= month.strftime('%B').downcase %>">
