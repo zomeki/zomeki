@@ -11,6 +11,6 @@ value_form = opt ? f.select(:value, opt, :include_blank => true) : f.text_field(
     <td><%= @item.config_name %></td>
   </tr><tr>
     <th>設定値</th>
-    <td><%= value_form %></td>
+    <td><%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span></td>
   </tr>
 </table>

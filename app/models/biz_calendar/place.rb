@@ -35,6 +35,20 @@ class BizCalendar::Place < ActiveRecord::Base
     "#{node.public_uri}#{url}/"
   end
 
+  def bread_crumbs(node)
+    crumbs = []
+    node.routes.each do |r|
+      c = []
+      r.each {|i| c << [i.title, i.public_uri] }
+
+      uri = c.last[1] || '/'
+      c << [title, "#{uri}#{url}/"]
+
+      crumbs << c
+    end
+    Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
   def url_validity
     errors.add(:url, :invalid) if self.url && self.url !~ /^[\-\w]*$/
     if (doc = self.class.where(url: self.url, state: self.state, content_id: self.content.id).first)
