@@ -96,12 +96,19 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
       self.holiday_end_date = self.holiday_start_date if self.holiday_end_date.blank?
 
       if self.holiday_start_date == self.holiday_end_date
+        format = localize_wday(format, self.holiday_start_date.wday)
         return self.holiday_start_date.strftime(format)
       else
-        return "#{self.holiday_start_date.strftime(format)}～#{self.holiday_end_date.strftime(format)}"
+        format1 = localize_wday(format, self.holiday_start_date.wday)
+        format2 = localize_wday(format, self.holiday_end_date.wday)
+        return "#{self.holiday_start_date.strftime(format1)}～#{self.holiday_end_date.strftime(format2)}"
       end
     end
     return ''
+  end
+
+  def localize_wday(style, wday)
+    style.gsub('%A', I18n.t('date.day_names')[wday]).gsub('%a', I18n.t('date.abbr_day_names')[wday])
   end
 
   def dates_range
