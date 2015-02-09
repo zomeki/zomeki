@@ -49,13 +49,21 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
       self.fixed_end_date = self.fixed_start_date if self.fixed_end_date.blank?
 
       if self.fixed_start_date == self.fixed_end_date
+        format = localize_wday(format, self.fixed_start_date.wday)
         return self.fixed_start_date.strftime(format)
       else
-        return "#{self.fixed_start_date.strftime(format)}～#{self.fixed_end_date.strftime(format)}"
+        format1 = localize_wday(format, self.fixed_start_date.wday)
+        format2 = localize_wday(format, self.fixed_end_date.wday)
+        return "#{self.fixed_start_date.strftime(format1)}～#{self.fixed_end_date.strftime(format2)}"
       end
     end
     return ''
   end
+
+  def localize_wday(style, wday)
+    style.gsub('%A', I18n.t('date.day_names')[wday]).gsub('%a', I18n.t('date.abbr_day_names')[wday])
+  end
+
 
   def dates_range
     return if self.fixed_start_date.blank? && self.fixed_end_date.blank?
