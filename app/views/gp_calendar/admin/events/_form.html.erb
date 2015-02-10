@@ -65,6 +65,25 @@
   <iframe src="<%= gp_calendar_event_files_path(@content, inline_id) %>" style="width: 100%; height: 400px;"></iframe>
 </div>
 
+<%- if @content.event_sync_import? -%>
+<p class="form">同期元情報</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :sync_source_host %></th>
+    <td><%= @item.sync_source_host %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sync_source_content_id %></th>
+    <td><%= @item.sync_source_content_id %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sync_source_id %></th>
+    <td><%= @item.sync_source_id %></td>
+  </tr>
+</table>
+<%- end -%>
+
 <%= creator_form f %>
 
 <%= javascript_tag do -%>
