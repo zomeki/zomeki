@@ -1,4 +1,5 @@
 class Cms::Public::ApiController < Cms::Controller::Public::Base
+  include Cms::ApiCommon
   include Cms::ApiGpCalendar
 
   skip_filter :render_public_layout
@@ -12,15 +13,5 @@ class Cms::Public::ApiController < Cms::Controller::Public::Base
     when 'gp_calendar'; gp_calendar(path: path, version: version)
     else render_404
     end
-  end
-
-  private
-
-  def render_404
-    render text: '404 Not Found', status: 404
-  end
-
-  def render_405
-    render text: '405 Method Not Allowed', status: 405
   end
 end
