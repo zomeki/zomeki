@@ -884,8 +884,11 @@ ActiveRecord::Schema.define(:version => 20150210025140) do
     t.string   "href"
     t.string   "target"
     t.text     "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+    t.string   "sync_source_host"
+    t.integer  "sync_source_content_id"
+    t.integer  "sync_source_id"
   end
 
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
