@@ -2,6 +2,8 @@
 class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
+  include Cms::ApiGpCalendar
+
   def pre_dispatch
     return error_auth unless @content = GpCalendar::Content::Event.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
@@ -50,6 +52,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     _create(@item) do
       set_categories
       @item.fix_tmp_files(params[:_tmp])
+      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
     end
   end
 
@@ -58,6 +61,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
     _update(@item) do
       set_categories
+      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
     end
   end
 

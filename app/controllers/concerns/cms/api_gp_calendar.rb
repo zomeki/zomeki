@@ -100,4 +100,22 @@ module Cms::ApiGpCalendar
     else render_404
     end
   end
+
+  def gp_calendar_sync_events_export(event)
+    version = '20150201'
+    source_host = URI.parse(event.content.site.full_uri).host
+    destination_hosts = event.content.event_sync_destination_hosts.split(',').each(&:strip!)
+
+    destination_hosts.each do |host|
+      begin
+        client = HTTPClient.new
+        token = JSON.parse(client.get_content "http://#{host}/_api/authenticity_token?version=#{version}")['authenticity_token']
+        query = {version: version, content_id: event.content_id, source_host: source_host, authenticity_token: token}
+        url = "http://#{host}/_api/gp_calendar/sync_events/invoke"
+        client.post(url, query)
+      rescue => e
+        warn_log "#{__FILE__}:#{__LINE__} #{e.message}"
+      end
+    end
+  end
 end
