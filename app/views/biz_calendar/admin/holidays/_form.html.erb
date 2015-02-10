@@ -29,14 +29,49 @@ types = @content.visible_types.order("id").collect{|c| [c.title, c.id]}
             <th><%= @item.locale(:repeat_type) %></th>
             <td><%= f.select :repeat_type, @item.class::REPEAT_OPTIONS, include_blank: true %></td>
           </tr>
+          <tr id ="intervalTr">
+            <th>繰り返す間隔</th>
+            <td>
+              <%= f.select :repeat_interval, (1..30).map{|i| [i,i]} %>&nbsp;<span id="intervalUnit">日</span>
+            </td>
+          </tr>
+          <tr id ="criterionTr">
+            <th>繰り返しの基準</th>
+            <td>
+              <%= f.radio_buttons :repeat_criterion, @item.class::REPEAT_CRITERION_OPTIONS, :class => 'states' %>
+            </td>
+          </tr>
+          <tr id ="weekTr">
+            <th>曜日</th>
+            <td>
+              <input type="hidden" name="<%= "#{f.object_name}[repeat_week][_]" %>" value="" />
+              <%= f.check_boxes(:repeat_week, @item.class::REPEAT_WEEK_OPTIONS) -%>
+            </td>
+          </tr>
           <tr>
-            <th><%= @item.locale(:start_date) %></th>
+            <th>開始日</th>
             <td><%= f.text_field :start_date, :value => value_for_datepicker(f.object_name, :start_date),
                              :style => 'width: 150px;', :class => 'datepicker' %></td>
           </tr>
           <tr>
-            <th><%= @item.locale(:end_date) %></th>
-            <td><%= f.text_field :end_date, :class => 'name' %></td>
+            <th rowspan="3">終了日</th>
+            <td>
+              <%= f.radio_button :end_type, @item.class::END_TYPE_OPTIONS[0].last, {:checked => (@item.end_type == @item.class::END_TYPE_OPTIONS[0].last)} %>
+              なし
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= f.radio_button :end_type, @item.class::END_TYPE_OPTIONS[1].last, {:checked => (@item.end_type == @item.class::END_TYPE_OPTIONS[1].last)} %>
+              <%= f.text_field :end_times, :class => 'name', :style => 'width: 60px; ime-mode: disabled;' %>&nbsp;回
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= f.radio_button :end_type, @item.class::END_TYPE_OPTIONS[2].last, {:checked => (@item.end_type == @item.class::END_TYPE_OPTIONS[2].last)} %>
+              <%= f.text_field :end_date, :value => value_for_datepicker(f.object_name, :end_date),
+                             :style => 'width: 150px;', :class => 'datepicker' %>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -50,6 +85,36 @@ types = @content.visible_types.order("id").collect{|c| [c.title, c.id]}
 
 $(document).ready(function () {
   <%= enable_datepicker_script -%>
+
+  $('#item_repeat_type').on('change', function (event) {
+    var repeat_type = event.target.value;
+    if (repeat_type == 'daily') {
+      $('#intervalTr').show();
+      $('#criterionTr').hide();
+      $('#weekTr').hide();
+      $('#intervalUnit').text('日');
+    } else if (repeat_type == 'weekly') {
+      $('#intervalTr').show();
+      $('#criterionTr').hide();
+      $('#weekTr').show();
+      $('#intervalUnit').text('週間');
+    } else if (repeat_type == 'monthly') {
+      $('#intervalTr').show();
+      $('#criterionTr').show();
+      $('#weekTr').hide();
+      $('#intervalUnit').text('ヶ月');
+    } else if (repeat_type == 'yearly') {
+      $('#intervalTr').show();
+      $('#criterionTr').hide();
+      $('#weekTr').hide();
+      $('#intervalUnit').text('年');
+    } else {
+      $('#intervalTr').hide();
+      $('#criterionTr').hide();
+      $('#weekTr').hide();
+    }
+  });
+  $("#item_repeat_type").trigger("change");
 });
 
 <%- end -%>

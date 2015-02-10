@@ -6,12 +6,12 @@
   <div class="businessHours">
     <h3><%= @place.business_hours_title %></h3>
 
-    <p><ul>
+    <ul>
       <% @place.hours.public.each do |hour| %>
       <li><span class="date"><%= safe{hour.target_date_label(@content.date_style)} %></span>
         <span class="time"><%= safe{"#{hour.business_hours_start_time.strftime(@content.time_style)} ～ #{hour.business_hours_end_time.strftime(@content.time_style)}"} %></span></li>
       <% end %>
-    </ul></p>
+    </ul>
   </div>
   <% end %>
 
@@ -19,11 +19,11 @@
   <div class="businessHoliday">
     <h3><%= @place.business_holiday_title %></h3>
 
-    <p><ul>
+    <ul>
       <% @place.holidays.public.each do |holiday| %>
       <li><span class="date"><%= safe{holiday.target_date_label(@content.date_style)} %></span></li>
       <% end %>
-    </ul></p>
+    </ul>
   </div>
   <% end %>
 
