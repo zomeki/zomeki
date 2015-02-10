@@ -19,7 +19,7 @@
       <%- @weeks["#{month.strftime('%Y%m')}"].each do |week| -%>
       <tr class="week">
         <%- week.each do |day| -%><%
-          holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
+          holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
           not_holiday = @exception_holidays.member?(place.id) ? @exception_holidays[place.id].select{|e| day.between?(e.start_date, e.end_date) } : nil
 
           is_holiday = not_holiday.empty? && !holidays.empty? ? true : false
