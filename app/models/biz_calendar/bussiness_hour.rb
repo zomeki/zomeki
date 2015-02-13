@@ -4,6 +4,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
   include Cms::Model::Auth::Content
+  include BizCalendar::Model::Base::Date
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   REPEAT_OPTIONS = [['毎日', 'daily'], ['平日（月～金）', 'weekday'], ['土日祝日', 'saturdays'], ['祝日', 'holiday'],
@@ -41,7 +42,6 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
   end
 
   def weeks
-    dump repeat_week.collect{|c| c[0]}
     repeat_week.collect{|c| c[0]}
   end
 
@@ -84,41 +84,33 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
         return "#{self.fixed_start_date.strftime(format1)}～#{self.fixed_end_date.strftime(format2)}"
       end
     else
+      end_text = ''
+      end_text = " #{end_times}回" if end_type == 1
+      end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
+
       case repeat_type
+      when 'weekday','saturdays','holiday','yearly'
+        return "#{repeat_type_text}#{end_text}"
       when 'daily'
         return "#{repeat_interval}日ごと" if repeat_interval > 1
-        return repeat_type_text
-      when 'weekday'
-        return repeat_type_text
-      when 'saturdays'
-        return repeat_type_text
-      when 'holiday'
-        return repeat_type_text
+        return "#{repeat_type_text}#{end_text}"
       when 'weekly'
         str = repeat_interval > 1 ? "#{repeat_interval}週間ごと" : repeat_type_text
         str = "#{str} #{repeat_weeks.join('曜日，')}曜日"
-        return str
+        return "#{str}#{end_text}"
       when 'monthly'
         str = repeat_interval > 1 ? "#{repeat_interval}ヶ月ごと" : repeat_type_text
         if repeat_criterion == 'day'
           str = "#{str} #{start_date.strftime('%m').to_i}日"
         else
-          wday = (start_date.wday == 0) ? 6 : start_date.wday - 1
-          wn =  (start_date.day - wday + 13) / 7
+          wn =  get_day_of_week_index(start_date)
           str = "#{str} 第 #{wn} #{I18n.t('date.abbr_day_names')[start_date.wday]}曜日"
         end
-        return str
-      when 'yearly'
-        return repeat_type_text
+        return "#{str}#{end_text}"
       end
     end
     return ''
   end
-
-  def localize_wday(style, wday)
-    style.gsub('%A', I18n.t('date.day_names')[wday]).gsub('%a', I18n.t('date.abbr_day_names')[wday])
-  end
-
 
   def dates_range
     return if self.fixed_start_date.blank? && self.fixed_end_date.blank?
@@ -146,7 +138,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
     if self.end_type == 1
       if self.end_times.blank?
         errors.add(:end_times, "を選択してください。")
-      elsif self.end_times !~ /^[0-9]+$/
+      elsif self.end_times.to_s !~ /^[0-9]+$/
         errors.add(:end_times, "は半角数字で入力してください。")
       elsif self.end_times == 0
         errors.add(:end_times, "は0以上の数値を入力してください。")
