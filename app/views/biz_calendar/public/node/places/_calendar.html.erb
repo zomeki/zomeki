@@ -16,23 +16,32 @@
       </tr>
     </thead>
     <tbody class="days">
-      <%- @weeks["#{month.strftime('%Y%m')}"].each do |week| -%>
+      <%- @weeks["#{month.strftime('%Y%m')}"].each_with_index do |week, index| -%>
       <tr class="week">
         <%- week.each do |day| -%><%
-          holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
-          not_holiday = @exception_holidays.member?(place.id) ? @exception_holidays[place.id].select{|e| day.between?(e.start_date, e.end_date) } : nil
-
-          is_holiday = not_holiday.empty? && !holidays.empty? ? true : false
           _class  = ''
           _class += ' prevMonth' if day < month.beginning_of_month
           _class += ' nextMonth' if day > month.end_of_month
-          holidays.each {|h| _class += " #{h.type.name}" } if is_holiday
+          week_index = day < month.beginning_of_month || day > month.end_of_month ? false : index
+
+          not_holiday = @exception_holidays.member?(place.id) ? @exception_holidays[place.id].select{|e| day.between?(e.start_date, e.end_date) } : nil
+
+          if not_holiday.blank?
+            holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
+            repeat_holidays = @repeat_holidays.member?(place.id) ? @repeat_holidays[place.id].select{|e| e.check(day, week_index) } : nil
+
+            is_holiday = not_holiday.empty? && (!holidays.blank? || !repeat_holidays.blank?) ? true : false
+            holidays.each {|h| _class += " #{h.type.name}" } if is_holiday
+          end
         %>
         <td class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= "#{_class}" %>">
           <p class="date"><%= day.day %></p>
 
           <% if is_holiday %>
               <%- holidays.each do |holiday| -%>
+              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
+              <% end %>
+              <%- repeat_holidays.each do |holiday| -%>
               <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
               <% end %>
           <% end %>
