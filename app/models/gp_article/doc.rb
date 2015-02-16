@@ -28,6 +28,7 @@ class GpArticle::Doc < ActiveRecord::Base
   SHARE_TO_SNS_WITH_OPTIONS = [['OGP', 'og_description'], ['記事の内容', 'body']]
   FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
   FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
+  QRCODE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   default_scope { where("#{self.table_name}.state != 'archived'") }
   scope :public, -> { where(state: 'public') }
@@ -335,6 +336,7 @@ class GpArticle::Doc < ActiveRecord::Base
     return false unless save(:validate => false)
     publish_page(content, path: public_path, uri: public_uri)
     publish_files
+    publish_qrcode
   end
 
   def rebuild(content, options={})
@@ -344,6 +346,7 @@ class GpArticle::Doc < ActiveRecord::Base
     #TODO: スマートフォン向けファイル書き出し要再検討
     @public_files_path = "#{::File.dirname(public_smart_phone_path)}/file_contents" if options[:dependent] == :smart_phone
     result = publish_files
+    publish_qrcode
     @public_files_path = nil if options[:dependent] == :smart_phone
     return result
   end
@@ -680,6 +683,12 @@ class GpArticle::Doc < ActiveRecord::Base
     prev_edition && (state_public? || state_closed?)
   end
 
+  def qrcode_visible?
+    return false unless content && content.qrcode_related?
+    return false unless self.qrcode_state == 'visible'
+    return true
+  end
+
   def og_type_text
     OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
   end
@@ -704,6 +713,10 @@ class GpArticle::Doc < ActiveRecord::Base
     FEATURE_2_OPTIONS.detect{|o| o.last == self.feature_2 }.try(:first).to_s
   end
 
+  def qrcode_state_text
+    QRCODE_OPTIONS.detect{|o| o.last == self.qrcode_state }.try(:first).to_s
+  end
+
   def public_files_path
     return @public_files_path if @public_files_path
     "#{::File.dirname(public_path)}/file_contents"
@@ -713,6 +726,18 @@ class GpArticle::Doc < ActiveRecord::Base
     inquiries.each_with_index do |inquiry, i|
       next if i != 0
       inquiry.group_id = in_creator["group_id"]
+    end
+  end
+
+  def qrcode_path
+    "#{::File.dirname(public_path)}/qrcode.png"
+  end
+
+  def qrcode_uri(preview: false)
+    if preview
+      "#{preview_uri(without_filename: true)}qrcode.png"
+    else
+      "#{public_uri(without_filename: true)}qrcode.png"
     end
   end
 
@@ -759,6 +784,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.feature_1 = content.feature_settings[:feature_1] if self.has_attribute?(:feature_1) && self.feature_1.nil? && content
     self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil? && content
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
+    self.qrcode_state = content.qrcode_default_state if self.has_attribute?(:qrcode_state) && self.qrcode_state.nil? && content
     if content
       if (node = content.public_node)
         self.layout_id ||= node.layout_id
@@ -859,6 +885,12 @@ class GpArticle::Doc < ActiveRecord::Base
     lib.each do |link|
       links.create(body: link[:body], url: link[:url]) unless links.where(body: link[:body], url: link[:url]).first
     end
+  end
+
+  def publish_qrcode
+    return unless self.state_public?
+    return if self.qrcode_visible?
+    Util::Qrcode.create(self.public_full_uri, self.qrcode_path)
   end
 
   def validate_accessibility_check

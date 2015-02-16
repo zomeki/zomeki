@@ -356,4 +356,13 @@ $(document).ready(function () {
 </table>
 <%- end -%>
 
-<%= render 'gp_article/admin/shared/doc_style_tags' %>
+<%- if @item.name == 'qrcode_settings' -%>
+<table class="show">
+  <tr>
+    <th>表示初期値</th>
+    <td><%= select_tag 'state', options_for_select(GpArticle::Content::Doc::QRCODE_STATE_OPTIONS, @item.extra_values[:state]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+    <%= render 'gp_article/admin/shared/doc_style_tags' %>

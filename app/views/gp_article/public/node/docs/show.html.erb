@@ -53,6 +53,12 @@
 <%- end -%>
 <%- end -%>
 
+<%- if @item.qrcode_visible? -%>
+<div class="qrcode">
+<img src="<%= @item.qrcode_uri(preview: (!Core.publish && Core.mode == 'preview')) %>" />
+</div>
+<%- end -%>
+
 <%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
 <%- if @content.blog_functions[:comment] -%>
