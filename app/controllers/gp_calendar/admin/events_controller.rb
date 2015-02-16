@@ -67,7 +67,9 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
 
   def destroy
     @item = @content.events.find(params[:id])
-    _destroy @item
+    _destroy(@item) do
+      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
+    end
   end
 
   private
