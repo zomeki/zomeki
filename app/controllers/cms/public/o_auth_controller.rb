@@ -24,11 +24,10 @@ class Cms::Public::OAuthController < ApplicationController
               credential_expires_at: oa_auth.credentials.expires_at}
 
       begin
-        query = CGI.escape('SELECT name FROM profile WHERE id = me()')
-        path = "/method/fql.query?format=JSON&access_token=#{auth[:credential_token]}&query=#{query}"
-        https = Net::HTTP.new('api.facebook.com', 443)
+        path = "/v2.2/me?locale=ja_JP&access_token=#{auth[:credential_token]}"
+        https = Net::HTTP.new('graph.facebook.com', 443)
         https.use_ssl = true
-        auth[:info_name] = JSON.parse(https.get(path).body).first['name'].to_s
+        auth[:info_name] = JSON.parse(https.get(path).body)['name'].to_s
       rescue => e
         warn_log "Failed to get localized user name: #{e.message}"
       end
