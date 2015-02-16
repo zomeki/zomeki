@@ -180,6 +180,12 @@
           </div>
         </td>
       </tr>
+      <%- if @content.qrcode_related? -%>
+      <tr>
+        <th><%= f.label :qrcode_state %></th>
+        <td><%= f.radio_buttons :qrcode_state, @item.class::QRCODE_OPTIONS %></td>
+      </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab2">
