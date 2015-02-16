@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150210025140) do
+ActiveRecord::Schema.define(:version => 20150216025907) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -847,6 +847,7 @@ ActiveRecord::Schema.define(:version => 20150210025140) do
     t.integer  "marker_icon_category_id"
     t.boolean  "keep_display_updated_at"
     t.integer  "layout_id"
+    t.text     "qrcode_state"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
