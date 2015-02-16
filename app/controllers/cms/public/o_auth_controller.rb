@@ -10,6 +10,7 @@ class Cms::Public::OAuthController < ApplicationController
 
   def callback
     oa_params = request.env['omniauth.params']
+    oa_params.each{|k, v| oa_params[k] = CGI.unescape(v) if v.index('%') }
     oa_auth = request.env['omniauth.auth']
 
     case oa_auth[:provider]
