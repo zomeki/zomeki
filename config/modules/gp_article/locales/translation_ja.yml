@@ -48,6 +48,7 @@ ja:
         display_published_at: 公開日時
         display_updated_at: 最終更新日時
         keep_display_updated_at: 自動更新しない
+        qrcode_state: QRコード
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
         inquiries/address: 連絡先（住所）

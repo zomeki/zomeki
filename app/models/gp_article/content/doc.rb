@@ -13,6 +13,8 @@ class GpArticle::Content::Doc < Cms::Content
   FEATURE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   WRAPPER_TAG_OPTIONS = [['li', 'li'], ['article', 'article']]
   DOC_LIST_STYLE_OPTIONS = [['日付毎', 'by_date'], ['記事一覧', 'simple']]
+  QRCODE_SETTINGS_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  QRCODE_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
 
   default_scope { where(model: 'GpArticle::Doc') }
 
@@ -280,6 +282,14 @@ class GpArticle::Content::Doc < Cms::Content
 
   def rel_docs_style
     setting_value(:rel_docs_style).to_s
+  end
+
+  def qrcode_related?
+    setting_value(:qrcode_settings) == 'enabled'
+  end
+
+  def qrcode_default_state
+    setting_extra_value(:qrcode_settings, :state) || QRCODE_STATE_OPTIONS.last.last
   end
 
   private
