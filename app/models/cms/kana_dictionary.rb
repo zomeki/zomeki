@@ -95,7 +95,8 @@ class Cms::KanaDictionary < ActiveRecord::Base
     errors = []
     data   = []
 
-    items = _site_id.blank? ? self.find(:all, :order => "id") : self.where(site_id: _site_id).find(:all, :order => "id")
+    items = self.order(:id)
+    items = items.where(site_id: _site_id) if _site_id.present?
     items.each do |item|
       if item.mecab_csv == nil
         data << item.mecab_csv if item.convert_csv == true

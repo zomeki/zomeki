@@ -10,12 +10,9 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   def index
     return test if params[:do] == 'test'
     return make_dictionary if params[:do] == 'make_dictionary'
-    
-    item = Cms::KanaDictionary.new#.readable
-    item.and :site_id, Core.site.id
-    item.page  params[:page], params[:limit]
-    item.order params[:sort], 'name, id'
-    @items = item.find(:all)
+
+    @items = Cms::KanaDictionary.where(site_id: Core.site.id).order(:id)
+                                .paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
   
