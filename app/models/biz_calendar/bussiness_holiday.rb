@@ -120,7 +120,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
       end
     when 'monthly'
       if repeat_criterion == 'day'
-        return false if start_date.strftime('%m').to_i != day.day
+        return false if start_date.strftime('%d').to_i != day.day
       else
         return false if start_date.wday != day.wday
         sd_wn =  get_day_of_week_index(start_date)
@@ -231,7 +231,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
       when 'monthly'
         str = repeat_interval > 1 ? "#{repeat_interval}ヶ月ごと" : repeat_type_text
         if repeat_criterion == 'day'
-          str = "#{str} #{start_date.strftime('%m').to_i}日"
+          str = "#{str} #{start_date.strftime('%d').to_i}日"
         else
           wn =  get_day_of_week_index(start_date)
           str = "#{str} 第 #{wn} #{I18n.t('date.abbr_day_names')[start_date.wday]}曜日"
