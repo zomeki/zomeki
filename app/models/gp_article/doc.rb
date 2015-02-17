@@ -888,9 +888,10 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def publish_qrcode
-    return unless self.state_public?
-    return if self.qrcode_visible?
+    return true unless self.state_public?
+    return true unless self.qrcode_visible?
     Util::Qrcode.create(self.public_full_uri, self.qrcode_path)
+    return true
   end
 
   def validate_accessibility_check
