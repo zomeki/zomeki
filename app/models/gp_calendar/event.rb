@@ -96,6 +96,14 @@ class GpCalendar::Event < ActiveRecord::Base
     super
   end
 
+  def publish!
+    update_attribute(:state, 'public')
+  end
+
+  def close!
+    update_attribute(:state, 'closed')
+  end
+
   private
 
   def set_defaults
