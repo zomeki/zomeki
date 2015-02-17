@@ -29,6 +29,8 @@ gem 'tamtam', '0.0.3'
 
 gem 'rsync', '~> 1.0.8'
 
+gem 'rqrcode_png'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
