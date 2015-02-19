@@ -122,6 +122,7 @@ module Cms::ApiGpCalendar
     destination_hosts.each do |host|
       begin
         conn = Faraday.new(url: "http://#{host}") do |builder|
+            builder.request :url_encoded
             builder.adapter Faraday.default_adapter
           end
         token = JSON.parse(conn.get('/_api/authenticity_token', version: version).body)['authenticity_token']
