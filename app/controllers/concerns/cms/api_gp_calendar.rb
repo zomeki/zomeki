@@ -1,5 +1,3 @@
-require 'httpclient'
-
 module Cms::ApiGpCalendar
   extend ActiveSupport::Concern
 
@@ -63,17 +61,18 @@ module Cms::ApiGpCalendar
         next unless hosts.include?(source_host)
 
         begin
-          client = HTTPClient.new
+          conn = Faraday.new(url: "http://#{source_host}") do |builder|
+              builder.adapter Faraday.default_adapter
+            end
           query = {version: '20150201', content_id: content_id}
-          url = "http://#{source_host}/_api/gp_calendar/sync_events/updated_events"
+          res = conn.get '/_api/gp_calendar/sync_events/updated_events', query
 
-          res = client.get(url, query)
-          if res.ok?
+          if res.success?
             closed_key = {sync_source_host: source_host,
                           sync_source_content_id: content_id,
                           sync_source_id: event_id}
 
-            events = JSON.parse(res.content)
+            events = JSON.parse(res.body)
             events.each do |event|
               next unless event.kind_of?(Hash)
               closed_key = {} if closed_key[:sync_source_id] == event['id'].to_i
@@ -101,7 +100,7 @@ module Cms::ApiGpCalendar
               e.close!
             end
           else
-            warn_log "#{__FILE__}:#{__LINE__} #{res.status} #{res.reason}"
+            warn_log "#{__FILE__}:#{__LINE__} #{res.headers['status']}"
           end
         rescue => e
           warn_log "#{__FILE__}:#{__LINE__} #{e.message}"
@@ -122,11 +121,14 @@ module Cms::ApiGpCalendar
 
     destination_hosts.each do |host|
       begin
-        client = HTTPClient.new
-        token = JSON.parse(client.get_content "http://#{host}/_api/authenticity_token?version=#{version}")['authenticity_token']
+        conn = Faraday.new(url: "http://#{host}") do |builder|
+            builder.request :url_encoded
+            builder.adapter Faraday.default_adapter
+          end
+        token = JSON.parse(conn.get('/_api/authenticity_token', version: version).body)['authenticity_token']
         query = {version: version, content_id: event.content_id, event_id: event.id, source_host: source_host, authenticity_token: token}
-        url = "http://#{host}/_api/gp_calendar/sync_events/invoke"
-        client.post(url, query)
+        res = conn.post '/_api/gp_calendar/sync_events/invoke', query
+        warn_log "#{__FILE__}:#{__LINE__} #{res.headers['status']}" unless res.success?
       rescue => e
         warn_log "#{__FILE__}:#{__LINE__} #{e.message}"
       end

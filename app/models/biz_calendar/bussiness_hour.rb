@@ -89,7 +89,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
       end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
 
       case repeat_type
-      when 'weekday','saturdays','holiday','yearly'
+      when 'weekday','saturdays','holiday'
         return "#{repeat_type_text}#{end_text}"
       when 'daily'
         return "#{repeat_interval}日ごと" if repeat_interval > 1
@@ -101,12 +101,14 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
       when 'monthly'
         str = repeat_interval > 1 ? "#{repeat_interval}ヶ月ごと" : repeat_type_text
         if repeat_criterion == 'day'
-          str = "#{str} #{start_date.strftime('%m').to_i}日"
+          str = "#{str} #{start_date.strftime('%d').to_i}日"
         else
           wn =  get_day_of_week_index(start_date)
           str = "#{str} 第 #{wn} #{I18n.t('date.abbr_day_names')[start_date.wday]}曜日"
         end
         return "#{str}#{end_text}"
+      when 'yearly'
+        return "#{repeat_type_text} #{start_date.strftime('%m月%d日')} #{end_text}"
       end
     end
     return ''
