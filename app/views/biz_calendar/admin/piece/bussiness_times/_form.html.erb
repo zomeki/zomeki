@@ -3,10 +3,16 @@
 
 <table class="show">
   <tr>
-    <th>リンク先</th>
-    <td>
-      <%= select_tag 'target_node', options_for_select(@item.content.public_nodes
-                                                       .map {|n| ["#{n.title}（#{n.name}）", n.id]}, @item.target_node.try(:id)), include_blank: true %>
+    <th><%= @item.locale :target_type %></th>
+    <td><%= f.array_select 'in_settings[target_type]', @item.class::TARGET_TYPE_OPTIONS, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :page_filter %></th>
+    <td><%= f.array_radio_buttons 'in_settings[page_filter]', @item.class::PAGE_FILTER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :time_style %></th>
+    <td><%= f.array_text_field 'in_settings[time_style]', size: 25 %> 午前/午後：%P 時：%H 分：%M 秒：%S</td>
   </tr>
 </table>
 <%- end -%>

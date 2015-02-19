@@ -17,8 +17,17 @@ module BizCalendar::Model::Base::Date
     end
   end
 
+  def get_wday(str=nil)
+    list = {'mon' => 1, 'tue' => 2, 'wed' => 3, 'thurs' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 0}
+    return str.blank? ? false : list[str]
+  end
+
   def localize_wday(style, wday)
     style.gsub('%A', I18n.t('date.day_names')[wday]).gsub('%a', I18n.t('date.abbr_day_names')[wday])
+  end
+
+  def localize_ampm(style, time)
+    style.gsub('%P', I18n.t("time.#{time.strftime('%P')}"))
   end
 
 end

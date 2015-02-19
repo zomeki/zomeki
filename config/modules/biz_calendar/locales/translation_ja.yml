@@ -1,5 +1,11 @@
 ja:
   activerecord:
+    models:
+      biz_calendar/place: 拠点
+      biz_calendar/bussiness_hour: 業務時間
+      biz_calendar/bussiness_holiday: 休業日
+      biz_calendar/exception_holiday: 例外休業日
+      biz_calendar/holiday_type: 休日種別
     attributes:
       biz_calendar/place:
         state: "状態"
@@ -49,3 +55,7 @@ ja:
         state: "状態"
         name: "休日種別ID"
         title: "休日種別名"
+      biz_calendar/piece/bussiness_time:
+        target_type: 業務時間表示対象
+        page_filter: ページ絞り込み
+        time_style: 時間形式

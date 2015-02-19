@@ -26,6 +26,29 @@ class BizCalendar::Place < ActiveRecord::Base
 
   scope :public, where(state: 'public')
 
+  def get_bussines_time(date=Date.today)
+    hour = BizCalendar::BussinessHour.arel_table
+
+    where1 = hour[:fixed_start_date].lteq(date).and(hour[:fixed_end_date].gteq(date)).and(hour[:repeat_type].eq('').or(hour[:repeat_type].eq(nil)))
+
+    where2 = hour[:repeat_type].not_eq('').and(hour[:repeat_type].not_eq(nil))
+              .and(hour[:start_date].lteq(date))
+              
+    end_type_rel = hour.grouping(hour[:end_type].eq(2).and(hour[:end_date].gteq(date)))
+    end_type_rel = end_type_rel.or(hour[:end_type].eq(0))
+    end_type_rel = end_type_rel.or(hour[:end_type].eq(1))
+
+    where2 = where2.and(end_type_rel)
+
+    _hours =  hours.public.where(hour.grouping(where1).or(hour.grouping(where2))).all
+    
+    date_hours = []
+    _hours.each do |h|
+      date_hours << h if h.repeat_type.blank? || (!h.repeat_type.blank? && h.check(date))
+    end
+    return date_hours
+  end
+
   def state_public?
     state == 'public'
   end
