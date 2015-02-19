@@ -1,9 +1,19 @@
-<h3 class="month <%= @calendar.month_name.downcase %>"><%= @calendar.month %>月</h3>
 
-<%= @calendar.to_html %>
-
-<div class="links">
-  <%- if @node && @pagination -%>
-  <%= @pagination.to_links(:class => 'pagination lowerPagination') %>
-  <%- end -%>
+<div id="bussinessTimeBox<%= @piece.id %>" class="bussinessTimeBox">
 </div>
+
+<%= javascript_tag do -%>
+
+$(document).ready(function () {
+  $.ajax({
+    url: '<%= @biz_calendar_node_uri %><%= @piece.id %>/bussiness_times<%= "/#{@place_name}" if @place_name.present? %>',
+    type: 'GET',
+    success: writeBussinnesTime<%= @piece.id %>
+  });
+});
+
+function writeBussinnesTime<%= @piece.id %>(data) {
+  $('#bussinessTimeBox<%= @piece.id %>').html(data);
+}
+
+<%- end -%>

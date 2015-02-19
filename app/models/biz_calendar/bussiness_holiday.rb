@@ -41,10 +41,14 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
           start_date = Date.new(s_ym.slice(0, 4).to_i, s_ym.slice(4, 2).to_i, 1)
           end_date = Date.new(e_ym.slice(0, 4).to_i, e_ym.slice(4, 2).to_i, 1)
           end_date = end_date.end_of_month
-          if start_date && end_date
-            rel = rel.where(holidays[:holiday_start_date].lteq(end_date)
-                            .and(holidays[:holiday_end_date].gteq(start_date)))
-          end
+        end
+        if criteria[:start_date].present? && criteria[:end_date].present?
+          start_date = criteria[:start_date]
+          end_date = criteria[:end_date]
+        end
+        if start_date && end_date
+          rel = rel.where(holidays[:holiday_start_date].lteq(end_date)
+                          .and(holidays[:holiday_end_date].gteq(start_date)))
         end
       when 'not_null'
         rel = rel.where(holidays[:repeat_type].not_eq(''))
@@ -53,15 +57,32 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
           start_date = Date.new(s_ym.slice(0, 4).to_i, s_ym.slice(4, 2).to_i, 1)
           end_date = Date.new(e_ym.slice(0, 4).to_i, e_ym.slice(4, 2).to_i, 1)
           end_date = end_date.end_of_month
+
           if start_date && end_date
-            rel = rel.where(holidays[:start_date].lteq(end_date).and(holidays[:start_date].gteq(start_date)))
+            rel = rel.where(holidays[:start_date].lteq(end_date))
 
             end_type_rel = holidays[:end_type].eq(0)
             end_type_rel = end_type_rel.or(holidays[:end_type].eq(1))
-            end_type_rel = end_type_rel.or(holidays[:end_type].eq(2).and(holidays[:end_date].lteq(end_date)))
+            end_type_rel = end_type_rel.or(holidays.grouping(holidays.grouping(holidays[:end_type].eq(2).and(holidays[:end_date].lteq(end_date)))))
+            rel = rel.where(end_type_rel)
+          end
+
+        end
+        if criteria[:start_date].present? && criteria[:end_date].present?
+          start_date = criteria[:start_date]
+          end_date = criteria[:end_date]
+
+          if start_date && end_date
+            rel = rel.where(holidays[:start_date].lteq(end_date))
+
+            end_type_rel = holidays[:end_type].eq(0)
+            end_type_rel = end_type_rel.or(holidays[:end_type].eq(1))
+            end_type_rel = end_type_rel.or(holidays.grouping(holidays.grouping(holidays[:end_type].eq(2).and(holidays[:end_date].gteq(end_date)))))
             rel = rel.where(end_type_rel)
           end
         end
+        
+
       end
     end
 
@@ -91,11 +112,6 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
 
   def repeat_criterion_text
     REPEAT_CRITERION_OPTIONS.detect{|o| o.last == self.repeat_criterion }.try(:first).to_s
-  end
-
-  def get_wday(str=nil)
-    list = {'mon' => 1, 'tue' => 2, 'wed' => 3, 'thurs' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 0}
-    return str.blank? ? false : list[str]
   end
 
   def check(day, week_index=false)
@@ -135,8 +151,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
     if end_type == 0
       return true
     elsif end_type == 1
-      @repeat_end_num = @repeat_end_num.blank? ? 1 : @repeat_end_num+1
-      return true if @repeat_end_num <= self.end_times
+      return true if self.get_repeat_dates.select {|dt| dt == day }.size > 0
     else
       return true if day <= end_date
     end
@@ -153,20 +168,18 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
     # 回数指定
     case repeat_type
     when 'daily'
-      _interval = 86400 * repeat_interval
       if end_type == 1
-        end_times.times {
-          dt = dt + _interval
+        (end_times-1).times {
+          dt = dt + repeat_interval
           _dates << dt
         }
       else
 
       end
     when 'weekly'
-      _interval = 86400 * 7 * repeat_interval
+      _interval = 7 * repeat_interval
     when 'monthly'
     end
-
     @repeat_dates = _dates
     return @repeat_dates
   end

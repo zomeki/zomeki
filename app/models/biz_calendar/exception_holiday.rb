@@ -22,14 +22,20 @@ class BizCalendar::ExceptionHoliday < ActiveRecord::Base
 
     rel = self.where(holidays[:place_id].eq(place.id))
 
+    start_date = false
+    end_date   = false
     if (s_ym = criteria[:start_year_month]) =~ /^(\d{6})$/ && (e_ym = criteria[:end_year_month]) =~ /^(\d{6})$/
       start_date = Date.new(s_ym.slice(0, 4).to_i, s_ym.slice(4, 2).to_i, 1)
       end_date = Date.new(e_ym.slice(0, 4).to_i, e_ym.slice(4, 2).to_i, 1)
       end_date = end_date.end_of_month
-      if start_date && end_date
-        rel = rel.where(holidays[:start_date].lteq(end_date)
-                        .and(holidays[:end_date].gteq(start_date)))
-      end
+    end
+    if criteria[:start_date].present? && criteria[:end_date].present?
+      start_date = criteria[:start_date]
+      end_date = criteria[:end_date]
+    end
+    if start_date && end_date
+      rel = rel.where(holidays[:start_date].lteq(end_date)
+                      .and(holidays[:end_date].gteq(start_date)))
     end
 
     rel = case criteria[:order]

@@ -42,6 +42,8 @@ ZomekiCMS::Application.routes.draw do
   scope "_public/#{mod}", :module => mod, :as => "" do
     match "node_places/index"              => "public/node/places#index",
       :as => nil
+    match "node_places/:piece/bussiness_times/:name" => "public/node/places#bussiness_times"
+    match "node_places/:piece/bussiness_times"       => "public/node/places#bussiness_times"
     match "node_places/:name/index"        => "public/node/places#show",
       :as => nil
   end

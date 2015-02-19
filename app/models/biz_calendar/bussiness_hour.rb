@@ -25,6 +25,80 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
 
   scope :public, where(state: 'public')
 
+
+  def check(day, week_index=false)
+    return false if start_date > day
+    return false if end_type == 2 && end_date < day
+
+    case repeat_type
+    when 'daily'
+      if repeat_interval > 1
+        return false if self.get_repeat_dates.select {|dt| dt == day }.size < 1
+      end
+    when 'weekday'
+      return false if (day.wday == 0 || day.wday == 6 || Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil))
+    when 'holiday'
+      return false unless Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil)
+    when 'saturdays'
+      return false unless (day.wday == 0 || day.wday == 6 || Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil))
+    when 'weekly'
+      return false unless repeat_week_ary.map {|w| get_wday(w[0]) }.include?(day.wday)
+      if repeat_interval > 1
+        return false if self.get_repeat_dates.select {|dt| dt == day }.size < 1
+      end
+    when 'monthly'
+      if repeat_criterion == 'day'
+        return false if start_date.strftime('%d').to_i != day.day
+      else
+        return false if start_date.wday != day.wday
+        sd_wn =  get_day_of_week_index(start_date)
+        s_wn =  get_day_of_week_index(day)
+        return false if sd_wn != s_wn
+      end
+    when 'yearly'
+      return false if repeat_interval > 1
+      return false if "#{start_date.strftime('%m%d')}" != "#{day.strftime('%m%d')}"
+    end
+
+    if end_type == 0
+      return true
+    elsif end_type == 1
+      @repeat_end_num = @repeat_end_num.blank? ? 1 : @repeat_end_num+1
+      return true if @repeat_end_num <= self.end_times
+    else
+      return true if day <= end_date
+    end
+    return false
+  end
+
+  def get_repeat_dates
+    return @repeat_dates if @repeat_dates.present?
+
+    dt = start_date
+    _dates = []
+    _dates << start_date
+
+    # 回数指定
+    case repeat_type
+    when 'daily'
+      _interval = 86400 * repeat_interval
+      if end_type == 1
+        end_times.times {
+          dt = dt + _interval
+          _dates << dt
+        }
+      else
+
+      end
+    when 'weekly'
+      _interval = 86400 * 7 * repeat_interval
+    when 'monthly'
+    end
+
+    @repeat_dates = _dates
+    return @repeat_dates
+  end
+
   def content
     place.content
   end
