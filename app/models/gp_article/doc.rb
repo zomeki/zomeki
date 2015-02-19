@@ -345,9 +345,11 @@ class GpArticle::Doc < ActiveRecord::Base
     publish_page(content, options)
     #TODO: スマートフォン向けファイル書き出し要再検討
     @public_files_path = "#{::File.dirname(public_smart_phone_path)}/file_contents" if options[:dependent] == :smart_phone
+    @public_qrcode_path = "#{::File.dirname(public_smart_phone_path)}/qrcode.png" if options[:dependent] == :smart_phone
     result = publish_files
     publish_qrcode
     @public_files_path = nil if options[:dependent] == :smart_phone
+    @public_qrcode_path = nil if options[:dependent] == :smart_phone
     return result
   end
 
@@ -730,6 +732,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def qrcode_path
+    return @public_qrcode_path if @public_qrcode_path
     "#{::File.dirname(public_path)}/qrcode.png"
   end
 
