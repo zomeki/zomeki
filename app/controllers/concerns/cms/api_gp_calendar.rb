@@ -75,11 +75,12 @@ module Cms::ApiGpCalendar
             events = JSON.parse(res.body)
             events.each do |event|
               next unless event.kind_of?(Hash)
-              closed_key = {} if closed_key[:sync_source_id] == event['id'].to_i
-
               key = {sync_source_host: source_host,
                      sync_source_content_id: content_id,
-                     sync_source_id: event['id']}
+                     sync_source_id: event['id'].to_i}
+
+              closed_key = nil if closed_key == key
+
               attrs = {state: 'public',
                        title: event['title'],
                        started_on: event['started_on'],
