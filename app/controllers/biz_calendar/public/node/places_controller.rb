@@ -97,7 +97,6 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
     end
 
     today = Date.today
-    today = Date.new(2015, 2, 19)
 
     if @piece.target_today?
       @bussiness_times    = Hash.new()
