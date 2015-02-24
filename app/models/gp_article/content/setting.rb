@@ -64,6 +64,10 @@ class GpArticle::Content::Setting < Cms::ContentSetting
 
   after_initialize :set_defaults
 
+  def content
+    GpArticle::Content::Doc.find(content_id)
+  end
+
   def upper_text
     config[:upper_text].to_s
   end

@@ -33,15 +33,36 @@ module Cms::ApiGpCalendar
       content = GpCalendar::Content::Event.find_by_id(params[:content_id])
       return render(json: []) unless content.try(:public_node)
 
-      events = content.public_events.reorder('updated_at DESC').limit((params[:limit] || 10).to_i)
-      events.map! do |event|
+      limit = (params[:limit] || 10).to_i
+      events = content.public_events.reorder('updated_at DESC').limit(limit)
+
+      settings = GpArticle::Content::Setting.where(name: 'calendar_relation', value: 'enabled')
+      contents = settings.map{|s|
+                     next unless s.extra_values[:calendar_content_id] == content.id
+                     next unless s.content.site == content.site
+                     s.content
+                   }.compact
+      docs = contents.map{|c|
+                 c.public_docs.where(event_state: 'visible').reorder('updated_at DESC').limit(limit)
+               }.flatten
+      docs.each do |doc|
+        event = gp_calendar_doc_to_event(doc: doc, event_content: content)
+        events << event if event
+      end
+
+      recent_events = events.sort{|a, b| (a.updated_at <=> b.updated_at) * -1 }[0, limit]
+      recent_events.map! do |event|
+        source_class = event.doc.class.name if event.doc
+        source_class ||= event.class.name
+
         {id: event.id, updated_at: event.updated_at.to_s(:iso8601),
          title: event.title,
          started_on: event.started_on.to_s(:iso8601), ended_on: event.ended_on.to_s(:iso8601),
-         url: "#{content.public_node.public_full_uri}#{event.started_on.strftime('%Y/%m/')}"}
+         url: event.href,
+         source_class: source_class}
       end
 
-      render json: events
+      render json: recent_events
     else render_404
     end
   end
@@ -49,8 +70,9 @@ module Cms::ApiGpCalendar
   def gp_calendar_sync_events_invoke(version)
     case version
     when '20150201'
-      content_id = params[:content_id].to_i
+      event_source_class = params[:event_source_class].to_s
       event_id = params[:event_id].to_i
+      content_id = params[:content_id].to_i
       source_host = params[:source_host].to_s
       source_addr = Resolv.getaddress(source_host) rescue nil
       return render(json: {result: 'NG'}) if content_id.zero? || source_addr != request.remote_addr
@@ -70,14 +92,16 @@ module Cms::ApiGpCalendar
           if res.success?
             closed_key = {sync_source_host: source_host,
                           sync_source_content_id: content_id,
-                          sync_source_id: event_id}
+                          sync_source_id: event_id,
+                          sync_source_source_class: event_source_class}
 
             events = JSON.parse(res.body)
             events.each do |event|
               next unless event.kind_of?(Hash)
               key = {sync_source_host: source_host,
                      sync_source_content_id: content_id,
-                     sync_source_id: event['id'].to_i}
+                     sync_source_id: event['id'].to_i,
+                     sync_source_source_class: event['source_class'].to_s}
 
               closed_key = nil if closed_key == key
 
@@ -113,8 +137,16 @@ module Cms::ApiGpCalendar
     end
   end
 
-  def gp_calendar_sync_events_export(event)
-    return if event.new_record?
+  def gp_calendar_sync_events_export(doc_or_event:, event_content: nil)
+    return unless doc_or_event.kind_of?(GpArticle::Doc) || doc_or_event.kind_of?(GpCalendar::Event)
+    return if doc_or_event.kind_of?(GpArticle::Doc) && event_content.nil?
+    return if doc_or_event.new_record?
+
+    event = if doc_or_event.kind_of?(GpCalendar::Event)
+              doc_or_event
+            else
+              gp_calendar_doc_to_event(doc: doc_or_event, event_content: event_content)
+            end
 
     version = '20150201'
     source_host = URI.parse(event.content.site.full_uri).host
@@ -127,12 +159,30 @@ module Cms::ApiGpCalendar
             builder.adapter Faraday.default_adapter
           end
         token = JSON.parse(conn.get('/_api/authenticity_token', version: version).body)['authenticity_token']
-        query = {version: version, content_id: event.content_id, event_id: event.id, source_host: source_host, authenticity_token: token}
+        source_class = event.doc.class.name if event.doc
+        source_class ||= event.class.name
+
+        query = {version: version, authenticity_token: token,
+                 source_host: source_host, content_id: event.content_id, event_id: event.id, event_source_class: source_class}
         res = conn.post '/_api/gp_calendar/sync_events/invoke', query
         warn_log "#{__FILE__}:#{__LINE__} #{res.headers['status']}" unless res.success?
       rescue => e
         warn_log "#{__FILE__}:#{__LINE__} #{e.message}"
       end
     end
+  end
+
+  def gp_calendar_doc_to_event(doc:, event_content:)
+    return if doc.event_started_on.blank? || doc.event_ended_on.blank?
+
+    event = GpCalendar::Event.new(title: doc.title, href: doc.public_full_uri, target: '_self',
+                                  started_on: doc.event_started_on, ended_on: doc.event_ended_on,
+                                  description: doc.summary,
+                                  content_id: event_content.id)
+    event.id = doc.id
+    event.updated_at = doc.updated_at
+
+    event.doc = doc
+    event
   end
 end
