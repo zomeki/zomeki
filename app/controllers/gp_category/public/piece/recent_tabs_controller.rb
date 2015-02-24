@@ -40,9 +40,6 @@ class GpCategory::Public::Piece::RecentTabsController < Sys::Controller::Public:
         docs = GpArticle::Doc.mobile(::Page.mobile?).public.order('display_published_at DESC, published_at DESC').limit(@piece.list_count)
       end
 
-      sites = Cms::Site.arel_table
-      docs = docs.joins(content: :site).where(sites[:id].eq @piece.content.site.id)
-
       @tabs.push(name: tab.name,
                  title: tab.title,
                  class: tab_class,
