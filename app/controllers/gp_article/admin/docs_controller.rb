@@ -152,7 +152,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       publish_related_pages(@item) if @item.state_public?
 
-      if @item.state_public? && @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
+      if @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
         gp_calendar_sync_events_export(doc_or_event: @item, event_content: calendar_content) if calendar_content.event_sync_export?
       end
     end
@@ -224,7 +224,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       publish_related_pages(@item) if @item.state_public?
 
-      if @item.state_public? && @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
+      if @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
         gp_calendar_sync_events_export(doc_or_event: @item, event_content: calendar_content) if calendar_content.event_sync_export?
       end
     end
@@ -236,7 +236,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     _destroy(@item) do
       send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
       publish_related_pages(@item)
-      if @item.state_public? && @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
+      if @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
         gp_calendar_sync_events_export(doc_or_event: @item, event_content: calendar_content) if calendar_content.event_sync_export?
       end
     end
