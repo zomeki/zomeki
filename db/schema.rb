@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150216025907) do
+ActiveRecord::Schema.define(:version => 20150225012816) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -885,11 +885,12 @@ ActiveRecord::Schema.define(:version => 20150216025907) do
     t.string   "href"
     t.string   "target"
     t.text     "description"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
     t.string   "sync_source_host"
     t.integer  "sync_source_content_id"
     t.integer  "sync_source_id"
+    t.string   "sync_source_source_class"
   end
 
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|

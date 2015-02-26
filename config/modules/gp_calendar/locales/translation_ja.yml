@@ -16,6 +16,7 @@ ja:
         sync_source_host: 同期元ホスト
         sync_source_content_id: 同期元コンテンツID
         sync_source_id: 同期元ID
+        sync_source_source_class: 同期元タイプ
       gp_calendar/holiday:
         id: ID
         state: 状態

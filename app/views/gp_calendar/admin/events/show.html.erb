@@ -96,6 +96,10 @@
     <th><%= @item.class.human_attribute_name :sync_source_id %></th>
     <td><%= @item.sync_source_id %></td>
   </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sync_source_source_class %></th>
+    <td><%= @item.sync_source_source_class.constantize.model_name.human rescue nil %></td>
+  </tr>
 </table>
 <%- end -%>
 
