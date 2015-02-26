@@ -1,14 +1,3 @@
-<%- unless Page.mobile? -%>
-<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  $('#current_url').closest('form').submit(function (event) {
-    $('#current_url').val(parent.document.location);
-    $('#current_url_title').val(parent.document.title);
-  });
-});
-<%- end -%>
-<%- end -%>
 <div class="surveyForm">
   <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
@@ -83,3 +72,15 @@ $(document).ready(function () {
     <%= hidden_field_tag :piece, params[:piece] if params[:piece] -%>
   <%- end -%>
 </div>
+
+<%- unless Page.mobile? -%>
+<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#current_url').closest('form').submit(function (event) {
+    $('#current_url').val(parent.document.location);
+    $('#current_url_title').val(parent.document.title);
+  });
+});
+<%- end -%>
+<%- end -%>
