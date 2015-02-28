@@ -10,7 +10,7 @@ Cms::Lib::Modules::ModuleSet.draw :biz_calendar, '業務カレンダー' do |mod
   #mod.page
   
   ## pieces
-  #mod.piece :daily_links, "日別リンク"
-  #mod.piece :holidays, "休日一覧"
+  mod.piece :calendars, "休業日カレンダー"
+  #mod.piece :bussiness_holidays, "休業日一覧"
   mod.piece :bussiness_times, "業務時間"
 end

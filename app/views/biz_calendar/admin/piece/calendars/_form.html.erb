@@ -1,0 +1,40 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :place_id %></th>
+    <td><%= f.array_select 'in_settings[place_id]', @item.content.public_places.map{|p| [p.title, p.id]}, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :month_number %></th>
+    <td><%= f.array_text_field 'in_settings[month_number]', size: 25 %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_type_state %></th>
+    <td><%= f.array_radio_buttons 'in_settings[holiday_type_state]', @item.class::HOLIDAY_TYPE_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_state %></th>
+    <td><%= f.array_radio_buttons 'in_settings[holiday_state]', @item.class::HOLIDAY_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= f.array_text_field 'in_settings[date_style]', size: 25 %> 年：%Y 月：%m 日：%d 曜日：%A 曜日（省略）：%a</td>
+  </tr>
+</table>
+
+<p class="form">挿入テキスト</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :lower_text %></th>
+  <tr>
+  </tr>
+    <td><%= f.array_text_area 'in_settings[lower_text]', size: '100x10' %></td>
+  </tr>
+</table>
+
+
+
+<%- end -%>

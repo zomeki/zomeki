@@ -1,2 +1,2 @@
-class BizCalendar::Admin::Piece::BussinessTimesController < BizCalendar::Admin::Piece::BaseController
+class BizCalendar::Admin::Piece::BussinessTimesController < Cms::Admin::Piece::BaseController
 end
