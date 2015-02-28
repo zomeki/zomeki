@@ -30,7 +30,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
       when 'created_at_asc'
         @items.sort! {|a, b| b.created_at <=> a.created_at}
       else
-        @items.sort! {|a, b| a.started_on <=> b.started_on}
+        @items.sort! {|a, b| (a.started_on <=> b.started_on) * -1}
     end
 
     @items = @items.to_a.paginate(page: params[:page], per_page: 50)
@@ -52,7 +52,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     _create(@item) do
       set_categories
       @item.fix_tmp_files(params[:_tmp])
-      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
+      gp_calendar_sync_events_export(doc_or_event: @item) if @content.event_sync_export?
     end
   end
 
@@ -61,14 +61,14 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
     _update(@item) do
       set_categories
-      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
+      gp_calendar_sync_events_export(doc_or_event: @item) if @content.event_sync_export?
     end
   end
 
   def destroy
     @item = @content.events.find(params[:id])
     _destroy(@item) do
-      gp_calendar_sync_events_export(@item) if @content.event_sync_export?
+      gp_calendar_sync_events_export(doc_or_event: @item) if @content.event_sync_export?
     end
   end
 

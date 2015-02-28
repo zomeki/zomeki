@@ -7,6 +7,9 @@
     <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :started_on %></th>
     <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :ended_on %></th>
     <th style="text-align: center;"><%= GpCalendar::Event.human_attribute_name :title %></th>
+    <%- if @content.event_sync_import? -%>
+    <th style="text-align: center; width: 180px;"><%= GpCalendar::Event.human_attribute_name :sync_source_host %></th>
+    <%- end -%>
     <th style="text-align: center; width: 120px;"><%= GpCalendar::Event.human_attribute_name :created_at %></th>
     <th style="text-align: center; width: 60px;"><%= GpCalendar::Event.human_attribute_name :state %></th>
   </tr>
@@ -18,6 +21,9 @@
     <td style="text-align: center;"><%=i18n_l item.started_on %></td>
     <td style="text-align: center;"><%=i18n_l item.ended_on %></td>
     <td style="text-align: left;"><%= item.title %></td>
+    <%- if @content.event_sync_import? -%>
+    <td style="text-align: center;"><%= item.sync_source_host if item.respond_to?(:sync_source_host) %></td>
+    <%- end -%>
     <td style="text-align: center;"><%=i18n_l item.created_at %></td>
     <td style="text-align: center;"><%= item.status.name %></td>
   </tr>
