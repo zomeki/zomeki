@@ -30,10 +30,10 @@ ZomekiCMS::Application.routes.draw do
       :path        => ":parent/node_places"
     
     ## piece
-    resources :piece_daily_links,
-      :controller  => "admin/piece/daily_links"
-    resources :piece_holidays,
-      :controller  => "admin/piece/holidays"
+    resources :piece_calendars,
+      :controller  => "admin/piece/calendars"
+    resources :piece_bussiness_holidays,
+      :controller  => "admin/piece/bussiness_holidays"
     resources :piece_bussiness_times,
       :controller  => "admin/piece/bussiness_times"
   end
@@ -44,6 +44,8 @@ ZomekiCMS::Application.routes.draw do
       :as => nil
     match "node_places/:piece/bussiness_times/:name" => "public/node/places#bussiness_times"
     match "node_places/:piece/bussiness_times"       => "public/node/places#bussiness_times"
+    match "node_places/:piece/bussiness_holidays/:name" => "public/node/places#bussiness_holidays"
+    match "node_places/:piece/bussiness_holidays"       => "public/node/places#bussiness_holidays"
     match "node_places/:name/index"        => "public/node/places#show",
       :as => nil
   end

@@ -1,9 +1,4 @@
-  <%
-
-
-
-
-%><table border="1">
+<table border="1">
     <thead class="wdays">
       <tr>
         <th class="wday sun">日</th>
@@ -24,13 +19,13 @@
           _class += ' nextMonth' if day > month.end_of_month
           week_index = day < month.beginning_of_month || day > month.end_of_month ? false : index
 
-          not_holiday = @exception_holidays.member?(place.id) ? @exception_holidays[place.id].select{|e| day.between?(e.start_date, e.end_date) } : nil
+          not_holiday = !@exception_holidays.blank? ? @exception_holidays.select{|e| day.between?(e.start_date, e.end_date) } : nil
 
           if not_holiday.blank?
-            holidays  = @holidays.member?(place.id) ? @holidays[place.id].select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
-            repeat_holidays = @repeat_holidays.member?(place.id) ? @repeat_holidays[place.id].select{|e| e.check(day, week_index) } : nil
+            holidays  = !@holidays.blank? ? @holidays.select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
+            repeat_holidays = !@repeat_holidays.blank? ? @repeat_holidays.select{|e| e.check(day, week_index) } : nil
 
-            is_holiday = not_holiday.empty? && (!holidays.blank? || !repeat_holidays.blank?) ? true : false
+            is_holiday = not_holiday.blank? && (!holidays.blank? || !repeat_holidays.blank?) ? true : false
             if is_holiday
               holidays.each {|h| _class += " #{h.type.name}" } if holidays
               repeat_holidays.each {|h| _class += " #{h.type.name}" } if repeat_holidays
@@ -39,15 +34,6 @@
         %>
         <td class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= "#{_class}" %>">
           <p class="date"><%= day.day %></p>
-
-          <% if is_holiday %>
-              <%- holidays.each do |holiday| -%>
-              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
-              <% end %>
-              <%- repeat_holidays.each do |holiday| -%>
-              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
-              <% end %>
-          <% end %>
         </td>
         <%- end -%>
       </tr>

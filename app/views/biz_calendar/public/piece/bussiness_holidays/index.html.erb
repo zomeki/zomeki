@@ -1,0 +1,19 @@
+
+<div id="bussinessHolidayBox<%= @piece.id %>" class="bussinessHolidayBox">
+</div>
+
+<%= javascript_tag do -%>
+
+$(document).ready(function () {
+  $.ajax({
+    url: '<%= @biz_calendar_node_uri %><%= @piece.id %>/bussiness_holidays<%= "/#{@place_name}" if @place_name.present? %>',
+    type: 'GET',
+    success: writeBussinnesHoliday<%= @piece.id %>
+  });
+});
+
+function writeBussinnesHoliday<%= @piece.id %>(data) {
+  $('#bussinessTimeHoliday<%= @piece.id %>').html(data);
+}
+
+<%- end -%>
