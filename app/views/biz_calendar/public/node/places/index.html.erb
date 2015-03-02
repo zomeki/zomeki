@@ -13,7 +13,7 @@
   <ul>
     <% place.hours.public.each do |hour| %>
     <li><span class="date"><%= safe{hour.target_date_label(@content.date_style)} %></span>
-      <span class="time"><%= safe{"#{hour.business_hours_start_time.strftime(@content.time_style)}～#{hour.business_hours_end_time.strftime(@content.time_style)}"} %></span></li>
+      <span class="time"><%= safe{"#{hour.business_hours_start_time.strftime(localize_ampm(@content.time_style, hour.business_hours_start_time))}～#{hour.business_hours_end_time.strftime(localize_ampm(@content.time_style, hour.business_hours_end_time))}"} %></span></li>
     <% end %>
   </ul>
   </div>

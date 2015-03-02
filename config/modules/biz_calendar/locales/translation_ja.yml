@@ -36,9 +36,9 @@ ja:
       biz_calendar/bussiness_holiday:
         state: "状態"
         type_id: "休日種別"
-        holiday_date: "休業日"
-        holiday_start_date: "休業開始日"
-        holiday_end_date: "休業終了日"
+        holiday_date: "固定休業日"
+        holiday_start_date: "固定休業開始日"
+        holiday_end_date: "固定休業終了日"
         repeat_type: "繰り返し"
         start_date: "対象条件開始日"
         repeat_criterion: "繰り返しの基準"

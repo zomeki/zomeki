@@ -12,7 +12,7 @@
   </tr>
   <tr>
     <th><%= @item.locale :time_style %></th>
-    <td><%= f.array_text_field 'in_settings[time_style]', size: 25 %> 午前/午後：%P 時：%H 分：%M 秒：%S</td>
+    <td><%= f.array_text_field 'in_settings[time_style]', size: 25 %> <strong>午前/午後</strong>：%P <strong>時：</strong>%H <strong>分：</strong>%M <strong>秒：</strong>%S</td>
   </tr>
 </table>
 <%- end -%>
