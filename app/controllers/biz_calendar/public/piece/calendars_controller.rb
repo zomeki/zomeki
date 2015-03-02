@@ -8,7 +8,7 @@ class BizCalendar::Public::Piece::CalendarsController < BizCalendar::Public::Pie
   end
 
   def index
-    return render(:text => '') unless @place = @piece.place
+#    return render(:text => '') unless @place = @piece.place
     @today = Date.today
 
     @months = []
@@ -34,12 +34,14 @@ class BizCalendar::Public::Piece::CalendarsController < BizCalendar::Public::Pie
         end
     end
 
-    criteria = {repeat_type: '', start_year_month: started.strftime('%Y%m'), end_year_month: ended.strftime('%Y%m')}
-    @holidays           = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(@place, criteria).order(:holiday_start_date)
-    @exception_holidays = BizCalendar::ExceptionHoliday.public.all_with_place_and_criteria(@place, criteria).order(:start_date)
+    if @place
+      criteria = {repeat_type: '', start_year_month: started.strftime('%Y%m'), end_year_month: ended.strftime('%Y%m')}
+      @holidays           = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(@place, criteria).order(:holiday_start_date)
+      @exception_holidays = BizCalendar::ExceptionHoliday.public.all_with_place_and_criteria(@place, criteria).order(:start_date)
 
-    criteria[:repeat_type] = 'not_null'
-    @repeat_holidays = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(@place, criteria).order(:holiday_start_date)
+      criteria[:repeat_type] = 'not_null'
+      @repeat_holidays = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(@place, criteria).order(:holiday_start_date)
+    end
     
   end
   
