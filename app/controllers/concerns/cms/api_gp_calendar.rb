@@ -148,6 +148,8 @@ module Cms::ApiGpCalendar
               gp_calendar_doc_to_event(doc: doc_or_event, event_content: event_content)
             end
 
+    return unless event.kind_of?(GpCalendar::Event)
+
     version = '20150201'
     source_host = URI.parse(event.content.site.full_uri).host
     destination_hosts = event.content.event_sync_destination_hosts.split(',').each(&:strip!)
@@ -173,10 +175,16 @@ module Cms::ApiGpCalendar
   end
 
   def gp_calendar_doc_to_event(doc:, event_content:)
-    return if doc.event_started_on.blank? || doc.event_ended_on.blank?
+    event_started_on = doc.event_started_on
+    event_started_on ||= doc.event_ended_on
+    event_started_on ||= doc.display_published_at.try(:to_date)
+    return if doc.event_started_on.blank?
+
+    event_ended_on = doc.event_ended_on
+    event_ended_on ||= event_started_on
 
     event = GpCalendar::Event.new(title: doc.title, href: doc.public_full_uri, target: '_self',
-                                  started_on: doc.event_started_on, ended_on: doc.event_ended_on,
+                                  started_on: event_started_on, ended_on: event_ended_on,
                                   description: doc.summary,
                                   content_id: event_content.id)
     event.id = doc.id
