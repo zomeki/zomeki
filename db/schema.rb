@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150225012816) do
+ActiveRecord::Schema.define(:version => 20150302025720) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1641,6 +1641,7 @@ ActiveRecord::Schema.define(:version => 20150225012816) do
     t.datetime "published_at"
     t.text     "title"
     t.text     "body"
+    t.integer  "site_id"
   end
 
   create_table "sys_messages", :force => true do |t|
@@ -1651,6 +1652,7 @@ ActiveRecord::Schema.define(:version => 20150225012816) do
     t.datetime "published_at"
     t.text     "title"
     t.text     "body"
+    t.integer  "site_id"
   end
 
   create_table "sys_object_privileges", :force => true do |t|
