@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <th><%= @item.locale :date_style %></th>
-    <td><%= f.array_text_field 'in_settings[date_style]', size: 25 %> 年：%Y 月：%m 日：%d 曜日：%A 曜日（省略）：%a</td>
+    <td><%= f.array_text_field 'in_settings[date_style]', size: 25 %> <%= I18n.t('comments.date_style').html_safe %></td>
   </tr>
 </table>
 <%- end -%>
