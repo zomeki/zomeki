@@ -30,6 +30,7 @@ class Cms::Site < ActiveRecord::Base
   has_many :site_belongings, :dependent => :destroy, :class_name => 'Cms::SiteBelonging'
   has_many :groups, :through => :site_belongings, :class_name => 'Sys::Group'
   has_many :nodes, :dependent => :destroy
+  has_many :maintenances, class_name: 'Sys::Maintenance', dependent: :destroy
 
   validates_presence_of :state, :name, :full_uri
   validates_uniqueness_of :full_uri
