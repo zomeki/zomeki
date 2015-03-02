@@ -8,7 +8,7 @@ class BizCalendar::Public::Piece::CalendarsController < BizCalendar::Public::Pie
   end
 
   def index
-    return render(:text => 'eeeee') unless @place = @piece.place
+    return render(:text => '') unless @place = @piece.place
     @today = Date.today
 
     @months = []
