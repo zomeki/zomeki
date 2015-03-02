@@ -1,4 +1,4 @@
-
+<%- if @place -%>
 <% @months.each do |month| %>
   <section class="month <%= month.strftime('%B').downcase %>">
   <h2><%= "#{month.strftime('%m').to_i}月" %></h2>
@@ -29,6 +29,8 @@
   </ul>
 </div>
 <% end %>
+
+<%- end -%>
 
 <% unless @piece.lower_text.blank? %>
 <div class="lowerText">
