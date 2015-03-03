@@ -13,6 +13,7 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
   attr_accessor :more
   attr_accessor :condition
   attr_accessor :sort_no
+  attr_accessor :content_ids
 
   # 内部実装の制約上配列内に同じ値を複数保存出来ないため、工夫が必要。
   elem_accessor :elem_category_ids
@@ -22,6 +23,10 @@ class GpArticle::Piece::RecentTabXml < Cms::Model::Base::PieceExtension
 
   def condition_name
     CONDITION_OPTIONS.detect{|o| o.last == condition }.try(:first).to_s
+  end
+
+  def content_names
+    GpArticle::Content::Doc.where("id in (#{self.content_ids})").pluck(:name).join(', ') unless self.content_ids.blank?
   end
 
   def categories_with_layer

@@ -15,6 +15,11 @@
     <th>条件</th>
     <td>
       <table class="noDesign">
+        <tr style="border-bottom:1px solid #CCCCCC;">
+          <td><%= @item.locale :content_ids %></td>
+          <td><%= @item.content_names %></td>
+          <td>&nbsp;</td>
+        </tr>
         <tr>
           <td><%= @item.locale :condition %></td>
           <td><%= @item.condition_name %></td>
