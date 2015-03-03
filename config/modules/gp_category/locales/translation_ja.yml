@@ -73,6 +73,7 @@ ja:
         title: タブ名
         more: 一覧リンク
         condition: 結合
+        content_ids: 記事コンテンツ
         sort_no: 並び順
       gp_category/piece/feed:
         filename: ファイル名
