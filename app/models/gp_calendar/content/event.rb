@@ -22,6 +22,10 @@ class GpCalendar::Content::Event < Cms::Content
     events.public
   end
 
+  def public_holidays
+    holidays.public
+  end
+
   def categories
     setting = GpCalendar::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
     return GpCategory::Category.none unless setting

@@ -3,6 +3,8 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include GpCalendar::Controller::Holiday
 
+  include Cms::ApiGpCalendar
+
   def pre_dispatch
     return error_auth unless @content = GpCalendar::Content::Event.find_by_id(params[:content])
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
@@ -27,19 +29,25 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
   def create
     @item = @content.holidays.build(params[:item])
     @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
-    _create @item
+    _create(@item) do
+      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
+    end
   end
 
   def update
     @item = @content.holidays.find(params[:id])
     @item.attributes = params[:item]
     @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
-    _update @item
+    _update(@item) do
+      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
+    end
   end
 
   def destroy
     @item = @content.holidays.find(params[:id])
-    _destroy @item
+    _destroy(@item) do
+      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
+    end
   end
 
 end
