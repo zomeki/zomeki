@@ -49,6 +49,5 @@ class GpCategory::Admin::Piece::RecentTabs::TabsController < Cms::Controller::Ad
     elem_layers = {}
     params[:layers].each {|k, v| elem_layers[k] = "#{k}_#{v}" }
     @item.elem_layers = elem_layers
-    @item.content_ids = params[:gp_article_ids].join(',') if params[:gp_article_ids]
   end
 end

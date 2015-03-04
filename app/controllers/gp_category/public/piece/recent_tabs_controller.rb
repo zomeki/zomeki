@@ -40,9 +40,8 @@ class GpCategory::Public::Piece::RecentTabsController < Sys::Controller::Public:
         docs = GpArticle::Doc.mobile(::Page.mobile?).public.order('display_published_at DESC, published_at DESC').limit(@piece.list_count)
       end
 
-      content_ids = (!tab.content_ids.blank?) ? tab.content_ids.split(',') : GpArticle::Content::Setting.where(name: 'gp_category_content_category_type_id',
+      content_ids = GpArticle::Content::Setting.where(name: 'gp_category_content_category_type_id',
                                                       value: @piece.content.id).pluck(:content_id)
-
       docs = docs.where(content_id: content_ids)
 
       @tabs.push(name: tab.name,
