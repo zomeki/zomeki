@@ -175,6 +175,7 @@ module Cms::ApiGpCalendar
   end
 
   def gp_calendar_doc_to_event(doc:, event_content:)
+    return if (doc_id = doc.name.to_i).zero?
     event_started_on = doc.event_started_on
     event_started_on ||= doc.event_ended_on
     event_started_on ||= doc.display_published_at.try(:to_date)
@@ -187,7 +188,7 @@ module Cms::ApiGpCalendar
                                   started_on: event_started_on, ended_on: event_ended_on,
                                   description: doc.summary,
                                   content_id: event_content.id)
-    event.id = doc.id
+    event.id = doc_id
     event.updated_at = doc.updated_at
 
     event.doc = doc
