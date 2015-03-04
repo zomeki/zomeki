@@ -77,7 +77,6 @@ ja:
         title: タブ名
         more: 一覧リンク
         condition: 結合
-        content_ids: 記事コンテンツ
         sort_no: 並び順
       gp_article/piece/doc:
         docs_number: 表示件数

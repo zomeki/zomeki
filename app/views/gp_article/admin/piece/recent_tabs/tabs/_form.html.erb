@@ -15,10 +15,6 @@
     <th>条件</th>
     <td>
       <table class="noDesign">
-        <tr style="border-bottom:1px solid #CCCCCC;">
-          <td><%= f.label :content_ids %></td>
-          <td><%= select_tag 'gp_article_ids[]', options_from_collection_for_select(GpArticle::Content::Doc.where(site_id: Core.site.id).all, :id, :name, @item.content_ids.to_s.split(',')), {multiple: true} %></td>
-        </tr>
         <tr>
           <td><%= f.label :condition %></td>
           <td><%= f.radio_buttons :condition, @item.class::CONDITION_OPTIONS %></td>
