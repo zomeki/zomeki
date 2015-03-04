@@ -14,54 +14,9 @@
 
   <%- unless @events.empty? -%>
     <%- @event_categories.each do |category| -%>
-    <h3><%= category.title %></h3>
-
-    <table border="1">
-      <tbody>
-        <%- @events.each do |event| next unless event.categories.include?(category) -%>
-        <tr>
-          <%- if @content.show_images? -%>
-          <td class="image">
-            <%- if event.image_files.empty? -%>
-              <%- if @content.default_image.blank? -%>
-                画像がありません。
-              <%- else -%>
-                <%= image_tag @content.default_image %>
-              <%- end -%>
-            <%- else -%>
-            <p class="thumb">
-              <%- unless (ei = event_images(event, count: @content.image_cnt)).blank? -%>
-                <%= ei %>
-              <%- else -%>
-                <%- if @content.default_image.blank? -%>
-                  画像がありません。
-                <%- else -%>
-                  <%= image_tag @content.default_image %>
-                <%- end -%>
-              <%- end -%>
-            </p>
-            <%- end -%>
-          </td>
-          <%- end -%>
-          <td class="date">
-            <%= render 'gp_calendar/public/shared/event_date', event: event, date_style: @content.date_style, holiday_disp: false %>
-          </td>
-          <td class="<%= event.kind rescue 'event' %>">
-            <%= render 'gp_calendar/public/shared/event_list', event: event, list_style: @content.list_style %>
-            <%- if event.categories.present? -%>
-            <p class="category">
-              <%- event.categories.each do |category| -%>
-              <span class="category<%= category.name.capitalize %>"><%= category.title %></span>
-              <%- end -%>
-            </p>
-            <%- end -%>
-            <%=simple_format event.description, class: 'summary' if event.description.present? %>
-          </td>
-        </tr>
-        <%- end -%>
-      </tbody>
-    </table>
+      <%= render 'category', category: category %>
     <%- end -%>
+    <%= render 'category', category: nil %>
   <%- else -%>
     本日のイベントはありません。
   <%- end -%>
