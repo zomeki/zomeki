@@ -51,6 +51,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
         @items = @items.where(docs_table[:name].not_eq(params[:exclude]))
       end
 
+      if params[:group_id] || params[:user_id]
+        inners = []
+        if params[:group_id]
+            groups = Sys::Group.arel_table
+            inners << :group
+        end
+        if params[:user_id]
+            users = Sys::User.arel_table
+            inners << :user
+        end
+        @items = @items.joins(:creator => inners)
+
+        @items = @items.where(groups[:id].eq(params[:group_id])) if params[:group_id]
+        @items = @items.where(users[:id].eq(params[:user_id])) if params[:user_id]
+      end
+
       return render('index_options', layout: false)
     end
 

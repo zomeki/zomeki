@@ -162,6 +162,11 @@ ZomekiCMS::Application.routes.draw do
       :path        => ":piece/piece_link_items"
     resources :piece_sns_parts,
       :controller  => "admin/piece/sns_parts"
+    resources(:piece_pickup_docs,
+      :controller => 'admin/piece/pickup_docs') do
+      resources :docs,
+        :controller => 'admin/piece/pickup_docs/docs'
+    end
   end
 
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => '' do

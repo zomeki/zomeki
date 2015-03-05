@@ -100,6 +100,16 @@ ja:
         sort_no: "並び順"
         target: "対象ウィンドウ"
 
+      cms/piece/pickup_doc:
+        list_style: 表示形式
+        date_style: 日付形式
+        content_id: 記事コンテンツ
+        group_id: グループ
+        user_id: ユーザ
+        doc_id: 記事
+        doc_name: 記事
+        sort_no: 並び順
+
       cms/node:
         parent_id: "親ディレクトリ"
         concept_id: "コンセプト"

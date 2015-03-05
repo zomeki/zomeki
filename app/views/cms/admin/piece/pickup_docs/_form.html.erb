@@ -1,0 +1,26 @@
+<p class="form">基本情報</p>
+
+<table class="show">
+  <%= piece_base_form f, :container => :tr %>
+</table>
+
+<br />
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :list_style %></th>
+    <td colspan="3">
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %><br />
+      <%= f.array_text_field 'in_settings[list_style]', size: 50 %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td colspan="3"><%= f.array_text_field 'in_settings[date_style]', size: 50 %> <%=raw t('comments.date_style') %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>

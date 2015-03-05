@@ -1,0 +1,5 @@
+<ul>
+<%- @docs.each do |doc| -%>
+  <li class="C<%= doc.content.id %>"><%= render 'gp_article/public/shared/doc', doc: doc, list_style: @piece.list_style, date_style: @piece.date_style %></li>
+<%- end -%>
+</ul>

@@ -1,0 +1,17 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="width: 200px;"><%= Cms::Piece::PickupDocXml.human_attribute_name(:content_id) %></th>
+    <th style="width: ;"><%= Cms::Piece::PickupDocXml.human_attribute_name(:doc_id) %></th>
+    <th style="text-align: center; width: 80px;"><%= Cms::Piece::PickupDocXml.human_attribute_name(:sort_no) %></th>
+  </tr>
+
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, cms_piece_pickup_doc_doc_path(piece_pickup_doc_id: @piece.id, id: item.name) %></td>
+    <td><%= safe{item.doc.content.name} %></td>
+    <td><%= safe{item.doc.title} %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+  </tr>
+  <%- end -%>
+</table>

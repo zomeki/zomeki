@@ -1,0 +1,25 @@
+<%-
+  common_attrs = {id: nil}
+  common_attrs.merge!(disabled: true) unless available
+
+  if category
+    category_type_id = category.category_type.id
+    categories_for_option = category.category_type.categories_for_option
+    category_id = category.id
+  else
+    category_type_id = nil
+    categories_for_option = []
+    category_id = nil
+  end
+-%>
+<tr style="<%= 'display: none;' unless available %>">
+  <td colspan="2">
+    <%- layers_for_option.each do |lfo| -%>
+    <label><%= radio_button_tag "layers[#{index || 'N'}]", lfo.last, lfo.last == layer, common_attrs %> <%= lfo.first %></label>
+    <%- end -%>
+  </td>
+</tr>
+<tr style="<%= 'display: none;' unless available %>">
+  <td class="category_type"><%= select_tag nil, options_for_select(category_types_for_option, category_type_id), common_attrs.merge(include_blank: true) %></td>
+  <td class="category"><%= select_tag "categories[#{index || 'N'}]", options_for_select(categories_for_option, category_id), common_attrs.merge(include_blank: true) %></td>
+</tr>
