@@ -30,7 +30,6 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
     @item = @content.holidays.build(params[:item])
     @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
     _create(@item) do
-      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
     end
   end
 
@@ -39,14 +38,12 @@ class GpCalendar::Admin::HolidaysController < Cms::Controller::Admin::Base
     @item.attributes = params[:item]
     @item.date = parse_date(params[:item][:date], (params[:item][:repeat]=='1' ? '' : '%Y年') + '%m月%d日')
     _update(@item) do
-      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
     end
   end
 
   def destroy
     @item = @content.holidays.find(params[:id])
     _destroy(@item) do
-      gp_calendar_sync_holidays_export(holiday: @item) if @content.event_sync_export?
     end
   end
 
