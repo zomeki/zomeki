@@ -1,8 +1,12 @@
-<h3><%= category.try(:title) || 'その他' %></h3>
+<%- if category -%>
+<h3><%= category.title %></h3>
+<%- end -%>
 
 <table border="1">
   <tbody>
-    <%- @events.each do |event| next if category && !category.in?(event.categories) -%>
+    <%- @events.each do |event|
+      next if (category.nil? && event.categories.present?) ||
+              (category && !category.in?(event.categories))  -%>
     <tr>
       <%- if @content.show_images? -%>
       <td class="image">
