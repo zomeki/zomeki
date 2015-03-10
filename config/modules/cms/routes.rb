@@ -182,6 +182,7 @@ ZomekiCMS::Application.routes.draw do
 #    match "tool_convert_import_site" => "admin/tool/convert#import_site", as: 'tool_convert_import_site', via: [:get, :post]
     match "tool_export"  => "admin/tool/export#index", via: [:get, :post]
     match "tool_import"  => "admin/tool/import#index", via: [:get, :post]
+    match 'tool_uri_check' => 'admin/tool/uri_check#index', via: [:get, :post]
   end
 
   ## public
