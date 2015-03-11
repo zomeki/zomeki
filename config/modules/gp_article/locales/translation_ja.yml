@@ -24,6 +24,7 @@ ja:
         list_image: 画像（添付ファイル名）
         state: 状態
         event_state: イベントカレンダー表示
+        event_will_sync: イベント同期
         event_started_on: イベント開始日
         event_ended_on: イベント終了日
         raw_tags: 関連ワード

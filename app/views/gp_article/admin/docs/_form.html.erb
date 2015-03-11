@@ -239,6 +239,10 @@
         <th><%= f.label :event_state %></th>
         <td><%= f.radio_buttons :event_state, @item.class::EVENT_STATE_OPTIONS %></td>
       </tr>
+      <tr>
+        <th><%= f.label :event_will_sync %></th>
+        <td><%= f.radio_buttons :event_will_sync, @item.class::EVENT_WILL_SYNC_OPTIONS %></td>
+      </tr>
       <%- end -%>
       <tr>
         <th><%= f.label :event_started_on %></th>
