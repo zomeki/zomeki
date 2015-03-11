@@ -9,6 +9,7 @@ class GpCalendar::Event < ActiveRecord::Base
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   TARGET_OPTIONS = [['同一ウィンドウ', '_self'], ['別ウィンドウ', '_blank']]
   ORDER_OPTIONS = [['作成日時（降順）', 'created_at_desc'], ['作成日時（昇順）', 'created_at_asc']]
+  WILL_SYNC_OPTIONS = [['同期しない', 'no'], ['同期する', 'yes']]
 
   # Content
   belongs_to :content, :foreign_key => :content_id, :class_name => 'GpCalendar::Content::Event'
@@ -109,11 +110,20 @@ class GpCalendar::Event < ActiveRecord::Base
     update_attribute(:state, 'closed')
   end
 
+  def will_sync?
+    will_sync == 'yes'
+  end
+
+  def will_sync_text
+    WILL_SYNC_OPTIONS.detect{|o| o.last == will_sync }.try(:first).to_s
+  end
+
   private
 
   def set_defaults
     self.state ||= STATE_OPTIONS.first.last if self.has_attribute?(:state)
     self.target ||= TARGET_OPTIONS.first.last if self.has_attribute?(:target)
+    self.will_sync ||= WILL_SYNC_OPTIONS.first.last if self.has_attribute?(:will_sync)
   end
 
   def set_name

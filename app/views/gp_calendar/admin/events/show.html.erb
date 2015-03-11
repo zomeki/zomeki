@@ -4,6 +4,10 @@
     <td><%= @item.status.name %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :will_sync %></th>
+    <td><%= @item.will_sync_text %></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :started_on %></th>
     <td><%=i18n_l @item.started_on %></td>
   </tr>
