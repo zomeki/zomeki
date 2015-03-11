@@ -35,6 +35,11 @@ class GpCalendar::Event < ActiveRecord::Base
     events = self.arel_table
 
     rel = self.where(events[:content_id].eq(content.id))
+    rel = if criteria[:synced]
+            rel.where(events[:sync_source_host].not_eq(nil))
+          else
+            rel.where(events[:sync_source_host].eq(nil))
+          end
     rel = rel.where(events[:name].matches("%#{criteria[:name]}%")) if criteria[:name].present?
     rel = rel.where(events[:title].matches("%#{criteria[:title]}%")) if criteria[:title].present?
     rel = rel.where(events[:started_on].lteq(criteria[:date])
