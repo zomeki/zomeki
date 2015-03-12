@@ -30,6 +30,11 @@ module Cms::ApiGpCalendar
   def gp_calendar_sync_events_updated_events(version)
     case version
     when '20150201'
+      target_content_id = params[:target_content_id].to_i
+      target_host = params[:target_host].to_s
+      target_addr = Resolv.getaddress(target_host) rescue nil
+      return render(json: []) if target_content_id.zero? || target_addr != request.remote_addr
+
       content = GpCalendar::Content::Event.find_by_id(params[:content_id])
       return render(json: []) unless content.try(:public_node)
 
@@ -86,7 +91,8 @@ module Cms::ApiGpCalendar
           conn = Faraday.new(url: "http://#{source_host}") do |builder|
               builder.adapter Faraday.default_adapter
             end
-          query = {version: '20150201', content_id: content_id}
+          query = {version: '20150201', content_id: content_id,
+                   target_content_id: content.id, target_host: URI.parse(content.site.full_uri).host}
           res = conn.get '/_api/gp_calendar/sync_events/updated_events', query
 
           if res.success?
