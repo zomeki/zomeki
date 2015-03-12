@@ -26,7 +26,8 @@ class Cms::Admin::Tool::UriCheckController < Cms::Controller::Admin::Base
       return
     end
 
-    conn = Faraday.new(url: url) do |builder|
+    conn = Faraday.new(url: url, ssl: {verify: false}) do |builder|
+        builder.request :url_encoded if method == 'post'
         builder.adapter Faraday.default_adapter
       end
     res = conn.send(method, path, query)
