@@ -5,9 +5,6 @@
     <th style="text-align: center; width: 90px;"><%= GpCalendar::Holiday.human_attribute_name :date %></th>
     <th style="text-align: center; width: 480px;"><%= GpCalendar::Holiday.human_attribute_name :description %></th>
     <th style="text-align: center; width: 60px;"><%= GpCalendar::Holiday.human_attribute_name :kind %></th>
-    <%- if @content.event_sync_import? -%>
-    <th style="text-align: center; width: 180px;"><%= GpCalendar::Holiday.human_attribute_name :sync_source_host %></th>
-    <%- end -%>
     <th style="text-align: center; width: 60px;"><%= GpCalendar::Holiday.human_attribute_name :state %></th>
   </tr>
 
@@ -18,9 +15,6 @@
     <td style="text-align: center;"><%= item.repeat ? i18n_l(item.date, '* %m月%d日') : i18n_l(item.date, '%Y年%m月%d日') %></td>
     <td style="text-align: left;"><%= item.description %></td>
     <td style="text-align: center;"><%= item.class::KIND_OPTIONS.detect{|to| to.last == item.kind }.try(:first) %></td>
-    <%- if @content.event_sync_import? -%>
-    <td style="text-align: center;"><%= item.sync_source_host if item.respond_to?(:sync_source_host) %></td>
-    <%- end -%>
     <td style="text-align: center;"><%= item.status.name %></td>
   </tr>
   <%- end -%>
