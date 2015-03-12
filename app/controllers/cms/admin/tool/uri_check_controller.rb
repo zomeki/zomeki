@@ -39,6 +39,7 @@ class Cms::Admin::Tool::UriCheckController < Cms::Controller::Admin::Base
                   else
                     if matched = content_type[1].to_s.match(/(?<=charset=).+\z/)
                       res.body.force_encoding(matched[0])
+                      res.body.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
                     else
                       raise 'charset not found in content-type'
                     end
