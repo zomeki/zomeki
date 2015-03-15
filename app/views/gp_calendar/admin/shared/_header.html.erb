@@ -4,7 +4,7 @@
 
 <div class="contentMenu">
   <%= link_to "#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path, class: 'fixed' %>
-  <%= link_to "同期#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(synced: true), class: 'fixed' %>
+  <%= link_to "同期#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(imported: true), class: 'fixed' %>
   <%= link_to "休日一覧", gp_calendar_holidays_path, class: 'fixed' %>
   <%= link_to "#{GpCalendar::Event.model_name.human}設定", gp_calendar_content_settings_path, class: 'fixed' %>
 </div>

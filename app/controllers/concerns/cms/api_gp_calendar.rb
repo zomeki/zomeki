@@ -56,6 +56,7 @@ module Cms::ApiGpCalendar
       end
 
       recent_events = events.sort{|a, b| (a.updated_at <=> b.updated_at) * -1 }[0, limit]
+      recent_events.each{|e| e.update_attribute(:sync_exported, 'yes') unless e.doc }
       recent_events.map! do |event|
         source_class = event.doc.class.name if event.doc
         source_class ||= event.class.name

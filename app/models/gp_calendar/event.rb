@@ -36,7 +36,7 @@ class GpCalendar::Event < ActiveRecord::Base
     events = self.arel_table
 
     rel = self.where(events[:content_id].eq(content.id))
-    rel = if criteria[:synced]
+    rel = if criteria[:imported]
             rel.where(events[:sync_source_host].not_eq(nil))
           else
             rel.where(events[:sync_source_host].eq(nil))
@@ -116,6 +116,14 @@ class GpCalendar::Event < ActiveRecord::Base
 
   def will_sync_text
     WILL_SYNC_OPTIONS.detect{|o| o.last == will_sync }.try(:first).to_s
+  end
+
+  def sync_exported?
+    sync_exported == 'yes'
+  end
+
+  def sync_exported_text
+    sync_exported? ? '同期済' : '未同期'
   end
 
   private
