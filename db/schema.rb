@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150304151127) do
+ActiveRecord::Schema.define(:version => 20150312142645) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -848,6 +848,7 @@ ActiveRecord::Schema.define(:version => 20150304151127) do
     t.boolean  "keep_display_updated_at"
     t.integer  "layout_id"
     t.text     "qrcode_state"
+    t.string   "event_will_sync"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -891,6 +892,8 @@ ActiveRecord::Schema.define(:version => 20150304151127) do
     t.integer  "sync_source_content_id"
     t.string   "sync_source_id"
     t.string   "sync_source_source_class"
+    t.string   "will_sync"
+    t.string   "sync_exported"
   end
 
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
