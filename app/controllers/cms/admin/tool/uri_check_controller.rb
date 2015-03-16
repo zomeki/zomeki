@@ -3,7 +3,7 @@ class Cms::Admin::Tool::UriCheckController < Cms::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:manager)
-    @methods = %w!get post!
+    @methods = %w!get post put!
     @schemes = %w!http https!
   end
 
@@ -27,7 +27,10 @@ class Cms::Admin::Tool::UriCheckController < Cms::Controller::Admin::Base
     end
 
     conn = Faraday.new(url: url, ssl: {verify: false}) do |builder|
-        builder.request :url_encoded if method == 'post'
+        if method.in?(%w!post put!)
+          builder.request :multipart
+          builder.request :url_encoded
+        end
         builder.adapter Faraday.default_adapter
       end
     res = conn.send(method, path, query)
