@@ -12,7 +12,7 @@
     <th><%= @item.locale :list_style %></th>
     <td colspan="3">
       <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %><br />
-      <%= f.array_text_field 'in_settings[list_style]', size: 50 %>
+      <%= f.array_text_area 'in_settings[list_style]', size: '60x3' %>
     </td>
   </tr>
   <tr>
