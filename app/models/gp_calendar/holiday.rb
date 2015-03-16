@@ -6,6 +6,8 @@ class GpCalendar::Holiday < ActiveRecord::Base
   include Sys::Model::Rel::File
   include Cms::Model::Auth::Content
 
+  include GpCalendar::EventSync
+
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   KIND_OPTIONS = [['休日', 'holiday'], ['イベント', 'event']]
   ORDER_OPTIONS = [['作成日時（降順）', 'created_at_desc'], ['作成日時（昇順）', 'created_at_asc']]
