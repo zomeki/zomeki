@@ -8,10 +8,6 @@
     <td colspan="2"><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
   </tr>
   <tr>
-    <th><%= f.label :will_sync %></th>
-    <td colspan="2"><%= f.radio_buttons :will_sync, @item.class::WILL_SYNC_OPTIONS %></td>
-  </tr>
-  <tr>
     <th><%= f.label :started_on %> <span class="note">※</span></th>
     <td colspan="2"><%= f.text_field :started_on, :value => value_for_datepicker(f.object_name, :started_on),
                                                   :style => 'width: 150px;', :class => 'datepicker' %></td>
@@ -88,6 +84,17 @@
   <tr>
     <th><%= @item.class.human_attribute_name :sync_source_source_class %></th>
     <td><%= @item.sync_source_source_class.constantize.model_name.human rescue nil %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @content.event_sync_export? -%>
+<p class="form">カレンダー同期</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :will_sync %></th>
+    <td colspan="2"><%= f.radio_buttons :will_sync, @item.class::WILL_SYNC_OPTIONS %></td>
   </tr>
 </table>
 <%- end -%>

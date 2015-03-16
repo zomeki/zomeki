@@ -29,7 +29,7 @@ class GpArticle::Doc < ActiveRecord::Base
   FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
   FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
   QRCODE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
-  EVENT_WILL_SYNC_OPTIONS = [['同期しない', 'no'], ['同期する', 'yes']]
+  EVENT_WILL_SYNC_OPTIONS = [['同期する', 'enabled'], ['同期しない', 'disabled']]
 
   default_scope { where("#{self.table_name}.state != 'archived'") }
   scope :public, -> { where(state: 'public') }
@@ -746,7 +746,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def event_will_sync?
-    event_will_sync == 'yes'
+    event_will_sync == 'enabled'
   end
 
   def event_will_sync_text
@@ -797,7 +797,7 @@ class GpArticle::Doc < ActiveRecord::Base
     self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil? && content
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
     self.qrcode_state = content.qrcode_default_state if self.has_attribute?(:qrcode_state) && self.qrcode_state.nil? && content
-    self.event_will_sync ||= EVENT_WILL_SYNC_OPTIONS.first.last if self.has_attribute?(:event_will_sync)
+    self.event_will_sync ||= content.event_sync_default_will_sync if self.has_attribute?(:event_will_sync)
     if content
       if (node = content.public_node)
         self.layout_id ||= node.layout_id

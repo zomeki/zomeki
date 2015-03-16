@@ -56,7 +56,6 @@ module Cms::ApiGpCalendar
       end
 
       recent_events = events.sort{|a, b| (a.updated_at <=> b.updated_at) * -1 }[0, limit]
-      recent_events.each{|e| e.update_attribute(:sync_exported, 'yes') unless e.doc }
       recent_events.map! do |event|
         source_class = event.doc.class.name if event.doc
         source_class ||= event.class.name
@@ -112,8 +111,7 @@ module Cms::ApiGpCalendar
 
               closed_key = nil if closed_key == key
 
-              attrs = {state: 'public',
-                       title: event['title'],
+              attrs = {title: event['title'],
                        started_on: event['started_on'],
                        ended_on: event['ended_on'],
                        href: event['url']}
@@ -122,6 +120,7 @@ module Cms::ApiGpCalendar
                 next unless e.updated_at < Time.parse(event['updated_at'])
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.update_attributes(attrs)
               else
+                attrs[:state] = 'synced'
                 e = content.events.build(key.merge attrs)
                 e.in_creator = {group_id: content.creator.group_id, user_id: content.creator.user_id}
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.save

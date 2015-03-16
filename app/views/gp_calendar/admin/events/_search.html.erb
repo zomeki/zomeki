@@ -4,6 +4,7 @@
     <th>イベント日</th>
     <th><%= GpCalendar::Event.human_attribute_name :title %></th>
     <th>並び順</th>
+    <th><%= GpCalendar::Event.human_attribute_name :state %></th>
     <td rowspan="2" class="submitters">
       <%= submit_tag '検索' %>
       <%= submit_tag 'リセット', :name => 'reset_criteria' %>
@@ -14,8 +15,12 @@
     <td><%= text_field_tag 'criteria[title]', params[:criteria].try('[]', :title), :style => 'width: 400px;' %></td>
     <td><%= select_tag 'criteria[order]', options_for_select(GpCalendar::Event::ORDER_OPTIONS,
                                                              params[:criteria].try('[]', :order)), include_blank: true %></td>
+    <%- state_options = params[:imported] ? GpCalendar::Event.state_options(synced: true) : GpCalendar::Event.state_options -%>
+    <td><%= select_tag 'criteria[state]', options_for_select(state_options,
+                                                             params[:criteria].try('[]', :state)), include_blank: true %></td>
   </tr>
 </table>
+<%= hidden_field_tag 'imported', params[:imported] if params[:imported] %>
 <%- end -%>
 
 <%= javascript_tag do -%>

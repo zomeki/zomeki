@@ -33,6 +33,7 @@ class GpCalendar::Admin::Content::SettingsController < Cms::Controller::Admin::B
         extra_values[:source_hosts] = params[:source_hosts].to_s
       when 'event_sync_export'
         extra_values[:destination_hosts] = params[:destination_hosts].to_s
+        extra_values[:default_will_sync] = params[:default_will_sync].to_s
       end
 
       @item.extra_values = extra_values

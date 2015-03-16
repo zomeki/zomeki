@@ -48,6 +48,8 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:default_category_id] = params[:default_category].to_i
       when 'calendar_relation'
         extra_values[:calendar_content_id] = params[:calendar_content_id].to_i
+        extra_values[:event_sync_settings] = params[:event_sync_settings].to_s
+        extra_values[:event_sync_default_will_sync] = params[:event_sync_default_will_sync].to_s
       when 'map_relation'
         extra_values[:map_content_id] = params[:map_content_id].to_i
         extra_values[:lat_lng] = params[:lat_lng]
