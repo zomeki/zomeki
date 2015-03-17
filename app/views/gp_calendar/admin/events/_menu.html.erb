@@ -10,11 +10,11 @@
   <span class="separator"></span>
   <%- end -%>
 
-  <%= link_to "#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(imported: false),
-              (action_name == 'index' && params[:imported].in?(%w!false no!) ? {class: 'current'} : nil) %>
+  <%= link_to "#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path,
+              (action_name == 'index' && params[:imported] != 'yes' ? {class: 'current'} : nil) %>
   <%- if @content.event_sync_import? -%>
-  <%= link_to "同期#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(imported: true),
-              (action_name == 'index' && params[:imported].in?(%w!true yes!) ? {class: 'current'} : nil) %>
+  <%= link_to "同期#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(imported: 'yes'),
+              (action_name == 'index' && params[:imported] == 'yes' ? {class: 'current'} : nil) %>
   <%- end -%>
 
   <%- if action_name == 'show' -%>
