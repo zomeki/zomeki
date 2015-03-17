@@ -15,7 +15,7 @@
     <td><%= text_field_tag 'criteria[title]', params[:criteria].try('[]', :title), :style => 'width: 400px;' %></td>
     <td><%= select_tag 'criteria[order]', options_for_select(GpCalendar::Event::ORDER_OPTIONS,
                                                              params[:criteria].try('[]', :order)), include_blank: true %></td>
-    <%- state_options = params[:imported] ? GpCalendar::Event.state_options(synced: true) : GpCalendar::Event.state_options -%>
+    <%- state_options = params[:imported].in?(%w!true yes!) ? GpCalendar::Event.state_options(synced: true) : GpCalendar::Event.state_options -%>
     <td><%= select_tag 'criteria[state]', options_for_select(state_options,
                                                              params[:criteria].try('[]', :state)), include_blank: true %></td>
   </tr>

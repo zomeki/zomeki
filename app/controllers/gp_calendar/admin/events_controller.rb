@@ -15,7 +15,7 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
     require 'will_paginate/array'
 
     criteria = params[:criteria] || {}
-    criteria[:imported] = !!params[:imported]
+    criteria[:imported] = params[:imported]
     @items = GpCalendar::Event.all_with_content_and_criteria(@content, criteria)
 
     criteria[:date] = Date.parse(criteria[:date]) rescue nil
