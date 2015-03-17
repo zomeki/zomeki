@@ -39,7 +39,7 @@ module Cms::ApiGpCalendar
       return render(json: []) unless content.try(:public_node)
 
       limit = (params[:limit] || 10).to_i
-      events = content.public_events.where(will_sync: 'yes', sync_source_host: nil).reorder('updated_at DESC').limit(limit)
+      events = content.public_events.where(will_sync: 'enabled', sync_source_host: nil).reorder('updated_at DESC').limit(limit)
 
       settings = GpArticle::Content::Setting.where(name: 'calendar_relation', value: 'enabled')
       contents = settings.map{|s|
@@ -48,7 +48,7 @@ module Cms::ApiGpCalendar
                      s.content
                    }.compact
       docs = contents.map{|c|
-                 c.public_docs.where(event_state: 'visible', event_will_sync: 'yes').reorder('updated_at DESC').limit(limit)
+                 c.public_docs.where(event_state: 'visible', event_will_sync: 'enabled').reorder('updated_at DESC').limit(limit)
                }.flatten
       docs.each do |doc|
         event = gp_calendar_doc_to_event(doc: doc, event_content: content)
