@@ -45,6 +45,7 @@ module Cms::ApiGpCalendar
       contents = settings.map{|s|
                      next unless s.extra_values[:calendar_content_id] == content.id
                      next unless s.content.site == content.site
+                     next unless s.content.event_sync?
                      s.content
                    }.compact
       docs = contents.map{|c|

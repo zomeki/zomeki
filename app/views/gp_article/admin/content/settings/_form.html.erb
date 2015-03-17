@@ -209,7 +209,7 @@ $(document).ready(function () {
   <tr>
     <th>イベント同期</th>
     <td>
-      <%- GpArticle::Content::Doc::EVENT_SYNC_SETTINGS_OPTIONS.each do |option| name = 'event_sync_settings'.to_sym -%>
+      <%- GpArticle::Content::Doc::EVENT_SYNC_SETTINGS_OPTIONS.each do |option| name = :event_sync_settings -%>
       <%= radio_button_tag name, option[1], (@item.extra_values[name] || 'disabled') == option[1] %>
       <%= label_tag "#{name}_#{option[1]}", option[0] %>
       <%- end -%>
@@ -217,7 +217,7 @@ $(document).ready(function () {
   </tr>
   <tr>
     <th>イベント同期初期値</th>
-    <td><%= select_tag 'event_sync_default_will_sync',
+    <td><%= select_tag :event_sync_default_will_sync,
                        options_for_select(GpArticle::Content::Doc::EVENT_SYNC_DEFAULT_WILL_SYNC_OPTIONS,
                                           (@item.extra_values[:event_sync_default_will_sync] || 'disabled')),
                        include_blank: true %></td>
