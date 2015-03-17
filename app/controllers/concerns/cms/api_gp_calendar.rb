@@ -119,6 +119,7 @@ module Cms::ApiGpCalendar
 
               if (e = content.events.where(key).first)
                 next unless e.updated_at < Time.parse(event['updated_at'])
+                attrs[:state] = 'public' unless e.state == 'synced'
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.update_attributes(attrs)
               else
                 attrs[:state] = 'synced'
