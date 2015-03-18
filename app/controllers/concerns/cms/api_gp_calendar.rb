@@ -120,6 +120,7 @@ module Cms::ApiGpCalendar
 
               if (e = content.events.where(key).first)
                 next unless e.updated_at < Time.parse(event['updated_at'])
+                attrs.delete(:state) if e.state == 'public'
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.update_attributes(attrs)
               else
                 e = content.events.build(key.merge attrs)
