@@ -60,7 +60,8 @@ class GpCalendar::Admin::EventsController < Cms::Controller::Admin::Base
   def update
     @item = @content.events.find(params[:id])
     @item.attributes = params[:item]
-    _update(@item) do
+    location = @item.sync_source_host ? gp_calendar_events_path(imported: 'yes') : gp_calendar_events_path
+    _update(@item, location: location) do
       set_categories
       gp_calendar_sync_events_export(doc_or_event: @item) if @content.event_sync_export?
     end
