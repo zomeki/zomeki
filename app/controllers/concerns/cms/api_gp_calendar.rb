@@ -112,17 +112,16 @@ module Cms::ApiGpCalendar
 
               closed_key = nil if closed_key == key
 
-              attrs = {title: event['title'],
+              attrs = {state: 'synced',
+                       title: event['title'],
                        started_on: event['started_on'],
                        ended_on: event['ended_on'],
                        href: event['url']}
 
               if (e = content.events.where(key).first)
                 next unless e.updated_at < Time.parse(event['updated_at'])
-                attrs[:state] = 'public' unless e.state == 'synced'
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.update_attributes(attrs)
               else
-                attrs[:state] = 'synced'
                 e = content.events.build(key.merge attrs)
                 e.in_creator = {group_id: content.creator.group_id, user_id: content.creator.user_id}
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.save
