@@ -84,18 +84,18 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   def content
     if (file = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid), name: "#{params[:basename]}.#{params[:extname]}").first)
       mt = Rack::Mime.mime_type(".#{params[:extname]}")
-      if mt =~ %r!\A.+/csv\z! && params[:convert] == 'csv:table'
+      if mt == 'text/csv' && params[:convert] == 'csv:table'
         begin
           csv = File.read(file.upload_path)
           csv.force_encoding(Encoding::WINDOWS_31J) if csv.encoding == Encoding::UTF_8 && !csv.valid_encoding?
           csv = csv.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
-          table = CSV.parse(csv, headers: true)
+          rows = CSV.parse(csv)
 
-          render text: if table.empty?
+          render text: if rows.empty?
                          ''
                        else
-                         thead = "<thead><tr><th>#{table.headers.join('</th><th>')}</th></tr></thead>"
-                         trs = table.map{|r| "<tr>#{r.map{|h, f| f }.join('</tr><tr>')}</tr>" }
+                         thead = "<thead><tr><th>#{rows.shift.join('</th><th>')}</th></tr></thead>"
+                         trs = rows.map{|r| "<tr><td>#{r.join('</td><td>')}</td></tr>" }
                          tbody = "<tbody>#{trs.join}</tbody>"
                          "<table>#{thead}#{tbody}</table>"
                        end
