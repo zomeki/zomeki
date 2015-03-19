@@ -290,6 +290,10 @@ module Sys::Model::Base::File
     return true
   end
 
+  def csv?
+    mime_type.in?(%w!text/csv application/vnd.ms-excel!)
+  end
+
   private
 
   ## filter/aftar_save
