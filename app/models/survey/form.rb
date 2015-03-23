@@ -159,7 +159,7 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def approval_participators
-    users = []
+    users = [creator.user]
     approval_requests.each do |approval_request|
       users << approval_request.requester
       approval_request.approval_flow.approvals.each do |approval|
@@ -221,6 +221,11 @@ class Survey::Form < ActiveRecord::Base
     return unless state_approved?
     approval_requests.destroy_all
     update_column(:state, 'public')
+  end
+
+  def close
+    return unless state_public?
+    update_column(:state, 'closed')
   end
 
   def public_uri

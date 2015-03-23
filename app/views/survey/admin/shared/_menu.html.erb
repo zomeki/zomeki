@@ -32,6 +32,7 @@
     <%- if controller_name == 'forms' -%>
   <%= link_to '承認', url_for(action: 'approve'), :method => :post, :confirm => '承認してもよろしいですか？' if @item.state_approvable? && @item.approvers.include?(Core.user) %>
   <%= link_to '公開', url_for(action: 'publish'), :method => :post, :confirm => '公開してもよろしいですか？' if @item.state_approved? && @item.approval_participators.include?(Core.user) %>
+  <%= link_to '非公開', url_for(action: 'close'), :method => :post, :confirm => '公開を終了してもよろしいですか？' if @item.state_public? && @item.approval_participators.include?(Core.user) %>
     <%- end -%>
   <%- end -%>
   <% if params[:action] == 'show' %>
