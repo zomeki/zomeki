@@ -13,6 +13,8 @@ class Cms::Site < ActiveRecord::Base
   include Sys::Model::Rel::FileTransfer
   include Cms::Model::Rel::SiteSetting
 
+  OGP_TYPE_OPTIONS = [['article', 'article'], ['place', 'place'], ['product', 'product'], ['profile', 'profile']]
+
   belongs_to :status, :foreign_key => :state,
     :class_name => 'Sys::Base::Status'
   belongs_to :portal_group_status, :foreign_key => :portal_group_state,
@@ -229,6 +231,10 @@ class Cms::Site < ActiveRecord::Base
 
   def groups_for_option
     groups.where(level_no: 2).map{|g| g.descendants_for_option }.flatten(1)
+  end
+
+  def og_type_text
+    OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
   end
 
 protected
