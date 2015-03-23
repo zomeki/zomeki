@@ -45,7 +45,8 @@ module GpArticle::GpArticleHelper
     %w!type title description image!.map{ |key|
       unless item.respond_to?("og_#{key}") && (value = item.send("og_#{key}")).present?
         site = item.respond_to?(:site) ? item.site : item.content.site
-        next site ? tag(:meta, property: "og:#{key}", content: site.send("og_#{key}").to_s.gsub("\n", ' ')) : nil
+        value = site.try("og_#{key}").to_s.gsub("\n", ' ')
+        next value.present? ? tag(:meta, property: "og:#{key}", content: value) : nil
       end
 
       case key
