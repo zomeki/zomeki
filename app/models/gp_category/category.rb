@@ -49,6 +49,8 @@ class GpCategory::Category < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
+  after_destroy :clean_public_path
+
   def content
     category_type.content
   end
@@ -138,6 +140,10 @@ class GpCategory::Category < ActiveRecord::Base
     self.sitemap_state == 'visible'
   end
 
+  def public_path
+    "#{category_type.public_path}#{path_from_root_category}/"
+  end
+
   def public_uri
     "#{category_type.public_uri}#{path_from_root_category}/"
   end
@@ -179,5 +185,9 @@ class GpCategory::Category < ActiveRecord::Base
     else
       self.level_no = 1
     end
+  end
+
+  def clean_public_path
+    FileUtils.rm_r(public_path) if public_path.present? && File.exist?(public_path)
   end
 end
