@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150316072837) do
+ActiveRecord::Schema.define(:version => 20150323025301) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -676,6 +676,10 @@ ActiveRecord::Schema.define(:version => 20150316072837) do
     t.text     "body"
     t.integer  "site_image_id"
     t.string   "portal_group_state"
+    t.string   "og_type"
+    t.string   "og_title"
+    t.text     "og_description"
+    t.string   "og_image"
   end
 
   create_table "cms_talk_tasks", :force => true do |t|
