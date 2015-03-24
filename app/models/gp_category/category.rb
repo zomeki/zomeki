@@ -49,7 +49,7 @@ class GpCategory::Category < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
-  after_destroy :clean_public_path
+  after_destroy :refresh_published_files
 
   def content
     category_type.content
@@ -187,7 +187,9 @@ class GpCategory::Category < ActiveRecord::Base
     end
   end
 
-  def clean_public_path
+  def refresh_published_files
     FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+    GpCategory::Publisher.register_categories(ancestors.map(&:id))
+    GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
   end
 end
