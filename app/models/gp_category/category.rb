@@ -49,7 +49,9 @@ class GpCategory::Category < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
-  after_destroy :refresh_published_files
+  after_save :publish_ancestor_pages
+  after_destroy :publish_ancestor_pages
+  after_destroy :clean_published_files
 
   def content
     category_type.content
@@ -187,9 +189,13 @@ class GpCategory::Category < ActiveRecord::Base
     end
   end
 
-  def refresh_published_files
-    FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+  def publish_ancestor_pages
+    Delayed::Job.where(queue: 'publish_category_pages').destroy_all
     GpCategory::Publisher.register_categories(ancestors.map(&:id))
     GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
+  end
+
+  def clean_published_files
+    FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
   end
 end
