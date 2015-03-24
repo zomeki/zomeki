@@ -9,8 +9,7 @@ class Cms::Public::CommonSslController < ApplicationController
 
   def render_ssl(path, options = {})
     Core.publish = true unless options[:preview]
-    mode = Core.set_mode('preview')
-    
+
     Page.initialize
     Page.site   = options[:site] || Core.site
     Page.uri    = path
