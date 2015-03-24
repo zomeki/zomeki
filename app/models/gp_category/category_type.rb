@@ -137,6 +137,6 @@ class GpCategory::CategoryType < ActiveRecord::Base
   end
 
   def clean_public_path
-    FileUtils.rm_r(public_path) if public_path.present? && File.exist?(public_path)
+    FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
   end
 end
