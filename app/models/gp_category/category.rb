@@ -50,6 +50,7 @@ class GpCategory::Category < ActiveRecord::Base
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
   after_save :publish_ancestor_pages
+  after_save :move_published_files
   after_destroy :publish_ancestor_pages
   after_destroy :clean_published_files
 
@@ -197,5 +198,20 @@ class GpCategory::Category < ActiveRecord::Base
 
   def clean_published_files
     FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+  end
+
+  def move_published_files
+    return if changes[:name].blank?
+    return unless Regexp.new("\\A#{Rails.root}/[^/]+") =~ (path = public_path)
+
+    old_name, new_name = changes[:name]
+
+    new_path = Pathname.new(path)
+    return if new_path.exist?
+
+    old_path = new_path.dirname.join(old_name)
+    return unless old_path.directory?
+
+    old_path.rename(new_path)
   end
 end
