@@ -212,6 +212,7 @@ class GpCategory::Category < ActiveRecord::Base
   def move_published_files
     return if changes[:name].blank?
     old_name, new_name = changes[:name]
+    return if old_name.blank? || new_name.blank?
     rename_directory(new_path: public_path, old_name: old_name)
     rename_directory(new_path: public_smart_phone_path, old_name: old_name)
   end
