@@ -1,8 +1,8 @@
 # encoding: utf-8
 class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Publication
   def publish
-    uri  = "#{@node.public_uri}"
-    path = "#{@node.public_path}"
+    uri  = @node.public_uri
+    path = @node.public_path
     publish_more(@node, :uri => uri, :path => path, :dependent => :more)
 
     category_types = if (id = params[:target_id]).present?
@@ -12,12 +12,16 @@ class GpCategory::Script::CategoryTypesController < Cms::Controller::Script::Pub
                      end
 
     category_types.each do |category_type|
-      uri  = "#{@node.public_uri}#{category_type.name}/"
+      uri = "#{@node.public_uri}#{category_type.name}/"
       path = "#{@node.public_path}#{category_type.name}/"
+      smart_phone_path = "#{@node.public_smart_phone_path}#{category_type.name}/"
+
       publish_page(category_type, :uri => "#{uri}index.rss", :path => "#{path}index.rss", :dependent => "#{category_type.name}/rss")
       publish_page(category_type, :uri => "#{uri}index.atom", :path => "#{path}index.atom", :dependent => "#{category_type.name}/atom")
       publish_more(category_type, :uri => uri, :path => path, :dependent => "#{category_type.name}/more")
+      publish_more(category_type, :uri => uri, :path => smart_phone_path, :dependent => "#{category_type.name}/more_smart_phone", :smart_phone => true)
       publish_more(category_type, :uri => uri, :path => path, :file => 'more', :dependent => "#{category_type.name}/more_docs")
+      publish_more(category_type, :uri => uri, :path => smart_phone_path, :file => 'more', :dependent => "#{category_type.name}/more_docs_smart_phone", :smart_phone => true)
 
       if (child_id = params[:target_child_id]).present?
         category_type.public_categories.where(id: child_id).each do |category|
