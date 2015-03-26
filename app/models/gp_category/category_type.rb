@@ -70,6 +70,11 @@ class GpCategory::CategoryType < ActiveRecord::Base
     "#{node.public_path}#{name}/"
   end
 
+  def public_smart_phone_path
+    return '' unless node = content.public_node
+    "#{node.public_smart_phone_path}#{name}/"
+  end
+
   def public_uri
     return '' unless node = content.public_node
     "#{node.public_uri}#{name}/"
@@ -138,5 +143,6 @@ class GpCategory::CategoryType < ActiveRecord::Base
 
   def clean_published_files
     FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+    FileUtils.rm_r(public_smart_phone_path) if public_smart_phone_path.present? && ::File.exist?(public_smart_phone_path)
   end
 end

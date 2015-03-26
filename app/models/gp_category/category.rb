@@ -49,10 +49,10 @@ class GpCategory::Category < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
-  after_save :publish_ancestor_pages
   after_save :move_published_files
-  after_destroy :publish_ancestor_pages
+  after_save :publish_ancestor_pages
   after_destroy :clean_published_files
+  after_destroy :publish_ancestor_pages
 
   def content
     category_type.content
@@ -144,15 +144,23 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def public_path
-    "#{category_type.public_path}#{path_from_root_category}/"
+    return '' if (path = category_type.public_path).blank?
+    "#{path}#{path_from_root_category}/"
+  end
+
+  def public_smart_phone_path
+    return '' if (path = category_type.public_smart_phone_path).blank?
+    "#{path}#{path_from_root_category}/"
   end
 
   def public_uri
-    "#{category_type.public_uri}#{path_from_root_category}/"
+    return '' if (uri = category_type.public_uri).blank?
+    "#{uri}#{path_from_root_category}/"
   end
 
   def public_full_uri
-    "#{category_type.public_full_uri}#{path_from_root_category}/"
+    return '' if (uri = category_type.public_full_uri).blank?
+    "#{uri}#{path_from_root_category}/"
   end
 
   def inherited_docs_order
@@ -198,15 +206,20 @@ class GpCategory::Category < ActiveRecord::Base
 
   def clean_published_files
     FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+    FileUtils.rm_r(public_smart_phone_path) if public_smart_phone_path.present? && ::File.exist?(public_smart_phone_path)
   end
 
   def move_published_files
     return if changes[:name].blank?
-    return unless Regexp.new("\\A#{Rails.root}/[^/]+") =~ (path = public_path)
-
     old_name, new_name = changes[:name]
+    rename_directory(new_path: public_path, old_name: old_name)
+    rename_directory(new_path: public_smart_phone_path, old_name: old_name)
+  end
 
-    new_path = Pathname.new(path)
+  def rename_directory(new_path:, old_name:)
+    return unless Regexp.new("\\A#{Rails.root}/[^/]+") =~ new_path.to_s
+
+    new_path = Pathname.new(new_path.to_s) unless new_path.kind_of?(Pathname)
     return if new_path.exist?
 
     old_path = new_path.dirname.join(old_name)
