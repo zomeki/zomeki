@@ -57,8 +57,9 @@
       <tr>
         <th>
           <span class="reason"><%= history.reason_title %></span>
-          <span class="group"><%= history.operator.group.name %></span>
-          <span class="user"><%= history.operator.name %>（<%= history.operator.account %>）</span>
+          <span class="group"><%= history.operator ? history.operator.group.name : '担当者削除済み' %></span>
+          <span class="user"><%= history.operator ? history.operator.name : '担当者削除済み' %>
+                             （<%= history.operator ? history.operator.account : '担当者削除済み' %>）</span>
           <span class="date"><%=l history.updated_at %></span>
         </th>
       </tr>
