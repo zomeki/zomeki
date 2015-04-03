@@ -56,9 +56,8 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_node(@item)
       make_files(@item)
       update_config
+      save_sns_apps
     end
-
-    save_sns_apps
   end
 
   def update
@@ -71,9 +70,8 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_node(@item)
       make_files(@item)
       update_config
+      save_sns_apps
     end
-
-    save_sns_apps
   end
 
   def destroy

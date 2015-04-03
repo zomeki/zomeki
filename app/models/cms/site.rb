@@ -52,6 +52,7 @@ class Cms::Site < ActiveRecord::Base
   ## site settings
   after_save { save_site_settings(:site_id => id) }
 
+  before_validation :fix_full_uri
   before_destroy :block_last_deletion
 
   def states
@@ -238,11 +239,21 @@ class Cms::Site < ActiveRecord::Base
   end
 
 protected
+  def fix_full_uri
+    self.full_uri += '/' if full_uri.present? && full_uri.to_s[-1] != '/'
+  end
+
   def validate_attributes
-    if !full_uri.blank? && full_uri !~ /^[a-z]+:\/\/[^\/]+\//
-      self.full_uri += '/'
+    if full_uri.to_s.index('_')
+      errors.add :full_uri, 'に「_」は使用できません。'
+      return
     end
-    return true
+
+    begin
+      URI.parse(full_uri)
+    rescue URI::InvalidURIError => e
+      errors.add :full_uri, 'は正しいURLではありません。'
+    end
   end
 
   def block_last_deletion
