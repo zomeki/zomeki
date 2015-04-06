@@ -43,7 +43,11 @@ module GpArticle::GpArticleHelper
   def og_tags(item)
     return '' if item.nil?
     %w!type title description image!.map{ |key|
-      next unless item.respond_to?("og_#{key}") && (value = item.send("og_#{key}")).present?
+      unless item.respond_to?("og_#{key}") && (value = item.send("og_#{key}")).present?
+        site = item.respond_to?(:site) ? item.site : item.content.site
+        value = site.try("og_#{key}").to_s.gsub("\n", ' ')
+        next value.present? ? tag(:meta, property: "og:#{key}", content: value) : nil
+      end
 
       case key
       when 'image'

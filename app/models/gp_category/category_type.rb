@@ -36,6 +36,9 @@ class GpCategory::CategoryType < ActiveRecord::Base
   scope :public, -> { where(state: 'public') }
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
+  after_save :clean_published_files
+  after_destroy :clean_published_files
+
   def public_categories
     categories.public
   end
@@ -61,6 +64,16 @@ class GpCategory::CategoryType < ActiveRecord::Base
     category_names.inject(root_categories.find_by_name(category_names.shift)) {|result, item|
       result.children.find_by_name(item)
     }
+  end
+
+  def public_path
+    return '' unless node = content.public_node
+    "#{node.public_path}#{name}/"
+  end
+
+  def public_smart_phone_path
+    return '' unless node = content.public_node
+    "#{node.public_smart_phone_path}#{name}/"
   end
 
   def public_uri
@@ -127,5 +140,11 @@ class GpCategory::CategoryType < ActiveRecord::Base
     self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
     self.docs_order    = DOCS_ORDER_OPTIONS.first.last    if self.has_attribute?(:docs_order) && self.docs_order.nil?
     self.sort_no = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
+  end
+
+  def clean_published_files
+    return if !destroyed? && public?
+    FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
+    FileUtils.rm_r(public_smart_phone_path) if public_smart_phone_path.present? && ::File.exist?(public_smart_phone_path)
   end
 end

@@ -19,10 +19,12 @@ class GpCategory::Publisher < ActiveRecord::Base
   def self.publish_categories
     category_ids = {}
     self.all.each do |publisher|
-      next unless publisher.category
-      c = publisher.category
-      category_ids[c.content.id] = {} unless category_ids[c.content.id]
-      category_ids[c.content.id][c.category_type.id] = [] unless category_ids[c.content.id][c.category_type.id]
+      unless (c = publisher.category)
+        publisher.destroy
+        next
+      end
+      category_ids[c.content.id] ||= {}
+      category_ids[c.content.id][c.category_type.id] ||= []
       category_ids[c.content.id][c.category_type.id] << c.id
     end
 

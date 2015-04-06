@@ -94,6 +94,27 @@
   </tr>
 </table>
 
+<p class="form">OGP</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :og_type %></th>
+    <td><%= @item.og_type_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :og_title %></th>
+    <td><%= @item.og_title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :og_description %></th>
+    <td><%=simple_format @item.og_description %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :og_image %></th>
+    <td><%= @item.og_image %></td>
+  </tr>
+</table>
+
 <br />
 <p class="form">Basic認証</p>
 <div class="actionMenu">

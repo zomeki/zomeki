@@ -6,6 +6,7 @@ class GpCalendar::Holiday < ActiveRecord::Base
   include Sys::Model::Rel::File
   include Cms::Model::Auth::Content
 
+  include StateText
   include GpCalendar::EventSync
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
@@ -17,7 +18,6 @@ class GpCalendar::Holiday < ActiveRecord::Base
   validates_presence_of :content_id
 
   # Proper
-  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
   validates_presence_of :state
 
   after_initialize :set_defaults

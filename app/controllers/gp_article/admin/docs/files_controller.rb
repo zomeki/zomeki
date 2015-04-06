@@ -1,4 +1,5 @@
-# encoding: utf-8
+require 'csv'
+
 class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
@@ -83,9 +84,30 @@ class GpArticle::Admin::Docs::FilesController < Cms::Controller::Admin::Base
   def content
     if (file = Sys::File.where(tmp_id: @tmp_unid, parent_unid: @doc.try(:unid), name: "#{params[:basename]}.#{params[:extname]}").first)
       mt = Rack::Mime.mime_type(".#{params[:extname]}")
-      type, disposition = (mt =~ %r!^image/|^application/pdf$! ? [mt, 'inline'] : [mt, 'attachment'])
-      disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
-      send_file file.upload_path, :type => type, :filename => file.name, :disposition => disposition
+      if mt == 'text/csv' && params[:convert] == 'csv:table'
+        begin
+          csv = File.read(file.upload_path)
+          csv.force_encoding(Encoding::WINDOWS_31J) if csv.encoding == Encoding::UTF_8 && !csv.valid_encoding?
+          csv = csv.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+          rows = CSV.parse(csv)
+
+          render text: if rows.empty?
+                         ''
+                       else
+                         thead = "<thead><tr><th>#{rows.shift.join('</th><th>')}</th></tr></thead>"
+                         trs = rows.map{|r| "<tr><td>#{r.join('</td><td>')}</td></tr>" }
+                         tbody = "<tbody>#{trs.join}</tbody>"
+                         "<table>#{thead}#{tbody}</table>"
+                       end
+        rescue => e
+          warn_log e
+          render text: ''
+        end
+      else
+        type, disposition = (mt =~ %r!\Aimage/|\Aapplication/pdf\z! ? [mt, 'inline'] : [mt, 'attachment'])
+        disposition = 'attachment' if request.env['HTTP_USER_AGENT'] =~ /Android/
+        send_file file.upload_path, type: type, filename: file.name, disposition: disposition
+      end
     else
       http_error(404)
     end

@@ -39,16 +39,17 @@ module Cms::ApiGpCalendar
       return render(json: []) unless content.try(:public_node)
 
       limit = (params[:limit] || 10).to_i
-      events = content.public_events.where(will_sync: 'yes', sync_source_host: nil).reorder('updated_at DESC').limit(limit)
+      events = content.public_events.where(will_sync: 'enabled', sync_source_host: nil).reorder('updated_at DESC').limit(limit)
 
       settings = GpArticle::Content::Setting.where(name: 'calendar_relation', value: 'enabled')
       contents = settings.map{|s|
                      next unless s.extra_values[:calendar_content_id] == content.id
                      next unless s.content.site == content.site
+                     next unless s.content.event_sync?
                      s.content
                    }.compact
       docs = contents.map{|c|
-                 c.public_docs.where(event_state: 'visible', event_will_sync: 'yes').reorder('updated_at DESC').limit(limit)
+                 c.public_docs.where(event_state: 'visible', event_will_sync: 'enabled').reorder('updated_at DESC').limit(limit)
                }.flatten
       docs.each do |doc|
         event = gp_calendar_doc_to_event(doc: doc, event_content: content)
@@ -56,7 +57,6 @@ module Cms::ApiGpCalendar
       end
 
       recent_events = events.sort{|a, b| (a.updated_at <=> b.updated_at) * -1 }[0, limit]
-      recent_events.each{|e| e.update_attribute(:sync_exported, 'yes') unless e.doc }
       recent_events.map! do |event|
         source_class = event.doc.class.name if event.doc
         source_class ||= event.class.name
@@ -112,7 +112,7 @@ module Cms::ApiGpCalendar
 
               closed_key = nil if closed_key == key
 
-              attrs = {state: 'public',
+              attrs = {state: 'synced',
                        title: event['title'],
                        started_on: event['started_on'],
                        ended_on: event['ended_on'],
@@ -120,6 +120,7 @@ module Cms::ApiGpCalendar
 
               if (e = content.events.where(key).first)
                 next unless e.updated_at < Time.parse(event['updated_at'])
+                attrs.delete(:state) if e.state == 'public'
                 warn_log "#{__FILE__}:#{__LINE__} #{e.errors.inspect} #{event.inspect}" unless e.update_attributes(attrs)
               else
                 e = content.events.build(key.merge attrs)

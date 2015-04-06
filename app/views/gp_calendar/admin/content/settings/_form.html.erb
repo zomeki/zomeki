@@ -125,5 +125,12 @@ $(document).ready(function () {
       （例 example.com,example.net,example.org ）
     </td>
   </tr>
+  <tr>
+    <th>イベント同期初期値</th>
+    <td><%= select_tag :default_will_sync,
+                       options_for_select(GpCalendar::Event::WILL_SYNC_OPTIONS,
+                                          (@item.extra_values[:default_will_sync] || 'disabled')),
+                       include_blank: true %></td>
+  </tr>
 </table>
 <%- end -%>

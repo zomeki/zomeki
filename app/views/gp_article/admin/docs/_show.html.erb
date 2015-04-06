@@ -165,14 +165,12 @@
   </div>
   <div id="tab5">
     <table class="show">
+      <%- if @content.gp_calendar_content_event -%>
       <tr>
         <th><%= @item.locale :event_state %></th>
         <td><%= @item.event_state_text %></td>
       </tr>
-      <tr>
-        <th><%= @item.locale :event_will_sync %></th>
-        <td><%= @item.event_will_sync_text %></td>
-      </tr>
+      <%- end -%>
       <tr>
         <th><%= @item.locale :event_started_on %></th>
         <td><%= @item.event_started_on %></td>
@@ -188,6 +186,17 @@
       </tr>
       <%- end -%>
     </table>
+
+    <%- if @content.gp_calendar_content_event -%>
+    <p class="form">カレンダー同期</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :event_will_sync %></th>
+        <td><%= @item.event_will_sync_text %></td>
+      </tr>
+    </table>
+    <%- end -%>
   </div>
   <div id="tab6">
     <table class="show">

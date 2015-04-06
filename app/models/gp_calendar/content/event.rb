@@ -93,6 +93,10 @@ class GpCalendar::Content::Event < Cms::Content
     setting_extra_value(:event_sync_export, :destination_hosts).to_s
   end
 
+  def event_sync_default_will_sync
+    setting_extra_value(:event_sync_export, :default_will_sync).to_s
+  end
+
   private
 
   def set_default_settings

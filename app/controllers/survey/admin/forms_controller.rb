@@ -129,6 +129,11 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
     redirect_to url_for(:action => :show), notice: '公開処理が完了しました。'
   end
 
+  def close
+    @item.close if @item.state_public? && @item.approval_participators.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '非公開処理が完了しました。'
+  end
+
   def duplicate(item)
     if dupe_item = item.duplicate
       flash[:notice] = '複製処理が完了しました。'

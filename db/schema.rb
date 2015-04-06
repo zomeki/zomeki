@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150312142645) do
+ActiveRecord::Schema.define(:version => 20150323025301) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -676,6 +676,10 @@ ActiveRecord::Schema.define(:version => 20150312142645) do
     t.text     "body"
     t.integer  "site_image_id"
     t.string   "portal_group_state"
+    t.string   "og_type"
+    t.string   "og_title"
+    t.text     "og_description"
+    t.string   "og_image"
   end
 
   create_table "cms_talk_tasks", :force => true do |t|
@@ -893,7 +897,6 @@ ActiveRecord::Schema.define(:version => 20150312142645) do
     t.string   "sync_source_id"
     t.string   "sync_source_source_class"
     t.string   "will_sync"
-    t.string   "sync_exported"
   end
 
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
