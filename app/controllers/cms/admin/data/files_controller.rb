@@ -37,6 +37,7 @@ class Cms::Admin::Data::FilesController < Cms::Controller::Admin::Base
       item.and :concept_id, Core.concept.id if params[:s_target] != "all"
     end
     item.and 'node_id', @parent.id if @parent.id != 0
+    item.and 'name', "LIKE", "%#{params[:s_keyword]}%" unless params[:s_keyword].blank?
     item.page  params[:page], params[:limit]
     item.order params[:sort], order
     @items = item.find(:all)
