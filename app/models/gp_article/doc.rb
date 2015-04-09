@@ -510,10 +510,12 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def backlinks
     return self.class.none unless state_public? || state_closed?
+    return self.class.none if public_uri.blank?
     links.engine.where(links.table[:url].matches("%#{self.public_uri(without_filename: true).sub(/\/$/, '')}%"))
   end
 
   def backlinked_docs
+    return [] if backlinks.blank?
     self.class.where(id: backlinks.pluck(:doc_id))
   end
 
