@@ -24,6 +24,10 @@ class BizCalendar::Piece::BussinessHoliday < Cms::Piece
     setting_value(:page_filter).presence || 'filter'
   end
 
+  def link_place_page?
+    place_link == 'enabled'
+  end
+
   def place_link
     setting_value(:place_link).presence || 'enabled'
   end
