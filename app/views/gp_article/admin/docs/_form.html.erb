@@ -129,6 +129,9 @@
               <%= render 'category', category_type: category_type, category: category,
                                      categories_for_option: category_type.categories_for_option %>
               <%- end -%>
+            <%- elsif @item.new_record? && category_type.id == @content.default_category_type.try(:id) && @content.default_category -%>
+              <%= render 'category', category_type: category_type, category: @content.default_category,
+                                     categories_for_option: category_type.categories_for_option %>
             <%- else -%>
               <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
               <%= render 'category', category_type: category_type, category: category,

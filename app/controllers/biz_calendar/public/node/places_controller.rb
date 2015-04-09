@@ -1,6 +1,6 @@
 # encoding: utf-8
 class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::BaseController
-  skip_filter :render_public_layout, :only => [:bussiness_times]
+  skip_filter :render_public_layout, :only => [:bussiness_times, :bussiness_holidays]
 
   def index
     http_error(404) if params[:page]
@@ -125,9 +125,9 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
   end
 
   def bussiness_holidays
-    return http_error(404)
     @piece = BizCalendar::Piece::BussinessHoliday.find_by_id(params[:piece])
     return http_error(404) if params[:piece].blank? || @piece.blank?
+    return http_error(404) unless @piece.target_next?
 
     @places = @content.public_places
 
@@ -138,25 +138,27 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
 
     today = Date.today
 
-    if @piece.target_next?
-      @bussiness_times    = Hash.new()
-      @holidays           = Hash.new()
-      @exception_holidays = Hash.new()
-      @repeat_holidays    = Hash.new()
+    @next_holiday       = Hash.new()
 
-      @places.each do |place|
-        @bussiness_times[place.id] = place.get_bussines_time(today)
+    @holidays           = Hash.new()
+    @exception_holidays = Hash.new()
+    @repeat_holidays    = Hash.new()
 
-        criteria = {repeat_type: '', start_date: today, end_date: today}
-        @exception_holidays[place.id] = BizCalendar::ExceptionHoliday.public.all_with_place_and_criteria(place, criteria).order(:start_date)
-        @holidays[place.id] = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(place, criteria).order(:holiday_start_date)
+    @places.each do |place|
+      @next_holiday[place.id] = false
 
-        criteria[:repeat_type] = 'not_null'
-        repeat_holidays = BizCalendar::BussinessHoliday.public.all_with_place_and_criteria(place, criteria)
-        @repeat_holidays[place.id] = []
-        repeat_holidays.each do |h|
-          @repeat_holidays[place.id] << h if h.check(today)
+      sdate=Date.today
+      place.holidays.public.each do |h|
+        if h.repeat_type.blank?
+          next if h.holiday_end_date < sdate
+        elsif !h.repeat_type.blank? && h.end_type == 2
+          next if !h.end_date.blank? && h.end_date < sdate
         end
+      end
+
+
+      if h = place.next_holiday
+        @next_holiday[place.id] = h
       end
     end
 

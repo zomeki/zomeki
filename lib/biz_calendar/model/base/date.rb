@@ -22,6 +22,16 @@ module BizCalendar::Model::Base::Date
     return str.blank? ? false : list[str]
   end
 
+  def get_week_index_of_day(year, month, week, wday)
+    w  = Date.new(year, month, 1).wday
+
+    first = (wday - w >= 0) ? 1 + wday - w : 1 + wday - w + 7
+    day = first + (7 * (week - 1))
+
+    date = Date.new(year, month, day)
+    return date
+  end
+
   def localize_wday(style, wday)
     style.gsub('%A', I18n.t('date.day_names')[wday]).gsub('%a', I18n.t('date.abbr_day_names')[wday])
   end

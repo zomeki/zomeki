@@ -58,6 +58,26 @@ class BizCalendar::Place < ActiveRecord::Base
     "#{node.public_uri}#{url}/"
   end
 
+  def next_holiday(sdate=Date.today)
+    return '' if holidays.public.blank?
+    next_holiday = nil
+
+    self.holidays.public.each do |h|
+      if h.repeat_type.blank?
+        next if h.holiday_end_date < sdate
+      elsif !h.repeat_type.blank? && h.end_type == 2
+        next if !h.end_date.blank? && h.end_date < sdate
+      end
+
+      h.get_repeat_dates.each do |d|
+        next if d < sdate
+        next_holiday = d if next_holiday.blank? || next_holiday > d
+      end
+    end
+
+    return next_holiday
+  end
+
   def bread_crumbs(node)
     crumbs = []
     node.routes.each do |r|

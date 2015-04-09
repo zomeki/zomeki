@@ -1,8 +1,9 @@
 require 'RMagick'
 
 module Sys::Model::Base::File
-  IMAGE_RESIZE_OPTIONS = [['320px', '320'], ['640px', '640'], ['800px', '800'],
-                          ['1280px', '1280'], ['1600px', '1600'], ['1920px', '1920']]
+  IMAGE_RESIZE_OPTIONS = [['120px', '120'], ['160px', '160'], ['240px', '240'], ['320px', '320'], 
+                          ['480px', '480'],['640px', '640'], ['800px', '800'], ['1280px', '1280'],
+                          ['1600px', '1600'], ['1920px', '1920']]
 
   def self.included(mod)
     mod.validates_presence_of :file, :unless => :skip_upload?
