@@ -40,7 +40,15 @@
           </tr>
           <tr>
             <th>終了日</th>
-            <td><%= safe{@item.end_date.strftime("%Y年%m月%d日")} %></td>
+            <td>
+              <%- if @item.end_type == 0 -%>
+              なし
+              <%- elsif @item.end_type == 1 -%>
+              <%= @item.end_times %>回
+              <%- else -%>
+                <%= safe{@item.end_date.strftime("%Y年%m月%d日")} %>
+              <%- end -%>
+            </td>
           </tr>
         </tbody>
       </table>

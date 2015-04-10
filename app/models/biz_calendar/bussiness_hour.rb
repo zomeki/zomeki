@@ -27,76 +27,157 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
 
 
   def check(day, week_index=false)
-    return false if start_date > day
+    return false if repeat_type != '' && start_date > day
     return false if end_type == 2 && end_date < day
 
-    case repeat_type
-    when 'daily'
-      if repeat_interval > 1
-        return false if self.get_repeat_dates.select {|dt| dt == day }.size < 1
-      end
-    when 'weekday'
-      return false if (day.wday == 0 || day.wday == 6 || Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil))
-    when 'holiday'
-      return false unless Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil)
-    when 'saturdays'
-      return false unless (day.wday == 0 || day.wday == 6 || Util::Date::Holiday.holiday?(day.year, day.month, day.day, wday = nil))
-    when 'weekly'
-      return false unless repeat_week_ary.map {|w| get_wday(w[0]) }.include?(day.wday)
-      if repeat_interval > 1
-        return false if self.get_repeat_dates.select {|dt| dt == day }.size < 1
-      end
-    when 'monthly'
-      if repeat_criterion == 'day'
-        return false if start_date.strftime('%d').to_i != day.day
-      else
-        return false if start_date.wday != day.wday
-        sd_wn =  get_day_of_week_index(start_date)
-        s_wn =  get_day_of_week_index(day)
-        return false if sd_wn != s_wn
-      end
-    when 'yearly'
-      return false if repeat_interval > 1
-      return false if "#{start_date.strftime('%m%d')}" != "#{day.strftime('%m%d')}"
-    end
-
-    if end_type == 0
-      return true
-    elsif end_type == 1
-      @repeat_end_num = @repeat_end_num.blank? ? 1 : @repeat_end_num+1
-      return true if @repeat_end_num <= self.end_times
+    unless repeat_type == ''
+      return self.get_repeat_dates.include?(day)
     else
-      return true if day <= end_date
+      return day.between?(self.fixed_start_date, self.fixed_end_date)
     end
-    return false
   end
 
-  def get_repeat_dates
-    return @repeat_dates if @repeat_dates.present?
+  def get_repeat_dates(sdate = nil)
+    return @all_repeat_dates if sdate.blank? && @all_repeat_dates.present?
+    return @repeat_dates if sdate && @repeat_dates.present?
+
+    # end_type = 0:なし, 1:回数指定, 2:日指定
+    # repeat_criterion = day:日付, week:曜日
+
+    edate = end_type == 2 ? end_date : false
 
     dt = start_date
     _dates = []
-    _dates << start_date
+
+    if sdate && edate && edate < dt
+      @all_repeat_dates = []
+      @repeat_dates = []
+      return []
+    end
+
+    count = 0
 
     # 回数指定
     case repeat_type
     when 'daily'
-      _interval = 86400 * repeat_interval
-      if end_type == 1
-        end_times.times {
-          dt = dt + _interval
-          _dates << dt
-        }
-      else
-
+      limit = if end_type == 0 || end_type == 2
+        364
+      elsif end_type == 1
+        end_times
+      end
+      while(_dates.size < limit) do
+        dt = dt + repeat_interval if count > 0
+        count += 1
+        break if edate && edate < dt
+        next if end_type != 1 && sdate && sdate > dt
+        _dates << dt
+      end
+    when 'weekday'
+      limit = if end_type == 0 || end_type == 2
+        365
+      elsif end_type == 1
+        end_times
+      end
+      while(_dates.size < limit) do
+        dt = dt + 1 if count > 0
+        count += 1
+        next if (dt.wday == 0 || dt.wday == 6 || Util::Date::Holiday.holiday?(dt.year, dt.month, dt.day, dt.wday))
+        break if edate && edate < dt
+        next if end_type != 1 && sdate && sdate > dt
+        _dates << dt
+      end
+    when 'saturdays', 'holiday'
+      limit = if end_type == 0 || end_type == 2
+        365
+      elsif end_type == 1
+        end_times
+      end
+      while(_dates.size < limit) do
+        dt = dt + 1 if count > 0
+        count += 1
+        if repeat_type == 'saturdays'
+          next if !Util::Date::Holiday.holiday?(dt.year, dt.month, dt.day, dt.wday) && (dt.wday != 0 && dt.wday != 6)
+        else
+          next if !Util::Date::Holiday.holiday?(dt.year, dt.month, dt.day, dt.wday)
+        end
+        break if edate && edate < dt
+        next if end_type != 1 && sdate && sdate > dt
+        _dates << dt
       end
     when 'weekly'
-      _interval = 86400 * 7 * repeat_interval
+      limit = if end_type == 0 || end_type == 2
+        53
+      elsif end_type == 1
+        end_times
+      end
+      _interval = 7 * repeat_interval
+      dt = dt.beginning_of_week
+      t = dt
+      while(_dates.size < limit) do
+        7.times do
+          dt = dt + 1 if count > 0
+          count += 1
+          next unless repeat_week_ary.map {|w| get_wday(w[0]) }.include?(dt.wday)
+          next if end_type != 1 && sdate && sdate > dt
+          break if edate && edate < dt
+          _dates << dt
+        end
+        break if edate && edate < dt
+        (repeat_interval-1).times { dt = dt.next_week }
+        break if edate && edate < dt
+      end
     when 'monthly'
+      limit = if end_type == 0 || end_type == 2
+        24
+      elsif end_type == 1
+        end_times
+      end
+      if repeat_criterion == 'day'
+        day = start_date.strftime('%d').to_i
+        dt = dt.beginning_of_month
+        dtx = dt
+        while(_dates.size < limit) do
+          dtx = dt >> repeat_interval if count > 0
+          count += 1
+          dt = Date.new(dtx.year, dtx.month, day) if Date.valid_date?(dtx.year, dtx.month, day)
+          next if end_type != 1 && sdate && sdate > dt
+          _dates << dt
+        end
+      else
+        while(_dates.size < limit) do
+          dt = dt >> repeat_interval if count > 0
+          count += 1
+          week_index =  get_day_of_week_index(start_date)
+          dt = get_week_index_of_day(dt.year, dt.month, week_index, start_date.wday)
+          break if edate && edate < dt
+          next if end_type != 1 && sdate && sdate > dt
+          _dates << dt if dt
+        end
+      end
+    when 'yearly'
+      limit = if end_type == 0 || end_type == 2
+        11
+      elsif end_type == 1
+        end_times
+      end
+      mon = start_date.month
+      day = start_date.day
+      dt = dt.beginning_of_month
+      dtx = dt
+      while(_dates.size < limit) do
+        dtx = dt >> repeat_interval*12 if count > 0
+        count += 1
+        dt = Date.new(dtx.year, mon, day) if Date.valid_date?(dtx.year, mon, day)
+        break if edate && edate < dt
+        next if end_type != 1 && sdate && sdate > dt
+        _dates << dt if dt
+      end
     end
 
-    @repeat_dates = _dates
-    return @repeat_dates
+    @all_repeat_dates = _dates
+    @repeat_dates = _dates.select {|d| d >= sdate } if sdate
+
+    return sdate.blank? ? @all_repeat_dates : @repeat_dates
   end
 
   def content
