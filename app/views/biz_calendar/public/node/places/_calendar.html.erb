@@ -42,10 +42,10 @@
 
           <% if is_holiday %>
               <%- holidays.each do |holiday| -%>
-              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %>（<%= safe{holiday.target_date_label(@content.date_style)} %>)</span></p>
+              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
               <% end %>
               <%- repeat_holidays.each do |holiday| -%>
-              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %>（<%= safe{holiday.target_date_label(@content.date_style)} %>)</span></p>
+              <p class="attributes"><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></p>
               <% end %>
           <% end %>
         </td>

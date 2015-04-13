@@ -24,7 +24,7 @@ function writeBussinnesHoliday<%= @piece.id %>(data) {
 <%- @places.each do |place| -%>
 <div class="location">
   <div class="name"><%= @piece.link_place_page? ? link_to(place.title, place.public_uri) : place.title %></div>
-  <% if @holidays[place.id] %>
+  <% if @holidays[place.id] && !@holidays[place.id].blank? %>
   <ul>
     <% @holidays[place.id].each do |i,types| %>
     <li><span class="<%= safe{types[:type].name} %>"><%= safe{types[:type].title} %>：<%= safe{types[:holidays].map {|holiday| holiday.target_date_label(@piece.date_style) }.join('、')} %></span></li>

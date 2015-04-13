@@ -147,16 +147,16 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
     @places.each do |place|
       @next_holiday[place.id] = false
 
-      sdate=Date.today
-      place.holidays.public.each do |h|
-        if h.repeat_type.blank?
-          next if h.holiday_end_date < sdate
-        elsif !h.repeat_type.blank? && h.end_type == 2
-          next if !h.end_date.blank? && h.end_date < sdate
-        end
-      end
-
-
+#      sdate=Date.today
+#      place.holidays.public.each do |h|
+#        if h.repeat_type.blank?
+#          next if h.holiday_end_date < sdate
+#        elsif !h.repeat_type.blank? && h.end_type == 2
+#          next if !h.end_date.blank? && h.end_date < sdate
+#        end
+#      end
+#
+#
       if h = place.next_holiday
         @next_holiday[place.id] = h
       end

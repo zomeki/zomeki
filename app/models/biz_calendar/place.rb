@@ -69,7 +69,7 @@ class BizCalendar::Place < ActiveRecord::Base
         next if !h.end_date.blank? && h.end_date < sdate
       end
 
-      h.get_repeat_dates.each do |d|
+      h.get_repeat_dates(sdate).each do |d|
         next if d < sdate
         next_holiday = d if next_holiday.blank? || next_holiday > d
       end

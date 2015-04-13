@@ -31,7 +31,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
     return false if end_type == 2 && end_date < day
 
     unless repeat_type == ''
-      return self.get_repeat_dates.include?(day)
+      return self.get_repeat_dates(day).include?(day)
     else
       return day.between?(self.fixed_start_date, self.fixed_end_date)
     end
@@ -106,7 +106,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
       end
     when 'weekly'
       limit = if end_type == 0 || end_type == 2
-        53
+        500
       elsif end_type == 1
         end_times
       end
@@ -225,7 +225,7 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
     end
   end
 
-  def target_date_label(format = "%Y-%m-%d")
+  def target_date_label(format = "%Y-%m-%d", show_end_text = false)
     if repeat_type.blank?
       self.fixed_start_date = self.fixed_end_date if self.fixed_start_date.blank?
       self.fixed_end_date = self.fixed_start_date if self.fixed_end_date.blank?
@@ -240,9 +240,11 @@ class BizCalendar::BussinessHour < ActiveRecord::Base
       end
     else
       end_text = ''
-      end_text = " #{end_times}回" if end_type == 1
-      end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
-
+      if show_end_text
+        end_text = " #{end_times}回" if end_type == 1
+        end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
+      end
+      
       case repeat_type
       when 'weekday','saturdays','holiday'
         return "#{repeat_type_text}#{end_text}"

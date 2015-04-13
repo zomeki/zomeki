@@ -117,7 +117,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
     return false if end_type == 2 && end_date < day
 
     unless repeat_type == ''
-      return self.get_repeat_dates.include?(day)
+      return self.get_repeat_dates(day).include?(day)
     else
       return day.between?(self.holiday_start_date, self.holiday_end_date)
     end
@@ -192,7 +192,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
       end
     when 'weekly'
       limit = if end_type == 0 || end_type == 2
-        53
+        500
       elsif end_type == 1
         end_times
       end
@@ -309,7 +309,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
     return true
   end
 
-  def target_date_label(format = "%Y-%m-%d")
+  def target_date_label(format = "%Y-%m-%d", show_end_text = false)
     if repeat_type.blank?
       self.holiday_start_date = self.holiday_end_date if self.holiday_start_date.blank?
       self.holiday_end_date = self.holiday_start_date if self.holiday_end_date.blank?
@@ -324,14 +324,16 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
       end
     else
       end_text = ''
-      end_text = " #{end_times}回" if end_type == 1
-      end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
+      if show_end_text
+        end_text = " #{end_times}回" if end_type == 1
+        end_text = " #{end_date.strftime('%Y年%m月%d日')}まで" if end_type == 2
+      end
 
       case repeat_type
       when 'weekday','saturdays','holiday'
         return "#{repeat_type_text}#{end_text}"
       when 'daily'
-        return "#{repeat_interval}日ごと" if repeat_interval > 1
+        return "#{repeat_interval}日ごと#{end_text}" if repeat_interval > 1
         return "#{repeat_type_text}#{end_text}"
       when 'weekly'
         str = repeat_interval > 1 ? "#{repeat_interval}週間ごと" : repeat_type_text
@@ -347,7 +349,7 @@ class BizCalendar::BussinessHoliday < ActiveRecord::Base
         end
         return "#{str}#{end_text}"
       when 'yearly'
-        str = repeat_interval > 1 ? "#{repeat_interval}年ごと" : repeat_type_text
+        str = repeat_interval > 1 ? "#{repeat_interval}年ごと#{end_text}" : repeat_type_text
         return "#{str} #{start_date.strftime('%m月%d日')} #{end_text}"
       end
     end
