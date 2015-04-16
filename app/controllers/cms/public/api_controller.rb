@@ -1,6 +1,7 @@
 class Cms::Public::ApiController < Cms::Controller::Public::Base
   include Cms::ApiCommon
   include Cms::ApiGpCalendar
+  include Cms::ApiRank
 
   skip_filter :render_public_layout
 
@@ -11,6 +12,7 @@ class Cms::Public::ApiController < Cms::Controller::Public::Base
     case path.shift
     when 'authenticity_token'; render(json: {authenticity_token: form_authenticity_token})
     when 'gp_calendar'; gp_calendar(path: path, version: version)
+    when 'rank'; rank(path: path, version: version)
     else render_404
     end
   end

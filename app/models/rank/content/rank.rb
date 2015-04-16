@@ -2,6 +2,7 @@
 class Rank::Content::Rank < Cms::Content
   default_scope where(model: 'Rank::Rank')
 
+  has_many :pieces, foreign_key: :content_id, class_name: 'Rank::Piece::Rank', dependent: :destroy
   has_many :ranks, foreign_key: :content_id, class_name: 'Rank::Total', dependent: :destroy
 
   def public_nodes
