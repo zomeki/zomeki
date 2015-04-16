@@ -3,12 +3,9 @@
 <div class="location">
   <div class="name"><%= place.title %></div>
   <ul>
-    <%- if @exception_holidays[place.id].blank? && (!@holidays[place.id].blank? || !@repeat_holidays[place.id].blank?) -%>
-    <%- @holidays[place.id].each do |holiday| -%>
-    <li><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></li>
-    <%- end -%>
-    <%- @repeat_holidays[place.id].each do |holiday| -%>
-    <li><span class="<%= safe{holiday.type.name} %>"><%= safe{holiday.type.title} %></span></li>
+    <%- if @exception_holidays[place.id].blank? && !@holidays[place.id].blank? -%>
+    <%- @holidays[place.id].each do |i, h| -%>
+    <li><span class="<%= safe{h[0]} %>"><%= safe{h[1]} %></span></li>
     <%- end -%>
     <%- else -%>
     <% @bussiness_times[place.id].each do |hour| %>
