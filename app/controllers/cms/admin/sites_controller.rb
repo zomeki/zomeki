@@ -79,6 +79,7 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
     _destroy(@item) do
       cookies.delete(:cms_site)
       update_config
+      clean_files(@item)
     end
   end
 
@@ -176,6 +177,10 @@ protected
 
     file = "#{item.config_path}/rewrite.conf"
     FileUtils.touch(file) unless ::File.exist?(file)
+  end
+
+  def clean_files(item)
+    FileUtils.rm_rf item.root_path
   end
 
   def update_config
