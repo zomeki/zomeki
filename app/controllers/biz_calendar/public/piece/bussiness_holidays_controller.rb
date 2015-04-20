@@ -16,15 +16,16 @@ class BizCalendar::Public::Piece::BussinessHolidaysController < BizCalendar::Pub
 
     @start_date = start_date
     @end_date = end_date
+    @places = @piece.content.public_places
     
     unless @piece.page_filter == 'through'
       if @item.class.to_s == "BizCalendar::Place"
         @place_name = @item.url
+        @places = [@item]
       end
     end
 
     unless @piece.target_next?
-      @places = @piece.content.public_places
       @holidays           = Hash.new()
       @exception_holidays = Hash.new()
       @repeat_holidays    = Hash.new()
