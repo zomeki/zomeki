@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150323025301) do
+ActiveRecord::Schema.define(:version => 20150420074258) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -659,7 +659,7 @@ ActiveRecord::Schema.define(:version => 20150323025301) do
 
   create_table "cms_sites", :force => true do |t|
     t.integer  "unid"
-    t.string   "state",                :limit => 15
+    t.string   "state",                   :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
@@ -680,6 +680,7 @@ ActiveRecord::Schema.define(:version => 20150323025301) do
     t.string   "og_title"
     t.text     "og_description"
     t.string   "og_image"
+    t.string   "smart_phone_publication"
   end
 
   create_table "cms_talk_tasks", :force => true do |t|
