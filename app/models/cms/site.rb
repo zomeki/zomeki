@@ -14,6 +14,7 @@ class Cms::Site < ActiveRecord::Base
   include Cms::Model::Rel::SiteSetting
 
   OGP_TYPE_OPTIONS = [['article', 'article'], ['product', 'product'], ['profile', 'profile']]
+  SMART_PHONE_PUBLICATION_OPTIONS = [['書き出さない', 'nothing'], ['トップページのみ書き出す', 'only_top'], ['すべて書き出す', 'all']]
 
   belongs_to :status, :foreign_key => :state,
     :class_name => 'Sys::Base::Status'
@@ -236,6 +237,18 @@ class Cms::Site < ActiveRecord::Base
 
   def og_type_text
     OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
+  end
+
+  def smart_phone_publication_text
+    SMART_PHONE_PUBLICATION_OPTIONS.detect{|o| o.last == smart_phone_publication }.try(:first).to_s
+  end
+
+  def publish_all_for_smart_phone?
+    smart_phone_publication == 'all'
+  end
+
+  def publish_only_top_for_smart_phone?
+    smart_phone_publication == 'only_top'
   end
 
 protected

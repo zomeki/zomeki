@@ -94,6 +94,15 @@ areas      = PortalGroup::Area.root_items(cond)
   </tr>
 </table>
 
+<p class="form">スマートフォン書き出し設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:smart_phone_publication) %></th>
+    <td><%= f.select :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS, include_blank: true %></td>
+  </tr>
+</table>
+
 <br />
 <p class="form">SNS設定</p>
 

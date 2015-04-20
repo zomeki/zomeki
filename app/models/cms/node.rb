@@ -252,6 +252,10 @@ class Cms::Node < ActiveRecord::Base
     extract_links(html, false).any?{|l| l[:url] =~ /\.pdf$/i }
   end
 
+  def top_page?
+    parent.try(:parent_id) == 0 && name == 'index.html'
+  end
+
 protected
   def remove_file
     close_page# rescue nil

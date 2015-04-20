@@ -30,7 +30,9 @@ class Cms::Controller::Script::Publication < ApplicationController
     return false unless res
     #return true if params[:path] !~ /(\/|\.html)$/
 
-    if params[:smart_phone_path].present?
+    if params[:smart_phone_path].present? &&
+       (site.publish_all_for_smart_phone? ||
+         (site.publish_only_top_for_smart_phone? && item.respond_to?(:top_page?) && item.top_page?))
       rendered = render_public_as_string(params[:uri], site: site, jpmobile: envs_to_request_as_smart_phone)
       res = item.publish_page(rendered, path: params[:smart_phone_path], dependent: "#{params[:dependent]}_smart_phone")
       return false unless res
@@ -58,7 +60,9 @@ class Cms::Controller::Script::Publication < ApplicationController
 
     #uri  = (params[:uri] =~ /\.html$/ ? "#{params[:uri]}.r" : "#{params[:uri]}index.html.r")
     path = (params[:path] =~ /\.html$/ ? "#{params[:path]}.r" : "#{params[:path]}index.html.r")
-    smart_phone_path = if params[:smart_phone_path].present?
+    smart_phone_path = if params[:smart_phone_path].present? &&
+                          (site.publish_all_for_smart_phone? ||
+                            (site.publish_only_top_for_smart_phone? && item.respond_to?(:top_page?) && item.top_page?))
         params[:smart_phone_path] =~ /\.html$/ ? "#{params[:smart_phone_path]}.r" : "#{params[:smart_phone_path]}index.html.r"
       else
         nil
