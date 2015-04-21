@@ -29,7 +29,7 @@ module Cms::ApiRank
     result = {}
     result[:ranks] = ranks.map do |rank|
                          {title: rank.page_title,
-                            url: "http://#{rank.hostname}#{rank.page_path}",
+                            url: "#{request.scheme}://#{rank.hostname}#{rank.page_path}",
                           count: piece.show_count == 0 ? nil : rank.accesses}
                        end
     result[:more] = if (body = piece.more_link_body).present? && (url = piece.more_link_url).present?
