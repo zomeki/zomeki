@@ -18,9 +18,8 @@ module Cms::ApiRank
     return render_405 unless request.get?
     return render_404 unless version == '20150401'
 
-    content = Rank::Content::Rank.where(id: params[:content_id]).first
-    piece = content.pieces.where(id: params[:piece_id]).first if content
-    return render(json: {}) unless content && piece
+    piece = Rank::Piece::Rank.where(id: params[:piece_id]).first
+    return render(json: {}) unless piece
 
     term = piece.ranking_term
     target = piece.ranking_target

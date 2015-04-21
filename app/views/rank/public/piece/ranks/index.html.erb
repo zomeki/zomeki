@@ -4,12 +4,12 @@ $(document).ready(function () {
   $.ajax({
     url: '/_api/rank/piece_ranks',
     type: 'GET',
-    data: {content_id: <%= @piece.content.id %>, piece_id: <%= @piece.id %>, version: '20150401'},
+    data: {piece_id: <%= @piece.id %>, version: '20150401'},
     success: function (data) {
-      var wrapper = $('#<%= @piece.name %> > .pieceContainer > .pieceBody');
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
       var ranks = data['ranks'];
       var more = data['more'];
-      if (ranks) {
+      if (ranks && ranks.length > 0) {
         var u = $('<ul>');
         $(ranks).each(function (index, item) {
           var i = index + 1;
@@ -29,7 +29,7 @@ $(document).ready(function () {
       }
     },
     error: function (data)  {
-      var wrapper = $('#<%= @piece.name %> > .pieceContainer > .pieceBody');
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
       wrapper.text('現在表示できません。');
     }
   });
