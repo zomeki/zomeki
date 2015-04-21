@@ -1,18 +1,38 @@
-<%- if @piece.upper_text.present? -%>
-<div class="upper_text"><%=raw @piece.upper_text %></div>
-<%- end -%>
-
-<%- unless @banners.empty? -%>
-<ul class="ad_banner">
-  <%- @banners.each do |banner| -%>
-  <li class="banner"><%= link_to image_tag(banner.image_uri, alt: banner.title),
-                                 banner.link_uri, target: banner.target %></li>
-  <%- end -%>
-</ul>
-<%- end -%>
-
-<%- if @piece.lower_text.present? -%>
-<div class="lower_text"><%=raw @piece.lower_text %></div>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $.ajax({
+    url: '/_api/ad_banner/piece_banners',
+    type: 'GET',
+    data: {piece_id: <%= @piece.id %>, version: '20150401'},
+    success: function (data) {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      var upper_text = data['upper_text'];
+      var banners = data['banners'];
+      var lower_text = data['lower_text'];
+      if (upper_text) {
+        wrapper.append($('<div>', {class: 'upper_text', text: upper_text}));
+      }
+      if (banners && banners.length > 0) {
+        var u = $('<ul>', {class: 'ad_banner'});
+        $(banners).each(function (index, item) {
+          var l = $('<li>', {class: 'banner'});
+          var a = $('<a>', {href: item['url'], target: item['target']});
+          a.append($('<img>', {src: item['image_url'], alt: item['title']}));
+          l.append(a);
+          u.append(l);
+        });
+        wrapper.append(u);
+      }
+      if (lower_text) {
+        wrapper.append($('<div>', {class: 'lower_text', text: lower_text}));
+      }
+    },
+    error: function (data)  {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      wrapper.text('現在表示できません。');
+    }
+  });
+});
 <%- end -%>
 
 <%- if @piece.sort.last == 'random' -%>
