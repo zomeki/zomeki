@@ -18,4 +18,9 @@ class AdBanner::Content::Banner < Cms::Content
   def groups_for_option
     groups.map {|g| [g.title, g.id] }
   end
+
+  def click_count_related?
+    setting_value(:click_count_setting) != 'disabled'
+  end
+
 end

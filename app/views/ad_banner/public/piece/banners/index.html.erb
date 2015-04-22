@@ -6,7 +6,7 @@
 <ul class="ad_banner">
   <%- @banners.each do |banner| -%>
   <li class="banner"><%= link_to image_tag(banner.image_uri, alt: banner.title),
-                                 banner.link_uri, target: banner.target %></li>
+                                 @piece.content.click_count_related? ? banner.link_uri : banner.url, target: banner.target %></li>
   <%- end -%>
 </ul>
 <%- end -%>
