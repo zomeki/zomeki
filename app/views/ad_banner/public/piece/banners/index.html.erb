@@ -10,7 +10,9 @@ $(document).ready(function () {
       var banners = data['banners'];
       var lower_text = data['lower_text'];
       if (upper_text) {
-        wrapper.append($('<div>', {class: 'upper_text', text: upper_text}));
+        var ut = $('<div>', {class: 'upper_text'});
+        ut.html(upper_text);
+        wrapper.append(ut);
       }
       if (banners && banners.length > 0) {
         var u = $('<ul>', {class: 'ad_banner'});
@@ -24,7 +26,9 @@ $(document).ready(function () {
         wrapper.append(u);
       }
       if (lower_text) {
-        wrapper.append($('<div>', {class: 'lower_text', text: lower_text}));
+        var lt = $('<div>', {class: 'lower_text'});
+        lt.html(lower_text);
+        wrapper.append(lt);
       }
     },
     error: function (data)  {
