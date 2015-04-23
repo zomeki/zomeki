@@ -7,6 +7,7 @@ namespace :zomeki do
       clean_statics('r')
       clean_statics('mp3')
       clean_pagings
+      clean_attached_files
     end
 
     desc 'Clean empty directories'
@@ -80,6 +81,13 @@ def clean_pagings
     next unless File.exist?(file = base_file.sub(/\.p\d+\.html\z/, '.html'))
     info_log "DELETED: #{file}"
     File.delete(file)
+  end
+end
+
+def clean_attached_files
+  Dir[Rails.root.join("sites/**/file_contents")].each do |directory|
+    info_log "DELETED: #{directory}"
+    FileUtils.rm_rf directory
   end
 end
 
