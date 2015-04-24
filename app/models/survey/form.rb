@@ -150,7 +150,7 @@ class Survey::Form < ActiveRecord::Base
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
       next if approver.email.blank? || approval_request.requester.email.blank?
       CommonMailer.approved_notification(approval_request: approval_request, publish_url: publish_url,
-                                         from: approver.email, to: approval_request.requester.email).deliver
+                                         from: Core.user.email, to: approval_request.requester.email).deliver
     end
   end
 
