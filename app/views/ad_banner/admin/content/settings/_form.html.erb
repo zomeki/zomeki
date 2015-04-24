@@ -1,0 +1,384 @@
+<%= f.hidden_field :content_id -%>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr>
+  <tr>
+    <th>設定値</th>
+    <td>
+      <%- if @item.form_type == :multiple_select -%>
+        <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '---- 選択してください ----' %></div>
+        <div style="float: left;"><%= select_tag 'user_candidates', '<option value=""></option>', multiple: true, style: 'height: 150px; width: 250px;' %></div>
+        <div style="float: left; margin: 35px 20px; height: 70px;">
+          <div><%= button_to_function '追加 →', "move_option('user_candidates', 'item_value')" %></div>
+          <div style="margin-top: 20px;"><%= button_to_function '← 除外', "move_option('item_value', 'user_candidates')" %></div>
+        </div>
+        <div style="float: left;"><%= value_form(f) %></div>
+        <%= javascript_tag do %>
+        function move_option(from, to) {
+          var selected_ids = $('#' + to + ' > option').map(function (index, item) { return parseInt($(item).val()); });
+          $('#' + from + ' > option:selected').each(function (index, item) {
+            if (selected_ids.index(parseInt($(item).val())) < 0) {
+              $(item).appendTo($('#' + to)).attr('selected', false);
+            } else {
+              $(item).remove();
+            }
+          });
+        }
+
+        $('#item_value').closest('form').submit(function (e) {
+          $('#user_candidates > option').attr('selected', false);
+          $('#item_value > option').attr('selected', true);
+        });
+
+        $('#groups').on('change', function (event) {
+          var group_id = parseInt(event.target.value);
+          if (isNaN(group_id)) {
+            $('#user_candidates').html('<option value=""></option>');
+          } else {
+            $('#user_candidates').html('<option value="">更新中...</option>');
+            $.get('<%= sys_group_users_path(parent: 'PARENT') %>?options=true'.replace('PARENT', group_id), function (data) {
+              $('#user_candidates').html(data);
+            });
+          }
+        });
+        <% end %>
+      <%- else -%>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+        <%- if @item.config[:comment_upper] == 'doc_style_tags' -%>
+        <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+        <%- else -%>
+        <%= @item.config[:comment_upper] %>
+        <%- end -%>
+        <%= value_form(f) %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
+        <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<%- if @item.name == 'gp_category_content_category_type_id'
+      content = GpCategory::Content::CategoryType.find_by_id(@item.value)
+      category_types = content.try(:category_types) || []
+      category_types_for_option = content.try(:category_types_for_option) || []
+
+      ct_ids = @item.category_type_ids
+      vct_ids = @item.visible_category_type_ids
+      default_category_type_id = @item.default_category_type_id
+      default_categories_for_option = category_types.detect{|ct| ct.id == default_category_type_id }.try(:categories_for_option) || []
+      default_category_id = @item.default_category_id
+    -%>
+<table class="show">
+  <tr>
+    <th>利用<%= GpCategory::CategoryType.model_name.human %></th>
+    <td id="category_types">
+      <%- category_types.each do |ct| -%>
+      <span class="category_type"><%= check_box_tag "ct_#{ct.id}", ct.id, ct_ids.include?(ct.id), name: 'category_types[]' -%> <%= label_tag "ct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th>表示<%= GpCategory::CategoryType.model_name.human %></th>
+    <td id="visible_category_types">
+      <%- category_types.each do |ct| -%>
+      <span class="visible_category_type"><%= check_box_tag "vct_#{ct.id}", ct.id, vct_ids.include?(ct.id), name: 'visible_category_types[]' -%> <%= label_tag "vct_#{ct.id}", "#{ct.title}(#{ct.name})" -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<br />
+<p class="form">初期値</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpCategory::CategoryType.model_name.human %></th>
+    <td><%= select_tag 'default_category_type', options_for_select(category_types_for_option, default_category_type_id), include_blank: true %></td>
+    <th><%= GpCategory::Category.model_name.human %></th>
+    <td><%= select_tag 'default_category', options_for_select(default_categories_for_option, default_category_id), include_blank: true %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    var content_id = parseInt(event.target.value);
+    if (isNaN(content_id)) {
+      $('#category_types').html('');
+      $('#visible_category_types').html('');
+      $('#default_category_type').html('<option value=""></option>');
+      $('#default_category').html('<option value=""></option>');
+    } else {
+      $('#category_types').html('更新中...');
+      $('#visible_category_types').html('更新中...');
+      $('#default_category_type').html('<option value="">更新中...</option>');
+      $('#default_category').html('<option value=""></option>');
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#category_types').html(data);
+        $('#visible_category_types').html(data.replace(/"category_type/g, '"visible_category_type').replace(/"ct_/g, '"vct_'));
+      });
+      $.get('<%= gp_category_category_types_path(content: 'CONTENT_ID') %>?options=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#default_category_type').html(data);
+      });
+    }
+  });
+
+  $('#default_category_type').on('change', function (event) {
+    var content_id = parseInt($('#item_value').val());
+    var category_type_id = NaN;
+    if (isFinite(content_id)) { category_type_id = parseInt(event.target.value); }
+    if (isNaN(category_type_id)) {
+      $('#default_category').html('<option value=""></option>');
+    } else {
+      $('#default_category').html('<option value="">更新中...</option>');
+      $.get('<%= gp_category_category_type_categories_path(content: 'CONTENT_ID', category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CONTENT_ID', content_id)
+                                                                                                                                        .replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+        $('#default_category').html(data);
+      });
+    }
+  });
+
+  $('#category_types input[type="checkbox"]').on('click', function (event) {
+    if (!event.target.checked) { $('#' + event.target.id.replace('ct_', 'vct_')).removeAttr('checked'); }
+  });
+  $('#visible_category_types input[type="checkbox"]').on('click', function (event) {
+    if (event.target.checked) { $('#' + event.target.id.replace('vct_', 'ct_')).attr('checked', 'checked'); }
+  });
+});
+<%- end -%>
+<%- end -%>
+
+<%- if @item.name == 'gp_template_content_template_id'
+      content = GpTemplate::Content::Template.find_by_id(@item.value)
+      templates = content ? content.templates.public : []
+      template_ids = @item.extra_values[:template_ids] || []
+      templates_for_option = content ? content.templates.map {|t| [t.title, t.id] } : []
+    -%>
+<table class="show">
+  <tr>
+    <th>利用<%= GpTemplate::Template.model_name.human %></th>
+    <td id="templates">
+      <%- templates.each do |t| -%>
+      <span class="template"><%= check_box_tag "template_#{t.id}", t.id, template_ids.include?(t.id), name: 'template_ids[]' -%> <%= label_tag "template_#{t.id}", t.title -%></span>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+
+<br />
+<p class="form">初期値</p>
+
+<table class="show">
+  <tr>
+    <th><%= GpTemplate::Template.model_name.human %></th>
+    <td><%= select_tag 'default_template_id', options_for_select(templates_for_option, @item.default_template_id), include_blank: true %></td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    var content_id = parseInt(event.target.value);
+    if (isNaN(content_id)) {
+      $('#templates').html('');
+      $('#default_template_id').html('<option value=""></option>');
+    } else {
+      $('#templates').html('更新中...');
+      $('#default_template_id').html('<option value="">更新中...</option>');
+      $.get('<%= gp_template_templates_path(content: 'CONTENT_ID') %>?check_boxes=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#templates').html(data);
+      });
+      $.get('<%= gp_template_templates_path(content: 'CONTENT_ID') %>?options=true'.replace('CONTENT_ID', content_id), function (data) {
+        $('#default_template_id').html(data);
+      });
+    }
+  });
+});
+<%- end -%>
+<%- end -%>
+
+<%- if @item.name == 'calendar_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'calendar_content_id',
+                       options_from_collection_for_select(GpCalendar::Content::Event.where(site_id: Core.site.id), :id, :name, @item.extra_values[:calendar_content_id]), include_blank: true %></td>
+  </tr>
+  <tr>
+    <th>イベント同期</th>
+    <td>
+      <%- GpArticle::Content::Doc::EVENT_SYNC_SETTINGS_OPTIONS.each do |option| name = :event_sync_settings -%>
+      <%= radio_button_tag name, option[1], (@item.extra_values[name] || 'disabled') == option[1] %>
+      <%= label_tag "#{name}_#{option[1]}", option[0] %>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th>イベント同期初期値</th>
+    <td><%= select_tag :event_sync_default_will_sync,
+                       options_for_select(GpArticle::Content::Doc::EVENT_SYNC_DEFAULT_WILL_SYNC_OPTIONS,
+                                          (@item.extra_values[:event_sync_default_will_sync] || 'disabled')),
+                       include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'map_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'map_content_id',
+                       options_from_collection_for_select(Map::Content::Marker.where(site_id: Core.site.id), :id, :name, @item.extra_values[:map_content_id]), include_blank: true %></td>
+  </tr>
+  <tr>
+    <th>デフォルト座標</th>
+    <td><%= text_field_tag 'lat_lng', @item.extra_values[:lat_lng], style: 'width: 400px;' %>（緯度,経度）</td>
+  </tr>
+  <tr>
+    <th>マーカーアイコン用カテゴリ</th>
+    <td>
+      <%= radio_button_tag 'marker_icon_category', 'enabled', @item.extra_values[:marker_icon_category] == 'enabled' %><%= label_tag 'marker_icon_category_enabled', '使用する' %>
+      <%= radio_button_tag 'marker_icon_category', 'disabled', @item.extra_values[:marker_icon_category] != 'enabled' %><%= label_tag 'marker_icon_category_disabled', '使用しない' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'inquiry_setting' -%>
+<table class="show">
+  <tr>
+    <th>表示初期値</th>
+    <td><%= select_tag 'state', options_for_select(GpArticle::Content::Doc::INQUIRY_STATE_OPTIONS, @item.extra_values[:state]), include_blank: true %></td>
+  </tr>
+  <tr>
+    <th>表示項目</th>
+    <td>
+      <%- GpArticle::Content::Doc::INQUIRY_FIELD_OPTIONS.each do |name, id| -%>
+      <%= check_box_tag "vf_#{id}", id, @item.extra_values[:display_fields].include?(id), name: 'display_fields[]' -%> <%= label_tag "vf_#{id}", name, style: 'padding-right: 20px;' -%>
+      <%- end -%>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'approval_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'approval_content_id',
+                       options_from_collection_for_select(Approval::Content::ApprovalFlow.where(site_id: Page.site.id), :id, :name, @item.extra_values[:approval_content_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'feed' -%>
+<table class="show">
+  <tr>
+    <th>表示件数</th>
+    <td>
+      <%= text_field_tag :feed_docs_number, @item.extra_values[:feed_docs_number], class: 'number' %>
+    </td>
+  </tr>
+  <tr>
+    <th>表示期間（当日含む）</th>
+    <td>
+      <%= text_field_tag :feed_docs_period, @item.extra_values[:feed_docs_period], class: 'number' %>
+      （例 公開日時が1週間以内の場合、入力は7　※当日含む）
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'tag_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'tag_content_tag_id',
+                       options_from_collection_for_select(Tag::Content::Tag.where(site_id: Page.site.id), :id, :name, @item.extra_values[:tag_content_tag_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'sns_share_relation' -%>
+<table class="show">
+  <tr>
+    <th>コンテンツ</th>
+    <td><%= select_tag 'sns_share_content_id',
+                       options_from_collection_for_select(SnsShare::Content::Account.where(site_id: Page.site.id), :id, :name, @item.extra_values[:sns_share_content_id]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'blog_functions' -%>
+<table class="show">
+  <tr>
+    <th>コメント</th>
+    <td>
+      <%= radio_button_tag 'comment', 'enabled', @item.extra_values[:comment] != 'disabled' %><%= label_tag 'comment_enabled', '使用する' %>
+      <%= radio_button_tag 'comment', 'disabled', @item.extra_values[:comment] == 'disabled' %><%= label_tag 'comment_disabled', '使用しない' %>
+    </td>
+  </tr>
+  <tr>
+    <th>コメント公開</th>
+    <td>
+      <%= radio_button_tag 'comment_open', 'immediate', @item.extra_values[:comment_open] != 'moderate' %><%= label_tag 'comment_open_immediate', '即時公開する' %>
+      <%= radio_button_tag 'comment_open', 'moderate', @item.extra_values[:comment_open] == 'moderate' %><%= label_tag 'comment_open_moderate', '承認後公開する' %>
+    </td>
+  </tr>
+  <tr>
+    <th>コメント通知メール</th>
+    <td>
+      <%= radio_button_tag 'comment_notification_mail', 'enabled', @item.extra_values[:comment_notification_mail] != 'disabled' %><%= label_tag 'comment_notification_mail_enabled', '使用する' %>
+      <%= radio_button_tag 'comment_notification_mail', 'disabled', @item.extra_values[:comment_notification_mail] == 'disabled' %><%= label_tag 'comment_notification_mail_disabled', '使用しない' %>
+    </td>
+  </tr>
+  <tr>
+    <th>フッター形式</th>
+    <td>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
+      <%= text_area_tag :footer_style, @item.extra_values[:footer_style], size: '100x10' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'feature_settings' -%>
+<table class="show">
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :feature_1 %></th>
+    <td>
+      <%= radio_button_tag 'feature_1', 'true', @item.extra_values[:feature_1] != 'false' %><%= label_tag 'feature_1_true', '表示' %>
+      <%= radio_button_tag 'feature_1', 'false', @item.extra_values[:feature_1] == 'false' %><%= label_tag 'feature_1_false', '非表示' %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= GpArticle::Doc.human_attribute_name :feature_2 %></th>
+    <td>
+      <%= radio_button_tag 'feature_2', 'true', @item.extra_values[:feature_2] != 'false' %><%= label_tag 'feature_2_true', '表示' %>
+      <%= radio_button_tag 'feature_2', 'false', @item.extra_values[:feature_2] == 'false' %><%= label_tag 'feature_2_false', '非表示' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'list_style' -%>
+<table class="show">
+  <tr>
+    <th>タグ</th>
+    <td><%= select_tag :wrapper_tag, options_for_select(GpArticle::Content::Doc::WRAPPER_TAG_OPTIONS, @item.extra_values[:wrapper_tag]) %></td>
+  </tr>
+</table>
+<%- end -%>
+
+<%- if @item.name == 'qrcode_settings' -%>
+<table class="show">
+  <tr>
+    <th>表示初期値</th>
+    <td><%= select_tag 'state', options_for_select(GpArticle::Content::Doc::QRCODE_STATE_OPTIONS, @item.extra_values[:state]), include_blank: true %></td>
+  </tr>
+</table>
+<%- end -%>
+
+    <%= render 'gp_article/admin/shared/doc_style_tags' %>

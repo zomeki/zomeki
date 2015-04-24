@@ -43,8 +43,9 @@ module Cms::ApiAdBanner
     result[:upper_text] = piece.upper_text.presence
     result[:lower_text] = piece.lower_text.presence
     result[:banners] = banners.map do |banner|
+                           url = piece.content.click_count_related? ? banner.link_uri : banner.url
                            {title: banner.title, target: banner.target,
-                            url: banner.link_uri, image_url: banner.image_uri}
+                            url: url, image_url: banner.image_uri}
                          end
 
     render json: result

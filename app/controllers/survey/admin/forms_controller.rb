@@ -176,6 +176,7 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
         request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
       end
       request.select_assignment = assignments
+      request.user_id = Core.user.id
       request.save! if request.changed?
       request.reset
     end

@@ -560,7 +560,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
       next if approver.email.blank? || approval_request.requester.email.blank?
-      CommonMailer.plain(from: approver.email, to: approval_request.requester.email, subject: subject, body: body).deliver
+      CommonMailer.plain(from: Core.user.email, to: approval_request.requester.email, subject: subject, body: body).deliver
     end
   end
 

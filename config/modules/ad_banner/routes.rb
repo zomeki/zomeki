@@ -6,6 +6,10 @@ ZomekiCMS::Application.routes.draw do
     resources :content_base,
       :controller => 'admin/content/base'
 
+    resources :content_settings, :only => [:index, :show, :edit, :update],
+      :controller => 'admin/content/settings',
+      :path       => ':content/content_settings'
+
     ## contents
     resources(:banners,
       :controller => 'admin/banners',
