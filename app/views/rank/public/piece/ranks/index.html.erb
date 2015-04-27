@@ -4,7 +4,8 @@ $(document).ready(function () {
   $.ajax({
     url: '/_api/rank/piece_ranks',
     type: 'GET',
-    data: {piece_id: <%= @piece.id %>, version: '20150401'},
+    data: {piece_id: <%= @piece.id %>, current_item_class: '<%= Page.current_item.try(:class) %>',
+                                       current_item_id: <%= Page.current_item.try(:id) %>, version: '20150401'},
     success: function (data) {
       var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
       var ranks = data['ranks'];

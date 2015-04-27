@@ -145,7 +145,7 @@ module Rank::Controller::Rank
     end
   end
 
-  def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil)
+  def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil, current_item = nil)
     hostname   = URI.parse(content.site.full_uri).host
     exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
     rank_table = Rank::Total.arel_table
@@ -159,12 +159,12 @@ module Rank::Controller::Rank
 
     category_ids = []
     if category_option == 'on'
-      @item = Page.current_item
-      case @item
+      item = current_item || Page.current_item
+      case item
         when GpCategory::CategoryType
-          category_ids = @item.categories.map(&:id)
+          category_ids = item.categories.map(&:id)
         when GpCategory::Category
-          category_ids = @item.descendants.map(&:id)
+          category_ids = item.descendants.map(&:id)
       end
     end
 

@@ -21,9 +21,16 @@ module Cms::ApiRank
     piece = Rank::Piece::Rank.where(id: params[:piece_id]).first
     return render(json: {}) unless piece
 
+    begin
+      current_item = params[:current_item_class].constantize.find(params[:current_item_id])
+    rescue => e
+      warn_log "#{__FILE__}:#{__LINE__} #{e.message}"
+      return render(json: {})
+    end
+
     term = piece.ranking_term
     target = piece.ranking_target
-    ranks = rank_datas(piece.content, term, target, piece.display_count, piece.category_option)
+    ranks = rank_datas(piece.content, term, target, piece.display_count, piece.category_option, nil, nil, nil, current_item)
 
     result = {}
     result[:ranks] = ranks.map do |rank|
