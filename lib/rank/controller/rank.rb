@@ -90,10 +90,11 @@ module Rank::Controller::Rank
                     .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
                     .group(:hostname, :page_path)
                     .find_all.each do |result|
-
+            latest_title = Rank::Rank.order('date DESC').where(hostname: result.hostname,
+                                                               page_path: result.page_path).pluck(:page_title).first
             Rank::Total.create!(content_id:  content.id,
                                 term:        term,
-                                page_title:  result.page_title,
+                                page_title:  latest_title,
                                 hostname:    result.hostname,
                                 page_path:   result.page_path,
                                 pageviews:   result.pageviews,
