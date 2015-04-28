@@ -10,6 +10,7 @@ class Cms::Lib::FileCleaner
     clean_statics(root, 'mp3')
     clean_pagings(root)
     clean_attached_files(root)
+    clean_maps(root)
   end
 
   def self.clean_directories(root=Rails.root.join('sites'))
@@ -50,6 +51,17 @@ class Cms::Lib::FileCleaner
     Dir[root.join('**/file_contents')].each do |directory|
       info_log "DELETED: #{directory}"
       FileUtils.rm_rf directory
+    end
+  end
+
+  def self.clean_maps(root)
+    Dir[root.join('**/index_*@*.html')].each do |base_file|
+      info_log "DELETED: #{base_file}"
+      File.delete base_file
+
+      next unless File.exist?(file = "#{File.dirname(base_file)}/index.html")
+      info_log "DELETED: #{file}"
+      File.delete file
     end
   end
 
