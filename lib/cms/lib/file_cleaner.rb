@@ -37,7 +37,7 @@ class Cms::Lib::FileCleaner
   end
 
   def self.clean_pagings(root)
-    Dir[root.join('**/*.p?.html')].each do |base_file|
+    Dir[root.join('**/*.p[0-9]*.html')].each do |base_file|
       info_log "DELETED: #{base_file}"
       File.delete base_file
 
