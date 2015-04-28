@@ -3,16 +3,12 @@ namespace :zomeki do
   namespace :cms do
     desc 'Clean static files'
     task(:clean_statics => :environment) do
-      clean_feeds
-      clean_statics('r')
-      clean_statics('mp3')
-      clean_pagings
-      clean_attached_files
+      Cms::Lib::FileCleaner.clean_files
     end
 
     desc 'Clean empty directories'
     task(:clean_directories => :environment) do
-      clean_directories(Rails.root.join('sites'))
+      Cms::Lib::FileCleaner.clean_directories
     end
 
     namespace :feeds do
@@ -54,49 +50,4 @@ namespace :zomeki do
       end
     end
   end
-end
-
-def clean_feeds
-  Dir[Rails.root.join('sites/**/{feed,index}.{atom,rss}')].each do |file|
-    info_log "DELETED: #{file}"
-    File.delete(file)
-  end
-end
-
-def clean_statics(base_ext)
-  Dir[Rails.root.join("sites/**/*.html.#{base_ext}")].each do |base_file|
-    ['', '.r', '.mp3'].each do |ext|
-      next unless File.exist?(file = base_file.sub(Regexp.new("\.#{base_ext}$"), ext))
-      info_log "DELETED: #{file}"
-      File.delete(file)
-    end
-  end
-end
-
-def clean_pagings
-  Dir[Rails.root.join('sites/**/*.p?.html')].each do |base_file|
-    info_log "DELETED: #{base_file}"
-    File.delete(base_file)
-
-    next unless File.exist?(file = base_file.sub(/\.p\d+\.html\z/, '.html'))
-    info_log "DELETED: #{file}"
-    File.delete(file)
-  end
-end
-
-def clean_attached_files
-  Dir[Rails.root.join("sites/**/file_contents")].each do |directory|
-    info_log "DELETED: #{directory}"
-    FileUtils.rm_rf directory
-  end
-end
-
-def clean_directories(directory)
-  return unless directory.directory?
-  directory.each_child do |child|
-    clean_directories(child)
-  end
-  return unless directory.children.empty?
-  info_log "DELETED: #{directory}"
-  directory.delete
 end
