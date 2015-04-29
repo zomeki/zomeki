@@ -74,6 +74,10 @@ class Cms::Site < ActiveRecord::Base
     "#{Rails.root}/sites/#{dir}/public"
   end
 
+  def public_smart_phone_path
+    "#{public_path}/_smartphone"
+  end
+
   def config_path
     dir = format('%08d', id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1')
     "#{Rails.root}/sites/#{dir}/config"

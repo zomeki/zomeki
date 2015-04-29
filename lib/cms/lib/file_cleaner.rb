@@ -1,10 +1,12 @@
 class Cms::Lib::FileCleaner
   def self.clean_all(root=Rails.root.join('sites'))
+    root = Pathname.new(root) if root.kind_of?(String)
     clean_files(root)
     clean_directories(root)
   end
 
   def self.clean_files(root=Rails.root.join('sites'))
+    root = Pathname.new(root) if root.kind_of?(String)
     clean_feeds(root)
     clean_statics(root, 'r')
     clean_statics(root, 'mp3')
@@ -14,6 +16,7 @@ class Cms::Lib::FileCleaner
   end
 
   def self.clean_directories(root=Rails.root.join('sites'))
+    root = Pathname.new(root) if root.kind_of?(String)
     clean_empty_directories(root)
   end
 
