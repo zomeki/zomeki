@@ -65,13 +65,13 @@ class Cms::Lib::FileCleaner
     end
   end
 
-  def self.clean_empty_directories(directory)
+  def self.clean_empty_directories(directory, delete_self: false)
     return unless directory.directory?
     directory.each_child do |child|
-      clean_empty_directories(child)
+      clean_empty_directories(child, delete_self: true)
     end
     return unless directory.children.empty?
     info_log "DELETED: #{directory}"
-    directory.delete
+    directory.delete if delete_self
   end
 end
