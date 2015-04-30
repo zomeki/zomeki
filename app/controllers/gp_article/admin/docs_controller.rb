@@ -154,20 +154,17 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      @item.fix_tmp_files(params[:_tmp])
 
       @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
       @item = @content.docs.find_by_id(@item.id)
       @item.send_approval_request_mail if @item.state_approvable?
 
-      @item.fix_tmp_files(params[:_tmp])
-
       publish_by_update(@item) if @item.state_public?
 
       share_to_sns(@item) if @item.state_public?
-
       publish_related_pages(@item) if @item.state_public?
-
       sync_events_export
     end
   end
@@ -232,13 +229,11 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
       @item.close if !@item.public? && !@item.will_replace? # Never use "state_public?" here
 
-      release_document
-
       share_to_sns(@item) if @item.state_public?
-
       publish_related_pages(@item) if @item.state_public?
-
       sync_events_export
+
+      release_document
     end
   end
 
@@ -272,6 +267,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       publish_ruby(@item)
       @item.rebuild(render_public_as_string(@item.public_uri, jpmobile: envs_to_request_as_smart_phone),
                     :path => @item.public_smart_phone_path, :dependent => :smart_phone)
+
+      share_to_sns(@item)
       publish_related_pages(@item)
       sync_events_export
     end
