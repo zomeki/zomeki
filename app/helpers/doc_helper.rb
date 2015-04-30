@@ -83,7 +83,7 @@ module DocHelper
       contents[:title_link]
     else
       doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| link_to($1.html_safe, doc.public_uri, class: 'doc_link') }
-      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
+      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i).html_safe, class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
         '@title_link@' => contents[:title_link],
