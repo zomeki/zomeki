@@ -15,6 +15,12 @@ class Cms::Controller::Script::Publication < ApplicationController
   end
 
   def publish_page(item, params = {})
+    if params[:smart_phone].present? &&
+       !(site.publish_all_for_smart_phone? ||
+          (site.publish_only_top_for_smart_phone? && item.respond_to?(:top_page?) && item.top_page?))
+      return false
+    end
+
     ::Script.current
 
     if ::Script.options
