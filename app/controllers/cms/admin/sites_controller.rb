@@ -71,7 +71,7 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_files(@item)
       update_config
       save_sns_apps
-      unless @item.smart_phone_publication == 'all'
+      unless @item.publish_for_smart_phone?
         Cms::Lib::FileCleaner.clean_all(@item.public_smart_phone_path)
         @item.nodes.where(model: 'Cms::Page').each{|n| FileUtils.rm_rf n.public_smart_phone_path }
       end
