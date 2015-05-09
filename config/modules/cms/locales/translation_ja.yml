@@ -43,7 +43,8 @@ ja:
         og_title: タイトル
         og_description: 説明
         og_image: 画像
-        smart_phone_publication: 書き出し対象
+        smart_phone_publication: スマートフォンを別に書き出す
+        spp_target: 書き出し対象
 
       cms/site_basic_auth_user:
         state: "状態"

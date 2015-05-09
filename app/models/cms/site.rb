@@ -14,7 +14,8 @@ class Cms::Site < ActiveRecord::Base
   include Cms::Model::Rel::SiteSetting
 
   OGP_TYPE_OPTIONS = [['article', 'article'], ['product', 'product'], ['profile', 'profile']]
-  SMART_PHONE_PUBLICATION_OPTIONS = [['書き出さない', 'nothing'], ['トップページのみ書き出す', 'only_top'], ['すべて書き出す', 'all']]
+  SMART_PHONE_PUBLICATION_OPTIONS = [['書き出さない', 'no'], ['書き出す', 'yes']]
+  SPP_TARGET_OPTIONS = [['トップページのみ書き出す', 'only_top'], ['すべて書き出す', 'all']]
 
   belongs_to :status, :foreign_key => :state,
     :class_name => 'Sys::Base::Status'
@@ -41,6 +42,8 @@ class Cms::Site < ActiveRecord::Base
   validates_uniqueness_of :mobile_full_uri,
     :if => %Q(!mobile_full_uri.blank?)
   validate :validate_attributes
+
+  after_initialize :set_defaults
 
   ## site image
   attr_accessor :site_image, :del_site_image
@@ -247,12 +250,20 @@ class Cms::Site < ActiveRecord::Base
     SMART_PHONE_PUBLICATION_OPTIONS.detect{|o| o.last == smart_phone_publication }.try(:first).to_s
   end
 
-  def publish_all_for_smart_phone?
-    smart_phone_publication == 'all'
+  def spp_target_text
+    SPP_TARGET_OPTIONS.detect{|o| o.last == spp_target }.try(:first).to_s
   end
 
-  def publish_only_top_for_smart_phone?
-    smart_phone_publication == 'only_top'
+  def publish_for_smart_phone?
+    smart_phone_publication == 'yes'
+  end
+
+  def spp_all?
+    spp_target == 'all'
+  end
+
+  def spp_only_top?
+    spp_target == 'only_top'
   end
 
 protected
@@ -275,5 +286,12 @@ protected
 
   def block_last_deletion
     raise "Last site can't be deleted." if self.last?
+  end
+
+  private
+
+  def set_defaults
+    self.smart_phone_publication ||= SMART_PHONE_PUBLICATION_OPTIONS.first.last if self.has_attribute?(:smart_phone_publication)
+    self.spp_target ||= SPP_TARGET_OPTIONS.first.last if self.has_attribute?(:spp_target)
   end
 end

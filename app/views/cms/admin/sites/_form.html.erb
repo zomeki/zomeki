@@ -99,7 +99,11 @@ areas      = PortalGroup::Area.root_items(cond)
 <table class="show">
   <tr>
     <th><%= @item.locale(:smart_phone_publication) %></th>
-    <td><%= f.select :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS %></td>
+    <td><%= f.radio_buttons :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:spp_target) %></th>
+    <td><%= f.select :spp_target, @item.class::SPP_TARGET_OPTIONS %></td>
   </tr>
 </table>
 

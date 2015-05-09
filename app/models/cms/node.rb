@@ -306,10 +306,9 @@ protected
     end
 
     def rebuild(content, options={})
-      if options[:dependent] == :smart_phone &&
-         !(self.site.publish_all_for_smart_phone? ||
-            (self.site.publish_only_top_for_smart_phone? && top_page?))
-        return false
+      if options[:dependent] == :smart_phone
+        return false unless self.site.publish_for_smart_phone?
+        return false unless self.site.spp_all? || (self.site.spp_only_top? && top_page?)
       end
 
       return false unless self.state == 'public'

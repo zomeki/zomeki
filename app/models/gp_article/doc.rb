@@ -341,10 +341,9 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def rebuild(content, options={})
-    if options[:dependent] == :smart_phone &&
-       !(self.content.site.publish_all_for_smart_phone? ||
-          (self.content.site.publish_only_top_for_smart_phone? && item.respond_to?(:top_page?) && item.top_page?))
-      return false
+    if options[:dependent] == :smart_phone
+      return false unless self.content.site.publish_for_smart_phone?
+      return false unless self.content.site.spp_all?
     end
 
     return false unless self.state_public?
