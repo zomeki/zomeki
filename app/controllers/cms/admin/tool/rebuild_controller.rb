@@ -113,17 +113,12 @@ class Cms::Admin::Tool::RebuildController < Cms::Controller::Admin::Base
 
     nodes.each do |node|
       begin
-        node.publish_page(render_public_as_string(node.public_uri, site: node.site))
-
-        if ::File.exist?(node.public_path)
-          rendered = render_public_as_string(node.public_uri, site: node.site, jpmobile: envs_to_request_as_smart_phone)
-          FileUtils.mkdir_p ::File.dirname(node.public_smart_phone_path)
-          ::File.open(node.public_smart_phone_path, 'w'){|f| f.write rendered }
-        else
-          FileUtils.rm node.public_smart_phone_path if ::File.exist?(node.public_smart_phone_path)
-          FileUtils.rmdir ::File.dirname(node.public_smart_phone_path)
+        page = Cms::Node::Page.find(node)
+        if page.rebuild(render_public_as_string(page.public_uri))
+          page.publish_page(render_public_as_string("#{page.public_uri}.r"), path: "#{page.public_path}.r", dependent: :ruby)
+          page.rebuild(render_public_as_string(page.public_uri, jpmobile: envs_to_request_as_smart_phone),
+                       path: page.public_smart_phone_path, dependent: :smart_phone)
         end
-
         results[:ok] += 1
       rescue => e
         results[:ng] += 1
