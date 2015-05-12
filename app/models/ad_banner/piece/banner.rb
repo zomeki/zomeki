@@ -9,7 +9,7 @@ class AdBanner::Piece::Banner < Cms::Piece
   validate :validate_settings
 
   def validate_settings
-    errors.add(:base, "#{self.class.human_attribute_name :sort} #{errors.generate_message(:base, :blank)}") if in_settings['sort'].blank?
+    errors.add(:base, "#{self.class.human_attribute_name :sort} #{errors.generate_message(:base, :blank)}") unless sort
   end
 
   def content
@@ -37,7 +37,11 @@ class AdBanner::Piece::Banner < Cms::Piece
   end
 
   def sort
-    self.class::SORT_OPTIONS.detect{|so| so.last == setting_value(:sort) }
+    SORT_OPTIONS.detect{|so| so.last == (in_settings[:sort] || setting_value(:sort)) }
+  end
+
+  def sort_text
+    sort.try(:first).to_s
   end
 
   def upper_text
@@ -52,7 +56,7 @@ class AdBanner::Piece::Banner < Cms::Piece
 
   def set_default_settings
     settings = self.in_settings
-    settings['sort'] = SORT_OPTIONS.first.last if setting_value(:sort).blank?
+    settings[:sort] = SORT_OPTIONS.first.last if setting_value(:sort).blank?
     self.in_settings = settings
   end
 end
