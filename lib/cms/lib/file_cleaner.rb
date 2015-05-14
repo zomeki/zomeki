@@ -20,6 +20,25 @@ class Cms::Lib::FileCleaner
     clean_empty_directories(root)
   end
 
+  def self.clean_cms_nodes(site_id=nil)
+    nodes = (if site_id
+              Cms::Site.find(site_id).nodes
+            else
+              Cms::Node.reorder(:id)
+            end).where(model: %w!Cms::Directory Cms::Page Cms::Sitemap!)
+    nodes.each do |n|
+      begin
+        [n.public_path, n.public_smart_phone_path].each do |path|
+          next unless File.exist?(path)
+          info_log "DELETED: #{path}"
+          FileUtils.rm_rf path
+        end
+      rescue => e
+        warn_log "Cms::Node(#{n.id}): #{e.message}"
+      end
+    end
+  end
+
   private
 
   def self.clean_feeds(root)
