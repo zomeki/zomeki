@@ -99,7 +99,8 @@ areas      = PortalGroup::Area.root_items(cond)
 <table class="show">
   <tr>
     <th><%= @item.locale(:smart_phone_publication) %></th>
-    <td><%= f.radio_buttons :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS %></td>
+    <td><%= f.radio_buttons :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS,
+                                                      onchange: 'confirm_smart_phone_deletion(this)' %></td>
   </tr>
   <tr>
     <th><%= @item.locale(:spp_target) %></th>
@@ -178,3 +179,12 @@ areas      = PortalGroup::Area.root_items(cond)
       :with => :item_portal_group_id, :on => 'change', :url => areas_portal_group_groups_path(0)) %>
 
 <%= creator_form f %>
+
+<%= javascript_tag do -%>
+function confirm_smart_phone_deletion(radio) {
+  if ($(radio).val() !== 'yes' && !confirm("書き出しずみのファイルはすべて削除されます。\nよろしいですか？")) {
+    var selector = "input[name='" + $(radio).prop('name') + "'][value='yes']";
+    $(selector).prop('checked', true);
+  }
+}
+<%- end -%>
