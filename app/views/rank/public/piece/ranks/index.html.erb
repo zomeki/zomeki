@@ -4,8 +4,8 @@ $(document).ready(function () {
   $.ajax({
     url: '/_api/rank/piece_ranks',
     type: 'GET',
-    data: {piece_id: <%= @piece.id %>, current_item_class: '<%= Page.current_item.try(:class) %>',
-                                       current_item_id: <%= Page.current_item.try(:id) %>, version: '20150401'},
+    data: {'piece_id': <%= @piece.id %>, 'current_item_class': '<%= Page.current_item.try(:class) %>',
+                                         'current_item_id': <%= Page.current_item.try(:id) %>, 'version': '20150401'},
     success: function (data) {
       var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
       var ranks = data['ranks'];
@@ -16,16 +16,16 @@ $(document).ready(function () {
           var i = index + 1;
           var l = $('<li>');
           if (i <= 10) l.attr('class', 'ranking'+i);
-          l.append($('<span>', {class: 'rank', text: i}));
-          l.append($('<a>', {href: item['url'], target: '_blank', text: item['title']}));
-          if (item['count'] !== null) l.append($('<span>', {class: 'count', text: '('+item['count']+')'}));
+          l.append($('<span>', {'class': 'rank', 'text': i}));
+          l.append($('<a>', {'href': item['url'], 'target': '_blank', 'text': item['title']}));
+          if (item['count'] !== null) l.append($('<span>', {'class': 'count', 'text': '('+item['count']+')'}));
           u.append(l);
         });
         wrapper.append(u);
       }
       if (more) {
-        var d = $('<div>', {class: 'more'});
-        d.append($('<a>', {href: more['url'], text: more['body']}));
+        var d = $('<div>', {'class': 'more'});
+        d.append($('<a>', {'href': more['url'], 'text': more['body']}));
         wrapper.append(d);
       }
     },

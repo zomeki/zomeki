@@ -3,7 +3,7 @@ $(document).ready(function () {
   $.ajax({
     url: '/_api/ad_banner/piece_banners',
     type: 'GET',
-    data: {piece_id: <%= @piece.id %>, version: '20150401'},
+    data: {'piece_id': <%= @piece.id %>, 'version': '20150401'},
     success: function (data) {
       var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
       var upper_text = data['upper_text'];
