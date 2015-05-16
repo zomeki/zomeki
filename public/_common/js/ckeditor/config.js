@@ -68,10 +68,6 @@ CKEDITOR.editorConfig = function( config ) {
 
   // tagの許可
   config.allowedContent = true;
-
-  // Wordからの貼付で装飾を削除する
-  config.pasteFromWordRemoveFontStyles = true;
-  config.pasteFromWordRemoveStyles = true;
 };
 
 // スタイルの設定
