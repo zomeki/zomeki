@@ -7,6 +7,6 @@ class Organization::Public::Piece::OutlinesController < Sys::Controller::Public:
   end
 
   def index
-    render text: @item.outline
+    render text: (@item.kind_of?(Organization::Group) ? @item.outline : '')
   end
 end
