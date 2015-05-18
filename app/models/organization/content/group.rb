@@ -30,9 +30,9 @@ class Organization::Content::Group < Cms::Content
   end
 
   def root_sys_group
-    return unless Core.site
+    return unless site_id
     belongings = Cms::SiteBelonging.arel_table
-    Sys::Group.joins(:site_belongings).where(belongings[:site_id].eq(Core.site.id))
+    Sys::Group.joins(:site_belongings).where(belongings[:site_id].eq(site_id))
               .where(parent_id: 0, level_no: 1).first
   end
 
