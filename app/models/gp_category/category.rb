@@ -49,9 +49,9 @@ class GpCategory::Category < ActiveRecord::Base
   scope :public, where(state: 'public')
   scope :none, -> { where("#{self.table_name}.id IS ?", nil).where("#{self.table_name}.id IS NOT ?", nil) }
 
-  after_save :move_published_files
   after_save :publish_ancestor_pages
-  after_save :clean_published_files
+  after_update :move_published_files
+  after_update :clean_published_files
   after_destroy :clean_published_files
   after_destroy :publish_ancestor_pages
 
@@ -206,7 +206,6 @@ class GpCategory::Category < ActiveRecord::Base
   end
 
   def clean_published_files
-    return if !destroyed? && public?
     FileUtils.rm_r(public_path) if public_path.present? && ::File.exist?(public_path)
     FileUtils.rm_r(public_smart_phone_path) if public_smart_phone_path.present? && ::File.exist?(public_smart_phone_path)
   end
