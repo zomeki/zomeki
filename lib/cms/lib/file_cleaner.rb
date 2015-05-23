@@ -27,6 +27,7 @@ class Cms::Lib::FileCleaner
               Cms::Node.reorder(:id)
             end).where(model: %w!Cms::Directory Cms::Page Cms::Sitemap!)
     nodes.each do |n|
+      next if n.parent_id.zero? && n.model == 'Cms::Directory'
       begin
         [n.public_path, n.public_smart_phone_path].each do |path|
           next unless File.exist?(path)
