@@ -1,56 +1,21 @@
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  $.ajax({
-    url: '/_api/ad_banner/piece_banners',
-    type: 'GET',
-    data: {'piece_id': <%= @piece.id %>, 'version': '20150401'},
-    success: function (data) {
-      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
-      var upper_text = data['upper_text'];
-      var banners = data['banners'];
-      var lower_text = data['lower_text'];
-      if (upper_text) {
-        var ut = $('<div>', {'class': 'upper_text'});
-        ut.html(upper_text);
-        wrapper.append(ut);
-      }
-      if (banners && banners.length > 0) {
-        var u = $('<ul>', {'class': 'ad_banner'});
-        $(banners).each(function (index, item) {
-          var l = $('<li>', {'class': 'banner'});
-          var a = $('<a>', {'href': item['url'], 'target': item['target']});
-          a.append($('<img>', {'src': item['image_url'], 'alt': item['title']}));
-          l.append(a);
-          u.append(l);
-        });
-        wrapper.append(u);
-      }
-      if (lower_text) {
-        var lt = $('<div>', {'class': 'lower_text'});
-        lt.html(lower_text);
-        wrapper.append(lt);
-      }
-    },
-    error: function (data)  {
-      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
-      wrapper.text('現在表示できません。');
-    }
-  });
-});
+<%- if @piece.impl.last == 'dynamic' -%>
+  <%= render 'dynamic' %>
+<%- else -%>
+  <%= render 'static' %>
 <%- end -%>
 
 <%- if @piece.sort.last == 'random' -%>
-<%= javascript_tag do -%>
-function shuffle_children(id) {
-  var parent = $(id);
-  var children = parent.children();
-  for (var i = 0; i < children.length; i++) {
-    $(children[Math.floor(Math.random() * children.length)]).appendTo(parent);
+  <%= javascript_tag do %>
+  function shuffle_children(id) {
+    var parent = $(id);
+    var children = parent.children();
+    for (var i = 0; i < children.length; i++) {
+      $(children[Math.floor(Math.random() * children.length)]).appendTo(parent);
+    }
   }
-}
 
-$(document).ready(function () {
-  shuffle_children('#<%= @piece.css_id %> ul.ad_banner');
-});
-<%- end -%>
+  $(document).ready(function () {
+    shuffle_children('#<%= @piece.css_id %> ul.ad_banner');
+  });
+  <% end %>
 <%- end -%>
