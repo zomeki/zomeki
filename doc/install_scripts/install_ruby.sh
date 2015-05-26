@@ -1,7 +1,7 @@
 #!/bin/bash
 DONE_FLAG="/tmp/$0_done"
 
-RUBY_VERSION='ruby-2.1.5'
+RUBY_VERSION='ruby-2.1.6'
 RUBY_SOURCE_URL="http://cache.ruby-lang.org/pub/ruby/2.1/$RUBY_VERSION.tar.bz2"
 
 echo "#### Install $RUBY_VERSION ####"

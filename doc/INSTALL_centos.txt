@@ -59,8 +59,8 @@ Rubyをインストールします。
   # yum -y install gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   # cd /usr/local/src
-  # curl -fsSLO http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.bz2
-  # tar jxf ruby-2.1.5.tar.bz2 && cd ruby-2.1.5 && ./configure && make && make install
+  # curl -fsSLO http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.6.tar.bz2
+  # tar jxf ruby-2.1.6.tar.bz2 && cd ruby-2.1.6 && ./configure && make && make install
 
   # gem install bundler
 
@@ -107,13 +107,13 @@ Phusion Passengerをインストールします。
 
   # yum -y install curl-devel
 
-  # gem install passenger -v 4.0.56
+  # gem install passenger -v 4.0.59
   # passenger-install-apache2-module
   # cp /var/share/zomeki/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
   # vi /etc/httpd/conf.d/passenger.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ※「PASSENGER_VERSION」をすべて「4.0.56」に書き換えます。
+  ※「PASSENGER_VERSION」をすべて「4.0.59」に書き換えます。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 **********************************************************************

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 DONE_FLAG = "/tmp/#{$0}_done"
 
-PASSENGER_VERSION = '4.0.56'
+PASSENGER_VERSION = '4.0.59'
 
 puts '#### Install Apache ####'
 exit if File.exist?(DONE_FLAG)
