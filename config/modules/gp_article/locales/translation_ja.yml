@@ -88,6 +88,9 @@ ja:
         more_link_url: 一覧リンクURL
       gp_article/piece/monthly_archive:
         num_docs_visibility: 記事数表示
+      gp_article/piece/archive:
+        num_docs_visibility: 記事数表示
+        term: 表示形式
       gp_article/piece/comment:
         docs_number: 表示件数
         authors_visibility: 投稿者表示
