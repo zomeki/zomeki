@@ -10,5 +10,9 @@
     <th><%= @item.locale :term %></th>
     <td><%= f.array_select 'in_settings[term]', @item.class::TERM_OPTIONS %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :order %></th>
+    <td><%= f.array_select 'in_settings[order]', @item.class::ORDER_OPTIONS %></td>
+  </tr>
 </table>
 <%- end -%>

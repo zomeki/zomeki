@@ -3,7 +3,7 @@
 <%- case @piece.term
     when 'year_month' -%>
   <%- @num_docs.each do |key, value| -%>
-  <li><%= key %>年
+  <li><%= link_to "#{key}年", "#{@node.public_uri}#{key}/" %>
     <ul>
       <%- value.each do |k, v| -%>
         <li><%= link_to "#{k}月", "#{@node.public_uri}#{key}/#{k}/" %>
