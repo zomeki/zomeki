@@ -13,7 +13,7 @@ module Rank::Controller::Rank
     end
 
     begin
-      Garb::Session.login(content.setting_value(:username), content.setting_value(:password))
+      Garb::Session.access_token = content.access_token
       profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == content.setting_value(:web_property_id)}
 
       limit = 1000
