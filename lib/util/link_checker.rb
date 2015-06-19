@@ -17,8 +17,10 @@ class Util::LinkChecker
     end
 
     GpArticle::Content::Doc.where(site_id: Core.site.id).each do |c|
-      c.all_docs.each do |doc|
+      c.docs.each do |doc|
         doc.links.each do |link|
+          info_log "Planning #{link.url} to check in GpArticle::Doc(#{doc.id})"
+
           begin
             uri = URI.parse(link.url)
             url = unless uri.absolute?
@@ -41,6 +43,8 @@ class Util::LinkChecker
   end
 
   def self.check_url(url)
+    info_log "Checking #{url}"
+
     require 'httpclient'
     client = HTTPClient.new
 
