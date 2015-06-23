@@ -105,11 +105,16 @@ module Sys::Model::Base::File
               else
                 raise %Q!"#{file.class}" is not supported.!
               end
+
+      if image_resize.present?
+        image.auto_orient!
+        image.resize_to_fit!(image_resize.to_i)
+        image.write(file.path)
+        self.size = image.to_blob.size
+      end
+
       if image && image.format.in?(%w!GIF JPEG PNG!)
         image.auto_orient!
-        image.resize_to_fit!(image_resize.to_i) if image_resize.present?
-        image.write(file.path) unless skip_upload?
-
         # Overwrite browser declaration
         self.mime_type = case image.format
                          when 'GIF'

@@ -3,6 +3,8 @@ class Cms::Admin::Tool::LinkCheckController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
+    Cms::LinkCheckLog.find_each{|c| c.destroy unless c.link_checkable }
+
     return error_auth unless Core.user.has_auth?(:designer)
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
