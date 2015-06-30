@@ -1,0 +1,8 @@
+<%- if piece -%>
+<%= hidden_field_tag :current_url, params[:u] %>
+<%= hidden_field_tag :current_url_title, params[:t] %>
+<%= hidden_field_tag :piece, piece.id -%>
+<%- else -%>
+<%= hidden_field_tag :current_url, form_answer.answered_url %>
+<%= hidden_field_tag :current_url_title, form_answer.answered_url_title %>
+<%- end -%>

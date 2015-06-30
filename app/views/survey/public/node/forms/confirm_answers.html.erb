@@ -39,8 +39,6 @@
       <%= submit_tag '変更する', name: 'edit_answers' %>
     </div>
 
-    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
-    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
-    <%= hidden_field_tag :piece, params[:piece] if params[:piece] -%>
+    <%= render 'from_piece', piece: @piece, form_answer: @form_answer %>
   <%- end -%>
 </div>

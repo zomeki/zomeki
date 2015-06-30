@@ -11,6 +11,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     return http_error(404) unless @content
 
     @ssl_full_uri = Sys::Setting.use_common_ssl? && @content.use_common_ssl? ? "#{Page.site.full_ssl_uri.sub(/\/\z/, '')}" : ''
+    @piece = Survey::Piece::Form.find_by_id(params[:piece])
   end
 
   def index
@@ -65,7 +66,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
   end
 
   def call_render_public_layout
-    render_public_layout unless params[:piece]
+    render_public_layout unless @piece
   end
 
   def build_answer
@@ -86,24 +87,24 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
             .deliver if @content.auto_reply? && @content.mail_from.present? && @form_answer.reply_to.present?
 
     if Core.request_uri =~ /^\/_ssl\/([0-9]+).*/
-      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish") #?piece=#{params[:piece]}
+      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish") #?piece=#{@piece.try(:id)}
     else
-      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish" #?piece=#{params[:piece]}
+      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish" #?piece=#{@piece.try(:id)}
     end
   end
 
   def render_survey_layout(action = action_name)
-    @piece = Survey::Piece::Form.find_by_id(params[:piece])
     return render action: action unless @piece
 
-    Page.layout = Cms::Layout.new({
-      head:             @piece.try(:head_css) || '',
-      mobile_head:      @piece.try(:head_css) || '',
-      smart_phone_head: @piece.try(:head_css) || '',
+    head_css = @piece.head_css.to_s
+    Page.layout = Cms::Layout.new(
+      head:             head_css,
+      mobile_head:      head_css,
+      smart_phone_head: head_css,
       body:             '[[content]]',
       mobile_body:      '[[content]]',
       smart_phone_body: '[[content]]'
-    })
+    )
     render action: action, layout: 'layouts/public/base'
   end
 end

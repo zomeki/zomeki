@@ -1,7 +1,7 @@
 <div class="surveyForm">
   <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
-  <%= form_for(@form_answer, url: "#{@ssl_full_uri if params[:piece]}#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
+  <%= form_for(@form_answer, url: "#{@ssl_full_uri if @piece}#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
     <%= f.error_messages %>
 
     <%- unless @form_answer.form.public_questions.empty? -%>
@@ -67,20 +67,6 @@
       <%- end -%>
     </div>
 
-    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
-    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
-    <%= hidden_field_tag :piece, params[:piece] if params[:piece] -%>
+    <%= render 'from_piece', piece: @piece, form_answer: @form_answer %>
   <%- end -%>
 </div>
-
-<%- unless Page.mobile? -%>
-<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  $('#current_url').closest('form').submit(function (event) {
-    $('#current_url').val(parent.document.location);
-    $('#current_url_title').val(parent.document.title);
-  });
-});
-<%- end -%>
-<%- end -%>
