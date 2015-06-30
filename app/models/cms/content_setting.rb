@@ -71,6 +71,10 @@ class Cms::ContentSetting < ActiveRecord::Base
       else
         opts.detect{|o| o.last.to_s == value.to_s }.try(:first).to_s
       end
+    elsif config[:form_type] == :select_with_tree
+      ids = YAML.load(value.presence || '[]')
+      root_model = config_options[:root][0].class
+      root_model ? root_model.where(id: ids).map(&:name).join(', ') : nil
     else
       value.presence
     end
