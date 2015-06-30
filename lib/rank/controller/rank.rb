@@ -6,7 +6,7 @@ module Rank::Controller::Rank
   def get_access(content, start_date)
 
     if content.setting_value(:web_property_id).blank?
-      flash[:alert] = "ユーザー・パスワード・トラッキングIDを設定してください。"
+      flash[:alert] = "トラッキングIDを設定してください。"
       return
     end
 
