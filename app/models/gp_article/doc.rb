@@ -805,8 +805,12 @@ class GpArticle::Doc < ActiveRecord::Base
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
     self.qrcode_state = content.qrcode_default_state if self.has_attribute?(:qrcode_state) && self.qrcode_state.nil? && content
     self.event_will_sync ||= content.event_sync_default_will_sync if self.has_attribute?(:event_will_sync) && content
+
     if content
-      if (node = content.public_node)
+      if !content.setting_value(:basic_setting).blank?
+        self.layout_id ||= content.setting_extra_value(:basic_setting, :default_layout_id).to_i
+        self.concept_id ||= content.setting_value(:basic_setting).to_i
+      elsif (node = content.public_node)
         self.layout_id ||= node.layout_id
         self.concept_id ||= node.concept_id
       else

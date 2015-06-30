@@ -117,6 +117,10 @@ module Cms::FormHelper
                                 multiple: true, style: 'height: 150px; width: 250px;'
     when :text_area
       f.text_area(:value, size: '100x10')
+    when :select_with_tree
+      root    = object.config_options[:root] || []
+      configs = object.config_options[:configs] || []
+      f.select_with_tree(:value, root, configs)
     else
       f.text_field(:value, style: 'width: 400px;')
     end

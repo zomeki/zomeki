@@ -6,7 +6,7 @@
     <td><%= @item.config_name %></td>
   </tr>
   <tr>
-    <th>設定値</th>
+    <th><%- if @item.name == 'basic_setting' -%>コンセプト<%- else -%>設定値<%- end -%></th>
     <td>
       <%- if @item.form_type == :multiple_select -%>
         <div style="margin-bottom: 10px;"><%= label_tag 'groups', 'グループ' %> <%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '---- 選択してください ----' %></div>
@@ -145,6 +145,36 @@ $(document).ready(function () {
   });
   $('#visible_category_types input[type="checkbox"]').on('click', function (event) {
     if (event.target.checked) { $('#' + event.target.id.replace('vct_', 'ct_')).attr('checked', 'checked'); }
+  });
+});
+<%- end -%>
+<%- end -%>
+
+<%- if @item.name == 'basic_setting'
+      layouts = Cms::Layout.find(:all, :conditions => {:site_id => Core.site.id}, :order => "concept_id, name")
+      layouts_for_option = layouts.collect{|i| ["#{i.concept.name} : #{i.title}", i.id]}
+    -%>
+<table class="show">
+  <tr>
+    <th>レイアウト</th>
+    <td>
+      <%= select_tag 'default_layout_id', options_for_select(layouts_for_option, @item.default_layout_id), include_blank: true %>
+    </td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_value').on('change', function (event) {
+    var concept_id = parseInt(event.target.value);
+    if (isNaN(concept_id)) {
+      $('#default_layout_id').html('<option value=""></option>');
+    } else {
+      $('#default_layout_id').html('<option value="">更新中...</option>');
+      $.get('<%= layouts_cms_concepts_path(parent: 0, concept_id: 'CONCEPT_ID') %>'.replace('CONCEPT_ID', concept_id), function (data) {
+        $('#default_layout_id').html(data);
+      });
+    }
   });
 });
 <%- end -%>
