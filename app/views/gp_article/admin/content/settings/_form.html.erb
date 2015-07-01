@@ -159,6 +159,7 @@ $(document).ready(function () {
     <th>レイアウト</th>
     <td>
       <%= select_tag 'default_layout_id', options_for_select(layouts_for_option, @item.default_layout_id), include_blank: true %>
+      <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
     </td>
   </tr>
 </table>
