@@ -807,10 +807,9 @@ class GpArticle::Doc < ActiveRecord::Base
     self.event_will_sync ||= content.event_sync_default_will_sync if self.has_attribute?(:event_will_sync) && content
 
     if content
-      if !content.setting_value(:basic_setting).blank?
-        self.layout_id ||= content.setting_extra_value(:basic_setting, :default_layout_id).to_i
-        self.concept_id ||= content.setting_value(:basic_setting).to_i
-      elsif (node = content.public_node)
+      self.layout_id ||= content.setting_extra_value(:basic_setting, :default_layout_id).to_i unless content.setting_extra_value(:basic_setting, :default_layout_id).blank?
+      self.concept_id ||= content.setting_value(:basic_setting).to_i unless content.setting_value(:basic_setting).blank?
+      if (node = content.public_node)
         self.layout_id ||= node.layout_id
         self.concept_id ||= node.concept_id
       else
