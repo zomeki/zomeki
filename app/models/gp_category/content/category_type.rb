@@ -7,7 +7,7 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   default_scope { where(model: 'GpCategory::CategoryType') }
 
-  has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => :sort_no, :dependent => :destroy
+  has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => "#{GpCategory::CategoryType.table_name}.sort_no", :dependent => :destroy
   has_many :templates, :foreign_key => :content_id, :class_name => 'GpCategory::Template', :dependent => :destroy
   has_many :template_modules, :foreign_key => :content_id, :class_name => 'GpCategory::TemplateModule', :dependent => :destroy
 
