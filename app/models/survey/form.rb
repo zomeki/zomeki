@@ -100,7 +100,7 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def state_options
-    options = STATE_OPTIONS
+    options = STATE_OPTIONS.clone
     options.reject!{|o| o.last == 'public' } unless Core.user.has_auth?(:manager)
     options.reject!{|o| o.last == 'approvable' } unless content.approval_related?
     return options
