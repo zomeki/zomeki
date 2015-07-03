@@ -11,7 +11,7 @@ class Cms::Admin::ContentsController < Cms::Controller::Admin::Base
     
     item = Cms::Content.new.readable
     item.page  params[:page], params[:limit]
-    item.order params[:sort], 'sort_no IS NULL, sort_no, name, id'
+    item.order params[:sort], 'name, id'
     @items = item.find(:all)
     _index @items
   end
@@ -46,7 +46,6 @@ class Cms::Admin::ContentsController < Cms::Controller::Admin::Base
     @item = Cms::Content.new({
       :concept_id => Core.concept(:id),
       :state      => 'public',
-      :sort_no    => 10,
     })
   end
 

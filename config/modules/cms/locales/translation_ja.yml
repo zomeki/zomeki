@@ -65,7 +65,6 @@ ja:
         code: "コンテンツID"
         name: "コンテンツ名"
         note: "備考"
-        sort_no: "並び順"
 
       cms/content_setting:
         content_id: "コンテンツ"

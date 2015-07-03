@@ -62,7 +62,7 @@ class Cms::Admin::PiecesController < Cms::Controller::Admin::Base
       concept.parents_tree.each do |c|
         item = Cms::Content.new
         item.and :concept_id, c.id
-        contents += item.find(:all, :order => "sort_no IS NULL, sort_no, name, id")
+        contents += item.find(:all, :order => "name, id")
       end
     end
     
