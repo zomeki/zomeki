@@ -59,7 +59,7 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     forms = Core.mode == 'preview' ? @content.forms : @content.public_forms
     @form = forms.find_by_name(params[:id])
     return http_error(404) unless @form
-    return render(text: '') unless @form.open?
+    return render(text: '') if Core.mode != 'preview' && !@form.open?
 
     Page.current_item = @form
     Page.title = @form.title
