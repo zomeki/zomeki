@@ -36,18 +36,12 @@
     <td><%= @item.sort_no %></td>
   </tr>
   <tr>
-    <th><%= @item.class.human_attribute_name :opened_at %></th>
-    <td><%=l @item.opened_at unless @item.opened_at.nil? %></td>
-  </tr>
-  <tr>
-    <th><%= @item.class.human_attribute_name :closed_at %></th>
-    <td><%=l @item.closed_at unless @item.closed_at.nil? %></td>
-  </tr>
-  <tr>
     <th><%= @item.class.human_attribute_name :confirmation %></th>
     <td><%= @item.class::CONFIRMATION_OPTIONS.detect{|o| o.last == @item.confirmation }.try(:first) %></td>
   </tr>
 </table>
+
+<%= task_view @item %>
 
 <%- if @content.approval_related? -%>
 <p class="form">承認</p>

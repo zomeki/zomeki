@@ -35,18 +35,21 @@
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
   </tr>
   <tr>
-    <th><%= f.label :opened_at %></th>
-    <td><%= f.text_field :opened_at, :value => value_for_datetimepicker(f.object_name, :opened_at),
-                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-  </tr>
-  <tr>
-    <th><%= f.label :closed_at %></th>
-    <td><%= f.text_field :closed_at, :value => value_for_datetimepicker(f.object_name, :closed_at),
-                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-  </tr>
-  <tr>
     <th><%= f.label :confirmation %></th>
     <td><%= f.radio_buttons :confirmation, @item.class::CONFIRMATION_OPTIONS %></td>
+  </tr>
+</table>
+
+<p class="form">公開日時設定</p>
+
+<table class="show">
+  <tr>
+    <th>公開開始日時</th>
+    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+  <tr>
+    <th>公開終了日時</th>
+    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
 </table>
 
