@@ -257,6 +257,7 @@ class Survey::Form < ActiveRecord::Base
     self.state        = STATE_OPTIONS.first.last        if self.has_attribute?(:state) && self.state.nil?
     self.confirmation = CONFIRMATION_OPTIONS.first.last if self.has_attribute?(:confirmation) && self.confirmation.nil?
     self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
+    self.index_link    = INDEX_LINK_OPTIONS.first.last  if self.has_attribute?(:index_link) && self.index_link.nil?
     self.sort_no      = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
   end
 end
