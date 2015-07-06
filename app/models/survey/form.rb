@@ -4,6 +4,7 @@ class Survey::Form < ActiveRecord::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
   include Sys::Model::Rel::EditableGroup
+  include Sys::Model::Rel::Task
 
   include Cms::Model::Auth::Concept
   include Sys::Model::Auth::EditableGroup
@@ -28,8 +29,6 @@ class Survey::Form < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}, :format => {with: /^[-\w]*$/}
   validates :title, :presence => true
-
-  validate :open_period
 
   after_initialize :set_defaults
 
@@ -100,7 +99,7 @@ class Survey::Form < ActiveRecord::Base
   end
 
   def state_options
-    options = STATE_OPTIONS
+    options = STATE_OPTIONS.clone
     options.reject!{|o| o.last == 'public' } unless Core.user.has_auth?(:manager)
     options.reject!{|o| o.last == 'approvable' } unless content.approval_related?
     return options
@@ -198,6 +197,7 @@ class Survey::Form < ActiveRecord::Base
     item.unid          = nil
     item.created_at    = nil
     item.updated_at    = nil
+    item.in_tasks      = nil
 
     item.name  = nil
     item.title = item.title.gsub(/^(【複製】)*/, "【複製】")
@@ -257,11 +257,7 @@ class Survey::Form < ActiveRecord::Base
     self.state        = STATE_OPTIONS.first.last        if self.has_attribute?(:state) && self.state.nil?
     self.confirmation = CONFIRMATION_OPTIONS.first.last if self.has_attribute?(:confirmation) && self.confirmation.nil?
     self.sitemap_state = SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state) && self.sitemap_state.nil?
+    self.index_link    = INDEX_LINK_OPTIONS.first.last  if self.has_attribute?(:index_link) && self.index_link.nil?
     self.sort_no      = 10 if self.has_attribute?(:sort_no) && self.sort_no.nil?
-  end
-
-  def open_period
-    return if opened_at.blank? || closed_at.blank?
-    errors.add(:opened_at, "が#{self.class.human_attribute_name :closed_at}を過ぎています。") if closed_at < opened_at
   end
 end

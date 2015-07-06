@@ -61,6 +61,6 @@ class Survey::Content::Form < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.first.last if setting_value(:approval_relation).nil?
+    in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.last.last if setting_value(:approval_relation).nil?
   end
 end
