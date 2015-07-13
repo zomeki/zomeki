@@ -20,8 +20,8 @@
           <td><%= f.radio_buttons :condition, @item.class::CONDITION_OPTIONS %></td>
         </tr>
         <td><%= GpArticle::Content::Doc.model_name.human %></td>
-        <td>
-          <%= select_tag 'gp_article_ids[]', options_from_collection_for_select(GpArticle::Content::Doc.all, :id, :name, @item.content_ids.split(/,/)), include_blank: false, multiple: true %>
+        <td><%- content_ids = GpArticle::Content::Setting.where(name: 'gp_category_content_category_type_id', value: @piece.content.id).pluck(:content_id) -%>
+          <%= select_tag 'gp_article_ids[]', options_from_collection_for_select(GpArticle::Content::Doc.where(id: content_ids).all, :id, :name, @item.content_ids.split(/,/)), include_blank: false, multiple: true %>
         </td>
         <tr>
           <td>表示カテゴリ</td>
