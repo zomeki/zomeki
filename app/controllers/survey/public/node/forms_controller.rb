@@ -12,8 +12,11 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
     @ssl_full_uri = Sys::Setting.use_common_ssl? && @content.use_common_ssl? ? "#{Page.site.full_ssl_uri.sub(/\/\z/, '')}" : ''
     @piece = Survey::Piece::Form.find_by_id(params[:piece])
+
     @current_url = (params[:u] || params[:current_url]).to_s
+    @current_url = CGI.unescape(@current_url) if @current_url.start_with?('%')
     @current_url_title = (params[:t] || params[:current_url_title]).to_s
+    @current_url_title = CGI.unescape(@current_url_title) if @current_url_title.start_with?('%')
   end
 
   def index
