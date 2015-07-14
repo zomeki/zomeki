@@ -12,6 +12,8 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
 
     @ssl_full_uri = Sys::Setting.use_common_ssl? && @content.use_common_ssl? ? "#{Page.site.full_ssl_uri.sub(/\/\z/, '')}" : ''
     @piece = Survey::Piece::Form.find_by_id(params[:piece])
+    @current_url = (params[:u] || params[:current_url]).to_s
+    @current_url_title = (params[:t] || params[:current_url_title]).to_s
   end
 
   def index
@@ -86,10 +88,11 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
     CommonMailer.survey_auto_reply(form_answer: @form_answer, from: @content.mail_from, to: @form_answer.reply_to)
             .deliver if @content.auto_reply? && @content.mail_from.present? && @form_answer.reply_to.present?
 
+    prms = "?piece=#{@piece.try(:id)}&u=#{CGI.escape @current_url}&t=#{CGI.escape @current_url_title}"
     if Core.request_uri =~ /^\/_ssl\/([0-9]+).*/
-      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish?piece=#{@piece.try(:id)}")
+      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish#{prms}")
     else
-      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish?piece=#{@piece.try(:id)}"
+      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish#{prms}"
     end
   end
 

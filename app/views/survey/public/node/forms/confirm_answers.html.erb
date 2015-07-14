@@ -39,6 +39,7 @@
       <%= submit_tag '変更する', name: 'edit_answers' %>
     </div>
 
-    <%= render 'from_piece', piece: @piece, form_answer: @form_answer %>
+    <%= render 'from_piece', piece: @piece, form_answer: @form_answer,
+                             current_url: @current_url, current_url_title: @current_url_title %>
   <%- end -%>
 </div>
