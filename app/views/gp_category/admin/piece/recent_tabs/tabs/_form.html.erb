@@ -21,7 +21,7 @@
         </tr>
         <td><%= GpArticle::Content::Doc.model_name.human %></td>
         <td><%- content_ids = GpArticle::Content::Setting.where(name: 'gp_category_content_category_type_id', value: @piece.content.id).pluck(:content_id) -%>
-          <%= select_tag 'gp_article_ids[]', options_from_collection_for_select(GpArticle::Content::Doc.where(id: content_ids).all, :id, :name, @item.content_ids.split(/,/)), include_blank: false, multiple: true %>
+          <%= select_tag 'gp_article_ids[]', options_from_collection_for_select(GpArticle::Content::Doc.where(id: content_ids).all, :id, :name, @item.content_ids.blank? ? [] : @item.content_ids.split(/,/)), include_blank: false, multiple: true %>
         </td>
         <tr>
           <td>表示カテゴリ</td>
