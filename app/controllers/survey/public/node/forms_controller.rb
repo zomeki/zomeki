@@ -87,9 +87,9 @@ class Survey::Public::Node::FormsController < Cms::Controller::Public::Base
             .deliver if @content.auto_reply? && @content.mail_from.present? && @form_answer.reply_to.present?
 
     if Core.request_uri =~ /^\/_ssl\/([0-9]+).*/
-      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish") #?piece=#{@piece.try(:id)}
+      redirect_to ::File.join(Page.site.full_ssl_uri, "#{@node.public_uri}#{@form_answer.form.name}/finish?piece=#{@piece.try(:id)}")
     else
-      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish" #?piece=#{@piece.try(:id)}
+      redirect_to "#{@node.public_uri}#{@form_answer.form.name}/finish?piece=#{@piece.try(:id)}"
     end
   end
 
