@@ -4,7 +4,7 @@
   <tr>
     <th><%= GpArticle::Doc.human_attribute_name :title %>・<%= GpArticle::Doc.human_attribute_name :body %></th>
     <th>所属</th>
-    <th>作成者</th>
+    <th>作成/更新者</th>
     <td rowspan="2" class="submitters">
       <%= submit_tag '検索' %>
       <%= submit_tag 'リセット', :name => 'reset_criteria' %>

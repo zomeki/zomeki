@@ -86,7 +86,9 @@ module Cms::Model::Base::Page::Publisher
   def publish_page(content, options = {})
     @published = false
     return false if content.nil?
+    skip_editor_save(true) if defined?(skip_editor_save)
     save(:validate => false) if unid.nil? # path for Article::Unit
+    skip_editor_save(false) if defined?(skip_editor_save)
     return false if unid.nil?
 
     content = content.gsub(%r!zdel_.+?/!i, '')
