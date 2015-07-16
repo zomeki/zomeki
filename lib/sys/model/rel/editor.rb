@@ -10,9 +10,18 @@ module Sys::Model::Rel::Editor
     return nil if editors.empty?
     editors.first
   end
-  
+
+  def skip_editor_save(skip=true)
+    @skip_save = skip
+  end
+
+  def skip_editor_save?
+    @skip_save
+  end
+
   def save_editor
     return false unless unid
+    return false if skip_editor_save?
 
     return false if Core.user_group.blank? || Core.user.blank?
 

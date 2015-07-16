@@ -135,6 +135,34 @@ class GpArticle::Doc < ActiveRecord::Base
             self.joins(:creator => inners)
           end
 
+    if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank?
+      editors = Sys::Editor.arel_table
+      rel = rel.joins("LEFT OUTER JOIN #{Sys::Editor.table_name} ON #{Sys::Editor.table_name}.parent_unid = #{self.table_name}.unid").group(docs[:id])
+    else
+      sql = ''
+      editors = Sys::Editor.arel_table
+      ids = Sys::Editor.select(editors[:id].maximum).group(:parent_unid)
+
+      if criteria[:group].present? || criteria[:group_id].present?
+        edit_groups = Sys::Group.arel_table.alias("edit_group")
+        sql1 = "LEFT OUTER JOIN #{Sys::Group.table_name} as edit_group ON edit_group.id = editor.group_id"
+      end
+      if criteria[:user].present?
+        edit_users = Sys::User.arel_table.alias("edit_user")
+        sql2 = "LEFT OUTER JOIN #{Sys::User.table_name} as edit_user ON edit_user.id = editor.user_id"
+      end
+      
+      sql  = "select * "
+      sql += " from #{Sys::Editor.table_name} where id in (#{ids.map{|i| i.max_id }.join(",")})"
+      
+      sql = if sql1.present? && sql2.present?
+          "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1}  #{sql2}"
+        else
+          "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1.presence || sql2}"
+        end
+      rel = rel.joins(sql).group(docs[:id])
+    end
+
     rel = rel.where(docs[:content_id].eq(content.id)) if content.kind_of?(GpArticle::Content::Doc)
 
     rel = rel.where(docs[:id].eq(criteria[:id])) if criteria[:id].present?
@@ -143,16 +171,25 @@ class GpArticle::Doc < ActiveRecord::Base
     rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
                     .or(docs[:body].matches("%#{criteria[:free_word]}%"))
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
-    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+
+    if criteria[:group].present?
+      rel = rel.where(groups.grouping(groups[:name].matches("%#{criteria[:group]}%").and(edit_groups[:id].eq(nil))).or(edit_groups[:name].matches("%#{criteria[:group]}%")))
+    end
+
     if criteria[:group_id].present?
       rel = rel.where(if criteria[:group_id].kind_of?(Array)
-                        groups[:id].in(criteria[:group_id])
+                        groups.grouping(groups[:id].in(criteria[:group_id]).and(edit_groups[:id].eq(nil))).or(edit_groups[:id].in(criteria[:group_id]))
                       else
-                        groups[:id].eq(criteria[:group_id])
+                        groups.grouping(groups[:id].eq(criteria[:group_id]).and(edit_groups[:id].eq(nil))).or(edit_groups[:id].eq(criteria[:group_id]))
                       end)
     end
-    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
-                    .or(users[:name_en].matches("%#{criteria[:user]}%"))) if criteria[:user].present?
+
+    if criteria[:user].present?
+      rel = rel.where(users.grouping(users[:name].matches("%#{criteria[:user]}%").and(edit_users[:id].eq(nil)))
+                      .or(users[:name_en].matches("%#{criteria[:user]}%").and(edit_users[:id].eq(nil)))
+                        .or(edit_users[:name].matches("%#{criteria[:user]}%"))
+                          .or(edit_users[:name_en].matches("%#{criteria[:user]}%")))
+    end
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
@@ -313,6 +350,7 @@ class GpArticle::Doc < ActiveRecord::Base
   def close
     @save_mode = :close
     self.state = 'closed' if self.state_public?
+    skip_editor_save(true)
     return false unless save(:validate => false)
     close_page
     return true
@@ -334,6 +372,8 @@ class GpArticle::Doc < ActiveRecord::Base
   def publish(content)
     @save_mode = :publish
     self.state = 'public' unless self.state_public?
+
+    skip_editor_save(true)
     return false unless save(:validate => false)
     publish_page(content, path: public_path, uri: public_uri)
     publish_files
