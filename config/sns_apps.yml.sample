@@ -3,19 +3,19 @@ facebook:
   default:
     id: App ID
     secret: App Secret
-    scope: manage_pages,publish_actions
+    scope: publish_actions,manage_pages,publish_pages
   zomeki.example.com:
     id: App ID 1
     secret: App Secret 1
-    scope: manage_pages,publish_actions
+    scope: publish_actions,manage_pages,publish_pages
   zomeki.example.net:
     id: App ID 2
     secret: App Secret 2
-    scope: manage_pages,publish_actions
+    scope: publish_actions,manage_pages,publish_pages
   zomeki.example.org:
     id: App ID 3
     secret: App Secret 3
-    scope: manage_pages,publish_actions
+    scope: publish_actions,manage_pages,publish_pages
 twitter:
   default:
     key: Consumer key
