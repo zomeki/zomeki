@@ -16,13 +16,13 @@
     <td>
       <table class="noDesign">
         <tr>
-          <td><%= @item.locale :condition %></td>
-          <td><%= @item.condition_name %></td>
+          <td><%= GpArticle::Content::Doc.model_name.human %></td>
+          <td><%= @item.content_names %></td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td><%= GpArticle::Content::Doc.model_name.human %></td>
-          <td><%= @item.content_names %></td>
+          <td><%= @item.locale :condition %></td>
+          <td><%= @item.condition_name %></td>
           <td>&nbsp;</td>
         </tr>
         <%- @item.categories_with_layer.each do |category_with_layer| -%>
