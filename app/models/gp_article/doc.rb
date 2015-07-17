@@ -173,20 +173,20 @@ class GpArticle::Doc < ActiveRecord::Base
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
 
     if criteria[:group].present?
-      rel = rel.where(groups.grouping(groups[:name].matches("%#{criteria[:group]}%").and(edit_groups[:id].eq(nil))).or(edit_groups[:name].matches("%#{criteria[:group]}%")))
+      rel = rel.where(groups[:name].matches("%#{criteria[:group]}%").or(edit_groups[:name].matches("%#{criteria[:group]}%")))
     end
 
     if criteria[:group_id].present?
       rel = rel.where(if criteria[:group_id].kind_of?(Array)
-                        groups.grouping(groups[:id].in(criteria[:group_id]).and(edit_groups[:id].eq(nil))).or(edit_groups[:id].in(criteria[:group_id]))
+                        groups[:id].in(criteria[:group_id]).or(edit_groups[:id].in(criteria[:group_id]))
                       else
-                        groups.grouping(groups[:id].eq(criteria[:group_id]).and(edit_groups[:id].eq(nil))).or(edit_groups[:id].eq(criteria[:group_id]))
+                        groups[:id].eq(criteria[:group_id]).or(edit_groups[:id].eq(criteria[:group_id]))
                       end)
     end
 
     if criteria[:user].present?
-      rel = rel.where(users.grouping(users[:name].matches("%#{criteria[:user]}%").and(edit_users[:id].eq(nil)))
-                      .or(users[:name_en].matches("%#{criteria[:user]}%").and(edit_users[:id].eq(nil)))
+      rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
+                      .or(users[:name_en].matches("%#{criteria[:user]}%"))
                         .or(edit_users[:name].matches("%#{criteria[:user]}%"))
                           .or(edit_users[:name_en].matches("%#{criteria[:user]}%")))
     end
