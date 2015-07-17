@@ -61,4 +61,100 @@
   </tr>
 </table>
 
+<script type="text/javascript">
+//<![CDATA[
+
+var isGecko = false;
+
+/**
+ * Get TextRange
+ */
+function getTextRange (element) {
+  var value;
+
+  if (document.selection) {
+    if (true) {
+      value = parent.document.selection.createRange().text;
+    } else {
+      value = document.selection.createRange().text;
+    }
+  } else if (isGecko) {
+    var start = element.selectionStart;
+    var end = element.selectionEnd;
+    value = element.value.substring(start, end);
+  } else {
+    value = '';
+  }
+  return value;
+}
+
+/**
+ * Set TextRange
+ */
+function setTextRange (element, value) {
+  if (document.selection) {
+    if (true) {
+      element.focus();
+      parent.document.selection.createRange().text = value;
+    } else {
+      element.focus();
+      document.selection.createRange().text = value;
+    }
+  } else if (isGecko) {
+    var start = element.selectionStart;
+    var end   = element.selectionEnd;
+    var len   = element.textLength;
+    var str   = element.value.substring(start, end);
+    var head  = element.value.substring(0, start);
+    var foot  = element.value.substring(end, len);
+    element.value = head + value + foot;
+  } else {
+    element.value += value;
+  }
+}
+
+/**
+ * set insert text
+ */
+
+var focusEditorId = null;
+
+$(document).ready(function () {
+  CKEDITOR.replace( 'item_outline' , {}).on( 'focus', function( e ) {
+    focusEditorId = 'item_outline';
+  } );
+  CKEDITOR.replace( 'item_business_outline' , {}).on( 'focus', function( e ) {
+    focusEditorId = 'item_business_outline';
+  } );
+  CKEDITOR.replace( 'item_contact_information' , {}).on( 'focus', function( e ) {
+    focusEditorId = 'item_contact_information';
+  } );
+});
+
+function setText(element, text ) {
+  if (focusEditorId == null) {
+    return false;
+  }
+  element = document.getElementById(focusEditorId);
+  parent.CKEDITOR.instances[element.id].insertText(text);
+  return false;
+}
+
+//]]>
+</script>
+
+<table class="show">
+  <tr>
+    <th>ファイル</th>
+    <td>
+      <a href="#" onclick="$(this).toggleOpen('#inlineFiles'); return false;">開く▼</a>
+    </td>
+  </tr>
+</table>
+
+<div style="display: none;" class="inlineForm" id="inlineFiles">
+  <iframe src="<%= cms_inline_data_files_path(0) %>" style="width: 100%; height: 340px;" frameborder="0"></iframe>
+</div>
+
+
 <%= creator_form f %>

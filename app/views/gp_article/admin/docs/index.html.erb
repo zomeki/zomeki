@@ -19,7 +19,7 @@
     <td style="text-align: left;"><%= item.name %></td>
     <%- if item.last_editor -%>
     <td><%= item.last_editor.try(:group).try(:name) %></td>
-    <td><%= item.last_editor.try(:user).try(:name) %>:::&nbsp;&nbsp;<%= item.last_editor.try(:id) %></td>
+    <td><%= item.last_editor.try(:user).try(:name) %></td>
     <%- else -%>
     <td><%= item.creator.group.try(:name) %></td>
     <td><%= item.creator.user.try(:name) %></td>
