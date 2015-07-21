@@ -1,0 +1,46 @@
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $.ajax({
+    url: '/_api/gp_article/piece_archives',
+    type: 'GET',
+    data: {'piece_id': <%= @piece.id %>, 'version': '20150701'},
+    success: function (data) {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      var num_docs = data['num_docs'];
+      if (num_docs && num_docs.length > 0) {
+        var u = $('<ul>');
+        $(num_docs).each(function (date, item) {
+          var l = $('<li>');
+          var a = $('<a>', {'href': item['url']});
+          a.append(item['date']);
+          l.append(a);
+          if (item['count']) {
+            l.append(" " + item['count']);
+          }
+          var values = item['values'];
+          if (values && values.length > 0) {
+            var u2 = $('<ul>');
+            $(values).each(function (k, v) {
+              var l2 = $('<li>');
+              var a = $('<a>', {'href': v['url']});
+              a.append(v['date']);
+              l2.append(a);
+              if (v['count']) {
+                l2.append(' '+v['count']);
+              }
+              u2.append(l2);
+            });
+            l.append(u2);
+          }
+          u.append(l);
+          wrapper.append(u);
+        });
+      }
+    },
+    error: function (data)  {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      wrapper.text('現在表示できません。');
+    }
+  });
+});
+<%- end -%>

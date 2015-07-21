@@ -14,5 +14,9 @@
     <th><%= @item.locale :order %></th>
     <td><%= f.array_select 'in_settings[order]', @item.class::ORDER_OPTIONS %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= f.array_radio_buttons 'in_settings[impl]', @item.class::IMPL_OPTIONS %></td>
+  </tr>
 </table>
 <%- end -%>
