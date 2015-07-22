@@ -1,26 +1,5 @@
-<%- return if @num_docs.empty? -%>
-<ul>
-<%- case @piece.term
-    when 'year_month' -%>
-  <%- @num_docs.each do |key, value| -%>
-  <li><%= link_to "#{key}年", "#{@node.public_uri}#{key}/" %>
-    <ul>
-      <%- value.each do |k, v| -%>
-        <li><%= link_to "#{k}月", "#{@node.public_uri}#{key}/#{k}/" %>
-        <%= "(#{v})" if @piece.num_docs_visible? %></li>
-      <%- end -%>
-    </ul>
-  </li>
-  <%- end -%>
-<%- when 'year' -%>
-  <%- @num_docs.each do |key, value| -%>
-  <li><%= link_to "#{key}年", "#{@node.public_uri}#{key}/" %>
-    <%= "(#{value})" if @piece.num_docs_visible? %></li>
-  <%- end -%>
+<%- if @piece.impl.last == 'dynamic' -%>
+  <%= render 'dynamic' %>
 <%- else -%>
-  <%- @num_docs.each do |key, value| year, month = key.split('-') -%>
-  <li><%= link_to "#{year}年#{month}月", "#{@node.public_uri}#{year}/#{month}/" %>
-    <%= "(#{value})" if @piece.num_docs_visible? %></li>
-  <%- end -%>
+  <%= render 'static' %>
 <%- end -%>
-</ul>

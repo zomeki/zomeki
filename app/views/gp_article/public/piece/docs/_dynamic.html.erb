@@ -1,0 +1,34 @@
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $.ajax({
+    url: '/_api/gp_article/piece_docs',
+    type: 'GET',
+    data: {'piece_id': <%= @piece.id %>, 'version': '20150701'},
+    success: function (data) {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      var more = data['more'];
+      var docs = data['docs'];
+      if (docs && docs.length > 0) {
+        var u = $('<ul>', {'class': 'docs'});
+        $(docs).each(function (index, item) {
+          var l = $('<li>');
+          l.append(item);
+          u.append(l);
+        });
+        wrapper.append(u);
+      }
+      if (more['body']) {
+        var lt = $('<div>', {'class': 'more'});
+        var a = $('<a>', {'href': more['url']});
+        a.append(more['body']);
+        lt.append(a);
+        wrapper.append(lt);
+      }
+    },
+    error: function (data)  {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      wrapper.text('現在表示できません。');
+    }
+  });
+});
+<%- end -%>
