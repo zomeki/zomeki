@@ -29,6 +29,10 @@
     <th><%= @item.locale :more_link_url %></th>
     <td><%= f.array_text_field 'in_settings[more_link_url]', :style => 'width: 500px;' %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= f.array_radio_buttons 'in_settings[impl]', @item.class::IMPL_OPTIONS %></td>
+  </tr>
 </table>
 <%- end -%>
 

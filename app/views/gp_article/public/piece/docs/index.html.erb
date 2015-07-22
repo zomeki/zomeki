@@ -1,12 +1,5 @@
-<%- unless @docs.empty? -%>
-<ul class="docs">
-  <%- @docs.each do |doc| -%>
-  <li><%= render 'gp_article/public/piece/shared/doc', doc: doc, doc_style: @piece.doc_style, date_style: @piece.date_style %></li>
-  <%- end -%>
-</ul>
-<%- if @piece.more_link_body.present? && @piece.more_link_url.present? -%>
-<div class="more">
-  <%= link_to @piece.more_link_body, @piece.more_link_url %>
-</div>
-<%- end -%>
+<%- if @piece.impl.last == 'dynamic' -%>
+  <%= render 'dynamic' %>
+<%- else -%>
+  <%= render 'static' %>
 <%- end -%>

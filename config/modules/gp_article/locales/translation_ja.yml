@@ -86,6 +86,7 @@ ja:
         date_style: 日付形式
         more_link_body: 一覧リンク文字
         more_link_url: 一覧リンクURL
+        impl: 実装
       gp_article/piece/monthly_archive:
         num_docs_visibility: 記事数表示
       gp_article/piece/archive:

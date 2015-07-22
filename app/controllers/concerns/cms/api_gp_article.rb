@@ -7,6 +7,7 @@ module Cms::ApiGpArticle
   def gp_article(path:, version:)
     case path.shift
     when 'piece_archives'; gp_article_piece_archives(path: path, version: version)
+    when 'piece_docs'; gp_article_piece_docs(path: path, version: version)
     else render_404
     end
   end
@@ -69,6 +70,32 @@ module Cms::ApiGpArticle
                                         end
                         end
 
+    render json: result
+  end
+  
+  def gp_article_piece_docs(path:, version:)
+    piece = GpArticle::Piece::Doc.where(id: params[:piece_id]).first
+    return render(json: {}) unless piece
+
+    result = {}
+
+    docs = piece.content.public_docs.limit(piece.docs_number)
+    docs = case piece.docs_order
+                    when 'published_at_desc'
+                      docs.order('display_published_at DESC, published_at DESC')
+                    when 'published_at_asc'
+                      docs.order('display_published_at ASC, published_at ASC')
+                    when 'random'
+                      docs.order('RAND()')
+                    else
+                      docs
+                    end
+    result[:docs] = docs.map do |doc|
+                      ApplicationController.helpers.doc_replace(doc, piece.doc_style, piece.date_style)
+                    end
+    result[:more] = piece.more_link_body.present? && piece.more_link_url.present? ? {body: piece.more_link_body, url: piece.more_link_url} : {}
+
+    
     render json: result
   end
 

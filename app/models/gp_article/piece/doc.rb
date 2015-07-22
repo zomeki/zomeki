@@ -1,6 +1,7 @@
 # encoding: utf-8
 class GpArticle::Piece::Doc < Cms::Piece
   DOCS_ORDER_OPTIONS = [['公開日（降順）', 'published_at_desc'], ['公開日（昇順）', 'published_at_asc'], ['ランダム', 'random']]
+  IMPL_OPTIONS = [['動的', 'dynamic'], ['静的', 'static']]
 
   default_scope where(model: 'GpArticle::Doc')
 
@@ -38,6 +39,14 @@ class GpArticle::Piece::Doc < Cms::Piece
     setting_value(:more_link_url).to_s
   end
 
+  def impl
+    IMPL_OPTIONS.detect{|io| io.last == (in_settings[:impl] || setting_value(:impl)) }
+  end
+
+  def impl_text
+    impl.try(:first).to_s
+  end
+
   private
 
   def set_default_settings
@@ -45,6 +54,7 @@ class GpArticle::Piece::Doc < Cms::Piece
 
     settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
     settings['docs_order'] = DOCS_ORDER_OPTIONS.first.last if setting_value(:docs_order).nil?
+    settings['impl'] = IMPL_OPTIONS.first.last if setting_value(:impl).blank?
 
     self.in_settings = settings
   end
