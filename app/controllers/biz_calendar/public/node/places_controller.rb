@@ -160,7 +160,8 @@ class BizCalendar::Public::Node::PlacesController < BizCalendar::Public::Node::B
 #
 #
       if h = place.next_holiday
-        @next_holiday[place.id] = h
+        format = BizCalendar::BussinessHoliday.new.localize_wday(@piece.date_style, h.wday)
+        @next_holiday[place.id] = h.strftime(format)
       end
     end
 
