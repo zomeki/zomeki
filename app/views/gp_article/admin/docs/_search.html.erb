@@ -17,9 +17,9 @@
           groups = Sys::Group.joins(:site_belongings).where(parent_id: 1).where(belongings[:site_id].eq(Core.site.id))
           options = groups.inject([]){|r, c| r.concat(c.descendants_for_option) }
         -%>
-        <%= select_tag 'criteria[group_id]',
-                       options_for_select(options, params[:criteria].try('[]', :group_id)), include_blank: true %></td>
-    <td><%= text_field_tag 'criteria[user]', params[:criteria].try('[]', :user), :style => 'width: 150px;' %></td>
+        <%= select_tag 'criteria[editor_group_id]',
+                       options_for_select(options, params[:criteria].try('[]', :editor_group_id)), include_blank: true %></td>
+    <td><%= text_field_tag 'criteria[editor_user]', params[:criteria].try('[]', :editor_user), :style => 'width: 150px;' %></td>
   </tr>
 </table>
 <%- end -%>

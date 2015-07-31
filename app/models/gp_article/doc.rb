@@ -117,17 +117,18 @@ class GpArticle::Doc < ActiveRecord::Base
 
     creators = Sys::Creator.arel_table
 
-    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank?
+    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
+               criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
             self.joins(:creator)
           else
             inners = []
 
-            if criteria[:group].present? || criteria[:group_id].present?
+            if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
               groups = Sys::Group.arel_table
               inners << :group
             end
 
-            if criteria[:user].present?
+            if criteria[:user].present? || criteria[:editor_user].present?
               users = Sys::User.arel_table
               inners << :user
             end
@@ -135,7 +136,8 @@ class GpArticle::Doc < ActiveRecord::Base
             self.joins(:creator => inners)
           end
 
-    if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank?
+    if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
+       criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
       editors = Sys::Editor.arel_table
       rel = rel.joins("LEFT OUTER JOIN #{Sys::Editor.table_name} ON #{Sys::Editor.table_name}.parent_unid = #{self.table_name}.unid").group(docs[:id])
     else
@@ -143,11 +145,11 @@ class GpArticle::Doc < ActiveRecord::Base
       editors = Sys::Editor.arel_table
       ids = Sys::Editor.select(editors[:id].maximum).group(:parent_unid)
 
-      if criteria[:group].present? || criteria[:group_id].present?
+      if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
         edit_groups = Sys::Group.arel_table.alias("edit_group")
         sql1 = "LEFT OUTER JOIN #{Sys::Group.table_name} as edit_group ON edit_group.id = editor.group_id"
       end
-      if criteria[:user].present?
+      if criteria[:user].present? || criteria[:editor_user].present?
         edit_users = Sys::User.arel_table.alias("edit_user")
         sql2 = "LEFT OUTER JOIN #{Sys::User.table_name} as edit_user ON edit_user.id = editor.user_id"
       end
@@ -173,22 +175,36 @@ class GpArticle::Doc < ActiveRecord::Base
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
 
     if criteria[:group].present?
-      rel = rel.where(groups[:name].matches("%#{criteria[:group]}%").or(edit_groups[:name].matches("%#{criteria[:group]}%")))
+      rel = rel.where(groups[:name].matches("%#{criteria[:group]}%"))
+    end
+    if criteria[:editor_group].present?
+      rel = rel.where(groups[:name].matches("%#{criteria[:editor_group]}%").or(edit_groups[:name].matches("%#{criteria[:editor_group]}%")))
     end
 
     if criteria[:group_id].present?
       rel = rel.where(if criteria[:group_id].kind_of?(Array)
-                        groups[:id].in(criteria[:group_id]).or(edit_groups[:id].in(criteria[:group_id]))
+                        groups[:id].in(criteria[:group_id])
                       else
-                        groups[:id].eq(criteria[:group_id]).or(edit_groups[:id].eq(criteria[:group_id]))
+                        groups[:id].eq(criteria[:group_id])
+                      end)
+    end
+    if criteria[:editor_group_id].present?
+      rel = rel.where(if criteria[:editor_group_id].kind_of?(Array)
+                        groups[:id].in(criteria[:group_id]).or(edit_groups[:id].in(criteria[:editor_group_id]))
+                      else
+                        groups[:id].eq(criteria[:group_id]).or(edit_groups[:id].eq(criteria[:editor_group_id]))
                       end)
     end
 
     if criteria[:user].present?
       rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
-                      .or(users[:name_en].matches("%#{criteria[:user]}%"))
-                        .or(edit_users[:name].matches("%#{criteria[:user]}%"))
-                          .or(edit_users[:name_en].matches("%#{criteria[:user]}%")))
+                      .or(users[:name_en].matches("%#{criteria[:user]}%")))
+    end
+    if criteria[:editor_user].present?
+      rel = rel.where(users[:name].matches("%#{criteria[:editor_user]}%")
+                      .or(users[:name_en].matches("%#{criteria[:editor_user]}%"))
+                        .or(edit_users[:name].matches("%#{criteria[:editor_user]}%"))
+                          .or(edit_users[:name_en].matches("%#{criteria[:editor_user]}%")))
     end
 
     if criteria[:touched_user_id].present?
