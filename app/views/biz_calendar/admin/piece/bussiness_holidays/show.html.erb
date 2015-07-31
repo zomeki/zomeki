@@ -15,6 +15,10 @@
     <td><%= @item.class::PLACE_LINK_OPTIONS.detect{|o| o.last == @item.setting_value(:place_link) }.try(:first) %></td>
   </tr>
   <tr>
+    <th><%= @item.locale :holiday_type_state %></th>
+    <td><%= @item.class::HOLIDAY_TYPE_STATE_OPTIONS.detect{|o| o.last == @item.setting_value(:holiday_type_state) }.try(:first) %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale :date_style %></th>
     <td><%= @item.setting_value(:date_style) %></td>
   </tr>

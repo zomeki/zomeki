@@ -63,6 +63,7 @@ ja:
         target_type: 業務時間表示対象
         page_filter: ページ絞り込み
         place_link: 拠点ページリンク
+        holiday_type_state: 休日種別表示
         date_style: 日付形式
       biz_calendar/piece/calendar:
         place_id: 拠点
