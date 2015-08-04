@@ -21,8 +21,12 @@ class Sys::Lib::Ldap
     self.base = params[:base]
     
     return nil if host.blank? || port.blank? || base.blank?
-    
-    self.connection = self.class.connect(params)
+
+    begin
+      self.connection = self.class.connect(params)
+    rescue => e
+      warn_log e.message
+    end
   end
   
   ## Connect.
