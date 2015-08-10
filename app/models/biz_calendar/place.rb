@@ -68,6 +68,20 @@ class BizCalendar::Place < ActiveRecord::Base
       elsif !h.repeat_type.blank? && h.end_type == 2
         next if !h.end_date.blank? && h.end_date < sdate
       end
+      
+      if !h.holiday_start_date.blank? && !h.holiday_end_date.blank?
+        
+        if h.holiday_start_date == h.holiday_end_date
+          next_holiday = h.holiday_start_date if next_holiday.blank? || next_holiday > h.holiday_start_date
+        else
+          d = h.holiday_start_date
+          while(d <= h.holiday_end_date) do
+            next_holiday = d if sdate < d && (next_holiday.blank? || next_holiday > d)
+            d = d + 1
+          end
+        end
+        next
+      end
 
       h.get_repeat_dates(sdate).each do |d|
         next if d < sdate
