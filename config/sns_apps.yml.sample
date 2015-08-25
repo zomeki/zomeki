@@ -1,0 +1,31 @@
+---
+facebook:
+  default:
+    id: App ID
+    secret: App Secret
+    scope: publish_actions,manage_pages,publish_pages
+  zomeki.example.com:
+    id: App ID 1
+    secret: App Secret 1
+    scope: publish_actions,manage_pages,publish_pages
+  zomeki.example.net:
+    id: App ID 2
+    secret: App Secret 2
+    scope: publish_actions,manage_pages,publish_pages
+  zomeki.example.org:
+    id: App ID 3
+    secret: App Secret 3
+    scope: publish_actions,manage_pages,publish_pages
+twitter:
+  default:
+    key: Consumer key
+    secret: Consumer secret
+  zomeki.example.com:
+    key: Consumer key 1
+    secret: Consumer secret 1
+  zomeki.example.net:
+    key: Consumer key 2
+    secret: Consumer secret 2
+  zomeki.example.org:
+    key: Consumer key 3
+    secret: Consumer secret 3

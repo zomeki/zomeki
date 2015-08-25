@@ -1,135 +1,133 @@
 # encoding: utf-8
-
 class Tool::Convert
+  SITE_BASE_DIR = "#{Rails.application.root.to_s}/wget_sites/"
 
-  SITE_BASE_DIR = "#{Rails.application.root.to_s}/wget_sites"
-
-  def self.download_site(url)
-    system "wget -rqNE -P #{SITE_BASE_DIR} #{url}" if url
+  def self.download_site(conf)
+    return if conf.site_url.blank?
+    com = "wget -rqNE --restrict-file-names=nocontrol -P #{SITE_BASE_DIR} #{conf.site_url}"
+    com << " -I #{conf.include_dir}" if conf.include_dir.present?
+    com << " -l #{conf.recursive_level}" if conf.recursive_level
+    system com
   end
 
   def self.all_site_urls
-    items = []
-    if ::FileTest.directory?(SITE_BASE_DIR)
-      Dir::entries(SITE_BASE_DIR).sort.each do |name|
-        items << name unless name =~ /^\.+/ || ::FileTest.file?(::File.join(SITE_BASE_DIR, name))
-      end
-    end
-    items
+    child_dirs(SITE_BASE_DIR).map{|dir| dir.sub(SITE_BASE_DIR, '')}.select(&:present?)
   end
 
-  # params: {
-  #   site_url: 
-  #   content_id: 
-  # }
-  def self.import_site(params={}, convert_setting)
-    return false unless params[:site_url] && params[:content_id] && convert_setting
-
-    root = "#{SITE_BASE_DIR}/#{params[:site_url]}"
-    host = params[:site_url]
-
-    opts = { 
-      html_options: {
-        ignore_dir_list: [],
-      },
-      parse_xpaths: {
-        title_xpath: Tool::Convert::Common.convert_to_xpath(convert_setting.title_tag),
-        body_xpath: Tool::Convert::Common.convert_to_xpath(convert_setting.body_tag)
-      },
-      db_options: {
-        content_id: params[:content_id],
-        creator: {group_id: 1, user_id: 1}
-      }
-    }
-
-    i = 0
-    htmlfiles(root, host, opts) do |file_path, uri_path, options|
-      page_info = Tool::Convert::PageParseInfo.new(host, file_path, uri_path, opts[:parse_xpaths])
-      page_info.parse
-
-      if page_info.is_kiji_page?
-        processor = Tool::Convert::NormalKijiDbProcessor.new(page_info, opts[:db_options])
-        processor.process
-
-        puts "#{i + 1} #{page_info.title}\t#{processor.target_name}"
-        i += 1
-      else
-        puts "parse:パース失敗(記事ページではない):#{file_path}"
-      end
-
-    end
-
-    return true
-  end
-
-  def self._htmlfiles(path, host, html_options, &block)
-    Dir.glob("#{path}/*.html").each do |file|
-      file_path = File.expand_path(file)
-      uri_path = (Pathname(host) + file).to_s
-      block.call file_path, uri_path, html_options
-    end
-
-    Dir.glob("#{path}/*/").each do |dir|
-      next if html_options[:ignore_dir_list].include?(dir) || html_options[:ignore_dir_list].include?(dir.sub(/\/$/, ""))
-      _htmlfiles(dir.sub(/\/$/, ""), host, html_options, &block)
-    end
-  end
-
-  ### 
-  # params 
-  #   root:
-  #   host:
-  #   html_options: {
-  #     # ignore_list: array, the directory list to ignore process
-  #     # default: []
-  #     # eg: ["./dira", "./dirb/", ...]
-  #     ignore_dir_list: [],
-  #   }
-  def self.htmlfiles(root, host, html_options={}, &block)
-    if !File.exist?(root)
-      puts "error parse:ルートフォルダが見つからない"
-    end
-
-    _html_options = { ignore_dir_list: [] }.merge html_options
-
-    Dir.chdir(root) {
-      _htmlfiles(".", host, _html_options, &block)
-    }
-  end
-
-  def self.process_link
-    i = 0
-    Tool::ConvertDoc.find(:all).each do |cdoc|
-      doc = GpArticle::Doc.find(:first, :conditions => {:name => cdoc.name})
-      if !doc
-        puts "doc検索失敗"
+  def self.child_dirs(dir)
+    return [] if !::File.exist?(dir)
+    dirs = [dir]
+    Dir::entries(dir).sort.each do |name|
+      unless name.valid_encoding?
+        dump "#{name} :: directory name encode error.."
         next
       end
+      next if name =~ /^\.+/ || ::FileTest.file?(File.join(dir, name))
+      dirs += child_dirs(File.join(dir, name))
+    end
+    dirs
+  end
 
-      # TODO dairg 設定できるように
-      doc.ignore_accessibility_check = true
-      puts "#{i + 1} #{doc.title}\t#{doc.name}"
-    
-      links = Tool::Convert::LinkProcessor.sublink(cdoc.body, cdoc, doc.content.public_node.public_uri)
-      doc.body = links[:body]
-      links[:upload].each do |pfile|
-        file = Tool::Convert::LinkProcessor.upload_file(doc, pfile, "#{SITE_BASE_DIR}/#{pfile[:link_uri_path]}")
-        doc.files.push(file) if file
+  def self._htmlfiles(path, site_url, count, options, &block)
+    Dir.glob("#{path}/*.html").sort.each do |filename|
+      next if options[:only_filenames].present? && !options[:only_filenames].include?(::File.basename(filename))
+      file_path = File.expand_path(filename)
+      uri_path = (Pathname(site_url) + filename).to_s
+      count += 1
+      block.call file_path, uri_path, count
+    end
+
+    if options[:include_child_dir]
+      Dir.glob("#{path}/*/").each do |dir|
+        next if options[:ignore_dirnames].include?(dir) || options[:ignore_dirnames].include?(dir.sub(/\/$/, ""))
+        _htmlfiles(dir.sub(/\/$/, ""), site_url, count, options, &block)
       end
-      
-      doc.publish_files if doc.files != []
-      if !doc.save
-        puts "doc save失敗"
-        p doc.errors.full_messages
-      end
-      
-      #50回に１回ガベレージコレクタ
-      if ((i + 1) % 50) == 0
-        puts "GC.start"
-        GC.start
-      end
-      i += 1
     end
   end
 
+  def self.htmlfiles(site_url, options={}, &block)
+    root_dir = "#{SITE_BASE_DIR}#{site_url}"
+    if !File.exist?(root_dir)
+      dump "ルートフォルダが見つからない"
+    end
+
+    options[:ignore_dirnames] ||= []
+    options[:include_child_dir] ||= true
+    options[:only_filenames] ||= []
+    Dir.chdir(root_dir) {
+      _htmlfiles(".", site_url, 0, options, &block)
+    }
+  end
+
+  def self.import_site(conf)
+    if conf.site_filename.present?
+      conf.total_num = 1
+      conf.save
+    else
+      conf.total_num = `find #{SITE_BASE_DIR}#{conf.site_url} -type f | wc -l`.chomp
+      conf.save
+    end
+
+    options = {}
+    options[:only_filenames] = [conf.site_filename] if conf.site_filename.present?
+
+    dump "書き込み処理開始: #{conf.total_num}件"
+    htmlfiles(conf.site_url, options) do |file_path, uri_path, i|
+      dump "[#{i}] #{uri_path}"
+      page = Tool::Convert::PageParser.new.parse(file_path, uri_path, conf.convert_setting)
+
+      if page.kiji_page?
+        dump "#{page.title},#{page.updated_at},#{page.group_code}"
+        db = Tool::Convert::DbProcessor.new.process(page, conf)
+        case db.process_type
+        when 'created'
+          conf.created_num += 1
+        when 'updated'
+          conf.updated_num += 1
+        when 'nonupdated'
+          conf.nonupdated_num += 1
+        end
+        dump "#{db.process_type_label},#{db.cdoc.class.name},#{db.cdoc.id},#{db.cdoc.docable_type},#{db.cdoc.docable_id}"
+      else
+        conf.skipped_num += 1
+        dump "非記事（#{'タイトル' if page.title.blank?}#{'本文' if page.body.blank?}無し）"
+      end
+
+      conf.save if i % 100 == 0
+    end
+
+    conf.save
+    dump "書き込み処理終了"
+  end
+
+  def self.process_link(conf, updated_at = nil)
+    items = Tool::ConvertDoc
+    items = items.where('updated_at >= ?', updated_at) if updated_at
+    items = items.order('id')
+
+    conf.link_total_num = items.count
+    conf.save
+
+    dump "リンク解析処理開始: #{conf.link_total_num}件"
+    items.find_in_batches(batch_size: 10) do |cdocs|
+      cdocs.each do |cdoc|
+        conf.link_processed_num += 1
+        dump "[#{conf.link_processed_num}] #{cdoc.uri_path}"
+
+        if doc = cdoc.latest_doc
+          link = Tool::Convert::LinkProcessor.new.sublink(cdoc, conf)
+          link.clinks.each do |clink|
+            dump "#{clink.url} => #{clink.after_url}" if clink.url_changed?
+          end
+        else
+          dump "記事検索失敗"
+        end
+
+        conf.save if conf.link_processed_num % 100 == 0
+      end
+    end
+
+    conf.save
+    dump "リンク解析処理終了"
+  end
 end

@@ -16,6 +16,11 @@
     <td>
       <table class="noDesign">
         <tr>
+          <td><%= GpArticle::Content::Doc.model_name.human %></td>
+          <td><%= @item.content_names %></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
           <td><%= @item.locale :condition %></td>
           <td><%= @item.condition_name %></td>
           <td>&nbsp;</td>

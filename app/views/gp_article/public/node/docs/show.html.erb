@@ -15,7 +15,7 @@
   <div class="text-beginning"><%=raw (
   unless Page.mobile?
     body = @item.template ? template_body(@item.template, @item.template_values, @item.files) : @item.body.to_s
-    body.gsub('"file_contents/', %Q("#{Core.publish || Core.mode != 'preview' ? @item.public_uri(without_filename: true) : @item.preview_uri(without_filename: true)}file_contents/))
+    body.gsub(/("|')file_contents\//, '\1'+%Q(#{Core.publish || Core.mode != 'preview' ? @item.public_uri(without_filename: true) : @item.preview_uri(without_filename: true)}file_contents/))
   else
     @item.body_for_mobile
   end) %></div>
@@ -53,13 +53,19 @@
 <%- end -%>
 <%- end -%>
 
+<%- if @item.qrcode_visible? -%>
+<div class="qrcode">
+<img src="<%= @item.qrcode_uri(preview: (!Core.publish && Core.mode == 'preview')) %>" />
+</div>
+<%- end -%>
+
 <%= render 'cms/public/_partial/many_inquiries/view', item: @item %>
 
 <%- if @content.blog_functions[:comment] -%>
 <%= render 'comments', item: @item %>
 <%- end -%>
 
-<%- if @item.links_in_body.any?{|l| l[:url] =~ /\.pdf$/i } -%>
+<%- if @item.links_in_string(body, false).any?{|l| l[:url] =~ /\.pdf$/i } -%>
 <div class="adobeReader">
   <p>PDFの閲覧にはAdobe System社の無償のソフトウェア「Adobe Reader」が必要です。下記のAdobe Readerダウンロードページから入手してください。</p>
   <a href="http://get.adobe.com/jp/reader/" target="_blank" title="Adobe Readerダウンロード">Adobe Readerダウンロード</a>

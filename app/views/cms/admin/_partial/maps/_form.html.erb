@@ -9,8 +9,10 @@ map_zoom = (map && map.map_zoom.present?) ? map.map_zoom : 14
 
 in_size = safe(0){params[:item][:in_maps]['0'][:markers].size}
 markers_size = [3, markers.size, in_size].max
+
+google_api = request.ssl? ? "https://maps-api-ssl.google.com/maps/api/js?sensor=false&region=jp" : "http://maps.google.com/maps/api/js?sensor=false&region=jp"
 -%>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=jp"></script>
+<script type="text/javascript" src="<%= google_api %>"></script>
 <script type="text/javascript" src="/_common/modules/cms/js/map.js"></script>
 <script type="text/javascript">
 //<![CDATA[

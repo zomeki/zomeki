@@ -23,7 +23,10 @@ module Map::MapHelper
   def marker_image(marker)
     unless (doc = marker.doc)
       file = marker.files.first
+      return '' unless file.parent.content.public_node
       return image_tag("#{file.parent.content.public_node.public_uri}#{file.parent.name}/file_contents/#{url_encode file.name}")
+    else
+      return '' unless doc.content.public_node
     end
 
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
@@ -37,6 +40,28 @@ module Map::MapHelper
       else
         ''
       end
+    end
+  end
+
+  def title_replace(doc, doc_style)
+    return unless doc
+
+    contents = {
+      title_link: content_tag(:span, link_to(doc.title, doc.public_uri), class: 'title_link'),
+      title: content_tag(:span, doc.title, class: 'title'),
+      subtitle: content_tag(:span, doc.subtitle, class: 'subtitle'),
+      summary:  doc.summary,
+      }
+
+    if Page.mobile?
+      contents[:title_link]
+    else
+      doc_style.gsub(/@\w+@/, {
+        '@title_link@' => contents[:title_link],
+        '@title@'    => contents[:title],
+        '@subtitle@' => contents[:subtitle],
+        '@summary@'  => contents[:summary],
+      }).html_safe
     end
   end
 end

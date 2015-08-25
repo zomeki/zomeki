@@ -1,6 +1,8 @@
 # encoding: utf-8
 class GpCalendar::Public::Node::TodaysEventsController < GpCalendar::Public::Node::BaseController
   def index
+    http_error(404) if params[:page]
+
     criteria = {date: @today, kind: :event}
     @events = GpCalendar::Event.public.all_with_content_and_criteria(@content, criteria).order(:started_on)
 

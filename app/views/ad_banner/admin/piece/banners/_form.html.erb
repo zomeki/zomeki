@@ -10,6 +10,10 @@
     <th><%= @item.locale :sort %></th>
     <td><%= f.array_radio_buttons 'in_settings[sort]', @item.class::SORT_OPTIONS %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= f.array_radio_buttons 'in_settings[impl]', @item.class::IMPL_OPTIONS %></td>
+  </tr>
 </table>
 
 <p class="form">挿入テキスト</p>

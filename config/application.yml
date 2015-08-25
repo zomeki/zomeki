@@ -1,19 +1,38 @@
 sys:
   #暗号化パスワード
   crypt_pass: pass
-  
+
   #承認者候補に他所属の管理者を表示
   recognizers_include_admin: false
 
   #自動リンクチェック
   auto_link_check: true
 
+  # 書き出しファイル転送設定
+  log_closed_page: false
+  transfer_to_publish: false
+  transfer_opts: "-rlptvz --delete"
+  transfer_opt_exclude: "config/rsync/public_exclude.lst"
+  transfer_opt_include: "config/rsync/public_include.lst"
+  transfer_opt_remote_shell: "ssh -p 22"
+
+  # 管理画面URL（ドメイン）
+  # 'site'(default) or 'core'
+  core_domain: "site"
+
 cms:
   #ページ数付きページ書き出し数
-  publish_more_pages: 0
+  publish_more_pages: 10
 
   # Kana, Talk
   use_kana: true
+  use_kana_exclude_site_ids:
+#    - 1
+#    - 2
+#    - 3
+
+  # Accessibility check setting
+  enable_accessibility_check: true
 
   # Kana settings
   mecab_index: "/usr/local/libexec/mecab/mecab-dict-index"

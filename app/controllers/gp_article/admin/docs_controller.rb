@@ -3,6 +3,9 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
   include Sys::Controller::Scaffold::Publication
 
+  include Cms::ApiGpCalendar
+  include GpArticle::DocsCommon
+
   before_filter :hold_document, :only => [ :edit ]
   before_filter :check_intercepted, :only => [ :update ]
 
@@ -46,6 +49,22 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       if params[:exclude]
         docs_table = @items.table
         @items = @items.where(docs_table[:name].not_eq(params[:exclude]))
+      end
+
+      if params[:group_id] || params[:user_id]
+        inners = []
+        if params[:group_id]
+            groups = Sys::Group.arel_table
+            inners << :group
+        end
+        if params[:user_id]
+            users = Sys::User.arel_table
+            inners << :user
+        end
+        @items = @items.joins(:creator => inners)
+
+        @items = @items.where(groups[:id].eq(params[:group_id])) if params[:group_id]
+        @items = @items.where(users[:id].eq(params[:user_id])) if params[:user_id]
       end
 
       return render('index_options', layout: false)
@@ -97,11 +116,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
     @item = @content.docs.build(params[:item])
 
+    @item.set_inquiry_group if Core.user.root?
+
     @item.validate_word_dictionary # replace validate word
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
 
-    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
-      @item.body = Util::AccessibilityChecker.modify @item.body
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+        @item.body = Util::AccessibilityChecker.modify @item.body
+      end
     end
 
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
@@ -111,14 +134,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(failed_template) if params[:link_check_in_body]
     end
 
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
-      check_results = Util::AccessibilityChecker.check @item.body
-      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
-                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(failed_template) if params[:accessibility_check]
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+        check_results = Util::AccessibilityChecker.check @item.body
+        self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                       :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+        return render(failed_template) if params[:accessibility_check]
+      end
     end
 
-    @item.concept = @content.concept
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
 
     validate_approval_requests if @item.state_approvable?
@@ -130,18 +154,18 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      @item.fix_tmp_files(params[:_tmp])
 
       @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
+      @item = @content.docs.find_by_id(@item.id)
       @item.send_approval_request_mail if @item.state_approvable?
 
       publish_by_update(@item) if @item.state_public?
 
-      @item.fix_tmp_files(params[:_tmp])
-
-      share_to_sns if @item.state_public?
-
-      publish_related_pages
+      share_to_sns(@item) if @item.state_public?
+      publish_related_pages(@item) if @item.state_public?
+      sync_events_export
     end
   end
 
@@ -156,12 +180,15 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     new_state = params.keys.detect{|k| k =~ /^commit_/ }.try(:sub, /^commit_/, '')
 
     @item.attributes = params[:item]
+    @item.set_inquiry_group if Core.user.root?
 
-    @item.validate_word_dictionary #replace validate word 
+    @item.validate_word_dictionary #replace validate word
     @item.ignore_accessibility_check = params[:ignore_accessibility_check]
 
-    if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
-      @item.body = Util::AccessibilityChecker.modify @item.body
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check_modify] && params[:ignore_accessibility_check].nil?
+        @item.body = Util::AccessibilityChecker.modify @item.body
+      end
     end
 
     if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
@@ -171,11 +198,13 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       return render(failed_template) if params[:link_check_in_body]
     end
 
-    if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
-      check_results = Util::AccessibilityChecker.check @item.body
-      self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
-                                     :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
-      return render(failed_template) if params[:accessibility_check]
+    if Zomeki.config.application['cms.enable_accessibility_check']
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+        check_results = Util::AccessibilityChecker.check @item.body
+        self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
+                                       :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
+        return render(failed_template) if params[:accessibility_check]
+      end
     end
 
     @item.state = new_state if new_state.present? && @item.class::STATE_OPTIONS.any?{|v| v.last == new_state }
@@ -189,26 +218,32 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       set_categories
       set_event_categories
       set_marker_categories
+      update_file_names
 
       @item.approval_requests.each(&:reset) if @item.state_approvable?
       set_approval_requests
+      @item = @content.docs.find_by_id(@item.id)
       @item.send_approval_request_mail if @item.state_approvable?
 
       publish_by_update(@item) if @item.state_public?
 
-      @item.close unless @item.public? # Never use "state_public?" here
+      @item.close if !@item.public? && !@item.will_replace? # Never use "state_public?" here
+
+      share_to_sns(@item) if @item.state_public?
+      publish_related_pages(@item) if @item.state_public?
+      sync_events_export
 
       release_document
-
-      share_to_sns if @item.state_public?
-
-      publish_related_pages
     end
   end
 
   def destroy
+    @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+    @new_category_ids = []
     _destroy(@item) do
-      send_link_broken_notification(@item) unless @item.backlinks.empty?
+      send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
+      publish_related_pages(@item)
+      sync_events_export
     end
   end
 
@@ -220,14 +255,31 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def publish
-    @item.update_column(:published_at, Core.now)
-    _publish(@item) { publish_ruby(@item) }
+    @old_category_ids = if @item.will_replace?
+                          @item.prev_edition.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+                        else
+                          []
+                        end
+    @new_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+
+    @item.update_attribute(:state, 'public')
+    _publish(@item) do
+      publish_ruby(@item)
+      @item.rebuild(render_public_as_string(@item.public_uri, jpmobile: envs_to_request_as_smart_phone),
+                    :path => @item.public_smart_phone_path, :dependent => :smart_phone)
+
+      share_to_sns(@item)
+      publish_related_pages(@item)
+      sync_events_export
+    end
   end
 
   def publish_by_update(item)
     return unless item.terminal_pc_or_smart_phone
     if item.publish(render_public_as_string(item.public_uri))
       publish_ruby(item)
+      item.rebuild(render_public_as_string(item.public_uri, jpmobile: envs_to_request_as_smart_phone),
+                   :path => item.public_smart_phone_path, :dependent => :smart_phone)
       flash[:notice] = '公開処理が完了しました。'
     else
       flash[:alert] = '公開処理に失敗しました。'
@@ -235,8 +287,13 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def close(item)
-    super
-    publish_related_pages
+    _close(@item) do
+      @old_category_ids = @item.categories.inject([]){|ids, category| ids | category.ancestors.map(&:id) }
+      @new_category_ids = []
+      send_broken_link_notification(@item) if @content.notify_broken_link? && @item.backlinks.present?
+      publish_related_pages(@item)
+      sync_events_export
+    end
   end
 
   def duplicate(item)
@@ -248,7 +305,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
   end
 
   def approve
-    @item.approve(Core.user) if @item.approvers.include?(Core.user)
+    @item.approve(Core.user, request) if @item.approvers.include?(Core.user)
     redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
   end
 
@@ -272,7 +329,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
 
   protected
 
-  def send_link_broken_notification(item)
+  def send_broken_link_notification(item)
     mail_from = 'noreply'
 
     item.backlinked_docs.each do |doc|
@@ -376,8 +433,25 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                         end
 
     approval_flow_ids.each do |approval_flow_id|
-      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
-      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+      request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+
+      assignments = {}.with_indifferent_access
+      if params.member?("assignment_ids_#{approval_flow_id}")
+        if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+            assignments["approval_#{approval_id}"] = "#{value}"
+          end
+        end
+      end
+
+      unless request
+        @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+        request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      end
+      request.select_assignment = assignments
+      request.user_id = Core.user.id
+      request.save! if request.changed?
+      request.reset
     end
 
     @item.approval_requests.each do |approval_request|
@@ -392,51 +466,36 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
                           []
                         end
 
-    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
-  end
-
-  def share_to_sns
-    view_helpers = self.class.helpers
-
-    @item.sns_accounts.each do |account|
-      next if account.credential_token.blank?
-
-      begin
-        apps = YAML.load_file(Rails.root.join('config/sns_apps.yml'))[account.provider]
-
-        case account.provider
-        when 'facebook'
-          fb = RC::Facebook.new(access_token: account.credential_token.presence)
-          message = view_helpers.strip_tags(@item.send(@item.share_to_sns_with))
-          info_log fb.post("#{account.facebook_page}/feed", message: message)
-        when 'twitter'
-          if (app = apps[request.host])
-            tw = RC::Twitter.new(consumer_key: app['key'],
-                                 consumer_secret: app['secret'],
-                                 oauth_token: account.credential_token.presence,
-                                 oauth_token_secret: account.credential_secret.presence)
-            message = view_helpers.truncate(view_helpers.strip_tags(@item.send(@item.share_to_sns_with)), length: 140)
-            info_log tw.tweet(message)
+    if approval_flow_ids.empty?
+      @item.errors.add(:base, '承認フローを選択してください。')
+    else
+      approval_flow_ids.each do |approval_flow_id|
+        if params.member?("assignment_ids_#{approval_flow_id}") && params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+            params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+              @item.errors["承認者"] = "を選択してください。" if value.blank?
+            end
           end
         end
-      rescue => e
-        warn_log %Q!Failed to "#{account.provider}" share: #{e.message}!
       end
     end
   end
 
-  def publish_related_pages
-    Delayed::Job.where(queue: ['publish_top_page', 'publish_category_pages']).destroy_all
-
-    if (root_node = @item.content.site.nodes.public.where(parent_id: 0).first) &&
-       (top_page = root_node.children.where(name: 'index.html').first)
-      ::Script.delay(queue: 'publish_top_page')
-              .run("cms/script/nodes/publish?all=all&target_module=cms&target_node_id[]=#{top_page.id}", force: true)
+  def update_file_names
+    if (file_names = params[:file_names]).kind_of?(Hash)
+      new_body = @item.body
+      file_names.each do |key, value|
+        file = @item.files.where(id: key).first
+        next if file.nil? || file.name == value
+        new_body = new_body.gsub("file_contents/#{value}", "file_contents/#{file.name}")
+      end
+      @item.update_column(:body, new_body) unless @item.body == new_body
     end
+  end
 
-    if (@old_category_ids.kind_of?(Array) && @new_category_ids.kind_of?(Array))
-      GpCategory::Publisher.register_categories(@old_category_ids | @new_category_ids)
-      GpCategory::Publisher.delay(queue: 'publish_category_pages').publish_categories
+  def sync_events_export
+    if @content.calendar_related? && (calendar_content = @content.gp_calendar_content_event)
+      gp_calendar_sync_events_export(doc_or_event: @item, event_content: calendar_content) if calendar_content.event_sync_export?
     end
   end
 end

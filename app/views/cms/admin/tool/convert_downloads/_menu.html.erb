@@ -1,0 +1,9 @@
+<%= render 'cms/admin/tool/convert/menu' %>
+
+<div class="actionMenu" style="margin-top: 10px;">
+<%- case params[:action] -%>
+<%- when 'show' -%>
+  <%= link_to '一覧', cms_tool_convert_downloads_path %>
+  <%= link_to '削除', cms_tool_convert_download_path(id: @item.id), method: 'delete', confirm: '削除してよろしいですか？' %>
+<%- end -%>
+</div>

@@ -7,8 +7,12 @@ class Organization::Content::Group < Cms::Content
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
   def public_node
-    Cms::Node.where(state: 'public', content_id: id, model: 'Organization::Group').order(:id).first
+    public_nodes.order(:id).first
   end
 
   def refresh_groups
@@ -26,9 +30,9 @@ class Organization::Content::Group < Cms::Content
   end
 
   def root_sys_group
-    return unless Core.site
+    return unless site_id
     belongings = Cms::SiteBelonging.arel_table
-    Sys::Group.joins(:site_belongings).where(belongings[:site_id].eq(Core.site.id))
+    Sys::Group.joins(:site_belongings).where(belongings[:site_id].eq(site_id))
               .where(parent_id: 0, level_no: 1).first
   end
 
@@ -96,7 +100,7 @@ class Organization::Content::Group < Cms::Content
 
   def set_default_settings
     in_settings[:article_relation] = ARTICLE_RELATION_OPTIONS.last.last unless setting_value(:article_relation)
-    in_settings[:doc_style] = '@title@ (@publish_date@ @group@)' unless setting_value(:doc_style)
+    in_settings[:doc_style] = '@title_link@(@publish_date@ @group@)' unless setting_value(:doc_style)
     in_settings[:date_style] = '%Y年%m月%d日' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:num_docs] = '10' unless setting_value(:num_docs)

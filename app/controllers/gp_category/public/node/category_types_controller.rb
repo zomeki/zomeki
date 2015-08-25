@@ -5,6 +5,8 @@ require 'will_paginate/array'
 class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::Node::BaseController
   def index
     if (template = @content.index_template)
+      return http_error(404) if params[:page]
+
       vc = view_context
       rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
           tm = @content.template_modules.find_by_name($1)
@@ -32,9 +34,10 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
               docs = find_public_docs_with_category_id(category_ids)
               docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-              docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+              all_docs = docs.order('display_published_at DESC, published_at DESC')
+              docs = all_docs.limit(tm.num_docs)
               vc.send(tm.module_type, template_module: tm,
-                      ct_or_c: nil, docs: docs)
+                      ct_or_c: nil, docs: docs, all_docs: all_docs)
             end
           else
             ''
@@ -113,6 +116,8 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
         return http_error(404) if @docs.current_page > @docs.total_pages
         render :more
       else
+        return http_error(404) if params[:page]
+
         vc = view_context
         rendered = template.body.gsub(/\[\[module\/([\w-]+)\]\]/) do |matched|
             tm = @content.template_modules.find_by_name($1)
@@ -138,9 +143,10 @@ class GpCategory::Public::Node::CategoryTypesController < GpCategory::Public::No
                 docs = find_public_docs_with_category_id(category_ids)
                 docs = docs.where(tm.module_type_feature, true) if docs.columns.any?{|c| c.name == tm.module_type_feature }
 
-                docs = docs.limit(tm.num_docs).order('display_published_at DESC, published_at DESC')
+                all_docs = docs.order('display_published_at DESC, published_at DESC')
+                docs = all_docs.limit(tm.num_docs)
                 vc.send(tm.module_type, template_module: tm,
-                        ct_or_c: @category_type, docs: docs)
+                        ct_or_c: @category_type, docs: docs, all_docs: all_docs)
               end
             when 'docs_3'
               if vc.respond_to?(tm.module_type) && @category_type.internal_category_type

@@ -53,21 +53,34 @@ class Sys::Admin::Groups::ImportController < Cms::Controller::Admin::Base
         next
       end
 
+      if parent.code != 'root' && !parent.site_ids.include?(Core.site.id)
+        @results[2] += 1
+        next
+      end
+
       group = Sys::Group.find_by_code(code) || Sys::Group.new({:code => code})
+
+      if !group.new_record? && !group.site_ids.include?(Core.site.id)
+        @results[2] += 1
+        next
+      end
 
       group.parent_id    = parent.id
       group.state        = data[:state]
-      group.web_state    = data[:web_state]
       group.level_no     = data[:level_no]
       group.sort_no      = data[:sort_no]
-      group.layout_id    = data[:layout_id]
       group.ldap         = data[:ldap]
       group.ldap_version = data[:ldap_version]
       group.name         = data[:name]
       group.name_en      = data[:name_en]
+      group.address      = data[:address]
       group.tel          = data[:tel]
-      group.outline_uri  = data[:outline_uri]
+      group.tel_attend   = data[:tel_attend]
+      group.fax          = data[:fax]
       group.email        = data[:email]
+      group.note         = data[:note]
+
+      group.sites << Core.site if group.new_record?
       
       next unless group.changed?
       status = group.new_record? ? 0 : 1
@@ -94,6 +107,11 @@ class Sys::Admin::Groups::ImportController < Cms::Controller::Admin::Base
         next
       end
 
+      unless group.site_ids.include?(Core.site.id)
+        @results[2] += 1
+        next
+      end
+
       user = Sys::User.find_by_account(account) || Sys::User.new({:account => account})
       user.state        = data[:state]
       user.ldap         = data[:ldap]
@@ -104,6 +122,11 @@ class Sys::Admin::Groups::ImportController < Cms::Controller::Admin::Base
       user.password     = data[:password]
       user.email        = data[:email]
       user.in_group_id  = group.id if group.id != user.group_id
+
+      if Core.user.root?
+        user.admin_creatable = data[:admin_creatable] if data.include?(:admin_creatable)
+        user.site_creatable  = data[:site_creatable] if data.include?(:site_creatable)
+      end
       
       next unless user.changed?
       

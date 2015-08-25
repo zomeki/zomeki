@@ -4,7 +4,11 @@ ja:
       cms/content: "コンテンツ"
       cms/piece: "ピース"
       cms/site: "サイト"
-      tool/convert_setting: "変換情報"
+      tool/convert_download: "ダウンロード"
+      tool/convert_setting: "変換設定"
+      tool/convert_import: "書き込み"
+      tool/convert_doc: "変換記事"
+      tool/convert_link: "リンク変換"
 
     attributes:
       cms/concept:
@@ -30,6 +34,17 @@ ja:
         portal_group_business_ids: "業種"
         portal_group_attribute_ids: "属性"
         portal_group_area_ids: "地域"
+        setting_transfer_dest_user: "転送先ユーザ名"
+        setting_transfer_dest_host: "転送先サーバホスト"
+        setting_transfer_dest_dir: "転送先サーバディレクトリ"
+        setting_transfer_dest_domain: "転送先サイトURL"
+        setting_site_admin_protocol: "プロトコル"
+        og_type: タイプ
+        og_title: タイトル
+        og_description: 説明
+        og_image: 画像
+        smart_phone_publication: スマートフォンを別に書き出す
+        spp_target: 書き出し対象
 
       cms/site_basic_auth_user:
         state: "状態"
@@ -50,6 +65,7 @@ ja:
         code: "コンテンツID"
         name: "コンテンツ名"
         note: "備考"
+        sort_no: "並び順"
 
       cms/content_setting:
         content_id: "コンテンツ"
@@ -90,6 +106,16 @@ ja:
         uri: "URL"
         sort_no: "並び順"
         target: "対象ウィンドウ"
+
+      cms/piece/pickup_doc:
+        list_style: 表示形式
+        date_style: 日付形式
+        content_id: 記事コンテンツ
+        group_id: グループ
+        user_id: ユーザ
+        doc_id: 記事
+        doc_name: 記事
+        sort_no: 並び順
 
       cms/node:
         parent_id: "親ディレクトリ"
@@ -161,12 +187,85 @@ ja:
         group_id: 課
         charge: 室・担当
         address: 住所
-        tel: 電話番号
-        fax: ファクシミリ
+        tel: TEL
+        fax: FAX
         email: メールアドレス
         note: 備考
+
+      tool/convert_download:
+        site_url: サイトURL
+        include_dir: 取得対象ディレクトリ
+        state: 状態
+        start_at: 開始日時
+        end_at: 終了日時
+        recursive_level: 再帰ダウンロード階層数
+        remark: 備考
+        message: メッセージ
+        created_at: 作成日時
+        updated_at: 更新日時
 
       tool/convert_setting:
         site_url: サイトURL
         title_tag: タイトル対象タグ
         body_tag: 本文対象タグ
+        updated_at_tag: 更新日対象タグ
+        updated_at_regexp: 更新日正規表現
+        creator_group_from_url_regexp: 作成者グループURL正規表現
+        creator_group_relation_type: 作成者グループ照合方法
+        creator_group_url_relations: 作成者グループ読み替え
+        category_tag: カテゴリ対象タグ
+        category_regexp: カテゴリ正規表現
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      tool/convert_import:
+        state: 状態
+        site_url: サイトURL
+        site_filename: ファイル名
+        content_id: コンテンツ
+        overwrite: 上書きオプション
+        keep_filename: ファイル名オプション
+        start_at: 開始日時
+        end_at: 終了日時
+        message: メッセージ
+        total_num: 計
+        created_num: 作成
+        updated_num: 更新
+        nonupdated_num: 非更新
+        skipped_num: 非記事
+        link_total_num: リンク処理数
+        link_processed_num: リンク処理済数
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      tool/convert_doc:
+        docable_type: 移行先記事クラス名
+        doc_content: 移行先記事コンテンツ
+        doc_name: 移行先記事名
+        doc_public_uri: 移行先URL
+        file_path: 移行元ファイルパス
+        uri_path: 移行元URL
+        site_url: サイトURL
+        title: タイトル
+        body: 本文
+        created_at: 作成日時
+        updated_at: 更新日時
+        published_at: 公開日時
+
+      tool/convert_link:
+        concept_id: コンセプト
+        linkable_id: 変換対象
+        linkable_type: 変換対象クラス
+        urls: 変換リンク
+        urls_size: 変換リンク数
+        before_body: 変換前
+        after_body: 変換後
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      ## tool
+      cms/model/tool/export:
+        concept_id: "コンセプト"
+      cms/model/tool/import:
+        concept_id: "コンセプト"
+        file: "ファイル"

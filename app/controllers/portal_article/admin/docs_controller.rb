@@ -11,7 +11,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
     return error_auth unless Core.user.has_priv?(:read, :item => @content.concept)
     #default_url_options[:content] = @content
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
-    
+
     @portal_group = @content.portal_group
     if @portal_group == nil
       ## auto set/portal_group_id
@@ -24,7 +24,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
         redirect_to(portal_article_content_settings_path)
       end
     end
-    
+
     @recognition_type = @content.setting_value(:recognition_type)
   end
 
@@ -42,9 +42,9 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
   def show
     @item = PortalArticle::Doc.new.find(params[:id])
     #return error_auth unless @item.readable?
-    
+
     @item.recognition.type = @recognition_type if @item.recognition
-    
+
     _show @item
   end
 
@@ -56,13 +56,13 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
     })
     #@item.in_inquiry = @item.default_inquiry
     @item.in_recognizer_ids = @content.setting_value(:default_recognizers)
-    
+
     ## add tmp_id
     unless params[:_tmp]
       return redirect_to url_for(:action => :new, :_tmp => Util::Sequencer.next_id(:tmp, :md5 => true))
     end
   end
-  
+
   def create
     @item = PortalArticle::Doc.new(params[:item])
     @item.content_id         = @content.id
@@ -71,7 +71,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
     @item.state              = "draft"
     @item.state              = "recognize" if params[:commit_recognize]
     @item.state              = "public"    if params[:commit_public]
-    
+
     @checker = Sys::Lib::Form::Checker.new
     if params[:link_check] == "1"
       @checker.check_link @item.body
@@ -81,7 +81,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
         @item.link_checker = @checker
       end
     end
-    
+
     _create @item do
       @item.fix_tmp_files(params[:_tmp])
       send_recognition_request_mail(@item) if @item.state == 'recognize'
@@ -112,7 +112,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
       @item.close if !@item.public?
     end
   end
-  
+
   def destroy
     @item = PortalArticle::Doc.new.find(params[:id])
     _destroy @item
@@ -130,7 +130,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
   end
-  
+
   def duplicate(item)
     if dupe_item = item.duplicate
       flash[:notice] = '複製処理が完了しました。'
@@ -146,7 +146,7 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
   end
-  
+
   def duplicate_for_replace(item)
     if dupe_item = item.duplicate(:replace)
       flash[:notice] = '複製処理が完了しました。'
@@ -162,14 +162,14 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
   end
-  
+
   def publish_ruby(item)
     uri  = item.public_uri
     uri  = (uri =~ /\?/) ? uri.gsub(/\?/, 'index.html.r?') : "#{uri}index.html.r"
     path = "#{item.public_path}.r"
     item.publish_page(render_public_as_string(uri, :site => item.content.site), :path => path, :dependent => :ruby)
   end
-  
+
   def publish(item)
     item.public_uri = "#{item.public_uri}?doc_id=#{item.id}"
     _publish(item) { publish_ruby(item) }
@@ -184,9 +184,11 @@ class PortalArticle::Admin::DocsController < Cms::Controller::Admin::Base
       flash[:notice] = "公開処理に失敗しました。"
     end
   end
-  
+
 protected
   def send_recognition_request_mail(item, users = nil)
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain Core.site, Core.site.full_uri
+
     mail_fr = Core.user.email
     mail_to = nil
     subject = "#{item.content.name}（#{item.content.site.name}）：承認依頼メール"
@@ -194,8 +196,8 @@ protected
       "次の手順により，承認作業を行ってください。\n\n" +
       "１．PC用記事のプレビューにより文書を確認\n#{item.preview_uri(:params => {:doc_id => item.id})}\n\n" +
       "２．次のリンクから承認を実施\n" +
-      "#{Core.site.full_uri}#{url_for(:action => :show, :id => item, :only_path => true).sub(/^\//, '')}\n"
-    
+      "#{_core_uri}#{url_for(:action => :show, :id => item, :only_path => true).sub(/^\//, '')}\n"
+
     users ||= item.recognizers
     users.each {|user| send_mail(mail_fr, user.email, subject, message) }
   end
@@ -205,14 +207,16 @@ protected
     return true unless item.recognition.user
     return true if item.recognition.user.email.blank?
 
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain Core.site, Core.site.full_uri
+
     mail_fr = Core.user.email
     mail_to = item.recognition.user.email
-    
+
     subject = "#{item.content.name}（#{item.content.site.name}）：最終承認完了メール"
     message = "「#{item.title}」についての承認が完了しました。\n" +
       "次のＵＲＬをクリックして公開処理を行ってください。\n\n" +
-      "#{Core.site.full_uri}#{url_for(:action => :show, :id => item.id, :only_path => true).sub(/^\//, '')}"
-    
+      "#{_core_uri}#{url_for(:action => :show, :id => item.id, :only_path => true).sub(/^\//, '')}"
+
     send_mail(mail_fr, mail_to, subject, message)
   end
 end

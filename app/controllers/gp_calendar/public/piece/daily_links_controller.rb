@@ -22,6 +22,7 @@ class GpCalendar::Public::Piece::DailyLinksController < GpCalendar::Public::Piec
     end_date = date.end_of_month.end_of_week(:sunday)
 
     @calendar = Util::Date::Calendar.new(date.year, date.month)
+    @calendar.set_event_class = true
 
     return unless (@node = @piece.target_node)
 
@@ -33,7 +34,7 @@ class GpCalendar::Public::Piece::DailyLinksController < GpCalendar::Public::Piec
              dates | (doc.event_started_on..doc.event_ended_on).to_a
            end
 
-    (min_date..min_date.end_of_month).each do |date|
+    (start_date..end_date).each do |date|
       unless GpCalendar::Event.public.all_with_content_and_criteria(@piece.content, {date: date}).empty?
         days << date unless days.include?(date)
       end

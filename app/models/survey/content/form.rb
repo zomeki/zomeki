@@ -2,6 +2,7 @@
 class Survey::Content::Form < Cms::Content
   APPROVAL_RELATION_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
   CAPTCHA_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
+  SSL_OPTIONS = [['使用する', 'enabled'], ['使用しない', 'disabled']]
 
   default_scope where(model: 'Survey::Form')
 
@@ -29,6 +30,14 @@ class Survey::Content::Form < Cms::Content
     setting_value(:mail_to).to_s
   end
 
+  def upper_reply_text
+    setting_extra_values(:auto_reply)[:upper_reply_text].to_s rescue nil
+  end
+
+  def lower_reply_text
+    setting_extra_values(:auto_reply)[:lower_reply_text].to_s rescue nil
+  end
+
   def approval_content_approval_flow
     Approval::Content::ApprovalFlow.find_by_id(setting_extra_value(:approval_relation, :approval_content_id))
   end
@@ -41,9 +50,17 @@ class Survey::Content::Form < Cms::Content
     setting_value('captcha') == 'enabled'
   end
 
+  def auto_reply?
+    setting_value(:auto_reply) == 'send'
+  end
+
+  def use_common_ssl?
+    setting_value('common_ssl') == 'enabled'
+  end
+
   private
 
   def set_default_settings
-    in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.first.last if setting_value(:approval_relation).nil?
+    in_settings[:approval_relation] = APPROVAL_RELATION_OPTIONS.last.last if setting_value(:approval_relation).nil?
   end
 end

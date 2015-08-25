@@ -33,7 +33,9 @@
 </table>
 <% end %>
 
-<%= inquiry_view @item %>
+<br /><p class="form">連絡先設定</p>
+<%= render 'cms/admin/_partial/many_inquiries/view', {item: @item} %>
+<%#= inquiry_view @item %>
 <%= task_view @item %>
 <%= recognizer_view @item %>
 <%= creator_view @item %>

@@ -1,6 +1,30 @@
-<%= render 'gp_calendar/admin/shared/menu', index_path: gp_calendar_events_path(content: @content),
-                                                   sub: "#{GpCalendar::Event.model_name.human}#{case action_name.to_sym
-                                                                                                when :index; '一覧'
-                                                                                                when :new;   '登録'
-                                                                                                when :edit;  '編集'
-                                                                                                end}" %>
+<h2><%= @content.name %> ： <%= GpCalendar::Event.model_name.human %><%= case action_name.to_sym
+                                                                         when :index; '一覧'
+                                                                         when :new;   '登録'
+                                                                         when :edit;  '編集'
+                                                                         end %></h2>
+
+<div class="actionMenu">
+  <%- if action_name == 'index' -%>
+  <%= link_to '新規作成', new_gp_calendar_event_path %>
+  <span class="separator"></span>
+  <%- end -%>
+
+  <%= link_to "#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path,
+              (action_name == 'index' && params[:imported] != 'yes' ? {class: 'current'} : nil) %>
+  <%- if @content.event_sync_import? -%>
+  <%= link_to "同期#{GpCalendar::Event.model_name.human}一覧", gp_calendar_events_path(imported: 'yes'),
+              (action_name == 'index' && params[:imported] == 'yes' ? {class: 'current'} : nil) %>
+  <%- end -%>
+
+  <%- if action_name == 'show' -%>
+  <span class="separator"></span>
+  <%= link_to '編集', edit_gp_calendar_event_path if @item.try(:editable?) %>
+  <%= link_to '削除', gp_calendar_event_path, method: :delete, confirm: '削除してよろしいですか？' if @item.try(:deletable?) %>
+  <%- end -%>
+
+  <%- if action_name.in?(%w!edit update!) -%>
+  <span class="separator"></span>
+  <%= link_to '詳細', gp_calendar_event_path %>
+  <%- end -%>
+</div>

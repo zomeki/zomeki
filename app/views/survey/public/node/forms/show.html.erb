@@ -1,19 +1,7 @@
-<%- unless Page.mobile? -%>
-<% if params[:piece] %><%= javascript_include_tag '/_common/js/jquery.min.js' %><% end %>
-<%= javascript_tag do -%>
-$(document).ready(function () {
-  $('#current_url').closest('form').submit(function (event) {
-    $('#current_url').val(parent.document.location);
-    $('#current_url_title').val(parent.document.title);
-  });
-});
-<%- end -%>
-<%- end -%>
-
 <div class="surveyForm">
   <% if @form_answer.form.description.present? %><div class="body"><%=raw @form_answer.form.description %></div><% end %>
 
-  <%= form_for(@form_answer, url: "#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
+  <%= form_for(@form_answer, url: "#{@ssl_full_uri if @piece}#{@node.public_uri}#{@form_answer.form.name}/confirm_answers") do |f| -%>
     <%= f.error_messages %>
 
     <%- unless @form_answer.form.public_questions.empty? -%>
@@ -22,12 +10,12 @@ $(document).ready(function () {
       <div class="question">
         <div class="question_content">
           <%= label_tag "question_#{question.id}", question.title %>
-          <% if question.required? %><span class="note">※</span><% end %>
+          <% if question.required? && question.form_type != 'free' %><span class="note">※必須</span><% end %>
         </div>
 
         <div class="answer_content">
           <%- case question.form_type -%>
-          <%- when 'text_field' -%>
+          <%- when 'text_field', 'text_field_email' -%>
             <%= text_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content), style: question.style_attribute %>
             <%- if question.form_text_max_length -%>
             <span class="max_length">（最大<%= question.form_text_max_length %>文字）</span>
@@ -79,8 +67,7 @@ $(document).ready(function () {
       <%- end -%>
     </div>
 
-    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
-    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
-    <%= hidden_field_tag :piece, true if params[:piece] -%>
+    <%= render 'from_piece', piece: @piece, form_answer: @form_answer,
+                             current_url: @current_url, current_url_title: @current_url_title %>
   <%- end -%>
 </div>

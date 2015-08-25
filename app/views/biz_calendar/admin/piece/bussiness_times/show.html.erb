@@ -1,0 +1,18 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :target_type %></th>
+    <td><%= @item.class::TARGET_TYPE_OPTIONS.detect{|o| o.last == @item.setting_value(:target_type) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :page_filter %></th>
+    <td><%= @item.class::PAGE_FILTER_OPTIONS.detect{|o| o.last == @item.setting_value(:page_filter) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :time_style %></th>
+    <td><%= @item.setting_value(:time_style) %></td>
+  </tr>
+</table>
+<%- end -%>

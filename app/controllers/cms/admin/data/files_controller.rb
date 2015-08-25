@@ -4,7 +4,8 @@ class Cms::Admin::Data::FilesController < Cms::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless Core.user.has_auth?(:designer)
-    return redirect_to(url_for(:action => "index", :parent => '0')) if params[:reset] || params['s_node_id'] == ''
+
+    return redirect_to(url_for(:action => "index", :parent => '0')) if params[:reset] || (params['s_node_id'] == '' && params[:s_keyword] == '' && params[:s_target] == '')
     
     if params[:parent] && params[:parent] != '0'
       @parent = Cms::DataFileNode.find(params[:parent])
@@ -16,15 +17,29 @@ class Cms::Admin::Data::FilesController < Cms::Controller::Admin::Base
 
   def index
     if params['s_node_id']
-      return redirect_to(url_for(:action => "index", :parent => params['s_node_id']))
+      parent_id = params['s_node_id'] == '' ? 0 : params['s_node_id']
+      return redirect_to(url_for(:action => "index", :parent => parent_id, :s_keyword => params[:s_keyword], :s_target => params[:s_target], :s_sort => params[:s_sort]))
     end
     
     @nodes = Cms::DataFileNode.find(:all, :conditions => {:concept_id => Core.concept(:id)}, :order => :name)
     
-    item = Cms::DataFile.new.readable
+    order = (params[:s_sort] == 'updated_at') ? 'updated_at desc, id' : 'name, id'
+
+    item = Cms::DataFile.new
+    unless Core.user.has_auth?(:manager) || params[:s_target] == "current"
+      item.readable
+    else
+      if Core.site
+        item.and :site_id, Core.site.id
+      else
+        item.and :site_id, 'IS', nil
+      end
+      item.and :concept_id, Core.concept.id if params[:s_target] != "all"
+    end
     item.and 'node_id', @parent.id if @parent.id != 0
+    item.and 'name', "LIKE", "%#{params[:s_keyword]}%" unless params[:s_keyword].blank?
     item.page  params[:page], params[:limit]
-    item.order params[:sort], 'name, id'
+    item.order params[:sort], order
     @items = item.find(:all)
     _index @items
   end

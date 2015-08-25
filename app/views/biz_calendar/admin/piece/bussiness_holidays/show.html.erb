@@ -1,0 +1,26 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :target_type %></th>
+    <td><%= @item.class::TARGET_TYPE_OPTIONS.detect{|o| o.last == @item.setting_value(:target_type) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :page_filter %></th>
+    <td><%= @item.class::PAGE_FILTER_OPTIONS.detect{|o| o.last == @item.setting_value(:page_filter) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :place_link %></th>
+    <td><%= @item.class::PLACE_LINK_OPTIONS.detect{|o| o.last == @item.setting_value(:place_link) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_type_state %></th>
+    <td><%= @item.class::HOLIDAY_TYPE_STATE_OPTIONS.detect{|o| o.last == @item.setting_value(:holiday_type_state) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= @item.setting_value(:date_style) %></td>
+  </tr>
+</table>
+<%- end -%>

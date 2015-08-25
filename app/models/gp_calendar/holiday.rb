@@ -6,6 +6,9 @@ class GpCalendar::Holiday < ActiveRecord::Base
   include Sys::Model::Rel::File
   include Cms::Model::Auth::Content
 
+  include StateText
+  include GpCalendar::EventSync
+
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   KIND_OPTIONS = [['休日', 'holiday'], ['イベント', 'event']]
   ORDER_OPTIONS = [['作成日時（降順）', 'created_at_desc'], ['作成日時（昇順）', 'created_at_asc']]
@@ -15,14 +18,13 @@ class GpCalendar::Holiday < ActiveRecord::Base
   validates_presence_of :content_id
 
   # Proper
-  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
   validates_presence_of :state
 
   after_initialize :set_defaults
 
   validates_presence_of :title
 
-  scope :public, where(state: 'public')
+  scope :public, -> { where(state: 'public') }
 
   def self.all_with_content_and_criteria(content, criteria)
     holidays = self.arel_table
@@ -76,6 +78,14 @@ class GpCalendar::Holiday < ActiveRecord::Base
   def holiday
     criteria = {date: started_on, kind: 'holiday'}
     GpCalendar::Holiday.public.all_with_content_and_criteria(content, criteria).first.title rescue nil
+  end
+
+  def publish!
+    update_attribute(:state, 'public')
+  end
+
+  def close!
+    update_attribute(:state, 'closed')
   end
 
   private

@@ -37,7 +37,7 @@ class Gnav::Piece::Doc < Cms::Piece
   end
 
   def category_type
-    category_types.find_by_id(setting_value(:category_type_id))
+    category_types.find_by_id(setting_value(:category_type_id)) rescue nil
   end
 
   def categories
@@ -67,7 +67,7 @@ class Gnav::Piece::Doc < Cms::Piece
   private
 
   def set_default_settings
-    in_settings['list_style'] = '@title(@date @group)' if setting_value(:list_style).nil?
+    in_settings['list_style'] = '@title_link@(@publish_date@ @group@)' if setting_value(:list_style).nil?
     in_settings['date_style'] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
   end
 end

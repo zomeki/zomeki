@@ -1,14 +1,15 @@
 # encoding: utf-8
 class Cms::Lib::Navi::Kana
   
-  def self.convert(str)
+  def self.convert(str, site_id=nil)
     return nil unless Zomeki.config.application['cms.use_kana']
     
     require 'MeCab'
     
-    mecab_rc = Cms::KanaDictionary.mecab_rc
+    mecab_rc = Cms::KanaDictionary.mecab_rc(site_id)
     
     str = str.to_utf8.gsub(/\r\n/, "\n")
+    str = str.gsub('é', '&eacute;')
     
     tmp = str.gsub(/[\r\n]/, "*")
     ["head", "style", "script", "ruby"].each do |name|

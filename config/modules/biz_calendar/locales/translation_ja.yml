@@ -1,0 +1,74 @@
+ja:
+  activerecord:
+    models:
+      biz_calendar/place: 拠点
+      biz_calendar/bussiness_hour: 業務時間
+      biz_calendar/bussiness_holiday: 休業日
+      biz_calendar/exception_holiday: 例外休業日
+      biz_calendar/holiday_type: 休日種別
+    attributes:
+      biz_calendar/place:
+        state: "状態"
+        url: "URL名"
+        title: "拠点名"
+        summary: "概要"
+        description: "説明"
+        business_hours_state: "業務時間表示"
+        business_hours_title: "業務時間見出し"
+        business_holiday_state: "休業日表示"
+        business_holiday_title: "休業日見出し"
+        sort_no: "並び順"
+      biz_calendar/bussiness_hour:
+        state: "状態"
+        fixed_date: "固定日"
+        fixed_start_date: "固定開始日"
+        fixed_end_date: "固定終了日"
+        repeat_type: "繰り返し"
+        start_date: "対象条件開始日"
+        repeat_criterion: "繰り返しの基準"
+        repeat_week: "曜日"
+        end_type: "終了日設定"
+        end_times: "終了回数"
+        end_date: "対象条件終了日"
+        business_hours_time: "業務時間"
+        business_hours_start_time: "業務開始時間"
+        business_hours_end_time: "業務終了時間"
+      biz_calendar/bussiness_holiday:
+        state: "状態"
+        type_id: "休日種別"
+        holiday_date: "固定休業日"
+        holiday_start_date: "固定休業開始日"
+        holiday_end_date: "固定休業終了日"
+        repeat_type: "繰り返し"
+        start_date: "対象条件開始日"
+        repeat_criterion: "繰り返しの基準"
+        repeat_week: "曜日"
+        end_type: "終了日設定"
+        end_times: "終了回数"
+        end_date: "対象条件終了日"
+      biz_calendar/exception_holiday:
+        state: "状態"
+        date: "例外休業日"
+        start_date: "例外休業開始日"
+        end_date: "例外休業終了日"
+      biz_calendar/holiday_type:
+        state: "状態"
+        name: "休日種別ID"
+        title: "休日種別名"
+      biz_calendar/piece/bussiness_time:
+        target_type: 業務時間表示対象
+        page_filter: ページ絞り込み
+        time_style: 時間形式
+      biz_calendar/piece/bussiness_holiday:
+        target_type: 業務時間表示対象
+        page_filter: ページ絞り込み
+        place_link: 拠点ページリンク
+        holiday_type_state: 休日種別表示
+        date_style: 日付形式
+      biz_calendar/piece/calendar:
+        place_id: 拠点
+        month_number: 表示月数
+        holiday_type_state: 休日種別表示
+        holiday_state: 休業日表示
+        date_style: 日付形式
+        lower_text: テキスト

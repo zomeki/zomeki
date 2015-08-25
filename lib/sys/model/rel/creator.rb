@@ -20,7 +20,7 @@ module Sys::Model::Rel::Creator
   end
   
   def in_creator=(values)
-    @creator_ids = values
+    @creator_ids = values.with_indifferent_access
     @creator_ids.each {|k,v| @creator_ids[k] = nil if v.blank? }
     write_attribute(:in_creator, @creator_ids)
   end

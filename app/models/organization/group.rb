@@ -2,10 +2,12 @@ class Organization::Group < ActiveRecord::Base
   include Sys::Model::Base
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Cms::Model::Base::Page::Publisher
+
   include Cms::Model::Auth::Content
 
   attr_accessible :state, :name, :sys_group_code, :sitemap_state, :docs_order, :sort_no,
-                  :business_outline, :contact_information,
+                  :business_outline, :contact_information, :outline,
                   :concept_id, :layout_id, :more_layout_id, :in_creator
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
@@ -110,6 +112,17 @@ class Organization::Group < ActiveRecord::Base
     end
 
     Cms::Lib::BreadCrumbs.new(crumbs)
+  end
+
+  def rebuild(content, options={})
+    return false unless self.public?
+    @save_mode = :publish
+    publish_page(content, options)
+  end
+
+  def public_smart_phone_path
+    return '' unless public_uri
+    "#{content.site.public_path}/_smartphone#{public_uri}"
   end
 
   private

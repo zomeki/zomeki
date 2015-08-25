@@ -7,6 +7,8 @@ class Tag::Public::Node::TagsController < Cms::Controller::Public::Base
   end
 
   def index
+    return render(text: '') if Core.publish
+
     if @content.tags.empty?
       http_error(404)
     else
@@ -15,6 +17,8 @@ class Tag::Public::Node::TagsController < Cms::Controller::Public::Base
   end
 
   def show
+    http_error(404) if params[:page]
+
     @item = @content.tags.find_by_word(params[:word])
     return http_error(404) unless @item
 

@@ -1,12 +1,39 @@
-<%- unless @ranks.empty? -%>
-<ul>
-  <% @ranks.each.with_index(1) do |rank, i| -%>
-  <li <%= (i <= 10) ? "class=""ranking#{i}""" : "" %>><span class="rank"><%= i %></span><%= link_to(rank.page_title, "http://#{rank.hostname}#{rank.page_path}", {target: "http://#{rank.hostname}/".index(Page.site.full_uri) ? nil : '_blank'})%><%= "(#{rank.accesses})" unless @piece.show_count == 0 %></li>
-  <%- end -%>
-</ul>
-<%- if @piece.more_link_body.present? && @piece.more_link_url.present? -%>
-<div class="more">
-  <%= link_to @piece.more_link_body, @piece.more_link_url %>
-</div>
+<%- if @ranks.present? -%>
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $.ajax({
+    url: '/_api/rank/piece_ranks',
+    type: 'GET',
+    data: {'piece_id': <%= @piece.id %>, 'current_item_class': '<%= Page.current_item.try(:class) %>',
+                                         'current_item_id': <%= Page.current_item.try(:id) %>, 'version': '20150401'},
+    success: function (data) {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      var ranks = data['ranks'];
+      var more = data['more'];
+      if (ranks && ranks.length > 0) {
+        var u = $('<ul>');
+        $(ranks).each(function (index, item) {
+          var i = index + 1;
+          var l = $('<li>');
+          if (i <= 10) l.attr('class', 'ranking'+i);
+          l.append($('<span>', {'class': 'rank', 'text': i}));
+          l.append($('<a>', {'href': item['url'], 'target': '_blank', 'text': item['title']}));
+          if (item['count'] !== null) l.append($('<span>', {'class': 'count', 'text': '('+item['count']+')'}));
+          u.append(l);
+        });
+        wrapper.append(u);
+      }
+      if (more) {
+        var d = $('<div>', {'class': 'more'});
+        d.append($('<a>', {'href': more['url'], 'text': more['body']}));
+        wrapper.append(d);
+      }
+    },
+    error: function (data)  {
+      var wrapper = $('#<%= @piece.css_id %> > .pieceContainer > .pieceBody');
+      wrapper.text('現在表示できません。');
+    }
+  });
+});
 <%- end -%>
 <%- end -%>

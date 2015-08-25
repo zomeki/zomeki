@@ -1,0 +1,47 @@
+<div class="calendarHolidays calendarLocationHolidays">
+
+  <div class="body"><%=raw @place.description %></div>
+
+  <% if @place.business_hours_state == 'visible' %>
+  <div class="businessHours">
+    <h3><%= @place.business_hours_title %></h3>
+
+    <ul>
+      <% @place.hours.public.each do |hour| %>
+      <li><span class="date"><%= safe{hour.target_date_label(@content.date_style)} %></span>
+        <span class="time"><%= safe{"#{hour.business_hours_start_time.strftime(localize_ampm(@content.time_style, hour.business_hours_start_time))} ～ #{hour.business_hours_end_time.strftime(localize_ampm(@content.time_style, hour.business_hours_end_time))}"} %></span></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <% if @place.business_holiday_state == 'visible' %>
+  <div class="businessHoliday">
+    <h3><%= @place.business_holiday_title %></h3>
+
+    <ul>
+      <% @place.holidays.public.each do |holiday| %>
+      <li><span class="date"><%= safe{holiday.target_date_label(@content.date_style)} %></span></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <% @months.each do |month| %>
+  <section class="month <%= month.strftime('%B').downcase %>">
+  <h2><%= month.strftime('%Y年%m月') %></h2>
+
+  <%= render 'calendar', month: month, place: @place %>
+
+  </section>
+  <% end %>
+
+  <% if @types = @content.visible_types %>
+  <ul class="attributeList">
+    <% @types.each do |type| %>
+      <li class="<%= type.name %>"><%= type.title %></li>
+    <% end %>
+  </ul>
+  <% end %>
+
+</div>

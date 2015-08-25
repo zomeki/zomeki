@@ -20,6 +20,16 @@ class Tag::Tag < ActiveRecord::Base
     @public_uri = "#{node.public_uri}#{CGI::escape(word)}/"
   end
 
+  def public_path
+    return '' if public_uri.blank?
+    "#{content.public_path}#{public_uri}"
+  end
+
+  def public_smart_phone_path
+    return '' if public_uri.blank?
+    "#{content.public_path}/_smartphone#{public_uri}"
+  end
+
   def bread_crumbs(tag_node)
     crumbs = []
 

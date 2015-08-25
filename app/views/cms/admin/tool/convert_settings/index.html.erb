@@ -1,0 +1,90 @@
+<%= form_for :item  do |f| %>
+  <%= error_messages_for :item %>
+  <table class="show">
+    <tr>
+      <th><%= @item.locale(:site_url) %> <span class="note">※</span></th>
+      <td>
+        <%= f.select :site_url, Tool::Convert.all_site_urls.collect {|s| [ s, s ] }, { include_blank: true }, {id: "site_url", style: "width: 400px;"} %>
+      </td>
+    </tr>
+  </table>
+
+  <table class="show">
+    <tr>
+      <th><%= @item.locale(:title_tag) %> <span class="note">※</span></th>
+      <td><%= f.text_field :title_tag, style: 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:body_tag) %> <span class="note">※</span></th>
+      <td><%= f.text_field :body_tag, style: 'width: 500px;' %> </td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:updated_at_tag) %></th>
+      <td><%= f.text_field :updated_at_tag, style: 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:updated_at_regexp) %></th>
+      <td><%= f.text_field :updated_at_regexp, style: 'width: 500px;' %> (例：(\d+)年(\d+)月(\d+)日)</td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:creator_group_from_url_regexp) %></th>
+      <td><%= f.text_field :creator_group_from_url_regexp, style: 'width: 500px;' %> (例：\/soshiki\/(\d+)\/)</td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:creator_group_relation_type) %></th>
+      <td><%= f.radio_buttons :creator_group_relation_type, @item.class::GROUP_RELATION_OPTIONS %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:creator_group_url_relations) %></th>
+      <td><%= f.text_area :creator_group_url_relations, :class => 'body', :style => 'width: 500px' %>
+        <br />(例：<br />hisyo&gt;hisho[改行]<br />kikaku/hisyo&gt;101[改行])</td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:category_tag) %></th>
+      <td><%= f.text_field :category_tag, style: 'width: 500px;' %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:category_regexp) %></th>
+      <td><%= f.text_field :category_regexp, style: 'width: 500px;' %> (例：<%= '<div class="category[\d]+">([^<\/]+)<\/div>' %>)</td>
+    </tr>
+  </table>
+  <%= submit :update %>
+<% end %>
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  (function () {
+    $("#site_url").change(function(){
+      $( "#site_url option:selected" ).each(function() {
+        window.location = "<%= "#{cms_tool_convert_settings_path}?item[site_url]=" %>" + $(this).text();
+        return false;
+      });
+    });
+  })();
+});
+<%- end -%>
+
+<%- if @items.size > 0 -%>
+<p class="form">変換設定一覧</p>
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="text-align: left;"><%= Tool::ConvertSetting.human_attribute_name :site_url %></th>
+    <th style="width: 200px; text-align: left;"><%= Tool::ConvertSetting.human_attribute_name :title_tag %></th>
+    <th style="width: 200px; text-align: left;"><%= Tool::ConvertSetting.human_attribute_name :body_tag %></th>
+    <th style="width: 100px; text-align: center;"><%= Tool::ConvertSetting.human_attribute_name :updated_at %></th>
+    <th style="width: 100px; text-align: center;"><%= Tool::ConvertSetting.human_attribute_name :created_at %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+    <tr class="<%= cycle('cycle', '')%>">
+      <td style="text-align: center;"><%= link_to :show, cms_tool_convert_setting_path(id: item.id) %> </td>
+      <td style="text-align: left;"><%= item.site_url %></td>
+      <td style="text-align: left;"><%= item.title_tag %></td>
+      <td style="text-align: left;"><%= item.body_tag %></td>
+      <td style="text-align: center;"><%=l item.updated_at if item.updated_at %></td>
+      <td style="text-align: center;"><%=l item.created_at if item.created_at %></td>
+    </tr>
+  <%- end -%>
+</table>
+<%= paginate @items %>
+<%- end -%>

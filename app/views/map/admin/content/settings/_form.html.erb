@@ -19,7 +19,7 @@ value_form = case @item.form_type
   <tr>
     <th>設定値</th>
     <td>
-      <div style="margin: 5px; line-height: 1.2;"><%= @item.upper_text %></div>
+      <div style="margin: 5px; line-height: 1.2;"><%= raw @item.upper_text %></div>
       <%= value_form %><span style="margin-left: 10px;"><%= @item.config[:comment] %></span>
       <div style="margin: 5px; line-height: 1.2;"><%= @item.lower_text %></div>
     </td>

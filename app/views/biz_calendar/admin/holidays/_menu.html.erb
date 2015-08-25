@@ -1,0 +1,15 @@
+<h2><%= @content.name %>：<%= @place.title  %>：休業日</h2>
+
+<div class="actionMenu">
+<%= action_menu :new if Core.user.has_auth?(:designer) && Core.user.has_priv?(:create, :item => Core.concept) %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<%= action_menu :edit if safe{@item.editable?} %>
+<%= action_menu :destroy   if safe{@item.deletable?} %>
+
+<% if params[:action] == 'index' %>
+<span class="separator"></span>
+<%= link_to '休業日一覧', biz_calendar_place_holidays_path(content: @content.id, place_id: @place.id), :class => 'current' %>
+<%= link_to '例外休業日一覧', biz_calendar_place_exception_holidays_path(content: @content.id, place_id: @place.id) %>
+<% end %>
+</div>

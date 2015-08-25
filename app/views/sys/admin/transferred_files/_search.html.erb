@@ -1,0 +1,25 @@
+<%= form_for :item, :url => '',  :html => {:method => :get, :class => 'search'} do |f| %>
+<table>
+
+  <tr>
+    <th>バージョン</th>
+    <td ><%= text_field_tag 's_version', params[:s_version], :style => 'width: 120px; ime-mode: disabled;' %></td>
+    <th>ファイル</th>
+    <td ><%= text_field_tag 's_path', params[:s_path], :style => 'width: 120px;' %></td>
+    <th>ファイル情報</th>
+    <td ><%= text_field_tag 's_item_name', params[:s_item_name], :style => 'width: 120px;' %></td>
+    <th>種別</th>
+    <td><%= select_tag 's_file_type', options_for_select(Sys::Model::Base::Transfer.file_types, params[:s_file_type]), :include_blank => true %></td>
+    <th>操作</th>
+    <td><%= select_tag 's_operation', options_for_select(Sys::Model::Base::Transfer.operations, params[:s_operation]), :include_blank => true %></td>
+    <th>操作ユーザ</th>
+    <td ><%= text_field_tag 's_operator_name', params[:s_operator_name], :style => 'width: 120px;' %></td>
+
+    <td class="submitters">
+      <%= submit_tag '検索',   :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+  </tr>
+
+</table>
+<!-- end .search --><% end %>

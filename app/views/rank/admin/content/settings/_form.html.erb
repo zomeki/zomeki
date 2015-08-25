@@ -37,3 +37,36 @@ value_form = case @item.form_type
     </td>
   </tr>
 </table>
+
+<%- if @item.name == 'google_oauth' -%>
+<table class="show">
+  <tr>
+    <th>クライアントID</th>
+    <td><%= text_field_tag 'client_id', @item.extra_values[:client_id], size: 100 %></td>
+  </tr>
+  <tr>
+    <th>クライアントシークレット</th>
+    <td><%= text_field_tag 'client_secret', @item.extra_values[:client_secret], size: 100 %></td>
+  </tr>
+  <%- if (auth_url = @item.extra_values[:auth_url]).present? -%>
+  <tr>
+    <th>認証URL</th>
+    <td><%= link_to '認証コードを取得する', auth_url, target: '_new' %></td>
+  </tr>
+  <tr>
+    <th>認証コード</th>
+    <td><%= text_field_tag 'auth_code', @item.extra_values[:auth_code], size: 100 %></td>
+  </tr>
+  <%- end -%>
+  <%- if (oauth2_token = @item.extra_values[:oauth2_token]).kind_of?(Hash) -%>
+  <tr>
+    <th>トークン</th>
+    <td>
+      <%- oauth2_token.each do |key, value| -%>
+      <%= key %>: <%= value %> <%= "(#{I18n.l(Time.at(value))})" if key == 'expires_at' %><br />
+      <%- end -%>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+<%- end -%>

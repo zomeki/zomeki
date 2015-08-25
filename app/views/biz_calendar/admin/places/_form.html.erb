@@ -1,0 +1,46 @@
+<%= init_ckeditor %>
+
+<%= javascript_tag do %>
+$(function() {
+  $('.js-date').datepicker({ dateFormat: 'yy-mm-dd' });
+});
+<% end %>
+
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'states' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:url) %> <span class="note">※</span></th>
+    <td><%= f.text_field :url, :class => 'name', :style => 'ime-mode: disabled;' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:summary) %></th>
+    <td>
+      <%= init_ckeditor %>
+      <%= f.text_area :summary, :class => 'body ckeditor' %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:description) %></th>
+    <td>
+      <%= f.text_area :description, :class => 'body ckeditor' %>
+    </td>
+  </tr><tr>
+    <th><%= @item.locale(:business_hours_state) %></th>
+    <td><%= f.radio_buttons :business_hours_state, @item.class::BUSINESS_HOURS_STATE_OPTIONS, :class => 'states' %>
+      &nbsp;&nbsp;&nbsp;&nbsp;見出しタイトル：<%= f.text_field :business_hours_title, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:business_holiday_state) %></th>
+    <td><%= f.radio_buttons :business_holiday_state, @item.class::BUSINESS_HOLIDAY_STATE_OPTIONS, :class => 'states' %>
+      &nbsp;&nbsp;&nbsp;&nbsp;見出しタイトル：<%= f.text_field :business_holiday_title, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:sort_no) %></th>
+    <td><%= f.text_field :sort_no, :class => 'name', :style => 'ime-mode: disabled;' %></td>
+  </tr>
+</table>
+
+<%= creator_form f %>

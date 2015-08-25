@@ -37,7 +37,7 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
 
     if @item.name.in?('gp_category_content_category_type_id', 'calendar_relation', 'map_relation', 'inquiry_setting',
                       'approval_relation', 'gp_template_content_template_id', 'feed', 'tag_relation', 'sns_share_relation',
-                      'blog_functions')
+                      'blog_functions', 'feature_settings', 'list_style', 'qrcode_settings', 'basic_setting')
       extra_values = @item.extra_values
 
       case @item.name
@@ -46,11 +46,16 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:visible_category_type_ids] = (params[:visible_category_types] || []).map {|ct| ct.to_i }
         extra_values[:default_category_type_id] = params[:default_category_type].to_i
         extra_values[:default_category_id] = params[:default_category].to_i
+      when 'basic_setting'
+        extra_values[:default_layout_id] = params[:default_layout_id].to_i
       when 'calendar_relation'
         extra_values[:calendar_content_id] = params[:calendar_content_id].to_i
+        extra_values[:event_sync_settings] = params[:event_sync_settings].to_s
+        extra_values[:event_sync_default_will_sync] = params[:event_sync_default_will_sync].to_s
       when 'map_relation'
         extra_values[:map_content_id] = params[:map_content_id].to_i
         extra_values[:lat_lng] = params[:lat_lng]
+        extra_values[:marker_icon_category] = params[:marker_icon_category]
       when 'inquiry_setting'
         extra_values[:state] = params[:state]
         extra_values[:display_fields] = params[:display_fields] || []
@@ -71,6 +76,13 @@ class GpArticle::Admin::Content::SettingsController < Cms::Controller::Admin::Ba
         extra_values[:comment_open] = params[:comment_open]
         extra_values[:comment_notification_mail] = params[:comment_notification_mail]
         extra_values[:footer_style] = params[:footer_style]
+      when 'feature_settings'
+        extra_values[:feature_1] = params[:feature_1]
+        extra_values[:feature_2] = params[:feature_2]
+      when 'list_style'
+        extra_values[:wrapper_tag] = params[:wrapper_tag]
+      when 'qrcode_settings'
+        extra_values[:state] = params[:state]
       end
 
       @item.extra_values = extra_values

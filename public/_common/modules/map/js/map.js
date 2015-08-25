@@ -1,11 +1,19 @@
-var Map = function (id, latitude, longitude) {
+var Map = function (id, latitude, longitude, latitude2, longitude2) {
   this._map_canvas = new google.maps.Map(document.getElementById(id), {
-      center: new google.maps.LatLng(latitude, longitude),
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       scaleControl: true,
       scrollwheel: false
     });
+
+  if (latitude2 == undefined || longitude2 == undefined) {
+    this._map_canvas.setCenter(new google.maps.LatLng(latitude, longitude));
+  } else {
+    this._map_canvas.fitBounds(new google.maps.LatLngBounds(
+                                new google.maps.LatLng(latitude, longitude),
+                                new google.maps.LatLng(latitude2, longitude2)
+                              ));
+  }
 
   this._markers = {};
 }
@@ -62,6 +70,7 @@ Map.prototype.move_to = function (id) {
     var destination = this._markers[id];
     if (destination) {
       this._map_canvas.panTo(destination.position);
+      this._map_canvas.setZoom(16);
       destination.open_info_window();
     }
   }

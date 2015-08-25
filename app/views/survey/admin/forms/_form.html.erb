@@ -27,18 +27,12 @@
     <td><%= f.radio_buttons :sitemap_state, @item.class::SITEMAP_STATE_OPTIONS %></td>
   </tr>
   <tr>
+    <th><%= f.label :index_link %></th>
+    <td><%= f.radio_buttons :index_link, @item.class::INDEX_LINK_OPTIONS %></td>
+  </tr>
+  <tr>
     <th><%= f.label :sort_no %></th>
     <td><%= f.text_field :sort_no, :class => 'number' %></td>
-  </tr>
-  <tr>
-    <th><%= f.label :opened_at %></th>
-    <td><%= f.text_field :opened_at, :value => value_for_datetimepicker(f.object_name, :opened_at),
-                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
-  </tr>
-  <tr>
-    <th><%= f.label :closed_at %></th>
-    <td><%= f.text_field :closed_at, :value => value_for_datetimepicker(f.object_name, :closed_at),
-                         :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
   <tr>
     <th><%= f.label :confirmation %></th>
@@ -46,33 +40,26 @@
   </tr>
 </table>
 
-<%- if @content.approval_related? -%>
-<p class="form">承認</p>
+<p class="form">公開日時設定</p>
 
 <table class="show">
+<%- if @content.approval_related? -%>
   <tr>
-    <th><%= Approval::ApprovalFlow.model_name.human %></th>
-    <%- if @content.approval_content_approval_flow -%>
-    <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
-      <%- unless approval_flows.empty? -%>
-      <table class="approval noDesign">
-        <%- approval_flows.each do |approval_flow| -%>
-        <tr>
-          <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
-          <td><%= approval_flow.approvals.map{|a|
-            approvers = a.approvers.pluck(:name).join('、')
-            content_tag(:span, approvers, style: 'padding: 4px;')
-            }.join(' ＞ ').html_safe %></td>
-        </tr>
-        <%- end -%>
-      </table>
-      <%- end -%>
-    </td>
-    <%- else -%>
-    <td><%= link_to '使用する承認フローを選択してください。', survey_content_settings_path %></td>
-    <%- end -%>
+    <th>公開開始日時</th>
+    <td><%= f.array_text_field 'in_tasks[publish]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+  </tr>
+<%- else -%>
+  <%= hidden_field_tag 'item[in_tasks][publish]', '' -%>
+<%- end -%>
+  <tr>
+    <th>公開終了日時</th>
+    <td><%= f.array_text_field 'in_tasks[close]', :style => 'width: 150px;', :class => 'datetimepicker' %></td>
   </tr>
 </table>
+
+<%- if @content.approval_related? -%>
+<p class="form">承認</p>
+<%= render 'approval/admin/_partial/form', {f: f, item: @item, content: @content} %>
 <%- end -%>
 
 <%= creator_form f %>

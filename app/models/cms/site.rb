@@ -10,7 +10,13 @@ class Cms::Site < ActiveRecord::Base
   include PortalGroup::Model::Rel::Site::Business
   include PortalGroup::Model::Rel::Site::Attribute
   include PortalGroup::Model::Rel::Site::Area
-  
+  include Sys::Model::Rel::FileTransfer
+  include Cms::Model::Rel::SiteSetting
+
+  OGP_TYPE_OPTIONS = [['article', 'article'], ['product', 'product'], ['profile', 'profile']]
+  SMART_PHONE_PUBLICATION_OPTIONS = [['書き出さない', 'no'], ['書き出す', 'yes']]
+  SPP_TARGET_OPTIONS = [['トップページのみ書き出す', 'only_top'], ['すべて書き出す', 'all']]
+
   belongs_to :status, :foreign_key => :state,
     :class_name => 'Sys::Base::Status'
   belongs_to :portal_group_status, :foreign_key => :portal_group_state,
@@ -27,39 +33,63 @@ class Cms::Site < ActiveRecord::Base
     :class_name => 'Cms::SiteBasicAuthUser'
   has_many :site_belongings, :dependent => :destroy, :class_name => 'Cms::SiteBelonging'
   has_many :groups, :through => :site_belongings, :class_name => 'Sys::Group'
-  has_many :nodes
+  has_many :nodes, :dependent => :destroy
+  has_many :maintenances, class_name: 'Sys::Maintenance', dependent: :destroy
+  has_many :messages, class_name: 'Sys::Message', dependent: :destroy
 
   validates_presence_of :state, :name, :full_uri
   validates_uniqueness_of :full_uri
   validates_uniqueness_of :mobile_full_uri,
     :if => %Q(!mobile_full_uri.blank?)
   validate :validate_attributes
-  
+
+  after_initialize :set_defaults
+
   ## site image
   attr_accessor :site_image, :del_site_image
   after_save { save_cms_data_file(:site_image, :site_id => id) }
   after_destroy { destroy_cms_data_file(:site_image) }
 
+  ## file transfer
+  after_save { save_file_transfer(:site_id => id) }
+
+  ## site settings
+  after_save { save_site_settings(:site_id => id) }
+
+  before_validation :fix_full_uri
   before_destroy :block_last_deletion
 
   def states
     [['公開','public']]
   end
-  
+
   def portal_group_states
     [['表示','visible'],['非表示','hidden']]
   end
-  
+
+  def root_path
+    dir = format('%08d', id).sub(/(..)(..)(..)(..)/, '\\1/\\2/\\3/\\4')
+    Rails.root.join("sites/#{dir}")
+  end
+
   def public_path
     dir = format('%08d', id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1')
     "#{Rails.root}/sites/#{dir}/public"
   end
-  
+
+  def public_smart_phone_path
+    "#{public_path}/_smartphone"
+  end
+
   def config_path
     dir = format('%08d', id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1')
     "#{Rails.root}/sites/#{dir}/config"
   end
-  
+
+  def rewrite_config_path
+    "#{config_path}/rewrite.conf"
+  end
+
   def uri
     return '/' unless full_uri.match(/^[a-z]+:\/\/[^\/]+\//)
     full_uri.sub(/^[a-z]+:\/\/[^\/]+\//, '/')
@@ -78,15 +108,22 @@ class Cms::Site < ActiveRecord::Base
   def publish_uri
     "#{Core.full_uri}_publish/#{format('%08d', id)}/"
   end
-  
+
+  def full_ssl_uri
+    return nil unless Sys::Setting.use_common_ssl?
+    url  = Sys::Setting.setting_extra_value(:common_ssl, :common_ssl_uri)
+    url += "_ssl/#{format('%08d', id)}/"
+    return url
+  end
+
   def has_mobile?
     !mobile_full_uri.blank?
   end
-  
+
   def root_node
     Cms::Node.find_by_id(node_id)
   end
-  
+
   def related_sites(options = {})
     sites = []
     related_site.to_s.split(/(\r\n|\n)/).each do |line|
@@ -98,11 +135,11 @@ class Cms::Site < ActiveRecord::Base
     end
     sites
   end
-  
+
   def site_image_uri
     cms_data_file_uri(:site_image, :site_id => id)
   end
-  
+
   def self.find_by_script_uri(script_uri)
     base = script_uri.gsub(/^([a-z]+:\/\/[^\/]+\/).*/, '\1')
     item = Cms::Site.new.public
@@ -113,7 +150,7 @@ class Cms::Site < ActiveRecord::Base
     item.and cond
     return item.find(:first, :order => :id)
   end
-  
+
   def self.make_virtual_hosts_config
     conf = '';
     find(:all, :order => :id).each do |site|
@@ -147,21 +184,22 @@ class Cms::Site < ActiveRecord::Base
     end
     conf
   end
-  
+
   def self.put_virtual_hosts_config
     conf = make_virtual_hosts_config
-    Util::File.put("#{Rails.root}/config/virtual-hosts/sites.conf", :data => conf)
+    Util::File.put Rails.root.join('config/virtual-hosts/sites.conf'), data: conf
+    FileUtils.touch Rails.root.join('tmp/reload_virtual_hosts.txt')
   end
-  
+
   def basic_auth_enabled?
     pw_file = "#{::File.dirname(public_path)}/.htpasswd"
     return ::File.exists?(pw_file)
   end
-  
+
   def enable_basic_auth
     ac_file = "#{::File.dirname(public_path)}/.htaccess"
     pw_file = "#{::File.dirname(public_path)}/.htpasswd"
-    
+
     conf  = %Q(<FilesMatch "^(?!#{ZomekiCMS::ADMIN_URL_PREFIX})">\n)
     conf += %Q(    AuthUserFile #{pw_file}\n)
     conf += %Q(    AuthGroupFile /dev/null\n)
@@ -176,23 +214,23 @@ class Cms::Site < ActiveRecord::Base
     #conf += %Q(    Satisfy Any\n)
     #conf += %Q(</FilesMatch>\n)
     Util::File.put(ac_file, :data => conf)
-    
+
     salt = Zomeki.config.application['sys.crypt_pass']
     conf = ""
-    basic_auth_users.each do |user|
+    basic_auth_users.where(state: 'enabled').each do |user|
       conf += %Q(#{user.name}:#{user.password.crypt(salt)}\n)
     end
     Util::File.put(pw_file, :data => conf)
-    
+
     return true
   end
-  
+
   def disable_basic_auth
     ac_file = "#{::File.dirname(public_path)}/.htaccess"
     pw_file = "#{::File.dirname(public_path)}/.htpasswd"
-    FileUtils.rm(ac_file)
-    FileUtils.rm(pw_file)
-    
+    FileUtils.rm_f(ac_file)
+    FileUtils.rm_f(pw_file)
+
     return true
   end
 
@@ -204,15 +242,56 @@ class Cms::Site < ActiveRecord::Base
     groups.where(level_no: 2).map{|g| g.descendants_for_option }.flatten(1)
   end
 
+  def og_type_text
+    OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
+  end
+
+  def smart_phone_publication_text
+    SMART_PHONE_PUBLICATION_OPTIONS.detect{|o| o.last == smart_phone_publication }.try(:first).to_s
+  end
+
+  def spp_target_text
+    SPP_TARGET_OPTIONS.detect{|o| o.last == spp_target }.try(:first).to_s
+  end
+
+  def publish_for_smart_phone?
+    smart_phone_publication == 'yes'
+  end
+
+  def spp_all?
+    spp_target == 'all'
+  end
+
+  def spp_only_top?
+    spp_target == 'only_top'
+  end
+
 protected
+  def fix_full_uri
+    self.full_uri += '/' if full_uri.present? && full_uri.to_s[-1] != '/'
+  end
+
   def validate_attributes
-    if !full_uri.blank? && full_uri !~ /^[a-z]+:\/\/[^\/]+\//
-      self.full_uri += '/'
+    if full_uri.to_s.index('_')
+      errors.add :full_uri, 'に「_」は使用できません。'
+      return
     end
-    return true
+
+    begin
+      URI.parse(full_uri)
+    rescue URI::InvalidURIError => e
+      errors.add :full_uri, 'は正しいURLではありません。'
+    end
   end
 
   def block_last_deletion
     raise "Last site can't be deleted." if self.last?
+  end
+
+  private
+
+  def set_defaults
+    self.smart_phone_publication ||= SMART_PHONE_PUBLICATION_OPTIONS.first.last if self.has_attribute?(:smart_phone_publication)
+    self.spp_target ||= SPP_TARGET_OPTIONS.first.last if self.has_attribute?(:spp_target)
   end
 end

@@ -1,0 +1,33 @@
+<%= render :partial => 'search' %>
+
+<table class="index">
+
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="width: 100px;">バージョン</th>
+    <th style="width: 130px;">対象ディレクトリ</th>
+    <th style="width: ;">ファイル</th>
+    <th style="width: ;">ファイル情報</th>
+    <th style="width: 60px; text-align: center;">操作</th>
+    <th style="width: 120px; text-align: center;">転送日時</th>
+    <th style="width: 120px;">転送ユーザ</th>
+	<th style="width: 60px; text-align: center;">表示</th>
+  </tr>
+
+  <% for item in @items %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => item) %></td>
+    <td><%= item.version %></td>
+    <td><%= item.parent_dir %></td>
+    <td><%= item.path %></td>
+    <td><%= item.item_name%></td>
+    <td style="text-align: center;"><%= item.operation_label %></td>
+    <td style="text-align: center;"><%= safe{item.created_at.strftime('%Y-%m-%d %H:%M')} %></td>
+    <td><%= safe{item.user.name} %></td>
+    <td style="text-align: center;"><%= link_to '転送先', "#{@destination_uri}#{item.path}", :target => '_blank' if @destination_uri && item.file? %></td>
+  </tr>
+  <% end %>
+
+</table>
+
+<%= paginate @items %>

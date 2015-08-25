@@ -12,7 +12,7 @@
     <td style="text-align: center;"><%= link_to :show, approval_approval_flow_path(content: @content, id: item.id) %></td>
     <td style="text-align: left;"><%= item.title %></td>
     <td style="text-align: left;"><%= item.group.try(:name) || 'すべて' %></td>
-    <td style="text-align: left;"><%= item.approvals.map{|a| a.approvers.pluck(:name).join('、') }.join(' ＞ ') %></td>
+    <td style="text-align: left;"><%= item.approvals.map{|a| a.approvers_label}.join(' ＞ ') %></td>
     <td style="text-align: right;"><%= item.sort_no %></td>
     <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
   </tr>

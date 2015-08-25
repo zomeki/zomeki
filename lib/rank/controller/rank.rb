@@ -5,15 +5,13 @@ module Rank::Controller::Rank
 
   def get_access(content, start_date)
 
-    if content.setting_value(:username).blank? ||
-       content.setting_value(:password).blank? ||
-       content.setting_value(:web_property_id).blank?
-      flash[:alert] = "ユーザー・パスワード・トラッキングIDを設定してください。"
+    if content.setting_value(:web_property_id).blank?
+      flash[:alert] = "トラッキングIDを設定してください。"
       return
     end
 
     begin
-      Garb::Session.login(content.setting_value(:username), content.setting_value(:password))
+      Garb::Session.access_token = content.access_token
       profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == content.setting_value(:web_property_id)}
 
       limit = 1000
@@ -45,13 +43,13 @@ module Rank::Controller::Rank
         end
       end
 
-      logger.info "Success: #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}"
+      logger.info "Success: #{content.id}: #{content.setting_value(:web_property_id)}"
       flash[:notice] = "取り込みが完了しました。 （取り込み開始日は #{Date.parse(first_date).to_s} です）"
-    rescue Garb::AuthenticationRequest::AuthError => e
-      logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
-      flash[:alert] = "認証エラーです。 （#{content.setting_value(:username)} ）"
+    rescue Garb::AuthError => e
+      logger.warn "Error  : #{content.id}: #{content.setting_value(:web_property_id)}: #{e}"
+      flash[:alert] = "認証エラーです。"
     rescue => e
-      logger.warn "Error  : #{content.id}: #{content.setting_value(:username)}: #{content.setting_value(:web_property_id)}: #{e}"
+      logger.warn "Error  : #{content.id}: #{content.setting_value(:web_property_id)}: #{e}"
       flash[:alert] = "取り込みに失敗しました。"
     end
   end
@@ -90,10 +88,11 @@ module Rank::Controller::Rank
                     .where(rank_table[:date].gteq(from.strftime('%F')).and(rank_table[:date].lteq(to.strftime('%F'))))
                     .group(:hostname, :page_path)
                     .find_all.each do |result|
-
+            latest_title = Rank::Rank.order('date DESC').where(hostname: result.hostname,
+                                                               page_path: result.page_path).pluck(:page_title).first
             Rank::Total.create!(content_id:  content.id,
                                 term:        term,
-                                page_title:  result.page_title,
+                                page_title:  latest_title,
                                 hostname:    result.hostname,
                                 page_path:   result.page_path,
                                 pageviews:   result.pageviews,
@@ -145,7 +144,7 @@ module Rank::Controller::Rank
     end
   end
 
-  def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil)
+  def rank_datas(content, term, target, per_page, category_option = nil, gp_category = nil, category_type = nil, category = nil, current_item = nil)
     hostname   = URI.parse(content.site.full_uri).host
     exclusion  = content.setting_value(:exclusion_url).strip.split(/[ |\t|\r|\n|\f]+/) rescue exclusion = ''
     rank_table = Rank::Total.arel_table
@@ -159,12 +158,12 @@ module Rank::Controller::Rank
 
     category_ids = []
     if category_option == 'on'
-      @item = Page.current_item
-      case @item
+      item = current_item || Page.current_item
+      case item
         when GpCategory::CategoryType
-          category_ids = @item.categories.map(&:id)
+          category_ids = item.categories.map(&:id)
         when GpCategory::Category
-          category_ids = @item.descendants.map(&:id)
+          category_ids = item.descendants.map(&:id)
       end
     end
 

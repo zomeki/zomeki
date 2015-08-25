@@ -1,1 +1,3 @@
 <%= link_to 'ディレクトリ', cms_nodes_path(0), :class => (current == :node ? 'current' : '') %>
+<%= link_to "ファイル管理", sys_storage_files_path, :class => (current == :storage ? 'current' : '') %>
+<%= link_to "ファイル転送", sys_transferable_files_path, :class => (current == :transfer ? 'current' : '') %>

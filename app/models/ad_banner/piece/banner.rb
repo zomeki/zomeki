@@ -1,6 +1,7 @@
 # encoding: utf-8
 class AdBanner::Piece::Banner < Cms::Piece
   SORT_OPTIONS = [['表示順', 'ordered'], ['ランダム', 'random']]
+  IMPL_OPTIONS = [['動的', 'dynamic'], ['静的', 'static']]
 
   default_scope where(model: 'AdBanner::Banner')
 
@@ -9,7 +10,8 @@ class AdBanner::Piece::Banner < Cms::Piece
   validate :validate_settings
 
   def validate_settings
-    errors.add(:base, "#{self.class.human_attribute_name :sort} #{errors.generate_message(:base, :blank)}") if in_settings['sort'].blank?
+    errors.add(:base, "#{self.class.human_attribute_name :sort} #{errors.generate_message :base, :blank}") unless sort
+    errors.add(:base, "#{self.class.human_attribute_name :impl} #{errors.generate_message :base, :blank}") unless impl
   end
 
   def content
@@ -37,7 +39,19 @@ class AdBanner::Piece::Banner < Cms::Piece
   end
 
   def sort
-    self.class::SORT_OPTIONS.detect{|so| so.last == setting_value(:sort) }
+    SORT_OPTIONS.detect{|so| so.last == (in_settings[:sort] || setting_value(:sort)) }
+  end
+
+  def sort_text
+    sort.try(:first).to_s
+  end
+
+  def impl
+    IMPL_OPTIONS.detect{|io| io.last == (in_settings[:impl] || setting_value(:impl)) }
+  end
+
+  def impl_text
+    impl.try(:first).to_s
   end
 
   def upper_text
@@ -52,7 +66,8 @@ class AdBanner::Piece::Banner < Cms::Piece
 
   def set_default_settings
     settings = self.in_settings
-    settings['sort'] = SORT_OPTIONS.first.last if setting_value(:sort).blank?
+    settings[:sort] = SORT_OPTIONS.first.last if setting_value(:sort).blank?
+    settings[:impl] = IMPL_OPTIONS.first.last if setting_value(:impl).blank?
     self.in_settings = settings
   end
 end

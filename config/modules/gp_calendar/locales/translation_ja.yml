@@ -7,12 +7,18 @@ ja:
       gp_calendar/event:
         id: ID
         state: 状態
+        will_sync: 同期
         started_on: 開始日
         ended_on: 終了日
         title: イベント名
         href: イベントURL
         description: 概要
         created_at: 作成日時
+        sync_source_host: 同期元ホスト
+        sync_source_content_id: 同期元コンテンツID
+        sync_source_id: 同期元ID
+        sync_source_source_class: 同期元タイプ
+        sync_exported: 同期状態
       gp_calendar/holiday:
         id: ID
         state: 状態

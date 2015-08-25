@@ -20,7 +20,7 @@ module Sys::Model::Base::OperationLog
   end
 
   def log_operation(op)
-    operation_logs.create(user: Core.user, operation: op) if Core.user
+#    operation_logs.create(user: Core.user, operation: op) if Core.user
   end
 
   def operated_users

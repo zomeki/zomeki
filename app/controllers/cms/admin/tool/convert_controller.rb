@@ -3,7 +3,7 @@ class Cms::Admin::Tool::ConvertController < Cms::Controller::Admin::Base
   include Sys::Controller::Scaffold::Base
 
   def pre_dispatch
-    return error_auth unless Core.user.has_auth?(:designer)
+    return error_auth unless Core.user.has_auth?(:manager)
   end
 
   def index

@@ -67,7 +67,15 @@ class Cms::Node < ActiveRecord::Base
   def public_path
     "#{site.public_path}#{public_uri}".gsub(/\?.*/, '')
   end
-  
+
+  def public_mobile_path
+    "#{site.public_path}/_mobile#{public_uri}".gsub(/\?.*/, '')
+  end
+
+  def public_smart_phone_path
+    "#{site.public_path}/_smartphone#{public_uri}".gsub(/\?.*/, '')
+  end
+
   def public_uri=(uri)
     @public_uri = uri
   end
@@ -90,7 +98,7 @@ class Cms::Node < ActiveRecord::Base
   
   def inherited_concept(key = nil)
     if !@_inherited_concept
-      concept_id = concept_id
+      concept_id = self.concept_id
       parents_tree.each do |r|
         concept_id = r.concept_id if r.concept_id
       end unless concept_id
@@ -233,6 +241,21 @@ class Cms::Node < ActiveRecord::Base
     children_in_route.public
   end
   
+  def set_inquiry_group
+    inquiries.each_with_index do |inquiry, i|
+      next if i != 0
+      inquiry.group_id = in_creator["group_id"]
+    end
+  end
+
+  def pdf_in_body?(html)
+    extract_links(html, false).any?{|l| l[:url] =~ /\.pdf$/i }
+  end
+
+  def top_page?
+    parent.try(:parent_id) == 0 && name == 'index.html'
+  end
+
 protected
   def remove_file
     close_page# rescue nil
@@ -250,11 +273,12 @@ protected
 
   class Page < Cms::Node
     include Sys::Model::Rel::Recognition
-    include Cms::Model::Rel::Inquiry
+    include Cms::Model::Rel::ManyInquiry
+#    include Cms::Model::Rel::Inquiry
     include Sys::Model::Rel::Task
     
-    validate :validate_inquiry,
-      :if => %Q(state == 'public')
+#    validate :validate_inquiry,
+#      :if => %Q(state == 'public')
     validate :validate_recognizers,
       :if => %Q(state == "recognize")
     
@@ -279,6 +303,25 @@ protected
       end
       
       publish_page(content, :path => public_path, :uri => public_uri)
+    end
+
+    def rebuild(content, options={})
+      if options[:dependent] == :smart_phone
+        return false unless self.site.publish_for_smart_phone?
+        return false unless self.site.spp_all? || (self.site.spp_only_top? && top_page?)
+      end
+
+      return false unless self.state == 'public'
+      @save_mode = :publish
+
+      if rep = replaced_page
+        rep.destroy if rep.directory == 0
+      end
+
+      options[:path] ||= public_path
+      options[:uri] ||= public_uri
+
+      publish_page(content, options)
     end
     
     def close
@@ -307,10 +350,20 @@ protected
       
       item.in_recognizer_ids  = recognition.recognizer_ids if recognition
       
-      if inquiry != nil && inquiry.group_id == Core.user.group_id
-        item.in_inquiry = inquiry.attributes
-      else
-        item.in_inquiry = {:group_id => Core.user.group_id}
+#      if inquiry != nil && inquiry.group_id == Core.user.group_id
+#        item.in_inquiry = inquiry.attributes
+#      else
+#        item.in_inquiry = {:group_id => Core.user.group_id}
+#      end
+
+      inquiries.each_with_index do |inquiry, i|
+        if i == 0
+          attrs = inquiry.attributes
+          attrs[:group_id] = Core.user.group_id
+          item.inquiries.build(attrs)
+        else
+          item.inquiries.build(inquiry.attributes)
+        end
       end
       
       return false unless item.save(:validate => false)
@@ -332,4 +385,19 @@ protected
   def set_defaults
     self.sitemap_state ||= SITEMAP_STATE_OPTIONS.first.last if self.has_attribute?(:sitemap_state)
   end
+
+  def extract_links(html, all)
+    links = Nokogiri::HTML.fragment(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
+    return links if all
+    links.select do |link|
+      uri = URI.parse(link[:url]) rescue nil
+      next false if uri.blank?
+      next true unless uri.absolute?
+      [URI::HTTP, URI::HTTPS, URI::FTP].include?(uri.class)
+    end
+  rescue => evar
+    warn_log evar.message
+    return []
+  end
+
 end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 DONE_FLAG = "/tmp/#{$0}_done"
 
-PASSENGER_VERSION = '4.0.42'
+PASSENGER_VERSION = '4.0.59'
 
 puts '#### Install Apache ####'
 exit if File.exist?(DONE_FLAG)
@@ -17,7 +17,7 @@ end
 def centos
   puts "It's CentOS!"
 
-  system 'yum install -y httpd-devel shared-mime-info'
+  system 'yum -y install httpd-devel shared-mime-info'
 
   httpd_conf = '/etc/httpd/conf/httpd.conf'
 
@@ -41,7 +41,7 @@ def centos
   passenger_conf = '/etc/httpd/conf.d/passenger.conf'
 
   unless File.exist?(passenger_conf)
-    system 'yum install -y curl-devel'
+    system 'yum -y install curl-devel'
     system "gem install passenger -v #{PASSENGER_VERSION}"
     system 'passenger-install-apache2-module'
 

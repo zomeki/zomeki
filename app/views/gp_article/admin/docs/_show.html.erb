@@ -69,7 +69,7 @@
         <th colspan="2"><%= @item.locale :body %></th>
       </tr>
       <tr>
-        <td colspan="2"><%=raw @item.body.gsub('"file_contents/', %Q("#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
+        <td colspan="2"><%=raw @item.body.gsub(/("|')file_contents\//, '\1' + %Q(#{gp_article_doc_path(@content, id: @item.id)}/file_contents/)) %></td>
       </tr>
       <%- unless @item.links_in_body.empty? -%>
       <tr>
@@ -127,6 +127,12 @@
         </td>
       </tr>
       <%- end -%>
+      <%- if @content.qrcode_related? -%>
+      <tr>
+        <th><%= @item.locale :qrcode_state %></th>
+        <td><%= @item.qrcode_state_text %></td>
+      </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab2">
@@ -155,83 +161,16 @@
     <%= render 'cms/admin/_partial/many_inquiries/view', {item: @item} %>
   </div>
   <div id="tab4">
-    <%- if @content.approval_content_approval_flow -%>
-    <table class="show">
-      <tr>
-        <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td>
-          <%- unless @item.approval_requests.empty? -%>
-          <table class="approval noDesign">
-            <%- @item.approval_requests.each do |approval_request| -%>
-            <tr>
-              <td><%= approval_request.approval_flow.approvals.map{|a|
-                approvers = a.approvers.pluck(:name).join('、')
-                a == approval_request.current_approval ? content_tag(:span, approvers, class: 'current', style: 'background-color: #fce1de; padding: 4px;')
-                                                       : content_tag(:span, approvers, style: 'padding: 4px;')
-                }.join(' ＞ ').html_safe %></td>
-            </tr>
-            <%- end -%>
-          </table>
-          <%- end -%>
-        </td>
-      </tr>
-    </table>
-
-    <%- if @item.state_approvable? && @item.approvers.include?(Core.user) -%>
-      <%= form_tag passback_gp_article_doc_path(@content, @item) do %>
-      <table class="show">
-        <tr>
-          <th>差し戻し</th>
-          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
-          <td><%= submit_tag '差し戻し', confirm: '差し戻してよろしいですか？' %></td>
-        </tr>
-      </table>
-      <%- end -%>
-    <%- end -%>
-
-    <%- if @item.state_approvable? && @item.approval_requesters.include?(Core.user) -%>
-      <%= form_tag pullback_gp_article_doc_path(@content, @item) do %>
-      <table class="show">
-        <tr>
-          <th>引き戻し</th>
-          <td><%= text_area_tag :comment, nil, size: '70x5' %></td>
-          <td><%= submit_tag '引き戻し', confirm: '引き戻してよろしいですか？' %></td>
-        </tr>
-      </table>
-      <%- end -%>
-    <%- end -%>
-
-    <%- unless @item.approval_requests.all?{|r| r.histories.empty? } -%>
-    <p class="form">履歴</p>
-
-      <%- @item.approval_requests.each do |approval_request| -%>
-      <table class="show histories">
-        <%- approval_request.histories.each do |history| -%>
-        <tr>
-          <th>
-            <span class="reason"><%= history.reason_title %></span>
-            <span class="group"><%= history.operator.group.name %></span>
-            <span class="user"><%= history.operator.name %>（<%= history.operator.account %>）</span>
-            <span class="date"><%=l history.updated_at %></span>
-          </th>
-        </tr>
-        <tr>
-          <td><%=simple_format history.comment.presence || 'コメントなし' %></td>
-        </tr>
-        <%- end -%>
-      </table>
-      <%- end -%>
-    <%- end -%>
-    <%- else -%>
-    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
-    <%- end -%>
+    <%= render 'approval/admin/_partial/view', {item: @item, content: @content} %>
   </div>
   <div id="tab5">
     <table class="show">
+      <%- if @content.gp_calendar_content_event -%>
       <tr>
         <th><%= @item.locale :event_state %></th>
         <td><%= @item.event_state_text %></td>
       </tr>
+      <%- end -%>
       <tr>
         <th><%= @item.locale :event_started_on %></th>
         <td><%= @item.event_started_on %></td>
@@ -247,12 +186,27 @@
       </tr>
       <%- end -%>
     </table>
+
+    <%- if @content.gp_calendar_content_event -%>
+    <p class="form">カレンダー同期</p>
+
+    <table class="show">
+      <tr>
+        <th><%= @item.locale :event_will_sync %></th>
+        <td><%= @item.event_will_sync_text %></td>
+      </tr>
+    </table>
+    <%- end -%>
   </div>
   <div id="tab6">
     <table class="show">
       <tr>
         <th><%= @item.locale :marker_state %></th>
         <td><%= @item.marker_state_text %></td>
+      </tr>
+      <tr>
+        <th><%= @item.locale :marker_icon_category_id %></th>
+        <td><%= @item.marker_icon_category.try(:title) %></td>
       </tr>
       <%- @marker_category_types.each do |category_type| -%>
       <tr>
@@ -293,6 +247,8 @@
     <p class="form" style="margin-top: 0;">基本設定</p>
 
     <table class="show">
+      <%= concept_view @item, container: :tr %>
+      <%= layout_view @item, container: :tr %>
       <tr>
         <th><%= @item.locale :filename_base %></th>
         <td>

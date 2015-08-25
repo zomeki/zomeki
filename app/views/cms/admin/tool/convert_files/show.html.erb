@@ -1,0 +1,7 @@
+<%- if @item.file? -%>
+<table class="index">
+  <tr>
+    <td><pre><%= @item.read_body %></pre></td>
+  </tr>
+</table>
+<%- end -%>

@@ -1,5 +1,6 @@
 <div class="surveyForms">
-  <%- @forms.each do |form| next unless form.open? -%>
+  <%- @forms.each do |form| next unless form.state_public? -%>
+  <%- next unless form.index_visible? -%>
   <div class="form">
     <h2 class="name"><%= link_to form.title, "#{@node.public_uri}#{form.name}" %></h2>
     <% if form.summary.present? %><div class="summary"><%=raw form.summary %></div><% end %>

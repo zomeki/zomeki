@@ -84,6 +84,31 @@ areas      = PortalGroup::Area.root_items(cond)
   </tr>
 </table>
 
+<br />
+<p class="form">管理画面設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:setting_site_admin_protocol) %></th>
+    <td><%= f.select :in_setting_site_admin_protocol, Cms::SiteSetting::AdminProtocol::ADMIN_PROTOCOLS, :include_blank => "" %></td>
+  </tr>
+</table>
+
+<p class="form">スマートフォン書き出し設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:smart_phone_publication) %></th>
+    <td><%= f.radio_buttons :smart_phone_publication, @item.class::SMART_PHONE_PUBLICATION_OPTIONS,
+                                                      onchange: 'confirm_smart_phone_deletion(this)' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale(:spp_target) %></th>
+    <td><%= f.select :spp_target, @item.class::SPP_TARGET_OPTIONS %></td>
+  </tr>
+</table>
+
+<br />
 <p class="form">SNS設定</p>
 
 <table class="show">
@@ -105,6 +130,45 @@ areas      = PortalGroup::Area.root_items(cond)
   </tr>
 </table>
 
+<p class="form">OGP</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :og_type %></th>
+    <td><%= f.select :og_type, @item.class::OGP_TYPE_OPTIONS, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :og_title %></th>
+    <td><%= f.text_field :og_title %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :og_description %></th>
+    <td><%= f.text_area :og_description, :size => '100x3' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :og_image %></th>
+    <td><%= f.text_field :og_image, :style => 'width: 200px;' %></td>
+  </tr>
+</table>
+
+<p class="form">ファイル転送設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:setting_transfer_dest_user) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_user, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_host) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_host, :class => 'name' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_dir) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_dir, :class => 'url' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:setting_transfer_dest_domain) %></th>
+    <td><%= f.text_field :in_setting_transfer_dest_domain, :class => 'url' %></td>
+  </tr>
+</table>
+
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_category_ids_0,
       :with => :item_portal_group_id, :on => 'change', :url => categories_portal_group_groups_path(0)) %>
 <%= observe_field(:item_portal_group_id, :update => :item_in_portal_business_ids_0,
@@ -115,3 +179,12 @@ areas      = PortalGroup::Area.root_items(cond)
       :with => :item_portal_group_id, :on => 'change', :url => areas_portal_group_groups_path(0)) %>
 
 <%= creator_form f %>
+
+<%= javascript_tag do -%>
+function confirm_smart_phone_deletion(radio) {
+  if ($(radio).val() !== 'yes' && !confirm("書き出しずみのファイルはすべて削除されます。\nよろしいですか？")) {
+    var selector = "input[name='" + $(radio).prop('name') + "'][value='yes']";
+    $(selector).prop('checked', true);
+  }
+}
+<%- end -%>

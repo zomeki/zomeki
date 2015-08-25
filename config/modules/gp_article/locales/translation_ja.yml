@@ -24,6 +24,7 @@ ja:
         list_image: 画像（添付ファイル名）
         state: 状態
         event_state: イベントカレンダー表示
+        event_will_sync: イベント同期
         event_started_on: イベント開始日
         event_ended_on: イベント終了日
         raw_tags: 関連ワード
@@ -44,6 +45,11 @@ ja:
         body_more_link_text: 追記リンク表記
         feature_1: 新着記事表示
         feature_2: 記事表示
+        marker_icon_category_id: マーカーアイコン用カテゴリ
+        display_published_at: 公開日時
+        display_updated_at: 最終更新日時
+        keep_display_updated_at: 自動更新しない
+        qrcode_state: QRコード
         inquiries/group_id: 連絡先（課）
         inquiries/charge: 連絡先（室・担当）
         inquiries/address: 連絡先（住所）
@@ -80,8 +86,14 @@ ja:
         date_style: 日付形式
         more_link_body: 一覧リンク文字
         more_link_url: 一覧リンクURL
+        impl: 実装
       gp_article/piece/monthly_archive:
         num_docs_visibility: 記事数表示
+      gp_article/piece/archive:
+        num_docs_visibility: 記事数表示
+        term: 表示形式
+        order: 表示順
+        impl: 実装
       gp_article/piece/comment:
         docs_number: 表示件数
         authors_visibility: 投稿者表示

@@ -6,6 +6,19 @@ class Tag::Content::Tag < Cms::Content
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
+  def public_node
+    public_nodes.order(:id).first
+  end
+
+  def public_path
+    site.public_path
+  end
+
+#TODO: DEPRECATED
   def tag_node
     return @tag_node if @tag_node
     @tag_node = Cms::Node.where(state: 'public', content_id: id, model: 'Tag::Tag').order(:id).first
@@ -22,7 +35,7 @@ class Tag::Content::Tag < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
+    in_settings[:list_style] = '@title_link@(@publish_date@ @group@)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
   end
 end

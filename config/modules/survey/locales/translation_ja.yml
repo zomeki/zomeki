@@ -12,6 +12,7 @@ ja:
         opened_at: 開始日時
         closed_at: 終了日時
         sitemap_state: サイトマップ
+        index_link: indexリンク表示
         sort_no: 並び順
         created_at: 作成日時
         summary: 概要
@@ -36,5 +37,6 @@ ja:
         captcha: 画像認証
       survey/piece/form:
         target_form_id: リンク先
+        head_css: HEAD
         upper_text: 上部テキスト
         lower_text: 下部テキスト

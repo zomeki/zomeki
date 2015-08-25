@@ -1,0 +1,49 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :concept_id %></th>
+    <td><%= @item.concept.try(:name) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :linkable_type %></th>
+    <td><%= @item.linkable_type %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :linkable_id %></th>
+    <td><%= @item.linkable.title if @item.linkable && @item.linkable.has_attribute?(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :urls %></th>
+    <td>
+      <%- if @item.urls.size > 0 -%>
+      <table class="noDesign" style="width: 100%;">
+        <tr>
+          <th>変換前</th>
+          <th>変換後</th>
+        </tr>
+        <%- @item.urls.each do |url| -%>
+          <tr class="<%= cycle('', 'cycle') %>">
+            <td><%= url[0] %></td>
+            <td><%= url[1] %></td>
+          </tr>
+        <%- end -%>
+      </table>
+      <%- end -%>
+    </td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :before_body %></th>
+    <td><pre><code><%= @item.before_body %></code></pre></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :after_body %></th>
+    <td><pre><code><%= @item.after_body %></code></pre></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_at %></th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at %></th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>

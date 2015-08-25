@@ -66,7 +66,7 @@
         <tr>
           <td>
             <%= submit_tag 'リンクチェック', name: 'link_check_in_body' %>
-            <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' %>
+            <%= submit_tag 'アクセシビリティチェック', name: 'accessibility_check' if Zomeki.config.application['cms.enable_accessibility_check'] %>
           </td>
         </tr>
       </table>
@@ -129,6 +129,9 @@
               <%= render 'category', category_type: category_type, category: category,
                                      categories_for_option: category_type.categories_for_option %>
               <%- end -%>
+            <%- elsif @item.new_record? && category_type.id == @content.default_category_type.try(:id) && @content.default_category -%>
+              <%= render 'category', category_type: category_type, category: @content.default_category,
+                                     categories_for_option: category_type.categories_for_option %>
             <%- else -%>
               <%- @item.categories.where(category_type_id: category_type.id).each do |category| -%>
               <%= render 'category', category_type: category_type, category: category,
@@ -140,6 +143,7 @@
         </td>
       </tr>
       <%- end -%>
+      <%- if @content.feature_settings_enabled? -%>
       <tr>
         <th><%= f.label :feature_1 %></th>
         <td><%= f.radio_buttons :feature_1, @item.class::FEATURE_1_OPTIONS %></td>
@@ -148,6 +152,7 @@
         <th><%= f.label :feature_2 %></th>
         <td><%= f.radio_buttons :feature_2, @item.class::FEATURE_2_OPTIONS %></td>
       </tr>
+      <%- end -%>
       <%- if @content.tag_related? && @content.tag_content_tag.present? -%>
       <tr>
         <th><%= f.label :raw_tags %></th>
@@ -178,6 +183,12 @@
           </div>
         </td>
       </tr>
+      <%- if @content.qrcode_related? -%>
+      <tr>
+        <th><%= f.label :qrcode_state %></th>
+        <td><%= f.radio_buttons :qrcode_state, @item.class::QRCODE_OPTIONS %></td>
+      </tr>
+      <%- end -%>
     </table>
   </div>
   <div id="tab2">
@@ -187,16 +198,19 @@
     <table class="show">
       <%- if @content.display_dates(:published_at) -%>
       <tr>
-        <th>公開日時</th>
+        <th><%= f.label :display_published_at %></th>
         <td><%= f.text_field :display_published_at, :value => value_for_datetimepicker(f.object_name, :display_published_at),
                              :style => 'width: 150px;', :class => 'datetimepicker' %></td>
       </tr>
       <%- end -%>
       <%- if @content.display_dates(:updated_at) -%>
       <tr>
-        <th>最終更新日時</th>
-        <td><%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
-                             :style => 'width: 150px;', :class => 'datetimepicker' %></td>
+        <th><%= f.label :display_updated_at %></th>
+        <td>
+          <%= f.text_field :display_updated_at, :value => value_for_datetimepicker(f.object_name, :display_updated_at),
+                                                :style => 'width: 150px;', :class => 'datetimepicker' %>
+          <%= f.check_box :keep_display_updated_at %> <%= f.label :keep_display_updated_at %>
+        </td>
       </tr>
       <%- end -%>
     </table>
@@ -219,30 +233,7 @@
     <%= render 'cms/admin/_partial/many_inquiries/form', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab4">
-    <%- if @content.approval_content_approval_flow -%>
-    <table class="show">
-      <tr>
-        <th><%= Approval::ApprovalFlow.model_name.human %></th>
-        <td><%- approval_flows = @content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
-          <%- unless approval_flows.empty? -%>
-          <table class="approval noDesign">
-            <%- approval_flows.each do |approval_flow| -%>
-            <tr>
-              <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
-              <td><%= approval_flow.approvals.map{|a|
-                approvers = a.approvers.pluck(:name).join('、')
-                content_tag(:span, approvers, style: 'padding: 4px;')
-                }.join(' ＞ ').html_safe %></td>
-            </tr>
-            <%- end -%>
-          </table>
-          <%- end -%>
-        </td>
-      </tr>
-    </table>
-    <%- else -%>
-    <%= link_to '使用する承認フローを選択してください。', gp_article_content_settings_path %>
-    <%- end -%>
+    <%= render 'approval/admin/_partial/form', {f: f, item: @item, content: @content} %>
   </div>
   <div id="tab5">
     <table class="show">
@@ -289,6 +280,17 @@
       </tr>
       <%- end -%>
     </table>
+
+    <%- if @content.event_sync? -%>
+    <p class="form">カレンダー同期</p>
+
+    <table class="show">
+      <tr>
+        <th><%= f.label :event_will_sync %></th>
+        <td><%= f.radio_buttons :event_will_sync, @item.class::EVENT_WILL_SYNC_OPTIONS %></td>
+      </tr>
+    </table>
+    <%- end -%>
   </div>
   <div id="tab6">
     <table class="show">
@@ -296,6 +298,14 @@
       <tr>
         <th><%= f.label :marker_state %></th>
         <td><%= f.radio_buttons :marker_state, @item.class::MARKER_STATE_OPTIONS %></td>
+      </tr>
+      <%- end -%>
+      <%- if @content.marker_icon_category_enabled? -%>
+      <tr>
+        <th><%= f.label :marker_icon_category_id %></th>
+        <td><%= f.select :marker_icon_category_id, options_for_select(marker_icon_categories_for_option(@content.map_content_marker),
+                                                                      @item.marker_icon_category_id),
+                                                   include_blank: true %></td>
       </tr>
       <%- end -%>
       <%- @marker_category_types.each do |category_type| -%>
@@ -348,6 +358,7 @@
     <p class="form" style="margin-top: 0;">基本設定</p>
 
     <table class="show">
+      <%= concept_and_layout_form f %>
       <tr>
         <th><%= f.label :filename_base %></th>
         <td>
@@ -467,6 +478,10 @@
     <%= creator_form f %>
   </div>
 </div>
+
+<%- @item.files.each do |file| -%>
+  <%= hidden_field_tag "file_names[#{file.id}]", file.name %>
+<%- end -%>
 
 <%= javascript_tag do -%>
 <%= toggle_form_function %>

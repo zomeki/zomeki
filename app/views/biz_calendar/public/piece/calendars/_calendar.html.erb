@@ -1,0 +1,42 @@
+<table border="1">
+    <thead class="wdays">
+      <tr>
+        <th class="wday sun">日</th>
+        <th class="wday mon">月</th>
+        <th class="wday tue">火</th>
+        <th class="wday wed">水</th>
+        <th class="wday thu">木</th>
+        <th class="wday fri">金</th>
+        <th class="wday sat">土</th>
+      </tr>
+    </thead>
+    <tbody class="days">
+      <%- @weeks["#{month.strftime('%Y%m')}"].each_with_index do |week, index| -%>
+      <tr class="week">
+        <%- week.each do |day| -%><%
+          _class  = ''
+          _class += ' prevMonth' if day < month.beginning_of_month
+          _class += ' nextMonth' if day > month.end_of_month
+          week_index = day < month.beginning_of_month || day > month.end_of_month ? false : index
+
+          not_holiday = !@exception_holidays.blank? ? @exception_holidays.select{|e| day.between?(e.start_date, e.end_date) } : nil
+
+          if not_holiday.blank?
+            holidays  = !@holidays.blank? ? @holidays.select{|e| e.repeat_type.blank? && day.between?(e.holiday_start_date, e.holiday_end_date) } : nil
+            repeat_holidays = !@repeat_holidays.blank? ? @repeat_holidays.select{|e| e.check(day, week_index) } : nil
+
+            is_holiday = not_holiday.blank? && (!holidays.blank? || !repeat_holidays.blank?) ? true : false
+            if is_holiday
+              holidays.each {|h| _class += " #{h.type.name}" } if holidays
+              repeat_holidays.each {|h| _class += " #{h.type.name}" } if repeat_holidays
+            end
+          end
+        %>
+        <td class="day <%= %w!sun mon tue wed thu fri sat![day.wday] %><%= "#{_class}" %>">
+          <p class="date"><%= day.day %></p>
+        </td>
+        <%- end -%>
+      </tr>
+      <%- end -%>
+    </tbody>
+  </table>

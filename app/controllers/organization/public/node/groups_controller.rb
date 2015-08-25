@@ -6,11 +6,15 @@ class Organization::Public::Node::GroupsController < Cms::Controller::Public::Ba
   end
 
   def index
+    http_error(404) if params[:page]
+
     sys_group_codes = @content.root_sys_group.children.pluck(:code)
     @groups = @content.groups.public.where(sys_group_code: sys_group_codes)
   end
 
   def show
+    http_error(404) if params[:page] && !@more
+
     @group = @content.find_group_by_path_from_root(params[:group_names])
     return http_error(404) unless @group.try(:public?)
 

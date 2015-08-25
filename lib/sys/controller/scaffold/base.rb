@@ -26,6 +26,7 @@ protected
       status         = params[:_created_status] || :created
       location       = options[:location].is_a?(Proc) ? options[:location].call(item) : options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || "登録処理が完了しました。（#{I18n.l Time.now}）"
+      Sys::OperationLog.log(request, :item => item)
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }
@@ -45,6 +46,7 @@ protected
     if item.editable? && item.save
       item.reload if item.respond_to?(:reload) rescue nil
       location       = options[:location].is_a?(Proc) ? options[:location].call(item) : options[:location] || url_for(:action => :index)
+      Sys::OperationLog.log(request, :item => item)
       flash[:notice] = "更新処理が完了しました。（#{I18n.l Time.now}）"
       yield if block_given?
       respond_to do |format|
@@ -65,6 +67,7 @@ protected
     if item.deletable? && item.destroy
       location       = options[:location].is_a?(Proc) ? options[:location].call(item) : options[:location] || url_for(:action => :index)
       flash[:notice] = options[:notice] || "削除処理が完了しました。（#{I18n.l Time.now}）"
+      Sys::OperationLog.log(request, :item => item)
       yield if block_given?
       respond_to do |format|
         format.html { redirect_to(location) }

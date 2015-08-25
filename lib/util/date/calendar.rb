@@ -3,6 +3,7 @@ class Util::Date::Calendar
   attr_accessor :year_uri
   attr_accessor :month_uri
   attr_accessor :day_uri
+  attr_accessor :set_event_class
   cattr_reader  :wday_specs
   
   @@wday_specs = [
@@ -158,6 +159,7 @@ class Util::Date::Calendar
       d = Date::new(day[:year], day[:month], day[:day])
       if dates.index(d)
         day[:link] = true
+        day[:class] += ' ' + 'event' if set_event_class
       else
         day[:link] = false
       end

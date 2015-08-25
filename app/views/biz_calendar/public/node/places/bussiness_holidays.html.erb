@@ -1,0 +1,6 @@
+<%- @places.each do |place| -%>
+<div class="location">
+  <div class="name"><%= @piece.link_place_page? ? link_to(place.title, place.public_uri) : place.title %></div>
+  <span><%= @next_holiday[place.id] if @next_holiday[place.id] %></span>
+</div>
+<%- end -%>

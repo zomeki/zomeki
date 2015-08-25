@@ -29,6 +29,7 @@
     <td style="text-align: left;">
       <%= item.info_name %>
       <%- if item.provider == 'facebook' -%>
+        <span style="margin-left: 20px;"><%= item.facebook_token_text %></span>
         <span style="margin-left: 20px;"><%= item.facebook_page_text %></span>
       <%- end -%>
     </td>

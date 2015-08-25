@@ -1,146 +1,138 @@
 # encoding: utf-8
-
-require 'nokogiri.rb'
-require 'uri'
-require 'pathname'
-
 class Tool::Convert::LinkProcessor
+  attr_reader :body, :after_body, :clinks
 
-  def self.upload_file(doc, pfile, file_path)
-    file = Sys::File.new
-    
-    if !File.exist?(file_path)
-      puts "upload_file:ファイルが開けない:#{pfile[:file_path]}\t#{file_path}"
-      return nil
+  def sublink(cdoc, conf)
+    @body = cdoc.body.dup
+    @after_body = cdoc.body.dup
+    @clinks = []
+    site_url = cdoc.site_url
+    host = cdoc.site_url.split('/')[0]
+
+    html = Nokogiri::HTML.fragment(@body)
+    html.xpath("./a[@href]|.//a[@href]|./area[@href]|.//area[@href]|./img[@src]|.//img[@src]").each do |e|
+      clink = Tool::Convert::Link.new
+      clink.cdoc = cdoc
+      clink.tag = e.name
+      clink.attr = ['a', 'area'].include?(e.name) ? 'href' : 'src'
+      clink.url = e[clink.attr].to_s.dup
+      clink.after_url = clink.url.dup
+
+      url = preprocess_url(clink.url)
+      next if url.blank?
+
+      uri = normalize_url(url, cdoc.uri_path)
+      next if uri.blank?
+      next if uri.scheme != 'http' && uri.scheme != 'https'
+      next if uri.host != host
+
+      case File.extname(uri.path).downcase
+      when '.html', '.htm', '.php', '.asp', ''
+        convert_doc_link(uri, clink)
+      else
+        convert_file_link(uri, clink)
+      end
+
+      if clink.url_changed?
+        @clinks << clink
+        e[clink.attr] = clink.after_url
+        e['class'] = "iconFile icon#{clink.ext.capitalize}" if clink.tag == 'a' && clink.filename.present?
+        e['onclick'] = e['onclick'].to_s.dup.gsub(clink.url, clink.after_url) if e.attributes['onclick']
+      end
     end
-    
-    file.file = Sys::Lib::File::NoUploadedFile.new(file_path, :mime_type => "application/#{File.extname(pfile[:name]).delete(".")}")
 
-    file.parent_unid = doc.unid
-    file.name = pfile[:name]
-    file.title = pfile[:name]
-    file.in_creator = doc.in_creator
-    
-    if !file.save
-      puts "upload_file:アップロード失敗:#{pfile[:file_path]}\t#{file_path}"
-      p file.errors.full_messages
-      return nil
+    doc = cdoc.latest_doc
+    return self unless doc
+
+    @clinks.each do |clink|
+      if clink.filename.present? && !doc.files.find_by_name(clink.filename)
+        if file = create_file(doc, clink)
+          doc.files.push(file)
+        end
+      end
+    end
+
+    doc.body = @after_body = html.inner_html
+    doc.ignore_accessibility_check = conf.ignore_accessibility_check
+    doc.publish_files
+    unless doc.save
+      dump "記事保存失敗"
+      dump doc.errors.full_messages
+    end
+
+    return self
+  end
+
+private
+
+  def preprocess_url(url)
+    url.gsub(%r{/file/open\.php\?f\=}, '')
+      .gsub(%r{/soshiki/index\.php\?type\=2$}, '/soshiki/')
+      .gsub(%r{/soshiki/kakubu\.php\?sec_sec2\=(\d+)$}, "/soshiki/#{$1}/")
+      .gsub(%r{/soshiki/kakuka\.php\?sec_sec1\=(\d+)$}, "/soshiki/#{$1}/")
+  end
+
+  def normalize_url(url, uri_path)
+    uri = URI.parse("http://#{uri_path}").merge(url)
+    uri.path = '/' unless uri.path
+    uri
+  rescue => e
+    nil
+  end
+
+  def convert_doc_link(uri, clink)
+    # 他記事へのリンク
+    linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}").first
+    # 他記事へのリンク(index.html補完)
+    if !linked_cdoc && uri.path[-1] == '/'
+      linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}index.html").first
+    end
+    # 他記事へのリンク(.html補完)
+    if !linked_cdoc && (!uri.path.include?('.') || uri.path[-4..-1] == '.htm' )
+      linked_cdoc = Tool::ConvertDoc.where(uri_path: "#{uri.host}#{uri.path}.html").first
+    end
+
+    uri = uri.dup
+    uri.scheme = uri.host = nil
+
+    if linked_cdoc
+      uri.path = ""
+      if linked_cdoc == clink.cdoc
+        clink.after_url = uri.to_s
+      else
+        clink.after_url = linked_cdoc.doc_public_uri
+        clink.after_url += uri.to_s
+      end
     else
-      return file
+      clink.after_url = uri.to_s
     end
   end
 
-  def self.sublink(text, cdoc, doc_node_public_uri)
-    links = {}
-    links[:html] = []
-    links[:error] = []
-    links[:upload] = []
-    links[:body] = text.dup
+  def convert_file_link(uri, clink)
+    file_path = "#{Tool::Convert::SITE_BASE_DIR}#{URI.unescape(uri.to_s).gsub(%r{^\w+://}, '')}"
 
-    uri_path = cdoc.uri_path
-    
-  #  begin
-    html_body = Nokogiri::HTML(text)
-    html_body.xpath("//a[@href]|//img[@src]").each do |e|
-      
-      if e.name == "a"
-        link = e["href"]
-        tag = "a"
-        attr = "href"
-      else
-        link = e["src"]
-        tag = "img"
-        attr = "src"
-      end  
-      
-      link_uri = URI(link)
-     
-      if link_uri.scheme
-         #他ホスト
-         if link_uri.host && !Tool::ConvertDoc.find(:first, :conditions => {:host => link_uri.host})
-            links[:error].push({:uri_path => uri_path, :link => link, :e_msg => "他ホストへのリンク"})
-            next
-         #スキーマ不明
-         elsif link_uri.scheme != 'http' && link_uri.scheme != 'https'
-            links[:error].push({:uri_path => uri_path, :link => link, :e_msg => "スキーマ不明"})
-            next
-         end
-
-         link_uri_path = link_uri.host + link_uri.path
-      else
-        if link.present? && link[0] == "/"
-          link_uri_path = cdoc.host + link
-        else
-          link_uri_path = (Pathname(File.dirname(uri_path)) + link).to_s     
-        end
-      end
-
-      #拡張子判定
-      if link_uri_path[-1] == "/"
-        link_uri_path += "index.html"
-      end
-      
-      if link_uri_path.index("html#")
-        link_uri_path.gsub!(/#.*$/, "")
-      end
-        
-      case ext = File.extname(link_uri_path).downcase
-      when '.html' then #----------------------------------------------------------------html----------------------------------------------------
-
-        link_cdoc = Tool::ConvertDoc.find(:first, :conditions => {:uri_path => link_uri_path})
-
-        if link_cdoc
-           links[:body].gsub!(link, "#{doc_node_public_uri}#{link_cdoc.name}/")
-           links[:html].push({:uri_path => uri_path, :link => link, :conv_link => "#{doc_node_public_uri}#{link_cdoc.name}/"})
-        else
-           puts "error sublink: 移行後の記事がデータベース内に見つからない #{link}"
-           links[:error].push({:uri_path => uri_path, :link => link, :e_msg => "移行後の記事がConvertDoc内に見つからない"})
-           next
-        end
-
-      when '.pdf', '.xls', '.doc' then  #---------------------------------------------------------------'.pdf', '.xls', '.doc'----------------------------------------------------
-        
-        upload_filename = link_uri_path.sub(/^\//, "").gsub(/\/|\.|\(|\)/, "_")
-        upload_filename[upload_filename.rindex("_")] = "."
-        upload_filename = cdoc.name + "_" + upload_filename
-        
-        replace = e.to_s.scan(/<.*?>/).shift
-        links[:body].gsub!(replace, "<a class=\"iconFile icon#{ext.sub(".", "").capitalize}\" href=\"./file_contents/#{upload_filename}\">")
-
-        if links[:upload].map{|link| link[:name]}.index(upload_filename)
-          #同記事にすでにアップロードリンクが存在
-          next
-        end
-      
-        links[:upload].push({:uri_path => uri_path, :link_uri_path => link_uri_path, :link => link, :name => upload_filename,  :conv_link => "./file_contents/#{upload_filename}"})
-
-
-      when '.jpg', '.jpeg', '.gif'  then #---------------------------------------------------------------'.jpg','.jpeg','.gif'----------------------------------------------------
-
-        upload_filename = link_uri_path.sub(/^\//, "").gsub(/\/|\.|\(|\)/, "_")
-        upload_filename[upload_filename.rindex("_")] = "."
-        upload_filename = cdoc.name + "_" + upload_filename
-        
-        replace = e.to_s.scan(/<.*?>/).shift
-        links[:body].gsub!(replace, "<#{tag} #{attr}=\"./file_contents/#{upload_filename}\">")
-
-
-        if links[:upload].map{|link| link[:name]}.index(upload_filename)
-          #同記事にすでにアップロードリンクが存在
-          next
-        end
-
-        links[:upload].push({:uri_path => uri_path, :link_uri_path => link_uri_path, :link => link, :name => upload_filename,  :conv_link => "./file_contents/#{upload_filename}"})
-
-
-      else
-        #puts "error linksub: 不明な拡張子 #{link}"
-        links[:error].push({:uri_path => uri_path, :link_uri_path => link_uri_path, :link => link, :e_msg => "不明な拡張子"})
-      end
-
-      end
-
-   links
+    if File.file?(file_path)
+      clink.file_path = file_path
+      clink.ext = File.extname(uri.path).gsub(/^\./, '')
+      clink.filename = "#{uri.host}#{uri.path}".sub(/^\//, "").gsub(/\/|\.|\(|\)/, "_").gsub(/_#{clink.ext}$/i, ".#{clink.ext}")
+      clink.filename = "#{clink.cdoc.doc_name}_#{clink.filename}"
+      clink.after_url = "./file_contents/#{clink.filename}"
+    else
+      dump "ファイル検索失敗:#{file_path}"
+    end
   end
 
+  def create_file(doc, clink)
+    file = Sys::File.new
+    file.file = Sys::Lib::File::NoUploadedFile.new(clink.file_path, :skip_image => true)
+    file.parent_unid = doc.unid
+    file.name = clink.filename
+    file.title = clink.filename
+    file.in_creator = doc.in_creator
+
+    unless file.save
+      dump "ファイル保存失敗:#{clink.file_path}"
+      dump file.errors.full_messages
+    end
+  end
 end

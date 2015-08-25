@@ -1,21 +1,30 @@
 # encoding: utf-8
 class Cms::Lib::Navi::Jtalk
   
-  def self.make_text(html)
+  def self.make_text(html, site_id=nil)
     require 'MeCab'
     require "cgi"
+    require "kconv"
     
     ## settings
-    mecab_rc = Cms::KanaDictionary.mecab_rc
+    mecab_rc = Cms::KanaDictionary.mecab_rc(site_id)
+
+    doc = Nokogiri::HTML(html.toutf8, nil, 'utf-8')
+    if content = doc.xpath('//div[@id="content"]')
+      content_html = content.children
+    end
+    if body = doc.xpath('//body')
+      body_html = body.children
+    end
+    
+    if !body_html.blank? && !content_html.blank?
+      html = content_html.blank? ? body_html : content_html
+      html = html.to_html
+    end
     
     ## trim
     html.gsub!(/(\r\n|\r|\n)+/, " ")
-    if html =~ /<div [^>]*?id="content"/i
-      html.gsub!(/.*?<div [^>]*?id="content".*?>(.*)<!-- end #content --><\/div>.*/i, '\\1')
-    end
-    if html =~ /<body/i
-      html.gsub!(/.*<body.*?>(.*)<\/body.*/i, '\\1')
-    end
+
     if html =~ /<!-- skip.reading -->/
       html.gsub!(/<!-- skip.reading -->.*?<!-- \/skip.reading -->/i, '')
     end
@@ -96,7 +105,9 @@ class Cms::Lib::Navi::Jtalk
     parts = []
     buf   = ""
     
-    self.class.make_text(text).split(/[ 。]/).each do |str|
+    site_id = options[:site_id] rescue nil
+    
+    self.class.make_text(text, site_id).split(/[ 。]/).each do |str|
       buf << " " if !buf.blank?
       buf << str
       if buf.size >= talk_strlen

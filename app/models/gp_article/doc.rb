@@ -4,6 +4,7 @@ class GpArticle::Doc < ActiveRecord::Base
   include Sys::Model::Base::OperationLog
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::Editor
   include Sys::Model::Rel::EditableGroup
   include Sys::Model::Rel::File
   include Sys::Model::Rel::Task
@@ -24,9 +25,11 @@ class GpArticle::Doc < ActiveRecord::Base
   EVENT_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   MARKER_STATE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
   OGP_TYPE_OPTIONS = [['article', 'article']]
-  SHARE_TO_SNS_WITH_OPTIONS = [['SNS(OGP)の説明', 'og_description'], ['記事の内容', 'body']]
+  SHARE_TO_SNS_WITH_OPTIONS = [['OGP', 'og_description'], ['記事の内容', 'body']]
   FEATURE_1_OPTIONS = [['表示', true], ['非表示', false]]
   FEATURE_2_OPTIONS = [['表示', true], ['非表示', false]]
+  QRCODE_OPTIONS = [['表示', 'visible'], ['非表示', 'hidden']]
+  EVENT_WILL_SYNC_OPTIONS = [['同期する', 'enabled'], ['同期しない', 'disabled']]
 
   default_scope { where("#{self.table_name}.state != 'archived'") }
   scope :public, -> { where(state: 'public') }
@@ -40,12 +43,15 @@ class GpArticle::Doc < ActiveRecord::Base
 
   # Page
   belongs_to :concept, :foreign_key => :concept_id, :class_name => 'Cms::Concept'
+  belongs_to :layout, :foreign_key => :layout_id, :class_name => 'Cms::Layout'
 
   # Proper
   belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
 
   belongs_to :prev_edition, :class_name => self.name
   has_one :next_edition, :foreign_key => :prev_edition_id, :class_name => self.name
+
+  belongs_to :marker_icon_category, :class_name => 'GpCategory::Category'
 
   has_many :categorizations, :class_name => 'GpCategory::Categorization', :as => :categorizable, :dependent => :destroy
   has_many :categories, :class_name => 'GpCategory::Category', :through => :categorizations,
@@ -78,6 +84,7 @@ class GpArticle::Doc < ActiveRecord::Base
   before_save :set_published_at
   before_save :replace_public
   before_destroy :keep_edition_relation
+  after_destroy :close_page
 
   validates :title, :presence => true, :length => {maximum: 200}
   validates :mobile_title, :length => {maximum: 200}
@@ -110,23 +117,53 @@ class GpArticle::Doc < ActiveRecord::Base
 
     creators = Sys::Creator.arel_table
 
-    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank?
+    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
+               criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
             self.joins(:creator)
           else
             inners = []
 
-            if criteria[:group].present? || criteria[:group_id].present?
+            if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
               groups = Sys::Group.arel_table
               inners << :group
             end
 
-            if criteria[:user].present?
+            if criteria[:user].present? || criteria[:editor_user].present?
               users = Sys::User.arel_table
               inners << :user
             end
 
             self.joins(:creator => inners)
           end
+
+    if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
+       criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
+      editors = Sys::Editor.arel_table
+      rel = rel.joins("LEFT OUTER JOIN #{Sys::Editor.table_name} ON #{Sys::Editor.table_name}.parent_unid = #{self.table_name}.unid").group(docs[:id])
+    else
+      sql = ''
+      editors = Sys::Editor.arel_table
+      ids = Sys::Editor.select(editors[:id].maximum).group(:parent_unid)
+
+      if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
+        edit_groups = Sys::Group.arel_table.alias("edit_group")
+        sql1 = "LEFT OUTER JOIN #{Sys::Group.table_name} as edit_group ON edit_group.id = editor.group_id"
+      end
+      if criteria[:user].present? || criteria[:editor_user].present?
+        edit_users = Sys::User.arel_table.alias("edit_user")
+        sql2 = "LEFT OUTER JOIN #{Sys::User.table_name} as edit_user ON edit_user.id = editor.user_id"
+      end
+      
+      sql  = "select * "
+      sql += " from #{Sys::Editor.table_name} where id in (#{ids.map{|i| i.max_id }.join(",")})"
+      
+      sql = if sql1.present? && sql2.present?
+          "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1}  #{sql2}"
+        else
+          "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1.presence || sql2}"
+        end
+      rel = rel.joins(sql).group(docs[:id])
+    end
 
     rel = rel.where(docs[:content_id].eq(content.id)) if content.kind_of?(GpArticle::Content::Doc)
 
@@ -136,7 +173,14 @@ class GpArticle::Doc < ActiveRecord::Base
     rel = rel.where(docs[:title].matches("%#{criteria[:free_word]}%")
                     .or(docs[:body].matches("%#{criteria[:free_word]}%"))
                     .or(docs[:name].matches("%#{criteria[:free_word]}%"))) if criteria[:free_word].present?
-    rel = rel.where(groups[:name].matches("%#{criteria[:group]}%")) if criteria[:group].present?
+
+    if criteria[:group].present?
+      rel = rel.where(groups[:name].matches("%#{criteria[:group]}%"))
+    end
+    if criteria[:editor_group].present?
+      rel = rel.where(groups[:name].matches("%#{criteria[:editor_group]}%").or(edit_groups[:name].matches("%#{criteria[:editor_group]}%")))
+    end
+
     if criteria[:group_id].present?
       rel = rel.where(if criteria[:group_id].kind_of?(Array)
                         groups[:id].in(criteria[:group_id])
@@ -144,8 +188,24 @@ class GpArticle::Doc < ActiveRecord::Base
                         groups[:id].eq(criteria[:group_id])
                       end)
     end
-    rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
-                    .or(users[:name_en].matches("%#{criteria[:user]}%"))) if criteria[:user].present?
+    if criteria[:editor_group_id].present?
+      rel = rel.where(if criteria[:editor_group_id].kind_of?(Array)
+                        groups[:id].in(criteria[:group_id]).or(edit_groups[:id].in(criteria[:editor_group_id]))
+                      else
+                        groups[:id].eq(criteria[:group_id]).or(edit_groups[:id].eq(criteria[:editor_group_id]))
+                      end)
+    end
+
+    if criteria[:user].present?
+      rel = rel.where(users[:name].matches("%#{criteria[:user]}%")
+                      .or(users[:name_en].matches("%#{criteria[:user]}%")))
+    end
+    if criteria[:editor_user].present?
+      rel = rel.where(users[:name].matches("%#{criteria[:editor_user]}%")
+                      .or(users[:name_en].matches("%#{criteria[:editor_user]}%"))
+                        .or(edit_users[:name].matches("%#{criteria[:editor_user]}%"))
+                          .or(edit_users[:name_en].matches("%#{criteria[:editor_user]}%")))
+    end
 
     if criteria[:touched_user_id].present?
       operation_logs = Sys::OperationLog.arel_table
@@ -220,12 +280,13 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def public_path
-    if name =~ /^[0-9]{13}$/
-      _name = name.gsub(/^((\d{4})(\d\d)(\d\d)(\d\d)(\d\d).*)$/, '\2/\3/\4/\5/\6/\1')
-    else
-      _name = ::File.join(name[0..0], name[0..1], name[0..2], name)
-    end
-    "#{content.public_path}/docs/#{_name}/#{filename_base}.html"
+    return '' if public_uri.blank?
+    "#{content.public_path}#{public_uri}#{filename_base}.html"
+  end
+
+  def public_smart_phone_path
+    return '' if public_uri.blank?
+    "#{content.public_path}/_smartphone#{public_uri}#{filename_base}.html"
   end
 
   def public_uri(without_filename: false)
@@ -259,7 +320,10 @@ class GpArticle::Doc < ActiveRecord::Base
     site ||= ::Page.site
     params = params.map{|k, v| "#{k}=#{v}" }.join('&')
     filename = without_filename || filename_base == 'index' ? '' : "#{filename_base}.html"
-    "#{site.full_uri}_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
+
+    path = "_preview/#{format('%08d', site.id)}#{mobile ? 'm' : ''}#{public_uri(without_filename: true)}preview/#{id}/#{filename}#{params.present? ? "?#{params}" : ''}"
+    d = Cms::SiteSetting::AdminProtocol.core_domain site, site.full_uri, :freeze_protocol => true
+    "#{d}#{path}"
   end
 
   def state_options
@@ -302,23 +366,53 @@ class GpArticle::Doc < ActiveRecord::Base
   def close
     @save_mode = :close
     self.state = 'closed' if self.state_public?
+    skip_editor_save(true)
     return false unless save(:validate => false)
     close_page
     return true
   end
 
   def close_page(options={})
+    return true if will_replace?
     return false unless super
     publishers.destroy_all unless publishers.empty?
-    FileUtils.rm_rf(::File.dirname(public_path))
+    if p = public_path
+      FileUtils.rm_rf(::File.dirname(public_path)) unless p.blank?
+    end
+    if p = public_smart_phone_path
+      FileUtils.rm_rf(::File.dirname(public_smart_phone_path)) unless p.blank?
+    end
     return true
   end
 
   def publish(content)
     @save_mode = :publish
     self.state = 'public' unless self.state_public?
+
+    skip_editor_save(true)
     return false unless save(:validate => false)
     publish_page(content, path: public_path, uri: public_uri)
+    publish_files
+    publish_qrcode
+  end
+
+  def rebuild(content, options={})
+    if options[:dependent] == :smart_phone
+      return false unless self.content.site.publish_for_smart_phone?
+      return false unless self.content.site.spp_all?
+    end
+
+    return false unless self.state_public?
+    @save_mode = :publish
+    publish_page(content, options)
+    #TODO: スマートフォン向けファイル書き出し要再検討
+    @public_files_path = "#{::File.dirname(public_smart_phone_path)}/file_contents" if options[:dependent] == :smart_phone
+    @public_qrcode_path = "#{::File.dirname(public_smart_phone_path)}/qrcode.png" if options[:dependent] == :smart_phone
+    result = publish_files
+    publish_qrcode
+    @public_files_path = nil if options[:dependent] == :smart_phone
+    @public_qrcode_path = nil if options[:dependent] == :smart_phone
+    return result
   end
 
   def bread_crumbs(doc_node)
@@ -360,6 +454,7 @@ class GpArticle::Doc < ActiveRecord::Base
     when :replace
       new_doc.prev_edition = self
       new_doc.in_tasks = self.in_tasks
+      new_doc.in_creator = {'group_id' => creator.group_id, 'user_id' => creator.user_id}
     else
       new_doc.name = nil
       new_doc.title = new_doc.title.gsub(/^(【複製】)*/, '【複製】')
@@ -376,7 +471,7 @@ class GpArticle::Doc < ActiveRecord::Base
       if i == 0
         attrs = inquiry.attributes
         attrs[:group_id] = Core.user.group_id
-        new_doc.inquiries.build(inquiry.attributes)
+        new_doc.inquiries.build(attrs)
       else
         new_doc.inquiries.build(inquiry.attributes)
       end
@@ -410,7 +505,7 @@ class GpArticle::Doc < ActiveRecord::Base
 
     files.each do |f|
       Sys::File.new(f.attributes).tap do |new_file|
-        new_file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+        new_file.file = Sys::Lib::File::NoUploadedFile.new(f.upload_path, :mime_type => new_file.mime_type)
         new_file.unid = nil
         new_file.parent_unid = new_doc.unid
         new_file.save
@@ -433,7 +528,11 @@ class GpArticle::Doc < ActiveRecord::Base
   def editable?
     result = super
     return result unless result.nil? # See "Sys::Model::Auth::EditableGroup"
-    return editable_group.all?
+    return editable_group.all? || approval_participators.include?(Core.user)
+  end
+
+  def publishable?
+    super || approval_participators.include?(Core.user)
   end
 
   def formated_display_published_at
@@ -462,20 +561,29 @@ class GpArticle::Doc < ActiveRecord::Base
     extract_links(self.mobile_body, all)
   end
 
+  def links_in_string(str, all=false)
+    extract_links(str, all)
+  end
+
   def broken_link_exists?
     @broken_link_exists_in_body
   end
 
   def backlinks
+    return self.class.none unless state_public? || state_closed?
+    return self.class.none if public_uri.blank?
     links.engine.where(links.table[:url].matches("%#{self.public_uri(without_filename: true).sub(/\/$/, '')}%"))
   end
 
   def backlinked_docs
+    return [] if backlinks.blank?
     self.class.where(id: backlinks.pluck(:doc_id))
   end
 
   def send_approval_request_mail
     subject = "#{content.name}（#{content.site.name}）：承認依頼メール"
+
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
 
     approval_requests.each do |approval_request|
       body = <<-EOT
@@ -485,10 +593,12 @@ class GpArticle::Doc < ActiveRecord::Base
   １．PC用記事のプレビューにより文書を確認
     #{preview_uri(site: content.site)}
   ２．次のリンクから承認を実施
-    #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
+    #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
+      assginments = approval_request.current_select_assignments
       approval_request.current_assignments.map{|a| a.user unless a.approved_at }.compact.each do |approver|
+        next if !assginments.blank? && !assginments.include?(approver.id.to_s)
         next if approval_request.requester.email.blank? || approver.email.blank?
         CommonMailer.plain(from: approval_request.requester.email, to: approver.email, subject: subject, body: body).deliver
       end
@@ -498,32 +608,37 @@ class GpArticle::Doc < ActiveRecord::Base
   def send_approved_notification_mail
     subject = "#{content.name}（#{content.site.name}）：承認完了メール"
 
+    _core_uri = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
+
     approval_requests.each do |approval_request|
       next unless approval_request.finished?
 
       body = <<-EOT
 「#{title}」についての承認が完了しました。
   次のＵＲＬをクリックして公開処理を行ってください。
-  #{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
+  #{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}
       EOT
 
       approver = approval_request.current_assignments.reorder('approved_at DESC').first.user
       next if approver.email.blank? || approval_request.requester.email.blank?
-      CommonMailer.plain(from: approver.email, to: approval_request.requester.email, subject: subject, body: body).deliver
+      CommonMailer.plain(from: Core.user.email, to: approval_request.requester.email, subject: subject, body: body).deliver
     end
   end
 
   def send_passbacked_notification_mail(approval_request: nil, approver: nil, comment: '')
     return if approver.email.blank? || approval_request.requester.email.blank?
 
-    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+    _core_uri  = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
+    detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     CommonMailer.passbacked_notification(approval_request: approval_request, approver: approver, comment: comment, detail_url: detail_url,
                                          from: approver.email, to: approval_request.requester.email).deliver
   end
 
   def send_pullbacked_notification_mail(approval_request: nil, comment: '')
-    detail_url = "#{content.site.full_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
+
+    _core_uri  = Cms::SiteSetting::AdminProtocol.core_domain content.site, content.site.full_uri
+    detail_url = "#{_core_uri.sub(/\/+$/, '')}#{Rails.application.routes.url_helpers.gp_article_doc_path(content: content, id: id, active_tab: 'approval')}"
 
     approval_request.current_approvers.each do |approver|
       next if approver.email.blank? || approval_request.requester.email.blank?
@@ -545,13 +660,16 @@ class GpArticle::Doc < ActiveRecord::Base
     approval_requests.each do |approval_request|
       users << approval_request.requester
       approval_request.approval_flow.approvals.each do |approval|
-        users.concat(approval.approvers)
+        _approvers = approval.approvers
+        ids = approval_request.select_assignments_ids(approval)
+        _approvers = _approvers.select{|a| ids.index(a.id.to_s)} if approval.select_approve?
+        users.concat(_approvers)
       end
     end
     return users.uniq
   end
 
-  def approve(user)
+  def approve(user, request=nil)
     return unless state_approvable?
 
     approval_requests.each do |approval_request|
@@ -565,7 +683,11 @@ class GpArticle::Doc < ActiveRecord::Base
       end
     end
 
-    update_column(:state, 'approved') if approval_requests.all?{|r| r.finished? }
+    if approval_requests.all?{|r| r.finished? }
+      update_column(:state, 'approved')
+      Sys::OperationLog.log(request, :item => self) unless request.blank?
+    end
+
   end
 
   def passback(approver, comment: '')
@@ -627,6 +749,12 @@ class GpArticle::Doc < ActiveRecord::Base
     prev_edition && (state_public? || state_closed?)
   end
 
+  def qrcode_visible?
+    return false unless content && content.qrcode_related?
+    return false unless self.qrcode_state == 'visible'
+    return true
+  end
+
   def og_type_text
     OGP_TYPE_OPTIONS.detect{|o| o.last == self.og_type }.try(:first).to_s
   end
@@ -649,6 +777,43 @@ class GpArticle::Doc < ActiveRecord::Base
 
   def feature_2_text
     FEATURE_2_OPTIONS.detect{|o| o.last == self.feature_2 }.try(:first).to_s
+  end
+
+  def qrcode_state_text
+    QRCODE_OPTIONS.detect{|o| o.last == self.qrcode_state }.try(:first).to_s
+  end
+
+  def public_files_path
+    return @public_files_path if @public_files_path
+    "#{::File.dirname(public_path)}/file_contents"
+  end
+
+  def set_inquiry_group
+    inquiries.each_with_index do |inquiry, i|
+      next if i != 0
+      inquiry.group_id = in_creator["group_id"]
+    end
+  end
+
+  def qrcode_path
+    return @public_qrcode_path if @public_qrcode_path
+    "#{::File.dirname(public_path)}/qrcode.png"
+  end
+
+  def qrcode_uri(preview: false)
+    if preview
+      "#{preview_uri(without_filename: true)}qrcode.png"
+    else
+      "#{public_uri(without_filename: true)}qrcode.png"
+    end
+  end
+
+  def event_will_sync?
+    event_will_sync == 'enabled'
+  end
+
+  def event_will_sync_text
+    EVENT_WILL_SYNC_OPTIONS.detect{|o| o.last == event_will_sync }.try(:first).to_s
   end
 
   private
@@ -691,14 +856,27 @@ class GpArticle::Doc < ActiveRecord::Base
     self.terminal_mobile            = true if self.has_attribute?(:terminal_mobile) && self.terminal_mobile.nil?
     self.share_to_sns_with ||= SHARE_TO_SNS_WITH_OPTIONS.first.last if self.has_attribute?(:share_to_sns_with)
     self.body_more_link_text ||= '続きを読む' if self.has_attribute?(:body_more_link_text)
-    self.feature_1 = FEATURE_1_OPTIONS.first.last if self.has_attribute?(:feature_1) && self.feature_1.nil?
-    self.feature_2 = FEATURE_2_OPTIONS.first.last if self.has_attribute?(:feature_2) && self.feature_2.nil?
+    self.feature_1 = content.feature_settings[:feature_1] if self.has_attribute?(:feature_1) && self.feature_1.nil? && content
+    self.feature_2 = content.feature_settings[:feature_2] if self.has_attribute?(:feature_2) && self.feature_2.nil? && content
     self.filename_base = 'index' if self.has_attribute?(:filename_base) && self.filename_base.nil?
+    self.qrcode_state = content.qrcode_default_state if self.has_attribute?(:qrcode_state) && self.qrcode_state.nil? && content
+    self.event_will_sync ||= content.event_sync_default_will_sync if self.has_attribute?(:event_will_sync) && content
+
+    if content
+      self.layout_id ||= content.setting_extra_value(:basic_setting, :default_layout_id).to_i unless content.setting_extra_value(:basic_setting, :default_layout_id).blank?
+      self.concept_id ||= content.setting_value(:basic_setting).to_i unless content.setting_value(:basic_setting).blank?
+      if (node = content.public_node)
+        self.layout_id ||= node.layout_id
+        self.concept_id ||= node.concept_id
+      else
+        self.concept_id ||= content.concept_id
+      end
+    end
   end
 
   def set_display_attributes
     self.update_column(:display_published_at, self.published_at) unless self.display_published_at
-    self.update_column(:display_updated_at, self.updated_at) unless self.display_updated_at
+    self.update_column(:display_updated_at, self.updated_at) if self.display_updated_at.blank? || !self.keep_display_updated_at
   end
 
   def node_existence
@@ -735,8 +913,8 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def make_file_contents_path_relative
-    self.body = self.body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.body.present?
-    self.mobile_body = self.mobile_body.gsub(%r|"[^"]*?/(file_contents/)|, '"\1') if self.mobile_body.present?
+    self.body = self.body.gsub(%r!("|')[^"'(]*?/(file_contents/)!, '\1\2') if self.body.present?
+    self.mobile_body = self.mobile_body.gsub(%r!("|')[^"'(]*?/(file_contents/)!, '\1\2') if self.mobile_body.present?
   end
 
   def event_dates_range
@@ -747,7 +925,7 @@ class GpArticle::Doc < ActiveRecord::Base
   end
 
   def extract_links(html, all)
-    links = Nokogiri::HTML.parse(html).css('a').map {|a| {body: a.text, url: a.attribute('href').value} }
+    links = Nokogiri::HTML.parse(html).css('a[@href]').map {|a| {body: a.text, url: a.attribute('href').value} }
     return links if all
     links.select do |link|
       uri = URI.parse(link[:url])
@@ -788,7 +966,15 @@ class GpArticle::Doc < ActiveRecord::Base
     end
   end
 
+  def publish_qrcode
+    return true unless self.state_public?
+    return true unless self.qrcode_visible?
+    Util::Qrcode.create(self.public_full_uri, self.qrcode_path)
+    return true
+  end
+
   def validate_accessibility_check
+    return unless Zomeki.config.application['cms.enable_accessibility_check']
     check_results = Util::AccessibilityChecker.check body
 
     if check_results != [] && !ignore_accessibility_check

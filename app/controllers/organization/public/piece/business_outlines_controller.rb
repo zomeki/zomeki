@@ -7,5 +7,6 @@ class Organization::Public::Piece::BusinessOutlinesController < Sys::Controller:
   end
 
   def index
+    render text: '' unless @item.kind_of?(Organization::Group)
   end
 end

@@ -1,0 +1,39 @@
+<%- if @place -%>
+<% @months.each do |month| %>
+  <section class="month <%= month.strftime('%B').downcase %>">
+  <h2><%= "#{month.strftime('%m').to_i}月" %></h2>
+
+  <%= render 'calendar', month: month, place: @place %>
+
+  </section>
+<% end %>
+
+<% if @piece.show_holiday_type? %>
+<% if @types = @piece.content.visible_types %>
+<div class="attribute">
+  <ul class="attributeList">
+    <% @types.each do |type| %>
+      <li class="<%= type.name %>"><%= type.title %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+<% end %>
+
+<% if @piece.show_holiday? %>
+<div class="businessHoliday">
+  <ul>
+    <% @piece.place.holidays.public.each do |holiday| %>
+    <li><span class="date"><%= safe{holiday.target_date_label(@piece.date_style)} %></span></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<%- end -%>
+
+<% unless @piece.lower_text.blank? %>
+<div class="lowerText">
+<%== @piece.lower_text %>
+</div>
+<% end %>

@@ -1,20 +1,9 @@
 <table class="show">
   <%- @item.answers.each do |answer| -%>
   <tr>
-    <th><%= answer.question.title %></th>
+    <th><%= safe{answer.question.title} %></th>
     <td>
-      <%- case answer.question.form_type -%>
-      <%- when 'text_field' -%>
-        <%= answer.content %>
-      <%- when 'text_area' -%>
-        <%=simple_format answer.content %>
-      <%- when 'select' -%>
-        <%= answer.content %>
-      <%- when 'radio_button' -%>
-        <%= answer.content %>
-      <%- when 'check_box' -%>
-        <%= answer.content %>
-      <%- end -%>
+      <%=simple_format answer.content %>
     </td>
   </tr>
   <%- end -%>

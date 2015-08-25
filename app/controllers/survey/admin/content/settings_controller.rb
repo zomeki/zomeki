@@ -22,8 +22,16 @@ class Survey::Admin::Content::SettingsController < Cms::Controller::Admin::Base
     @item = Survey::Content::Setting.config(@content, params[:id])
     @item.value = params[:item][:value]
 
-    @item.extra_values do |ev|
-      ev[:approval_content_id] = params[:approval_content_id].to_i
+    case @item.name
+    when 'approval_relation'
+      @item.extra_values do |ev|
+        ev[:approval_content_id] = params[:approval_content_id].to_i
+      end
+    when 'auto_reply'
+      @item.extra_values do |ev|
+        ev[:upper_reply_text] = params[:upper_reply_text]
+        ev[:lower_reply_text] = params[:lower_reply_text]
+      end
     end
 
     _update @item

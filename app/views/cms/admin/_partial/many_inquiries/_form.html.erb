@@ -20,7 +20,7 @@ item.build_default_inquiry
     <p class="form">連絡先<%= i+1 if i != 0 %></p>
     <%= f2.hidden_field :state, :class => "inquiryState" -%>
     <%= f2.hidden_field :_destroy -%>
-    <span id="inquiryTableA<%= i %>" style="display: none;">
+    <span id="inquiryTableA<%= i %>" style="<%= (Core.user.root? || Core.user.has_auth?(:manager)) ? '' : 'display: none;' %>">
     <table class="show">
       <tr>
         <th><%= f2.label :group_id -%></th>
@@ -31,13 +31,13 @@ item.build_default_inquiry
       </tr>
     </table>
     </span>
-    <span id="inquiryTableB<%= i %>">
+    <span id="inquiryTableB<%= i %>" style="<%= (Core.user.root? || Core.user.has_auth?(:manager)) ? 'display: none;' : '' %>">
     <table class="show">
       <tr>
         <th><%= f2.label :group_id -%></th>
         <td>
           <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>
-          <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) or Core.user.has_auth?(:manager) %></span>
+          <span id="inquiryGroupLabel<%= i %>"><%= safe{group.full_name} if i == 0 && !Core.user.has_auth?(:manager) or Core.user.has_auth?(:manager) or !inquiry.group_id.blank? %></span>
         </td>
       </tr>
       <%- if item.inquiry_display_field?(:charge) -%>
@@ -86,7 +86,7 @@ item.build_default_inquiry
 </div>
 
 <hr />
-<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' if Core.user.has_auth?(:manager) -%>
+<%= button_tag '連絡先を追加する', :type => :button, :id => 'addInquiryForm' -%>
 
 <script type="text/javascript">
  $(function(){

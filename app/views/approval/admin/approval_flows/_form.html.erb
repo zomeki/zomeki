@@ -20,13 +20,13 @@
     <td>
       <div style="margin-bottom: 10px;"><%= select_tag 'groups', options_for_select(Core.site.groups_for_option), prompt: '-- グループを選択してください --', name: nil %></div>
 
-      <div style="float: left;">
+      <div>
         ユーザ<br />
         <%= select_tag 'candidates', options_for_select([]), multiple: true, style: 'height: 150px; width: 150px;' %>
       </div>
-      <div style="float: left; margin: 35px 10px; height: 70px;">
-        <div><%= button_to_function '追加 ->', "$('#approvals_0 > option').attr('selected', false); $('#candidates > option:selected').clone(true).attr('selected', true).appendTo($('#approvals_0'));" %></div>
-        <div style="margin-top: 20px;"><%= button_to_function '<- 除外', "$('#candidates > option').attr('selected', false); $('#approvals_0 > option:selected').appendTo($('#candidates'));" %></div>
+      <div style="margin: 10px;">
+        <span><%= button_to_function '▼追加', "$('#approvals_0 > option').attr('selected', false); $('#candidates > option:selected').attr('selected', true).appendTo($('#approvals_0'));" %></span>
+        <span><%= button_to_function '▲除外', "$('#candidates > option').attr('selected', false); $('#approvals_0 > option:selected').appendTo($('#candidates'));" %></span>
       </div>
 
       <div id="approvals">
@@ -50,6 +50,13 @@ function increase_approval() {
   new_approval.find('span.index').text(next_index + 1)
   new_approval.find('select.approvals').attr('id', new_approval.find('select.approvals').attr('id').replace('N', next_index));
   new_approval.find('select.approvals').attr('name', new_approval.find('select.approvals').attr('name').replace('N', next_index));
+  new_approval.find('input.approval_type_fix').attr('id', new_approval.find('input.approval_type_fix').attr('id').replace('N', next_index));
+  new_approval.find('input.approval_type_fix').attr('name', new_approval.find('input.approval_type_fix').attr('name').replace('N', next_index));
+  new_approval.find('label.approval_type_fix').attr('for', new_approval.find('label.approval_type_fix').attr('for').replace('N', next_index));
+  new_approval.find('input.approval_type_select').attr('id', new_approval.find('input.approval_type_select').attr('id').replace('N', next_index));
+  new_approval.find('input.approval_type_select').attr('name', new_approval.find('input.approval_type_select').attr('name').replace('N', next_index));
+  new_approval.find('label.approval_type_select').attr('for', new_approval.find('label.approval_type_select').attr('for').replace('N', next_index));
+
   new_approval.appendTo(approvals_wrapper).show();
 }
 
@@ -82,6 +89,40 @@ function move_users(from, to) {
   from_list.find('> option:selected').appendTo(to_list);
 
   if (from_list.find('> option').length === 0) { decrease_approval(); }
+}
+
+function make_or(index) {
+  var list = $('#approvals_' + index);
+  var options = list.find('> option:selected');
+  
+  if (options.length <= 1) { return; }
+
+  var users = [];
+  var values = [];
+  options.each(function() {
+    users = users.concat($(this).text().split('or'));
+    values = values.concat($(this).val().split(','));
+  });
+
+  options.remove();
+  list.append($('<option>').val(values.join(',')).text(users.join('or')));
+}
+
+function clear_or(index) {
+  var list = $('#approvals_' + index);
+  var options = list.find('option:selected');
+  
+  var users = [];
+  var values = [];
+  options.each(function() {
+    users = users.concat($(this).text().split('or'));
+    values = values.concat($(this).val().split(','));
+  });
+
+  options.remove();
+  for (var i=0; i<users.length; i++) {
+    list.append($('<option>').val(values[i]).text(users[i]));
+  }
 }
 
 $(document).ready(function () {

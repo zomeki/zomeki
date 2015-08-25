@@ -41,6 +41,8 @@ ja:
         doc_style: 記事表示形式
         num_docs: 表示件数
         updated_at: 更新日時
+        upper_text: 上部テキスト
+        lower_text: 下部テキスト
       gp_category/piece/doc:
         list_count: 表示件数
         date_style: 日付形式
@@ -54,6 +56,11 @@ ja:
         layer: 表示カテゴリ階層
         list_style: 表示形式
         date_style: 日付形式
+      gp_category/piece/category_list:
+        setting_state: 詳細設定
+        category_type_id: 表示カテゴリタイプ
+        category_id: 表示カテゴリ
+        layer: 表示カテゴリ階層
       gp_category/piece/category:
         in_settings_category_type_id: 表示カテゴリタイプ
         in_settings_num_docs_visibility: 記事数表示
@@ -66,6 +73,7 @@ ja:
         title: タブ名
         more: 一覧リンク
         condition: 結合
+        content_ids: 記事コンテンツ
         sort_no: 並び順
       gp_category/piece/feed:
         filename: ファイル名

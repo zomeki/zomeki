@@ -1,15 +1,21 @@
-<%- if @piece.upper_text.present? -%>
-<div class="upper_text"><%=raw @piece.upper_text %></div>
+<%- if @piece.impl.last == 'dynamic' -%>
+  <%= render 'dynamic' %>
+<%- else -%>
+  <%= render 'static' %>
 <%- end -%>
 
-<%- unless @banners.empty? -%>
-<ul class="ad_banner">
-  <%- @banners.each do |banner| -%>
-  <li class="banner"><%= link_to image_tag("#{@piece.banner_node.public_uri}#{banner.name}", alt: banner.title), "#{@piece.banner_node.public_uri}#{banner.token}", target: '_blank' %></li>
-  <%- end -%>
-</ul>
-<%- end -%>
+<%- if @piece.sort.last == 'random' -%>
+  <%= javascript_tag do %>
+  function shuffle_children(id) {
+    var parent = $(id);
+    var children = parent.children();
+    for (var i = 0; i < children.length; i++) {
+      $(children[Math.floor(Math.random() * children.length)]).appendTo(parent);
+    }
+  }
 
-<%- if @piece.lower_text.present? -%>
-<div class="lower_text"><%=raw @piece.lower_text %></div>
+  $(document).ready(function () {
+    shuffle_children('#<%= @piece.css_id %> ul.ad_banner');
+  });
+  <% end %>
 <%- end -%>

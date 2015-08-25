@@ -3,9 +3,8 @@
     <th style="text-align: center; width: 60px;">詳細</th>
     <th><%= GpArticle::Doc.human_attribute_name :title %></th>
     <th style="text-align: center; width: 150px">所属</th>
-    <th style="text-align: center; width: 150px">作成者</th>
-    <th style="text-align: center; width: 150px;"><%= GpArticle::Doc.human_attribute_name :display_published_at %></th>
-    <th style="text-align: center; width: 60px;"><%= GpArticle::Doc.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 150px">作成/更新者</th>
+    <th style="text-align: center; width: 150px;">作成/更新日時</th>
     <th style="text-align: center; width: 65px;">プレビュー</th>
   </tr>
 
@@ -13,10 +12,9 @@
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to :show, gp_article_doc_history_path(content: @content, doc_id: @doc.id, id: item.id) %></td>
     <td style="text-align: left;"><%= item.title %></td>
-    <td><%= item.creator.group.try(:name) %></td>
-    <td><%= item.creator.user.try(:name) %></td>
-    <td style="text-align: center;"><%=i18n_l item.display_published_at %></td>
-    <td style="text-align: center;"><%= item.status.name %></td>
+    <td><%= item.last_editor.try(:group).try(:name) %></td>
+    <td><%= item.last_editor.try(:user).try(:name) %></td>
+    <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
     <td style="text-align: center;">
       <%= link_to_if item.terminal_pc_or_smart_phone, 'PC', item.preview_uri, target: 'preview' if @content.doc_node && item.preview_uri.present? %>
       <%= link_to_if item.terminal_mobile, '携帯', item.preview_uri(mobile: true), target: 'preview' if @content.doc_node && item.preview_uri.present? %>

@@ -7,5 +7,6 @@ class Organization::Public::Piece::ContactInformationsController < Sys::Controll
   end
 
   def index
+    render text: '' unless @item.kind_of?(Organization::Group)
   end
 end

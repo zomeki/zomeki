@@ -29,6 +29,10 @@
     <td><%= f.select :wrapper_tag, @item.class::WRAPPER_TAG_OPTIONS %></td>
   </tr>
   <tr>
+    <th><%= f.label :upper_text %></th>
+    <td><%= f.text_area :upper_text, size: '100x10' %></td>
+  </tr>
+  <tr>
     <th><%= f.label :doc_style %></th>
     <td>
       <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
@@ -38,6 +42,10 @@
   <tr>
     <th><%= f.label :num_docs %></th>
     <td><%= f.text_field :num_docs, class: 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :lower_text %></th>
+    <td><%= f.text_area :lower_text, size: '100x10' %></td>
   </tr>
 </table>
 

@@ -4,11 +4,11 @@ module DocHelper
 
     link_to_options = link_to_doc_options(doc)
 
-    doc_title = if link_to_options
-                  link_to *([doc.title] + link_to_options)
-                else
-                  h doc.title
-                end
+    title_link = if link_to_options
+                   link_to *([doc.title] + link_to_options)
+                 else
+                   h doc.title
+                 end
 
     image_file = doc.image_files.detect{|f| f.name == doc.list_image } || doc.image_files.first if doc.list_image.present?
 
@@ -54,7 +54,8 @@ module DocHelper
                   end
 
     contents = {
-      title: doc_title.blank? ? '' : content_tag(:span, doc_title, class: 'title'),
+      title_link: title_link.blank? ? '' : content_tag(:span, title_link, class: 'title_link'),
+      title: doc.title.blank? ? '' : content_tag(:span, doc.title, class: 'title'),
       subtitle: doc.subtitle.blank? ? '' : content_tag(:span, doc.subtitle, class: 'subtitle'),
       publish_date: publish_date,
       update_date: update_date,
@@ -62,8 +63,14 @@ module DocHelper
       update_time: update_time,
       summary: doc.summary.blank? ? '' : content_tag(:span, doc.summary, class: 'summary'),
       group: doc.creator.blank? ? '' : content_tag(:span, doc.creator.group.name, class: 'group'),
-      category_link: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c| link_to c.title, c.public_uri }.join(', ').html_safe, class: 'category'),
-      category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.pluck(:title).join(', '), class: 'category'),
+      category_link: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c|
+          content_tag(:span, link_to(c.title, c.public_uri),
+                      class: "#{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}")
+        }.join.html_safe, class: 'category'),
+      category: doc.categories.blank? ? '' : content_tag(:span, doc.categories.map{|c|
+          content_tag(:span, c.title,
+                    class: "#{c.category_type.name}-#{c.ancestors.map(&:name).join('-')}")
+        }.join.html_safe, class: 'category'),
       image_link: doc_image_link.blank? ? '' : content_tag(:span, doc_image_link, class: 'image'),
       image: doc_image.blank? ? '' : content_tag(:span, doc_image, class: 'image'),
       body_beginning: doc.body.blank? ? '' : content_tag(:span, "#{file_path_expanded_body(doc)}#{content_tag(:div, link_to(doc.body_more_link_text, doc.public_uri), class: 'continues') if doc.body_more.present? }".html_safe, class: 'body'),
@@ -73,11 +80,13 @@ module DocHelper
       }
 
     if Page.mobile?
-      contents[:title]
+      contents[:title_link]
     else
-      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i), class: 'body') }
+      doc_style = doc_style.gsub(/@doc{{@(.+)@}}doc@/m){|m| link_to($1.html_safe, doc.public_uri, class: 'doc_link') }
+      doc_style = doc_style.gsub(/@body_(\d+)@/){|m| content_tag(:span, truncate(strip_tags(doc.body), length: $1.to_i).html_safe, class: 'body') }
 
       doc_style.gsub(/@\w+@/, {
+        '@title_link@' => contents[:title_link],
         '@title@' => contents[:title],
         '@subtitle@' => contents[:subtitle],
         '@publish_date@' => contents[:publish_date],
@@ -99,6 +108,6 @@ module DocHelper
   end
 
   def file_path_expanded_body(doc)
-    doc.body.gsub('"file_contents/', %Q("#{doc.public_uri(without_filename: true)}file_contents/))
+    doc.body.gsub(/("|')file_contents\//){|m| %Q(#{$1}#{doc.public_uri(without_filename: true)}file_contents/) }
   end
 end

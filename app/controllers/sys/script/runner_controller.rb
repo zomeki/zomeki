@@ -9,6 +9,13 @@ class Sys::Script::RunnerController < ApplicationController
       
     res = render_component :controller => ctl, :action => act, :params => params
     logger.info "OK (#{res.body})"
+
+  rescue Script::InterruptException => e
+    Script.log "Interrupt: #{e}"
+  rescue LoadError => e
+    Script.error "#{e}"
+  rescue Exception => e
+    Script.error "#{e}"
   end
   
   def runn

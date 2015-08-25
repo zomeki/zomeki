@@ -1,0 +1,7 @@
+<div class="actionMenu">
+<%= action_menu :index %>
+<%= action_menu :show %>
+<% unless params[:action] == 'index' %><span class="separator"></span><% end %>
+<%= link_to 'ファイル差分', sys_transferable_files_path %>
+<%= link_to '転送履歴', sys_transferred_files_path, :class => 'current' %>
+</div>

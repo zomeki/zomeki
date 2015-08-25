@@ -11,8 +11,12 @@ event_title = if link_to_options
                 h event.title
               end
 
-title = %Q!<p class="title">#{event_title}</p>!
+title_link = %Q!<p class="title_link">#{event_title}</p>!
+title = %Q!<p class="title">#{event.title}</p>!
 
-event_line = list_style.gsub(/@title@/, title).html_safe
+event_line = list_style.gsub(/@\w+@/, {
+                 '@title_link@' => title_link,
+                 '@title@' => title,
+               }).html_safe
 -%>
 <%= event_line %>

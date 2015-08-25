@@ -1,6 +1,9 @@
 ZomekiCMS::Application.routes.draw do
   mod = 'gnav'
 
+  ## script
+  get "/_script/#{mod}/script/menu_items/publish" => "#{mod}/script/menu_items#publish"
+
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :content_base,

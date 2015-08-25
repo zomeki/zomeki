@@ -36,6 +36,7 @@ class Cms::Admin::PiecesController < Cms::Controller::Admin::Base
     @models   = model_options(false)
     
     _create @item do
+      Core.set_concept(session, @item.concept_id)
       respond_to do |format|
         format.html { return redirect_to(@item.admin_uri) }
       end
@@ -61,7 +62,7 @@ class Cms::Admin::PiecesController < Cms::Controller::Admin::Base
       concept.parents_tree.each do |c|
         item = Cms::Content.new
         item.and :concept_id, c.id
-        contents += item.find(:all, :order => "name, id")
+        contents += item.find(:all, :order => "sort_no IS NULL, sort_no, name, id")
       end
     end
     

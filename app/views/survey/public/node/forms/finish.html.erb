@@ -6,5 +6,5 @@
     <div style="text-align: center;">ご回答ありがとうございました。</div>
     <%- end -%>
   </div>
-  <div class="back"><%= link_to '戻る', "#{@node.public_uri}#{@form.name}#{'?piece=true' if params[:piece]}" %></div>
+  <div class="back"><%= link_to '戻る', "#{@node.public_uri}#{@form.name}?piece=#{@piece.try(:id)}&u=#{CGI.escape @current_url}&t=#{CGI.escape @current_url_title}" %></div>
 </div>

@@ -1,0 +1,95 @@
+<%= init_ckeditor :readOnly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:state) %></th>
+    <td><%= safe{@item.status.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:type_id) %></th>
+    <td><%= safe{@item.type.title} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:holiday_date) %></th>
+    <td><%= safe{@item.holiday_date} %></td>
+  </tr><tr>
+    <th>対象条件</th>
+    <td>
+      <table id="categories">
+        <tbody>
+          <tr>
+            <th><%= @item.locale(:repeat_type) %></th>
+            <td><%= @item.repeat_type_text %></td>
+          </tr>
+          <tr id ="intervalTr">
+            <th>繰り返す間隔</th>
+            <td>
+              <%= @item.repeat_interval %>&nbsp;<span id="intervalUnit">日</span>
+            </td>
+          </tr>
+          <tr id ="criterionTr">
+            <th>繰り返しの基準</th>
+            <td>
+              <%= @item.repeat_criterion_text %>
+            </td>
+          </tr>
+          <tr id ="weekTr">
+            <th>曜日</th>
+            <td>
+              <%= @item.repeat_weeks.join(', ') %>
+            </td>
+          </tr>
+          <tr>
+            <th>開始日</th>
+            <td><%= safe{@item.start_date.strftime("%Y年%m月%d日")} %></td>
+          </tr>
+          <tr>
+            <th>終了日</th>
+            <td>
+              <% if @item.end_type == 0 %>
+                なし
+              <% elsif @item.end_type == 1 %>
+                <%= @item.end_times %>回
+              <% else %>
+                <%= safe{@item.end_date.strftime("%Y年%m月%d日")} %>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<%= creator_view @item %>
+
+
+<%= javascript_tag do -%>
+
+$(document).ready(function () {
+  <% if @item.repeat_type == 'daily' %>
+  $('#intervalTr').show();
+  $('#criterionTr').hide();
+  $('#weekTr').hide();
+  $('#intervalUnit').text('日');
+  <% elsif @item.repeat_type == 'weekly' %>
+  $('#intervalTr').show();
+  $('#criterionTr').hide();
+  $('#weekTr').show();
+  $('#intervalUnit').text('週間');
+  <% elsif @item.repeat_type == 'monthly' %>
+  $('#intervalTr').show();
+  $('#criterionTr').show();
+  $('#weekTr').hide();
+  $('#intervalUnit').text('ヶ月');
+  <% elsif @item.repeat_type == 'yearly' %>
+  $('#intervalTr').show();
+  $('#criterionTr').hide();
+  $('#weekTr').hide();
+  $('#intervalUnit').text('年');
+  <% else %>
+  $('#intervalTr').hide();
+  $('#criterionTr').hide();
+  $('#weekTr').hide();
+  <% end %>
+});
+
+<%- end -%>
