@@ -1,63 +1,151 @@
+# encoding: utf-8
 class Script
-  cattr_reader :lock_key
   cattr_reader :options
 
-  def self.run(path, options = nil)
+  def self.run_from_web(path, options = {})
+    ## reset
+    if proc = Sys::Process.find(:first, :conditions => {:name => path})
+      raise "プロセスが既に実行されています。" if proc.state == "running"
+      proc.attributes = {
+        :state      => nil,
+        :user_id    => Core.user.id,
+        :started_at => nil,
+        :closed_at  => nil,
+        :interrupt  => nil,
+        :total      => 0,
+        :current    => 0,
+        :success    => 0,
+        :error      => 0,
+        :message    => nil,
+      }
+      proc.save
+    end
+
+    ## run
+    ruby   = "#{Config::CONFIG["bindir"]}/ruby"
+    runner = "#{Rails.root}/script/rails runner"
+    opts   = options.inspect
+    cmd    = "#{ruby} #{runner} -e #{Rails.env} \"Script.run('#{path}', #{opts})\""
+    system("#{cmd} >/dev/null &")
+
+    return true
+  end
+
+  def self.run(path, options = {})
+    @@kill     = 3600 # sec
+    @@path     = path
+    @@proc     = nil
+    @@time     = nil
+    @@options  = options
+    @@success  = 0
+    @@reflesh  = 10
+
     ENV['INPUTRC'] ||= '/etc/inputrc'
 
-    if options.try('[]', :force)
-      run_script(path)
-      return
+    ## locked
+    if !self.lock
+      puts "already running"
+      return "already running"
     end
 
-    @@lock_key = 'script_' + path.gsub(/\W/, '_')
-    @@lock_key << '_' + Digest::MD5.new.update(options.to_s).to_s if options.present? 
-    @@options  = options
+    ## start
+    start = Time.now
+    self.log "[#{start.strftime('%Y-%m-%d %H:%M:%S')}] script:#{@@path} ... start"
 
-    unless self.lock
-      puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') already running."
-      return true
-    end
+    ## dispatch
+    app = ActionController::Integration::Session.new(Rails.application)
+    app.get "/_script/sys/run/#{path}"
+    self.log "success " + "#{@@proc.success}" + (@@proc.total ? "/#{@@proc.total}" : "")
 
-    puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') started."
+    ## finish
+    finish = Time.now
+    past   = sprintf('%.2f', finish - start)
+    self.log "[#{finish.strftime('%Y-%m-%d %H:%M:%S')}] script:#{@@path} ... finished (#{past} sec)"
+    self.unlock
 
-    run_script(path)
-
-    puts "[ #{Time.now.strftime('%Y-%m-%d %H:%M:%S')} ]: Script.run('#{path}') finished."
-
+  rescue Exception => e
+    self.error e
+    self.error e.backtrace.slice(0, 20).join("\n")
     self.unlock
   end
 
-  def self.run_script(path)
-    app = ActionController::Integration::Session.new(Rails.application)
-    app.get "/_script/sys/run/#{path}"
-  rescue => e
-    error_log e.backtrace.join("\n") + "\n\n"
-    error_log "ScriptError: #{e}"
-  end
-
-  protected
-
-  def self.lock(lock_key = @@lock_key)
-    file = Rails.root.join("tmp/lock/#{lock_key}").to_s
-    if ::File.exist?(file)
-      locked = ::File.stat(file).mtime
-      return false if Time.now < 1.day.since(locked)
-      self.unlock(lock_key)
+  def self.total(num = 1)
+    return unless defined? @@proc
+    if num.is_a?(Fixnum)
+      @@proc.total += num
+    else
+      @@proc.total = nil
     end
-    ::File.open(file, 'w').close
-    return true
-  rescue
-    return false
+    if num != 1
+      @@proc.updated_at = DateTime.now
+      @@proc.save
+    end
+    return @@proc.total
   end
 
-  def self.unlock(lock_key = @@lock_key)
-    file = Rails.root.join("tmp/lock/#{lock_key}").to_s
-    ::File.unlink(file)
+  def self.current(num = 1)
+    return unless defined? @@proc
+    @@proc.current += num
+    if (@@proc.current % @@reflesh) == 0
+      value = @@proc.interrupted?
+      raise InterruptException.new(value) if value == "stop"
+    end
+    if @@proc.current >= @@proc.current_was + 100
+      @@proc.save
+    end
+    return @@proc.current
   end
 
-  def self.keep_lock(lock_key = @@lock_key)
-    file = Rails.root.join("tmp/lock/#{lock_key}").to_s
-    FileUtils.touch(file) rescue nil
+  def self.success(num = 1)
+    return unless defined? @@proc
+    @@proc.success += num
+    if num > 0 && (@@proc.success % @@reflesh) == 0
+      @@proc.updated_at = DateTime.now
+      @@proc.save
+    end
+    return @@proc.success
+  end
+
+  def self.error(message = nil)
+    return unless defined? @@proc
+    if message
+      @@proc.error += 1
+      self.log "Error: #{message}"
+    end
+    return @@proc.error
+  end
+
+  def self.log(message)
+    return unless defined? @@proc
+    if !message.blank?
+      @@proc.message = "" if @@proc.message.blank?
+      @@proc.message += "#{message}\n"
+      puts message
+    end
+    return message
+  end
+
+protected
+
+  def self.lock
+    @@proc = Sys::Process.lock(:name => @@path, :time_limit => @@kill)
+    @@time = @@proc.created_at if @@proc
+    @@proc
+  end
+
+  def self.keep_lock(attrs = {})
+    return false if @@time != @@proc.created_at
+    @@proc.updated_at = DateTime.now
+    @@proc.attributes = attrs
+    @@proc.save
+  end
+
+  def self.unlock
+    @@proc.unlock if @@proc && @@proc.closed_at.nil?
+  end
+
+  class InterruptException < StandardError
+    ## interrupt by admin
   end
 end
+

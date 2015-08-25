@@ -5,7 +5,7 @@ class GpCategory::Public::Node::BaseController < Cms::Controller::Public::Base
     @content = GpCategory::Content::CategoryType.find_by_id(Page.current_node.content.id)
     return http_error(404) unless @content
     @more = (params[:file] =~ /^more($|_)/i)
-    @more_options = params[:file].split('_', 2)[1].to_s.split('_-_') if @more
+    @more_options = params[:file].split('_', 2)[1].to_s.split('@') if @more
   end
 
   private

@@ -1,8 +1,9 @@
 require 'RMagick'
 
 module Sys::Model::Base::File
-  IMAGE_RESIZE_OPTIONS = [['320px', '320'], ['640px', '640'], ['800px', '800'],
-                          ['1280px', '1280'], ['1600px', '1600'], ['1920px', '1920']]
+  IMAGE_RESIZE_OPTIONS = [['120px', '120'], ['160px', '160'], ['240px', '240'], ['320px', '320'], 
+                          ['480px', '480'],['640px', '640'], ['800px', '800'], ['1280px', '1280'],
+                          ['1600px', '1600'], ['1920px', '1920']]
 
   def self.included(mod)
     mod.validates_presence_of :file, :unless => :skip_upload?
@@ -69,7 +70,13 @@ module Sys::Model::Base::File
   def validate_upload_file
     return true if file.blank?
 
-    maxsize = @maxsize || @@_maxsize
+    maxsize = @maxsize || Sys::Setting.value(:file_upload_max_size).to_i
+
+    ext = ::File.extname(name.to_s).downcase
+    if _maxsize = Sys::Setting.get_upload_max_size(ext)
+      maxsize = _maxsize
+    end
+
     if file.size > maxsize.to_i  * (1024**2)
       errors.add :file, "が容量制限を超えています。＜#{maxsize}MB＞"
       return true
@@ -93,15 +100,21 @@ module Sys::Model::Base::File
 
                 Magick::Image.read(file.path).first unless not_image
               when Sys::Lib::File::NoUploadedFile
+                self.skip_upload(true)
                 Magick::Image.from_blob(file.read).first if file.image?
               else
                 raise %Q!"#{file.class}" is not supported.!
               end
+
+      if image_resize.present?
+        image.auto_orient!
+        image.resize_to_fit!(image_resize.to_i)
+        image.write(file.path)
+        self.size = image.to_blob.size
+      end
+
       if image && image.format.in?(%w!GIF JPEG PNG!)
         image.auto_orient!
-        image.resize_to_fit!(image_resize.to_i) if image_resize.present?
-        image.write(file.path)
-
         # Overwrite browser declaration
         self.mime_type = case image.format
                          when 'GIF'
@@ -111,7 +124,7 @@ module Sys::Model::Base::File
                          when 'PNG'
                            'image/png'
                          end
-        self.size = File.size(file.path)
+        self.size = File.size(file.path) unless skip_upload?
 
         self.image_is = 1
         self.image_width = image.columns
@@ -223,10 +236,12 @@ module Sys::Model::Base::File
     dst_h  = options[:height].to_f
     src_r    = (src_w / src_h)
     dst_r    = (dst_w / dst_h)
-    if dst_r > src_r
-      dst_w = (dst_h * src_r);
-    else
-      dst_h = (dst_w / src_r);
+    if !src_r.nan? && !dst_r.nan?
+      if dst_r > src_r
+        dst_w = (dst_h * src_r)
+      else
+        dst_h = (dst_w / src_r)
+      end
     end
 
     if options[:css]
@@ -263,6 +278,26 @@ module Sys::Model::Base::File
   def file_exist?
     return false if new_record?
     File.exist?(upload_path)
+  end
+
+  def crop(x, y, w, h)
+    return false unless image_file?
+    image = Magick::Image.from_blob(File.read(upload_path)).first
+
+    if image && image.format.in?(%w!GIF JPEG PNG!)
+      image.crop!(Magick::NorthWestGravity, x, y, w, h)
+      image.write(upload_path)
+    end
+
+    update_attribute(:size, File.size(upload_path))
+    update_attribute(:image_width,  image.columns)
+    update_attribute(:image_height, image.rows)
+
+    return true
+  end
+
+  def csv?
+    mime_type.in?(%w!text/csv application/vnd.ms-excel!)
   end
 
   private

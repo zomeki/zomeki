@@ -6,13 +6,23 @@
   </ul>
   <%- end -%>
   <div class="docs">
-    <% @items.each_with_index do |item, idx| %>
-    <%- if item[:date] -%><%= '</ul>'.html_safe unless idx.zero? -%>
-    <h2 class="date"><%= item[:date] %></h2><ul>
+    <%- if @content.doc_list_style == 'simple' %>
+      <%=raw '<ul>' if @content.wrapper_tag == 'li' %>
+      <%- @docs.each do |doc| -%>
+      <%= content_tag @content.wrapper_tag, doc_replace(doc, @content.list_style, @content.date_style) %>
+      <%- end -%>
+      <%=raw '</ul>' if @content.wrapper_tag == 'li' %>
+  <%- else -%>
+      <% @items.each_with_index do |item, idx| %>
+      <%- if item[:date] -%>
+      <%=raw '</ul>' if @content.wrapper_tag == 'li' && idx.nonzero? %>
+      <h2 class="date"><%= item[:date] %></h2>
+      <%=raw '<ul>' if @content.wrapper_tag == 'li' %>
+      <%- end -%>
+      <%= content_tag @content.wrapper_tag, doc_replace(item[:doc], @content.list_style, @content.date_style) %>
+      <%- end -%>
+      <%=raw '</ul>' if @content.wrapper_tag == 'li' && @items.present? %>
     <%- end -%>
-    <li><%= render 'gp_article/public/shared/doc', doc: item[:doc], list_style: @content.list_style, date_style: @content.date_style %></li>
-    <%- end -%>
-    <%= '</ul>'.html_safe unless @items.empty? -%>
   </div>
   <%= paginate @docs %>
 </div>

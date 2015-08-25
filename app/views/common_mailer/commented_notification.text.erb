@@ -2,4 +2,4 @@
 
   次のURLをクリックしてコメントを確認してください。
 
-  <%= "#{@doc.content.site.full_uri.sub(/\/+$/, '')}#{gp_article_comments_path(content: @doc.content)}" %>
+  <%= "#{@core_uri.sub(/\/+$/, '')}#{gp_article_comments_path(content: @doc.content)}" %>

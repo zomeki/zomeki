@@ -1,0 +1,43 @@
+<%= form_tag tool_uri_check_path do -%>
+<table class="show">
+  <tr>
+    <th>メソッド</th>
+    <td><%= select_tag 'target[method]', options_for_select(@methods, @target[:method]) %></td>
+  </tr>
+  <tr>
+    <th>スキーム</th>
+    <td><%= select_tag 'target[scheme]', options_for_select(@schemes, @target[:scheme]) %></td>
+  </tr>
+  <tr>
+    <th>ホスト</th>
+    <td><%= text_field_tag 'target[host]', @target[:host].presence || 'zomeki.jp', size: 50 %></td>
+  </tr>
+  <tr>
+    <th>パス</th>
+    <td><%= text_field_tag 'target[path]', @target[:path].presence || '/about/', size: 100 %></td>
+  </tr>
+</table>
+
+<p class="form">クエリー</p>
+
+<table class="show">
+  <%- @query_keys.zip(@query_values).each do |key, value| -%>
+  <tr>
+    <td>
+      キー：<%= text_field_tag "target[query_keys][]", key, size: 50 %>
+      値：<%= text_field_tag "target[query_values][]", value, size: 50 %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+
+<p class="form">結果</p>
+
+<table class="show">
+  <tr>
+    <td><%= text_area_tag nil, @result, size: '100x30' %></td>
+  </tr>
+</table>
+
+<div class="submitters"><%= submit_tag '送信' %></div>
+<%- end -%>

@@ -1,8 +1,10 @@
 class Sys::Script::TasksController < ApplicationController
   def exec
-    tasks = Sys::Task.where(Sys::Task.arel_table[:process_at].lteq(5.minutes.ago))
+    tasks = Sys::Task.where(Sys::Task.arel_table[:process_at].lteq(3.minutes.since))
                      .order(:process_at)
                      .includes(:unid_data)
+
+    Script.total tasks.size
 
     return render(:text => 'No Tasks') if tasks.empty?
 
@@ -23,6 +25,7 @@ class Sys::Script::TasksController < ApplicationController
         params.merge!({:unid => unid, :task => task, :item => item})
         render_component_into_view :controller => ctl, :action => act, :params => params
       rescue => e
+        Script.error e
         puts "Error: #{e}"
       end
     end

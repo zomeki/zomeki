@@ -3,9 +3,7 @@
   <section class="category <%= @category.name -%>">
     <ul class="docs">
       <%- @piece.categorize_docs(@category.public_docs).each do |doc| -%>
-      <li><%= doc_replace(doc, @piece.list_style, @piece.date_style) %>
-        <span class="subTitle"><%= doc.subtitle %></span>
-        <p class="summary"><%= doc.summary %></p></li>
+      <li><%= doc_replace(doc, @piece.list_style, @piece.date_style) %></li>
       <%- end -%>
     </ul>
   </section>
@@ -21,9 +19,7 @@
     <%- unless @piece.categorize_docs(child.public_docs).empty? -%>
     <ul class="docs">
       <%- @piece.categorize_docs(child.public_docs).each do |doc| -%>
-      <li><%= doc_replace(doc, @piece.list_style, @piece.date_style) %>
-        <span class="subTitle"><%= doc.subtitle %></span>
-        <p class="summary"><%= doc.summary %></p></li>
+      <li><%= doc_replace(doc, @piece.list_style, @piece.date_style) %></li>
       <%- end -%>
     </ul>
     <%- end -%>

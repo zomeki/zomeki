@@ -1,0 +1,14 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale :content_id %></th>
+    <td><%= safe{@item.doc.content.name} %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :doc_name %></th>
+    <td><%= safe{@item.doc.title} %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>

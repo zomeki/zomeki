@@ -1,0 +1,13 @@
+<%- unless @category.public_children.empty? -%>
+<div class="level<%= @category.level_no + 1 -%>">
+  <%- @category.public_children.each do |child| -%>
+  <section class="category <%= child.name -%><%= cycle '', ' cycle' %>">
+    <h3><%= link_to child.title, child.public_uri %></h3>
+
+    <%- if !child.public_children.empty? && @piece.layer == 'descendants' -%>
+    <%= render 'categories', category: child %>
+    <%- end -%>
+  </section>
+  <%- end -%>
+</div>
+<%- end -%>

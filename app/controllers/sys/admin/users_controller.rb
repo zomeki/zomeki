@@ -16,12 +16,9 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
     item.page  params[:page], params[:limit]
     item.order params[:sort], "LPAD(account, 15, '0')"
 
-    # システム管理者以外は選択サイトのユーザしか操作できない
-    unless Core.user.root?
-      item.join ['JOIN sys_users_groups AS sug ON sug.user_id = sys_users.id',
-                 'JOIN cms_site_belongings AS csb ON csb.group_id = sug.group_id'].join(' ')
-      item.and 'csb.site_id', Core.site.id
-    end
+    item.join ['JOIN sys_users_groups AS sug ON sug.user_id = sys_users.id',
+               'JOIN cms_site_belongings AS csb ON csb.group_id = sug.group_id'].join(' ')
+    item.and 'csb.site_id', Core.site.id
 
     @items = item.find(:all)
     _index @items
@@ -30,7 +27,6 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
   def show
     @item = Sys::User.new.find(params[:id])
     return error_auth unless @item.readable?
-    
     _show @item
   end
 
@@ -55,12 +51,14 @@ class Sys::Admin::UsersController < Cms::Controller::Admin::Base
   
   def update
     @item = Sys::User.new.find(params[:id])
+    return error_auth if !Core.user.root? && @item.root?
     @item.attributes = params[:item]
     _update(@item)
   end
   
   def destroy
     @item = Sys::User.new.find(params[:id])
+    return error_auth if !Core.user.root? && @item.root?
     _destroy(@item)
   end
 end

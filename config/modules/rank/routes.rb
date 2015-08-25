@@ -1,6 +1,12 @@
 ZomekiCMS::Application.routes.draw do
   mod = 'rank'
 
+  ## script
+  get "/_script/#{mod}/script/previous_days/publish" => "#{mod}/script/previous_days#publish"
+  get "/_script/#{mod}/script/last_weeks/publish" => "#{mod}/script/last_weeks#publish"
+  get "/_script/#{mod}/script/last_months/publish" => "#{mod}/script/last_months#publish"
+  get "/_script/#{mod}/script/this_weeks/publish" => "#{mod}/script/this_weeks#publish"
+
   ## admin
   scope "#{ZomekiCMS::ADMIN_URL_PREFIX}/#{mod}", :module => mod, :as => mod do
     resources :content_base,

@@ -15,6 +15,6 @@
   </tr>
   <tr>
     <th>承認者</th>
-    <td><%= @item.approvals.map{|a| a.approvers.pluck(:name).join('、') }.join(' ＞ ') %></td>
+    <td><%= @item.approvals.map{|a| a.approvers_label}.join(' ＞ ') %></td>
   </tr>
 </table>

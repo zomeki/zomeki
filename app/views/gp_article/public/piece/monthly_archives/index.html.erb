@@ -1,7 +1,7 @@
 <%- unless @monthly_num_docs.empty? -%>
 <ul>
   <%- @monthly_num_docs.each do |key, value| year, month = key.split('-') -%>
-  <li><%= link_to "#{year}年#{month}月", "#{@node.public_uri}#{year}/#{month}" %>
+  <li><%= link_to "#{year}年#{month}月", "#{@node.public_uri}#{year}/#{month}/" %>
     <%= "(#{value})" if @piece.num_docs_visible? %></li>
   <%- end -%>
 </ul>

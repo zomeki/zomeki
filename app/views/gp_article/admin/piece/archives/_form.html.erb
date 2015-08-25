@@ -1,0 +1,22 @@
+<%= render(layout: 'gp_article/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :num_docs_visibility %></th>
+    <td><%= f.array_select 'in_settings[num_docs_visibility]', @item.class::NUM_DOCS_VISIBILITY_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :term %></th>
+    <td><%= f.array_select 'in_settings[term]', @item.class::TERM_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :order %></th>
+    <td><%= f.array_select 'in_settings[order]', @item.class::ORDER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= f.array_radio_buttons 'in_settings[impl]', @item.class::IMPL_OPTIONS %></td>
+  </tr>
+</table>
+<%- end -%>

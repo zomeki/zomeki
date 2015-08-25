@@ -1,0 +1,38 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/show') do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :place_id %></th>
+    <td><%= safe{@item.place.title} %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :month_number %></th>
+    <td><%= @item.setting_value(:month_number) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_type_state %></th>
+    <td><%= @item.class::HOLIDAY_TYPE_STATE_OPTIONS.detect{|o| o.last == @item.setting_value(:holiday_type_state) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_state %></th>
+    <td><%= @item.class::HOLIDAY_STATE_OPTIONS.detect{|o| o.last == @item.setting_value(:holiday_state) }.try(:first) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= @item.setting_value(:date_style) %></td>
+  </tr>
+</table>
+
+<p class="form">挿入テキスト</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :lower_text %></th>
+  <tr>
+  </tr>
+    <td><%== @item.setting_value(:lower_text) %></td>
+  </tr>
+</table>
+
+<%- end -%>

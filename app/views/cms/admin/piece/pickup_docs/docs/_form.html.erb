@@ -1,0 +1,72 @@
+<table class="show">
+  <tr>
+    <th>ピックアップ <span class="note">※</span></th>
+    <td>
+      <table class="noDesign">
+        <tr>
+          <td><%= f.label :content_id %></td>
+          <td><%= f.select :content_id, options_for_select(GpArticle::Content::Doc.where(site_id: Core.site.id).all.map{|c| [c.name, c.id]}, @item.content_id), include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= f.label :group_id %></td>
+          <td><%= select_tag "group_id", options_for_select(Core.site.groups_for_option), include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= f.label :user_id %></td>
+          <td><%= select_tag "user_id", options_for_select([]), include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= f.label :doc_id %></td>
+          <%- docs = @item.content_id.blank? ? [] : GpArticle::Doc.where(content_id:  @item.content_id, state: 'public').all.map{|c| [c.title, c.id]} -%>
+          <td><%= f.select :doc_id, options_for_select(docs, @item.doc_id), include_blank: true %></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %> <span class="note">※</span></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+</table>
+
+
+<%= javascript_tag do -%>
+$(document).ready(function () {
+  $('#item_content_id').on('change', function(event) { get_articles() });
+  $('#group_id').on('change', function(event) { get_articles() });
+  $('#user_id').on('change', function(event) { get_articles() });
+  <%- unless @item.content_id.blank?  -%>
+  <%- end -%>
+
+  $('#group_id').on('change', function (event) {
+    var group_id = parseInt(event.target.value);
+    if (isNaN(group_id)) {
+      $('#user_id').html('<option value=""></option>');
+    } else {
+      $('#user_id').html('<option value="">更新中...</option>');
+      $.get('<%= sys_group_users_path(parent: 'PARENT') %>?options=true'.replace('PARENT', group_id), function (data) {
+        $('#user_id').html('<option value=""></option>' + data);
+      });
+    }
+  });
+});
+
+function get_articles() {
+  var content_id = parseInt($('#item_content_id').val());
+  var group_id = parseInt($('#group_id').val());
+  var user_id = parseInt($('#user_id').val());
+  var doc_select = $('#item_doc_id');
+
+  if (isNaN(content_id)) {
+    doc_select.html('<option value=""></option>');
+  } else {
+    doc_select.html('<option value="">更新中...</option>');
+    url = '<%= gp_article_docs_path(content: 'CONTENT_ID') %>?options=true&public=true';
+    if (!isNaN(group_id)) { url = url + '&group_id=' + group_id; }
+    if (!isNaN(user_id)) { url = url + '&user_id=' + user_id; }
+    $.get(url.replace('CONTENT_ID', content_id), function (data) {
+      doc_select.html(data);
+    });
+  }
+}
+<%- end -%>

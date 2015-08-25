@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140509083136) do
+ActiveRecord::Schema.define(:version => 20150703080759) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "target"
   end
 
   add_index "ad_banner_banners", ["token"], :name => "index_ad_banner_banners_on_token", :unique => true
@@ -87,8 +88,9 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.integer  "approvable_id"
     t.string   "approvable_type"
     t.integer  "current_index"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.text     "select_assignments"
   end
 
   create_table "approval_approvals", :force => true do |t|
@@ -96,6 +98,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.integer  "index"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.text     "approval_type"
   end
 
   create_table "approval_assignments", :force => true do |t|
@@ -105,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.datetime "approved_at"
+    t.integer  "or_group_id"
   end
 
   add_index "approval_assignments", ["assignable_type", "assignable_id"], :name => "index_approval_assignments_on_assignable_type_and_assignable_id"
@@ -211,6 +215,86 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.string   "user_agent"
   end
 
+  create_table "biz_calendar_bussiness_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.integer  "type_id"
+    t.date     "holiday_start_date"
+    t.date     "holiday_end_date"
+    t.string   "repeat_type"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "end_type"
+    t.integer  "end_times"
+    t.integer  "repeat_interval"
+    t.text     "repeat_week"
+    t.text     "repeat_criterion"
+  end
+
+  create_table "biz_calendar_bussiness_hours", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.date     "fixed_start_date"
+    t.date     "fixed_end_date"
+    t.string   "repeat_type"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.time     "business_hours_start_time"
+    t.time     "business_hours_end_time"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "end_type"
+    t.integer  "end_times"
+    t.integer  "repeat_interval"
+    t.text     "repeat_week"
+    t.text     "repeat_criterion"
+  end
+
+  create_table "biz_calendar_exception_holidays", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "place_id"
+    t.string   "state"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "biz_calendar_holiday_types", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "biz_calendar_holiday_types", ["content_id"], :name => "index_biz_calendar_holiday_types_on_content_id"
+
+  create_table "biz_calendar_places", :force => true do |t|
+    t.integer  "unid"
+    t.integer  "content_id"
+    t.string   "state"
+    t.string   "url"
+    t.string   "title"
+    t.string   "summary"
+    t.string   "description"
+    t.string   "business_hours_state"
+    t.string   "business_hours_title"
+    t.string   "business_holiday_state"
+    t.string   "business_holiday_title"
+    t.integer  "sort_no"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "biz_calendar_places", ["content_id"], :name => "index_biz_calendar_places_on_content_id"
+
   create_table "calendar_events", :force => true do |t|
     t.integer  "unid"
     t.integer  "content_id"
@@ -264,6 +348,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.text     "xml_properties", :limit => 2147483647
     t.string   "note"
     t.string   "code"
+    t.integer  "sort_no"
   end
 
   create_table "cms_data_file_nodes", :force => true do |t|
@@ -366,6 +451,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
 
   create_table "cms_kana_dictionaries", :force => true do |t|
     t.integer  "unid"
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
@@ -574,7 +660,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
 
   create_table "cms_sites", :force => true do |t|
     t.integer  "unid"
-    t.string   "state",                :limit => 15
+    t.string   "state",                   :limit => 15
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
@@ -591,6 +677,12 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.text     "body"
     t.integer  "site_image_id"
     t.string   "portal_group_state"
+    t.string   "og_type"
+    t.string   "og_title"
+    t.text     "og_description"
+    t.string   "og_image"
+    t.string   "smart_phone_publication"
+    t.string   "spp_target"
   end
 
   create_table "cms_talk_tasks", :force => true do |t|
@@ -759,6 +851,11 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.boolean  "feature_1"
     t.boolean  "feature_2"
     t.string   "filename_base"
+    t.integer  "marker_icon_category_id"
+    t.boolean  "keep_display_updated_at"
+    t.integer  "layout_id"
+    t.text     "qrcode_state"
+    t.string   "event_will_sync"
   end
 
   add_index "gp_article_docs", ["concept_id"], :name => "index_gp_article_docs_on_concept_id"
@@ -796,8 +893,13 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.string   "href"
     t.string   "target"
     t.text     "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+    t.string   "sync_source_host"
+    t.integer  "sync_source_content_id"
+    t.string   "sync_source_id"
+    t.string   "sync_source_source_class"
+    t.string   "will_sync"
   end
 
   create_table "gp_calendar_events_gp_category_categories", :id => false, :force => true do |t|
@@ -813,9 +915,12 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.date     "date"
     t.text     "description"
     t.string   "kind"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
     t.boolean  "repeat"
+    t.string   "sync_source_host"
+    t.integer  "sync_source_content_id"
+    t.integer  "sync_source_id"
   end
 
   create_table "gp_category_categories", :force => true do |t|
@@ -894,6 +999,8 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.integer  "num_docs"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.text     "upper_text"
+    t.text     "lower_text"
   end
 
   add_index "gp_category_template_modules", ["content_id"], :name => "index_gp_category_template_modules_on_content_id"
@@ -961,6 +1068,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
+    t.integer  "icon_category_id"
   end
 
   create_table "newsletter_delivery_logs", :force => true do |t|
@@ -1054,6 +1162,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
     t.integer  "more_layout_id"
+    t.text     "outline"
   end
 
   add_index "organization_groups", ["sys_group_code"], :name => "index_organization_groups_on_sys_group_code"
@@ -1346,8 +1455,10 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.string   "credential_secret"
     t.text     "facebook_page_options"
     t.string   "facebook_page"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+    t.text     "facebook_token_options"
+    t.string   "facebook_token"
   end
 
   add_index "sns_share_accounts", ["content_id"], :name => "index_sns_share_accounts_on_content_id"
@@ -1401,6 +1512,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.text     "receipt"
     t.boolean  "confirmation"
     t.string   "sitemap_state"
+    t.string   "index_link"
   end
 
   add_index "survey_forms", ["content_id"], :name => "index_survey_forms_on_content_id"
@@ -1433,6 +1545,19 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
 
   add_index "sys_cache_sweepers", ["model", "uri"], :name => "model", :length => {"model"=>20, "uri"=>30}
 
+  create_table "sys_closers", :force => true do |t|
+    t.integer  "unid"
+    t.string   "dependent",      :limit => 64
+    t.string   "path"
+    t.string   "content_hash"
+    t.datetime "published_at"
+    t.datetime "republished_at"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
+
+  add_index "sys_closers", ["unid", "dependent"], :name => "index_sys_closers_on_unid_and_dependent"
+
   create_table "sys_creators", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1445,6 +1570,14 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "updated_at"
     t.text     "group_ids"
     t.boolean  "all"
+  end
+
+  create_table "sys_editors", :force => true do |t|
+    t.integer  "parent_unid"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "user_id"
+    t.integer  "group_id"
   end
 
   create_table "sys_files", :force => true do |t|
@@ -1520,6 +1653,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "published_at"
     t.text     "title"
     t.text     "body"
+    t.integer  "site_id"
   end
 
   create_table "sys_messages", :force => true do |t|
@@ -1530,6 +1664,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "published_at"
     t.text     "title"
     t.text     "body"
+    t.integer  "site_id"
   end
 
   create_table "sys_object_privileges", :force => true do |t|
@@ -1543,12 +1678,37 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
   add_index "sys_object_privileges", ["item_unid", "action"], :name => "item_unid"
 
   create_table "sys_operation_logs", :force => true do |t|
+    t.integer  "site_id"
     t.integer  "loggable_id"
     t.string   "loggable_type"
     t.integer  "user_id"
     t.string   "operation"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "user_name"
+    t.string   "ipaddr"
+    t.string   "uri"
+    t.string   "action"
+    t.string   "item_model"
+    t.integer  "item_id"
+    t.integer  "item_unid"
+    t.string   "item_name"
+  end
+
+  create_table "sys_processes", :force => true do |t|
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.datetime "started_at"
+    t.datetime "closed_at"
+    t.integer  "user_id"
+    t.string   "state"
+    t.string   "name"
+    t.string   "interrupt"
+    t.integer  "total"
+    t.integer  "current"
+    t.integer  "success"
+    t.integer  "error"
+    t.text     "message",    :limit => 2147483647
   end
 
   create_table "sys_publishers", :force => true do |t|
@@ -1573,6 +1733,7 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
   add_index "sys_recognitions", ["user_id"], :name => "user_id"
 
   create_table "sys_role_names", :force => true do |t|
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
@@ -1589,6 +1750,15 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
 
   add_index "sys_sequences", ["name", "version"], :name => "index_sys_sequences_on_name_and_version", :unique => true
 
+  create_table "sys_settings", :force => true do |t|
+    t.string   "name"
+    t.text     "value"
+    t.integer  "sort_no"
+    t.text     "extra_value"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "sys_tasks", :force => true do |t|
     t.integer  "unid"
     t.datetime "created_at"
@@ -1602,6 +1772,53 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "sys_transferable_files", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "user_id"
+    t.integer  "version"
+    t.string   "operation"
+    t.string   "file_type"
+    t.string   "parent_dir"
+    t.string   "path"
+    t.string   "destination"
+    t.integer  "operator_id"
+    t.string   "operator_name"
+    t.datetime "operated_at"
+    t.integer  "item_id"
+    t.integer  "item_unid"
+    t.string   "item_model"
+    t.string   "item_name"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "sys_transferable_files", ["user_id", "operator_id"], :name => "index_sys_transferable_files_on_user_id_and_operator_id"
+
+  create_table "sys_transferred_files", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "version"
+    t.string   "operation"
+    t.string   "file_type"
+    t.string   "parent_dir"
+    t.string   "path"
+    t.string   "destination"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "user_id"
+    t.integer  "operator_id"
+    t.string   "operator_name"
+    t.datetime "operated_at"
+    t.integer  "item_id"
+    t.integer  "item_unid"
+    t.string   "item_model"
+    t.string   "item_name"
+  end
+
+  add_index "sys_transferred_files", ["created_at"], :name => "index_sys_transferred_files_on_created_at"
+  add_index "sys_transferred_files", ["operator_id"], :name => "index_sys_transferred_files_on_operator_id"
+  add_index "sys_transferred_files", ["user_id"], :name => "index_sys_transferred_files_on_user_id"
+  add_index "sys_transferred_files", ["version"], :name => "index_sys_transferred_files_on_version"
 
   create_table "sys_unid_relations", :force => true do |t|
     t.integer "unid",     :null => false
@@ -1666,24 +1883,85 @@ ActiveRecord::Schema.define(:version => 20140509083136) do
   add_index "tag_tags", ["content_id"], :name => "index_tag_tags_on_content_id"
 
   create_table "tool_convert_docs", :force => true do |t|
-    t.string   "name"
-    t.string   "doc_class"
+    t.integer  "content_id"
+    t.integer  "docable_id"
+    t.string   "docable_type"
+    t.text     "doc_name"
+    t.text     "doc_public_uri"
+    t.text     "site_url"
     t.string   "file_path"
-    t.string   "uri_path"
-    t.string   "host"
+    t.text     "uri_path"
     t.text     "title"
+    t.text     "body",            :limit => 2147483647
+    t.string   "page_updated_at"
+    t.string   "page_group_code"
     t.datetime "published_at"
-    t.text     "body",         :limit => 2147483647
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+  end
+
+  add_index "tool_convert_docs", ["content_id"], :name => "index_tool_convert_docs_on_content_id"
+  add_index "tool_convert_docs", ["docable_id", "docable_type"], :name => "index_tool_convert_docs_on_docable_id_and_docable_type"
+  add_index "tool_convert_docs", ["uri_path"], :name => "index_tool_convert_docs_on_uri_path", :length => {"uri_path"=>255}
+
+  create_table "tool_convert_downloads", :force => true do |t|
+    t.string   "state"
+    t.text     "site_url"
+    t.text     "include_dir"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.integer  "recursive_level"
+    t.string   "remark"
+    t.text     "message"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "tool_convert_imports", :force => true do |t|
+    t.string   "state"
+    t.text     "site_url"
+    t.string   "site_filename"
+    t.integer  "content_id"
+    t.integer  "overwrite"
+    t.integer  "keep_filename"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.text     "message"
+    t.integer  "total_num"
+    t.integer  "created_num"
+    t.integer  "updated_num"
+    t.integer  "nonupdated_num"
+    t.integer  "skipped_num"
+    t.integer  "link_total_num"
+    t.integer  "link_processed_num"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "tool_convert_links", :force => true do |t|
+    t.integer  "concept_id"
+    t.integer  "linkable_id"
+    t.string   "linkable_type"
+    t.text     "urls"
+    t.text     "before_body",   :limit => 2147483647
+    t.text     "after_body",    :limit => 2147483647
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "tool_convert_settings", :force => true do |t|
     t.string   "site_url"
     t.text     "title_tag"
     t.text     "body_tag"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.text     "updated_at_tag"
+    t.text     "updated_at_regexp"
+    t.text     "creator_group_from_url_regexp"
+    t.integer  "creator_group_relation_type"
+    t.text     "creator_group_url_relations"
+    t.text     "category_tag"
+    t.text     "category_regexp"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   add_index "tool_convert_settings", ["site_url"], :name => "index_tool_convert_settings_on_site_url"

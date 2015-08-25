@@ -5,7 +5,7 @@
   <tr>
     <th>汎用記事コンテンツ</th>
     <td><%= select_tag 'gp_article_content_doc_id',
-                       options_from_collection_for_select(GpArticle::Content::Doc.all, :id, :name,
+                       options_from_collection_for_select(GpArticle::Content::Doc.where(site_id: Page.site.id), :id, :name,
                                                           @item.extra_values[:gp_article_content_doc_id]), include_blank: true %></td>
   </tr>
 </table>

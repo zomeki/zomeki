@@ -8,5 +8,5 @@
             end
 -%>
 <span style="<%= 'display: none;' if common_attrs[:disabled] %>">
-  <%= select_tag 'gp_article_content_docs[]', options_from_collection_for_select(GpArticle::Content::Doc.all, :id, :name, gacd_id), common_attrs.merge(include_blank: true) %>
+  <%= select_tag 'gp_article_content_docs[]', options_from_collection_for_select(GpArticle::Content::Doc.where(site_id: Page.site.id).select{|doc| doc.gp_category_content_category_type.try(:id) == @piece.content_id }, :id, :name, gacd_id), common_attrs.merge(include_blank: true) %>
 </span>

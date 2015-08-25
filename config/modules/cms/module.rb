@@ -16,4 +16,5 @@ Cms::Lib::Modules::ModuleSet.draw :cms, '標準機能' do |mod|
   mod.piece :bread_crumbs, 'パンくず'
   mod.piece :links, 'リンク集'
   mod.piece :sns_parts, 'SNSパーツ'
+  mod.piece :pickup_docs, 'ピックアップ記事'
 end

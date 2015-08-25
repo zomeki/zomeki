@@ -11,11 +11,15 @@ class Cms::Public::TalkController < ApplicationController
     return http_error(404) if ::File.extname(uri) != '.html'
     
     uri = "#{request.env['SCRIPT_URI'].gsub(/^(.*?\/\/.*?)\/.*/, '\1')}#{uri}"
-    res = Util::Http::Request.send(uri)
+    options = uri =~ /^https:/ ? {:ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE} : {}
+    res = Util::Http::Request.send(uri, options)
+
     return http_error(404) if res.status != 200
-    
+
+    site_id = Page.site.id rescue nil
+
     jtalk = Cms::Lib::Navi::Jtalk.new
-    jtalk.make res.body
+    jtalk.make res.body, {:site_id => site_id}
     file = jtalk.output
     send_file(file[:path], :type => file[:mime_type], :filename => 'sound.mp3', :disposition => 'inline')
     

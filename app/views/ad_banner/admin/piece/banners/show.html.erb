@@ -8,7 +8,11 @@
   </tr>
   <tr>
     <th><%= @item.locale :sort %></th>
-    <td><%= @item.class::SORT_OPTIONS.detect{|so| so.last == @item.setting_value(:sort) }.try(:first) %></td>
+    <td><%= @item.sort_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= @item.impl_text %></td>
   </tr>
 </table>
 

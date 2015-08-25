@@ -2,9 +2,9 @@
 class Util::LinkChecker
   def self.check
     in_progress = check_in_progress
-    in_progress.destroy if in_progress && in_progress.created_at < 30.minutes.ago
-    if in_progress.nil? || in_progress.destroyed?
-      link_check = Cms::LinkCheck.find_by_checked(false) || plan_check
+    in_progress.update_column(:in_progress, false) if in_progress
+    if in_progress.nil? || !in_progress.in_progress
+      link_check = plan_check
       link_check.execute
     end
   end
@@ -16,18 +16,26 @@ class Util::LinkChecker
       link_check = Cms::LinkCheck.create
     end
 
-    GpArticle::Content::Doc.find_by_site_id(Core.site.id).all_docs.each do |doc|
-      doc.links.each do |link|
-        uri = URI.parse(link.url)
-        url = unless uri.absolute?
-                next unless uri.path =~ /^\//
-                "#{doc.content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
-              else
-                uri.to_s
-              end
+    GpArticle::Content::Doc.where(site_id: Core.site.id).each do |c|
+      c.docs.each do |doc|
+        doc.links.each do |link|
+          info_log "Planning #{link.url} to check in GpArticle::Doc(#{doc.id})"
 
-        link_check.logs.create(link_checkable: doc, title: doc.title,
-                               body: link.body, url: url)
+          begin
+            uri = URI.parse(link.url)
+            url = unless uri.absolute?
+                    next unless uri.path =~ /^\//
+                    "#{doc.content.site.full_uri.sub(/\/$/, '')}#{uri.path}"
+                  else
+                    uri.to_s
+                  end
+
+            link_check.logs.create(link_checkable: doc, title: doc.title,
+                                   body: link.body, url: url)
+          rescue => evar
+            warn_log evar.message
+          end
+        end
       end
     end
 
@@ -35,6 +43,9 @@ class Util::LinkChecker
   end
 
   def self.check_url(url)
+    info_log "Checking #{url}"
+
+    require 'httpclient'
     client = HTTPClient.new
 
     res = client.head(url)

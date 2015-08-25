@@ -1,0 +1,24 @@
+<div class="actionMenu">
+<% if params[:action] == 'index' %>
+<%= link_to '最新表示', refresh_sys_transferable_files_path %>
+<%= link_to '転送', '#', :id => 'selected_transfer' %>
+<%= link_to 'すべて転送', transfer_all_sys_transferable_files_path, :method => :post, :confirm => 'すべてのファイル差分を転送してよろしいですか？' %>
+<% end %>
+<%= action_menu :index %>
+<%= action_menu :show %>
+<span class="separator"></span>
+<%= link_to 'ファイル差分', sys_transferable_files_path, :class => 'current' %>
+<%= link_to '転送履歴', sys_transferred_files_path %>
+</div>
+<script>
+//<![CDATA[
+  $('#selected_transfer').on('click', function() {
+    if (confirm('選択中のファイルを転送してよろしいですか？')) {
+      $('#form_items').submit();
+    } else {
+      event.preventDefault();
+      return false;
+    }
+  });
+//]]>
+</script>

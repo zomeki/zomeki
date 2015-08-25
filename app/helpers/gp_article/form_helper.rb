@@ -81,6 +81,36 @@ $('.datetimepicker').datetimepicker({
     s.html_safe
   end
 
+  def value_for_timepicker(object_name, attribute)
+    if object = instance_variable_get("@#{object_name}")
+      object.send(attribute).try(:strftime, '%H:%M')
+    end
+  end
+
+  def enable_timepicker_script
+    s = <<-EOS
+$.timepicker.regional['ja'] = {
+  timeOnlyTitle: '時刻選択',
+  timeText: '時刻',
+  hourText: '時',
+  minuteText: '分',
+  secondText: '秒',
+  millisecText: 'ミリ秒',
+  timezoneText: 'タイムゾーン',
+  currentText: '現在',
+  closeText: '閉じる',
+  timeFormat: 'HH:mm',
+  amNames: ['AM', 'A'],
+  pmNames: ['PM', 'P'],
+  isRTL: false};
+$.timepicker.setDefaults($.timepicker.regional['ja']);
+
+$('.timepicker').timepicker();
+    EOS
+    s.html_safe
+  end
+
+
   def disable_enter_script
     s = <<-EOS
 $('form').on('keypress', function (e) { if (e.target.type !== 'textarea' && e.which === 13) return false; });

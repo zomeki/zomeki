@@ -10,17 +10,16 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
   def index
     return test if params[:do] == 'test'
     return make_dictionary if params[:do] == 'make_dictionary'
-    
-    item = Cms::KanaDictionary.new#.readable
-    item.page  params[:page], params[:limit]
-    item.order params[:sort], 'name, id'
-    @items = item.find(:all)
+
+    @items = Cms::KanaDictionary.where(site_id: Core.site.id).order(:id)
+                                .paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
   
   def show
     @item = Cms::KanaDictionary.new.find(params[:id])
     return error_auth unless @item.readable?
+    return error_auth unless @item.site_id == Core.site.id
     
     _show @item
   end
@@ -42,22 +41,27 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     return test if params[:do] == 'test'
     
     @item = Cms::KanaDictionary.new(params[:item])
+    @item.site_id = Core.site.id
     _create @item
   end
   
   def update
     @item = Cms::KanaDictionary.new.find(params[:id])
+    return error_auth unless @item.site_id == Core.site.id
+
     @item.attributes = params[:item]
     _update @item
   end
   
   def destroy
     @item = Cms::KanaDictionary.new.find(params[:id])
+    return error_auth unless @item.site_id == Core.site.id
+
     _destroy @item
   end
   
   def make
-    res = Cms::KanaDictionary.make_dic_file
+    res = Cms::KanaDictionary.make_dic_file(Core.site.id)
     if res == true
       flash[:notice] = '辞書を更新しました。'
     else
@@ -71,12 +75,12 @@ class Cms::Admin::KanaDictionariesController < Cms::Controller::Admin::Base
     @mode = true
     
     if params[:yomi_kana]
-      render :inline => Cms::Lib::Navi::Kana.convert(params[:body])
+      render :inline => Cms::Lib::Navi::Kana.convert(params[:body], Core.site.id)
     elsif params[:talk_kana]
-      render :inline => Cms::Lib::Navi::Jtalk.make_text(params[:body])
+      render :inline => Cms::Lib::Navi::Jtalk.make_text(params[:body], Core.site.id)
     elsif params[:talk_file]
       jtalk = Cms::Lib::Navi::Jtalk.new
-      jtalk.make params[:body]
+      jtalk.make params[:body], {:site_id => Core.site.id}
       file = jtalk.output
       send_file(file[:path], :type => file[:path], :filename => 'sound.mp3', :disposition => 'inline')
     end

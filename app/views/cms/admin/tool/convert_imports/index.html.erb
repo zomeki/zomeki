@@ -1,0 +1,74 @@
+<%= form_for :item  do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th><%= @item.locale(:site_url) %></th>
+      <td><%= f.select :site_url, Tool::ConvertSetting.order('site_url').all.map(&:site_url), { include_blank: true } %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:site_filename) %></th>
+      <td><%= select_tag 'item[site_filename]', options_for_select(@item.site_filename_options),
+                id: 'item_site_filename', include_blank: true, multiple: true, size: 10 %>
+    </td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:content_id) %></th>
+      <td><%= f.select :content_id, GpArticle::Content::Doc.order("id ASC").all.map {|c| [ c.name, c.id ] }, { include_blank: true } %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:overwrite) %></th>
+      <td><%= f.radio_buttons :overwrite, @item.class::OVERWRITE_OPTIONS %></td>
+    </tr>
+    <tr>
+      <th><%= @item.locale(:keep_filename) %></th>
+      <td><%= f.radio_buttons :keep_filename, @item.class::KEEP_FILENAME_OPTIONS %></td>
+    </tr>
+  </table>
+  <%= submit "書き込む" %>
+<%- end -%>
+
+<%- if @items.size > 0 -%>
+<p class="form">書き込み一覧</p>
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: left;"><%= Tool::ConvertImport.human_attribute_name :site_url %></th>
+    <th style="text-align: left;"><%= Tool::ConvertImport.human_attribute_name :site_filename %></th>
+    <th style="text-align: center; width: 60px;"><%= Tool::ConvertImport.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 40px;"><%= Tool::ConvertImport.human_attribute_name :total_num %></th>
+    <th style="text-align: center; width: 40px;"><%= Tool::ConvertImport.human_attribute_name :created_num %></th>
+    <th style="text-align: center; width: 40px;"><%= Tool::ConvertImport.human_attribute_name :updated_num %></th>
+    <th style="text-align: center; width: 40px;"><%= Tool::ConvertImport.human_attribute_name :nonupdated_num %></th>
+    <th style="text-align: center; width: 40px;"><%= Tool::ConvertImport.human_attribute_name :skipped_num %></th>
+    <th style="text-align: center; width: 140px;"><%= Tool::ConvertImport.human_attribute_name :start_at %></th>
+    <th style="text-align: center; width: 140px;"><%= Tool::ConvertImport.human_attribute_name :end_at %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle('cycle', '') %>">
+    <td style="text-align: center;"><%= link_to :show, cms_tool_convert_import_path(item.id) %></td>
+    <td style="text-align: left;"><%= item.site_url %></td>
+    <td style="text-align: left;"><%= item.site_filename %></td>
+    <td style="text-align: center;"><%= item.state_label %></td>
+    <td style="text-align: center;"><%= item.total_num %></td>
+    <td style="text-align: center;"><%= item.created_num %></td>
+    <td style="text-align: center;"><%= item.updated_num %></td>
+    <td style="text-align: center;"><%= item.nonupdated_num %></td>
+    <td style="text-align: center;"><%= item.skipped_num %></td>
+    <td style="text-align: center;"><%=l item.start_at if item.start_at %></td>
+    <td style="text-align: center;"><%=l item.end_at if item.end_at %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%= paginate @items %>
+<%- end -%>
+
+<script type="text/javascript">
+$(function() {
+  $('#item_site_url').on('change', function(e) {
+    $('#item_site_filename').html('<option value="">更新中...</option>');
+    $.get('<%= filename_options_cms_tool_convert_imports_path %>', { site_url: $(this).val() }, function(data) {
+      $('#item_site_filename').html(data);
+    });
+  });
+});
+</script>

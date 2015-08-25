@@ -24,6 +24,10 @@
     <td><%= @item.wrapper_tag_text %></td>
   </tr>
   <tr>
+    <th><%= @item.class.human_attribute_name :upper_text %></th>
+    <td><pre><code><%= @item.upper_text %></code></pre></td>
+  </tr>
+  <tr>
     <th><%= @item.class.human_attribute_name :doc_style %></th>
     <td>
       <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
@@ -33,6 +37,10 @@
   <tr>
     <th><%= @item.class.human_attribute_name :num_docs %></th>
     <td class="number"><%= @item.num_docs %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :lower_text %></th>
+    <td><pre><code><%= @item.lower_text %></code></pre></td>
   </tr>
 </table>
 

@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       sys/user: "ユーザ"
+      sys/group: "グループ"
     attributes:
       sys/sequence:
         created_at: "作成日時"
@@ -33,8 +34,8 @@ ja:
         ldap_version: "LDAP同期バージョン"
         web_state: "Web公開"
         address: "住所"
-        tel: "電話番号"
-        fax: "ファクシミリ"
+        tel: "TEL"
+        fax: "FAX"
         outline_uri: "業務概要URL"
         note: "備考"
 
@@ -93,3 +94,45 @@ ja:
         file: "ファイル"
         name: "保存ファイル名"
         title: "表示ファイル名"
+
+      sys/operation_log:
+        id: "ID"
+        created_at: "操作日時"
+        updated_at: "更新日時"
+        user_id: "ユーザID（内部ID）"
+        user_name: "ユーザ名"
+        ipaddr: "IPアドレス"
+        uri: "URL"
+        action: "操作"
+        item: "操作アイテム"
+        item_model: "操作アイテム種別"
+        item_id: "操作アイテムID"
+        item_unid: "操作アイテムUNID"
+        item_name: "操作アイテム名"
+
+      sys/transferable_file:
+        site_id: "サイト"
+        version: "バージョン"
+        operation: "操作"
+        parent_dir: "対象ディレクトリ"
+        path: "ファイル"
+        file_type: "種別"
+        destination: "転送先"
+        operated_at: "操作日時"
+        operator_name: "操作ユーザ"
+        item: "ファイル情報"
+
+      sys/transferred_file:
+        created_at: "転送日時"
+        site_id: "サイト"
+        version: "バージョン"
+        operation: "操作"
+        parent_dir: "対象ディレクトリ"
+        path: "ファイル"
+        file_type: "種別"
+        destination: "転送先"
+        operated_at: "操作日時"
+        operator_name: "操作ユーザ"
+        item: "ファイル情報"
+        user_name: "転送ユーザ"
+

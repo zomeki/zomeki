@@ -181,7 +181,7 @@ private
   
   def self.recognize_site
     case @@mode
-    when 'system'
+    when ZomekiCMS::ADMIN_URL_PREFIX.sub(/\A_/, '')
       @@site          = self.get_site_by_cookie || find_site_by_script_uri(@@script_uri) || Cms::Site.order(:id).first
       Page.site       = @@site
       @@internal_uri  = @@request_uri
@@ -193,8 +193,24 @@ private
       Page.mobile     = site_mobile
       @@internal_uri  = @@request_uri
       @@internal_uri += "index.html" if @@internal_uri =~ /\/$/
+    when 'ssl'
+      site_id         = @@request_uri.gsub(/^\/_[a-z]+\/([0-9]+).*/, '\1').to_i
+      site_mobile     = @@request_uri =~ /^\/_[a-z]+\/([0-9]+)m/
+      @@site          = Cms::Site.find_by_id(site_id)
+      Page.site       = @@site
+      Page.mobile     = site_mobile
+      @@internal_uri  = @@request_uri
+      @@internal_uri += "index.html" if @@internal_uri =~ /\/$/
     when 'public'
       @@site          = find_site_by_script_uri(@@script_uri)
+      if @@site.blank? && Sys::Setting.use_common_ssl? && @@request_uri =~ /^\/simple_captcha/
+        if @@script_uri =~ /^#{Sys::Setting.setting_extra_value(:common_ssl, :common_ssl_uri)}/
+          @@site          = nil
+          Page.site       = @@site
+          @@internal_uri  = @@request_uri
+          return
+        end
+      end
       Page.site       = @@site
       @@internal_uri  = search_node @@request_uri
     when 'layouts'

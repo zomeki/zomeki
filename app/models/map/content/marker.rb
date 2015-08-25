@@ -7,6 +7,8 @@ class Map::Content::Marker < Cms::Content
 
   has_many :markers, :foreign_key => :content_id, :class_name => 'Map::Marker', :dependent => :destroy
 
+  after_initialize :set_default_settings
+
   def public_nodes
     nodes.public
   end
@@ -39,7 +41,7 @@ class Map::Content::Marker < Cms::Content
 
   def categories
     setting = Map::Content::Setting.find_by_id(settings.find_by_name('gp_category_content_category_type_id').try(:id))
-    return [] unless setting
+    return GpCategory::Category.none unless setting
     setting.categories
   end
 
@@ -92,6 +94,10 @@ class Map::Content::Marker < Cms::Content
     setting_value(:default_image).to_s
   end
 
+  def title_style
+    setting_value(:title_style).to_s
+  end
+
   def sort_markers(markers)
     case setting_value(:marker_order)
     when 'time_asc'
@@ -108,5 +114,11 @@ class Map::Content::Marker < Cms::Content
     else
       markers
     end
+  end
+
+  private
+
+  def set_default_settings
+    in_settings[:title_style] = '@title_link@' unless setting_value(:title_style)
   end
 end

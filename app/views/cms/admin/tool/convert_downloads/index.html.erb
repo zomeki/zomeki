@@ -1,0 +1,51 @@
+<%= form_for :item, :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th><%= f.label :site_url %></th>
+      <td><%= f.text_field :site_url, class: 'title' %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :include_dir %></th>
+      <td><%= f.text_field :include_dir, class: 'title' %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :recursive_level %></th>
+      <td><%= f.select :recursive_level, Tool::ConvertDownload::RECURSIVE_LEVEL_OPTIONS %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :remark %></th>
+      <td><%= f.text_field :remark, class: 'title' %></td>
+    </tr>
+  </table>
+  <div class="submitters">
+    <%= f.submit "実行する" %>
+  </div>
+<%- end -%>
+
+<%- if @items.size > 0 -%>
+<p class="form">ダウンロード一覧</p>
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: left;"><%= Tool::ConvertDownload.human_attribute_name :site_url %></th>
+    <th style="text-align: left; width: 180px;"><%= Tool::ConvertDownload.human_attribute_name :include_dir %></th>
+    <th style="text-align: center; width: 60px;"><%= Tool::ConvertDownload.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 140px;"><%= Tool::ConvertDownload.human_attribute_name :start_at %></th>
+    <th style="text-align: center; width: 140px;"><%= Tool::ConvertDownload.human_attribute_name :end_at %></th>
+    <th style="text-align: left; width: 150px;"><%= Tool::ConvertDownload.human_attribute_name :remark %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle('cycle', '') %>">
+    <td style="text-align: center;"><%= link_to :show, cms_tool_convert_download_path(item.id) %></td>
+    <td style="text-align: left;"><%= item.site_url %></td>
+    <td style="text-align: left;"><%= item.include_dir %></td>
+    <td style="text-align: center;"><%= item.state_label %></td>
+    <td style="text-align: center;"><%=l item.start_at if item.start_at %></td>
+    <td style="text-align: center;"><%=l item.end_at if item.end_at %></td>
+    <td style="text-align: left;"><%= item.remark %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%= paginate @items %>
+<%- end -%>

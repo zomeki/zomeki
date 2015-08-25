@@ -11,11 +11,10 @@ class ApplicationController < ActionController::Base
     if Core.publish
       Page.mobile = false
       Page.smart_phone = false
-      unset_mobile
     else
       Page.mobile = true if request.mobile?
       Page.smart_phone = true if request.smart_phone?
-      set_mobile if Page.mobile? && !request.mobile?
+      request_as_mobile if Page.mobile? && !request.mobile?
     end
     return false if Core.dispatched?
     return Core.dispatched
@@ -32,18 +31,6 @@ class ApplicationController < ActionController::Base
   
   def send_download
     #
-  end
-
-  def set_mobile
-    def request.mobile
-      Jpmobile::Mobile::Au.new(nil, self)
-    end
-  end
-
-  def unset_mobile
-    def request.mobile
-      nil
-    end
   end
 
 private
@@ -105,7 +92,48 @@ private
     else
       html = "<html>\n<head></head>\n<body>\n<p>#{message}</p>\n</body>\n</html>\n"
     end
-    
+
+    if Core.mode == 'ssl'
+      form_nodes = Cms::Node.where(model: 'Survey::Form', site_id: Page.site.id)
+      form_nodes = form_nodes.select {|f| Survey::Content::Form.find_by_id(f.content.id).use_common_ssl? }
+      form_nodes = form_nodes.map{|f| f.public_uri }
+
+      str = Nokogiri::HTML(html.force_encoding('UTF-8'), nil, 'utf-8')
+
+      ssl_uri = Page.site.full_ssl_uri.sub(/\/\z/, '')
+      unless form_nodes.blank?
+        str.css(*form_nodes.map{|n| %Q!a[href^="#{n}"]! }).each do |a_tag|
+          a_tag.set_attribute('href', "#{ssl_uri}#{a_tag.attribute('href')}")
+        end
+        str.css(*form_nodes.map{|n| %Q!form[action^="#{n}"]! }).each do |form_tag|
+          form_tag.set_attribute('action', "#{ssl_uri}#{form_tag.attribute('action')}")
+        end
+      end
+
+      site_full_uri = Page.site.full_uri.sub(/\/\z/, '')
+      str.css('a[href^="/"]').each do |a_tag|
+        href = a_tag.attribute('href').to_s
+        a_tag.set_attribute('href', "#{site_full_uri}#{href}") unless href =~ Regexp.new("\\A#{form_nodes.join('|')}")
+      end
+      str.css('area[href^="/"]').each do |a_tag|
+        href = a_tag.attribute('href').to_s
+        a_tag.set_attribute('href', "#{site_full_uri}#{href}") unless href =~ Regexp.new("\\A#{form_nodes.join('|')}")
+      end
+      str.css('link[href^="/"]').each do |link_tag|
+        href = link_tag.attribute('href').to_s
+        link_tag.set_attribute('href', "#{ssl_uri}#{href}") if href =~ /^\/_(layouts|themes|file|emfiles)/
+      end
+      str.css('img[src^="/"]').each do |src_tag|
+        src = src_tag.attribute('src').to_s
+        src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes|file|emfiles)/
+      end
+      str.css('script[src^="/"]').each do |src_tag|
+        src = src_tag.attribute('src').to_s
+        src_tag.set_attribute('src', "#{ssl_uri}#{src}") if src =~ /^\/_(layouts|themes|file|emfiles)/
+      end
+      html = str.to_s
+    end
+
     render :status => status, :inline => html
 #    return respond_to do |format|
 #      format.html { render :status => status, :inline => html }
@@ -132,4 +160,16 @@ private
 #      http_error 500
 #    end
 #  end
+
+  def envs_to_request_as_smart_phone
+    return @envs_to_request_as_smart_phone if @envs_to_request_as_smart_phone
+    user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D201 Safari/9537.53'
+    jpmobile = Jpmobile::Mobile::AbstractMobile.carrier('HTTP_USER_AGENT' => user_agent)
+    @envs_to_request_as_smart_phone = {'HTTP_USER_AGENT' => user_agent, 'rack.jpmobile' => jpmobile}
+  end
+
+  def request_as_mobile
+    user_agent = 'DoCoMo/2.0 ISIM0808(c500;TB;W24H16)'
+    env['rack.jpmobile'] = Jpmobile::Mobile::AbstractMobile.carrier('HTTP_USER_AGENT' => user_agent)
+  end
 end

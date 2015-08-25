@@ -1,0 +1,11 @@
+<%= render 'cms/admin/tool/convert/menu' %>
+
+<div class="actionMenu" style="margin-top: 10px;">
+<%- case params[:action] -%>
+<%- when 'index' -%>
+  <%= link_to 'CSV出力', export_cms_tool_convert_docs_path %>
+  <%#= link_to '全削除', destroy_all_cms_tool_convert_docs_path, confirm: '全削除してよろしいですか？' %>
+<%- when 'show' -%>
+  <%= link_to '削除', cms_tool_convert_doc_path(id: @item.id), method: 'delete', confirm: '削除してよろしいですか？' if @item.deletable? %>
+<%- end -%>
+</div>

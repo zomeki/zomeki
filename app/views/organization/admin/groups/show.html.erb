@@ -38,6 +38,10 @@
 
 <table class="show">
   <tr>
+    <th><%= @item.locale(:outline) %></th>
+    <td><%=simple_format @item.outline %></td>
+  </tr>
+  <tr>
     <th><%= @item.locale(:business_outline) %></th>
     <td><%=simple_format @item.business_outline %></td>
   </tr>

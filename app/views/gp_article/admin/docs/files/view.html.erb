@@ -1,0 +1,31 @@
+<%= stylesheet_link_tag '/_common/css/jquery.Jcrop.min' %>
+<%= javascript_include_tag '/_common/js/jquery.Jcrop.min' %>
+<script>
+$(document).ready(function(){
+  $('#cropbox').Jcrop({
+    onChange: coordinates,
+    onSelect: coordinates
+  });
+});
+function coordinates(c){
+  $('#x' ).val(c.x);
+  $('#y' ).val(c.y);
+  $('#x2').val(c.x2);
+  $('#y2').val(c.y2);
+  $('#w' ).val(c.w);
+  $('#h' ).val(c.h);
+};
+</script>
+
+<%= render 'menu' %>
+
+<br>
+<p><%= image_tag @file_content_path, id: 'cropbox' %></p>
+<br>
+
+<%= form_tag(crop_gp_article_doc_file_path(@content, doc_id: @doc_id, id: @item.id), :html => {method: :put}) do |f| %>
+  <% for attribute in [:x, :y, :x2, :y2, :w, :h] %>
+    <%= hidden_field_tag attribute %>
+  <% end %>
+  <p><%= submit_tag 'トリミング', confirm: 'トリミングしますか？' %></p>
+<% end %>

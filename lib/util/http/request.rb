@@ -9,6 +9,7 @@ class Util::Http::Request
     body     = ''
     
     settings = { :proxy => Core.proxy }
+    settings[:ssl_verify_mode] = options[:ssl_verify_mode] if options.include?(:ssl_verify_mode)
     
     begin
       timeout(limit) do

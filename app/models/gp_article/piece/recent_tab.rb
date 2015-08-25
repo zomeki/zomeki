@@ -45,7 +45,7 @@ class GpArticle::Piece::RecentTab < Cms::Piece
   def set_default_settings
     settings = self.in_settings
     settings[:list_count] = 10 if setting_value(:list_count).nil?
-    settings[:list_style] = '@title(@date @group)' if setting_value(:list_style).nil?
+    settings[:list_style] = '@title_link@(@publish_date@ @group@)' if setting_value(:list_style).nil?
     settings[:date_style] = '%Y年%m月%d日 %H時%M分' if setting_value(:date_style).nil?
     settings[:more_label] = '' if setting_value(:list_count).nil?
     self.in_settings = settings

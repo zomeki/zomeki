@@ -10,6 +10,7 @@ class Cms::Public::OAuthController < ApplicationController
 
   def callback
     oa_params = request.env['omniauth.params']
+    oa_params.each{|k, v| oa_params[k] = CGI.unescape(v) if v.index('%') }
     oa_auth = request.env['omniauth.auth']
 
     case oa_auth[:provider]
@@ -24,11 +25,10 @@ class Cms::Public::OAuthController < ApplicationController
               credential_expires_at: oa_auth.credentials.expires_at}
 
       begin
-        query = CGI.escape('SELECT name FROM profile WHERE id = me()')
-        path = "/method/fql.query?format=JSON&access_token=#{auth[:credential_token]}&query=#{query}"
-        https = Net::HTTP.new('api.facebook.com', 443)
+        path = "/v2.2/me?locale=ja_JP&access_token=#{auth[:credential_token]}"
+        https = Net::HTTP.new('graph.facebook.com', 443)
         https.use_ssl = true
-        auth[:info_name] = JSON.parse(https.get(path).body).first['name'].to_s
+        auth[:info_name] = JSON.parse(https.get(path).body)['name'].to_s
       rescue => e
         warn_log "Failed to get localized user name: #{e.message}"
       end
@@ -70,12 +70,23 @@ class Cms::Public::OAuthController < ApplicationController
             fb = RC::Facebook.new(access_token: auth[:credential_token])
             if fb.authorized?
               res = fb.get('me/accounts')
-              options = [['自分のタイムライン', 'me']]
+
+              default_page = 'me'
+              default_token = auth[:credential_token]
+
+              page_options = [['ページ：自分のタイムライン', default_page]]
+              token_options = [['投稿者：自分', default_token]]
+
               if res.kind_of?(Hash) && (data = res['data']).kind_of?(Array)
-                options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
-                auth[:facebook_page_options] = options
+                page_options.concat data.map{|d| ["ページ：#{d['name']}", d['id']] }
+                auth[:facebook_page_options] = page_options
+
+                token_options.concat data.map{|d| ["投稿者：#{d['name']}", d['access_token']] }
+                auth[:facebook_token_options] = token_options
               end
-              auth[:facebook_page] = 'me'
+
+              auth[:facebook_page] = default_page
+              auth[:facebook_token] = default_token
             end
           rescue => e
             warn_log "Failed to get pages to post: #{e.message}"

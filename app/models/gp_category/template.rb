@@ -9,4 +9,8 @@ class GpCategory::Template < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :content_id}
   validates :title, :presence => true
+
+  def containing_modules
+    body.scan(/\[\[module\/([\w-]+)\]\]/).map{|m| content.template_modules.find_by_name(m.first) }.compact
+  end
 end

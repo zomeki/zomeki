@@ -21,7 +21,7 @@ class Gnav::Piece::CategoryType < Cms::Piece
   end
 
   def category_type
-    category_types.find_by_id(setting_value(:category_type_id))
+    category_types.find_by_id(setting_value(:category_type_id)) rescue nil
   end
 
   def categories

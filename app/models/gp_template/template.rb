@@ -32,6 +32,29 @@ class GpTemplate::Template < ActiveRecord::Base
     state == 'public'
   end
 
+  def duplicate
+    item = self.class.new(self.attributes)
+    item.id            = nil
+    item.unid          = nil
+    item.created_at    = nil
+    item.updated_at    = nil
+
+    item.title = item.title.gsub(/^(【複製】)*/, "【複製】")
+
+    return false unless item.save(:validate => false)
+
+    # piece_settings
+    items.each do |i|
+      dupe_item = GpTemplate::Item.new(i.attributes)
+      dupe_item.template_id = item.id
+      dupe_item.created_at  = nil
+      dupe_item.updated_at  = nil
+      dupe_item.save(:validate => false)
+    end
+
+    return item
+  end
+
   private
 
   def set_defaults

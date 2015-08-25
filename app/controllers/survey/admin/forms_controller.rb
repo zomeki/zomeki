@@ -120,13 +120,34 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
   end
 
   def approve
-    @item.approve(Core.user) if @item.state_approvable? && @item.approvers.include?(Core.user)
+    @item.approve(Core.user, request) if @item.state_approvable? && @item.approvers.include?(Core.user)
     redirect_to url_for(:action => :show), notice: '承認処理が完了しました。'
   end
 
   def publish
     @item.publish if @item.state_approved? && @item.approval_participators.include?(Core.user)
     redirect_to url_for(:action => :show), notice: '公開処理が完了しました。'
+  end
+
+  def close
+    @item.close if @item.state_public? && @item.approval_participators.include?(Core.user)
+    redirect_to url_for(:action => :show), notice: '非公開処理が完了しました。'
+  end
+
+  def duplicate(item)
+    if dupe_item = item.duplicate
+      flash[:notice] = '複製処理が完了しました。'
+      respond_to do |format|
+        format.html { redirect_to url_for(:action => :index) }
+        format.xml  { head :ok }
+      end
+    else
+      flash[:notice] = "複製処理に失敗しました。"
+      respond_to do |format|
+        format.html { redirect_to url_for(:action => :show) }
+        format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
   private
@@ -139,8 +160,25 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
                         end
 
     approval_flow_ids.each do |approval_flow_id|
-      next if @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
-      @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+      request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+
+      assignments = {}.with_indifferent_access
+      if params.member?("assignment_ids_#{approval_flow_id}")
+        if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+            assignments["approval_#{approval_id}"] = "#{value}"
+          end
+        end
+      end
+
+      unless request
+        @item.approval_requests.create(user_id: Core.user.id, approval_flow_id: approval_flow_id)
+        request = @item.approval_requests.find_by_approval_flow_id(approval_flow_id)
+      end
+      request.select_assignment = assignments
+      request.user_id = Core.user.id
+      request.save! if request.changed?
+      request.reset
     end
 
     @item.approval_requests.each do |approval_request|
@@ -155,6 +193,20 @@ class Survey::Admin::FormsController < Cms::Controller::Admin::Base
                           []
                         end
 
-    @item.errors.add(:base, '承認フローを選択してください。') if approval_flow_ids.empty?
+    if approval_flow_ids.empty?
+      @item.errors.add(:base, '承認フローを選択してください。')
+    else
+      approval_flow_ids.each do |approval_flow_id|
+        if params.member?("assignment_ids_#{approval_flow_id}") && params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+          if params["assignment_ids_#{approval_flow_id}"].is_a?(Hash)
+            params["assignment_ids_#{approval_flow_id}"].each do |approval_id, value|
+              @item.errors["承認者"] = "を選択してください。" if value.blank?
+            end
+          end
+        end
+      end
+
+    end
+
   end
 end

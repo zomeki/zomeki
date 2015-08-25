@@ -70,23 +70,21 @@ class Cms::Admin::ConceptsController < Cms::Controller::Admin::Base
   
   def layouts(rendering = true)
     layouts = []
-    concept = nil
-    
-    if params[:concept_id].to_i > 0
-      concept = Cms::Concept.find_by_id(params[:concept_id])
-    elsif params[:parent].to_i > 0
-      if node = Cms::Node.find_by_id(params[:parent])
-        concept = node.inherited_concept
-      end
-    else
-      concept = Core.concept(:id)
-    end
 
-    concept.parents_tree.each{|c| layouts += c.layouts}
-    
+    concept = if params[:concept_id].to_i > 0
+                Cms::Concept.find_by_id(params[:concept_id])
+              elsif params[:parent].to_i > 0
+                if node = Cms::Node.find_by_id(params[:parent])
+                  node.inherited_concept
+                end
+              end
+
+    concept.parents_tree.each{|c| layouts += c.layouts} if concept
+
     layouts = layouts.collect{|i| ["#{i.concept.name} : #{i.title}", i.id]}
-    @layouts  = [["// 一覧を更新しました（#{layouts.size}件）",'']] + layouts
-    
+    layouts.unshift ["// 一覧を更新しました（#{layouts.size}件）", '']
+    @layouts = layouts
+
     respond_to do |format|
       format.html { render :layout => false }
     end

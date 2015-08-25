@@ -1,0 +1,34 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :site_url %></th>
+    <td><%= @item.site_url %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :include_dir %></th>
+    <td><%= @item.include_dir %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.state_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :recursive_level %></th>
+    <td><%= @item.recursive_level_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :remark %></th>
+    <td><%= @item.remark %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :message %></th>
+    <td><%= @item.message %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :start_at %></th>
+    <td><%=l @item.start_at if @item.start_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :end_at %></th>
+    <td><%=l @item.end_at if @item.end_at %></td>
+  </tr>
+</table>

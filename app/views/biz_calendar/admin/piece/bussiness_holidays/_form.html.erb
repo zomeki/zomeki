@@ -1,0 +1,26 @@
+<%= render(layout: 'biz_calendar/admin/piece/shared/form', locals: {f: f}) do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :target_type %></th>
+    <td><%= f.array_select 'in_settings[target_type]', @item.class::TARGET_TYPE_OPTIONS, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :page_filter %></th>
+    <td><%= f.array_radio_buttons 'in_settings[page_filter]', @item.class::PAGE_FILTER_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :place_link %></th>
+    <td><%= f.array_radio_buttons 'in_settings[place_link]', @item.class::PLACE_LINK_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :holiday_type_state %></th>
+    <td><%= f.array_radio_buttons 'in_settings[holiday_type_state]', @item.class::HOLIDAY_TYPE_STATE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :date_style %></th>
+    <td><%= f.array_text_field 'in_settings[date_style]', size: 25 %> <%= I18n.t('comments.date_style').html_safe %></td>
+  </tr>
+</table>
+<%- end -%>

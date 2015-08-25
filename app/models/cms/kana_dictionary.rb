@@ -10,27 +10,56 @@ class Cms::KanaDictionary < ActiveRecord::Base
   
   before_save :convert_csv
   
-  def self.mecab_rc
-    user_dic # confirm
-    return "#{Rails.root}/config/mecab/mecabrc"
+  def self.mecab_rc(_site_id=nil)
+    user_dic(_site_id) # confirm
+    return site_mecab_rc(_site_id)
   end
   
-  def self.user_dic
-    dic = "#{Rails.root}/config/mecab/zomeki.dic"
+  def self.user_dic(_site_id=nil)
+    mecab_dir = "#{Rails.root}/config/mecab/"
+    if _site_id.blank?
+      dic = ::File.join(mecab_dir, "zomeki.dic")
+    else
+      site_dir  = ::File.join("#{mecab_dir}", "sites", format('%08d', _site_id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1'))
+      dic = ::File.join(site_dir, "zomeki.dic")
+    end
     
     if ::File.exists?(dic)
       return dic 
     else
-      FileUtils.cp("#{dic}.original", dic)
+      ::FileUtils.mkdir_p(site_dir) if !_site_id.blank? && !::File.exists?(site_dir)
+      FileUtils.cp("#{mecab_dir}zomeki.dic.original", dic)
     end
     return dic
   end
+
+  def self.site_mecab_rc(_site_id=nil)
+    mecab_dir = "#{Rails.root}/config/mecab/"
+
+    if _site_id.blank?
+      rc = ::File.join(mecab_dir, "mecabrc")
+    else
+      site_dir  = ::File.join("sites", format('%08d', _site_id).gsub(/((..)(..)(..)(..))/, '\\2/\\3/\\4/\\5/\\1'))
+      rc = ::File.join(mecab_dir, site_dir, "mecabrc")
+    end
+
+    if ::File.exists?(rc)
+      return rc
+    else
+      ::FileUtils.mkdir_p(site_dir) if !_site_id.blank? && !::File.exists?(site_dir)
+      originalrc = "#{mecab_dir}mecabrc"
+      f = ::File.read(originalrc)
+      data = f.gsub(/zomeki\.dic/, "#{site_dir}/zomeki.dic")
+      ::File.write(rc, data)
+    end
+    return rc
+  end
   
-  def self.dic_mtime
+  def self.dic_mtime(_site_id=nil)
     pkey = "mecab_dic_mtime"
     return Core.config[pkey] if Core.config[pkey]
     
-    file = user_dic
+    file = user_dic(_site_id)
     return Core.config[pkey] = ::File.mtime(file)
   end
   
@@ -59,14 +88,16 @@ class Cms::KanaDictionary < ActiveRecord::Base
     return true
   end
   
-  def self.make_dic_file
+  def self.make_dic_file(_site_id=nil)
     mecab_index = Zomeki.config.application['cms.mecab_index']
     mecab_dic   = Zomeki.config.application['cms.mecab_dic']
     
     errors = []
     data   = []
-    
-    self.find(:all, :order => "id").each do |item|
+
+    items = self.order(:id)
+    items = items.where(site_id: _site_id) if _site_id.present?
+    items.each do |item|
       if item.mecab_csv == nil
         data << item.mecab_csv if item.convert_csv == true
         next 
@@ -83,7 +114,7 @@ class Cms::KanaDictionary < ActiveRecord::Base
     csv.puts(data.join("\n"))
     csv.close
     
-    dic = user_dic
+    dic = user_dic(_site_id)
     
     require "shell"
     sh = Shell.new

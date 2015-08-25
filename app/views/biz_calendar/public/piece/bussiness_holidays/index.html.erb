@@ -1,0 +1,38 @@
+<%- if @piece.target_next? -%>
+
+<div id="bussinessHolidayBox<%= @piece.id %>" class="bussinessHolidayBox">
+</div>
+
+<%= javascript_tag do -%>
+
+$(document).ready(function () {
+  $.ajax({
+    url: '<%= @biz_calendar_node_uri %><%= @piece.id %>/bussiness_holidays<%= "/#{@place_name}" if @place_name.present? %>',
+    type: 'GET',
+    success: writeBussinnesHoliday<%= @piece.id %>
+  });
+});
+
+function writeBussinnesHoliday<%= @piece.id %>(data) {
+  $('#bussinessHolidayBox<%= @piece.id %>').html(data);
+}
+
+<%- end -%>
+
+<%- else -%>
+
+<%- @places.each do |place| -%>
+<div class="location">
+  <div class="name"><%= @piece.link_place_page? ? link_to(place.title, place.public_uri) : place.title %></div>
+  <% if @holidays[place.id] && !@holidays[place.id].blank? %>
+  <ul>
+    <% @holidays[place.id].each do |i,types| %>
+    <li><span class="<%= safe{types[:type].name} %>"><%- if @piece.show_holiday_type? -%><%= safe{types[:type].title} %>：<%- end -%><%= safe{types[:holidays].map {|holiday| holiday.target_date_label(@piece.date_style) }.join('、')} %></span></li>
+    <% end %>
+  </ul>
+  <% end %>
+</div>
+<%- end -%>
+
+
+<%- end -%>

@@ -24,7 +24,10 @@
   </tr>
   <tr>
     <th><%= @item.locale :list_style %></th>
-    <td colspan="3"><%= f.array_text_field 'in_settings[list_style]', size: 50 %> <%=raw t('comments.list_style') %></td>
+    <td colspan="3">
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %><br />
+      <%= f.array_text_field 'in_settings[list_style]', size: 50 %>
+    </td>
   </tr>
 </table>
 
@@ -38,10 +41,12 @@ $(document).ready(function () {
       $('#item_in_settings_category_id').html('<option value=""></option>');
     } else {
       $('#item_in_settings_category_id').html('<option value="">更新中...</option>');
-      $.get('<%= gp_category_category_type_categories_path(content: @item.content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
+      $.get('<%= gp_category_category_type_categories_path(content: @item.content.gp_category_content_category_type, category_type_id: 'CATEGORY_TYPE_ID') rescue nil %>?options=true'.replace('CATEGORY_TYPE_ID', category_type_id), function (data) {
         $('#item_in_settings_category_id').html(data);
       });
     }
   });
 });
 <%- end -%>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>

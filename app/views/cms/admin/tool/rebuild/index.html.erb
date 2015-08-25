@@ -1,19 +1,7 @@
-<%
-
+<%-
 concepts = Cms::Concept.new.readable_children
-cond     = ["model LIKE '%::Doc' AND model != 'Newsletter::Doc' AND model != 'Laby::Doc' AND site_id = ?", Core.site.id] ##
-contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect{|c| [c.name, c.id]}
+-%>
 
-%>
-<p class="form">コンテンツ</p>
-<%= form_for(:item, :html => {:method => :post}) do |f| %>
-<%= hidden_field_tag :do, 'content' %>
-<%= f.select :content_id, contents, :include_blank => '全て' %>
-<%= f.submit '再構築', :onclick => "$('#message1').html('再構築を開始しました。そのままでお待ちください。');" %>
-<span id="message1" style="margin-left: 10px; color: #b40;"></span><br />
-<% end %>
-
-<br />
 <p class="form">スタイルシート</p>
 <%= form_for(:item, :html => {:method => :post}) do |f| %>
 <%= hidden_field_tag :do, 'styleseet' %>
@@ -21,3 +9,30 @@ contents = Cms::Content.find(:all, :conditions => cond, :order => :name).collect
 <%= f.submit '再構築', :onclick => "$('#message2').html('再構築を開始しました。そのままでお待ちください。');" %>
 <span id="message2" style="margin-left: 10px; color: #b40;"></span><br />
 <% end %>
+
+<p class="form">コンテンツ</p>
+<%- target_contents = Cms::Content.where(site_id: Core.site.id,
+                                         model: ['GpArticle::Doc',
+                                                 'GpCategory::CategoryType',
+                                                 'Organization::Group',
+                                                 'AdBanner::Banner',
+                                                 'Map::Marker',
+                                                 'GpCalendar::Event',
+                                                 'Tag::Tag',
+                                                 'Rank::Rank',
+                                                 'Gnav::MenuItem']).order(:name) -%>
+<%= form_tag(tool_rebuild_contents_path) do -%>
+  <%= select_tag 'target_content_ids',
+                 options_for_select(target_contents.map{|c| ["#{c.name}（#{c.model_name}）", c.id] }), multiple: true, size: 10 %>
+  <%= submit_tag '再構築', data: {disable_with: '再構築'}, onclick: "$('#message3').html('再構築を開始しました。そのままでお待ちください。');" %>
+  <span id="message3" style="margin-left: 10px; color: #b40;"></span>
+<%- end -%>
+
+<p class="form">ページ</p>
+<%- target_nodes = Cms::Node.public.where(site_id: Core.site.id, model: 'Cms::Page') -%>
+<%= form_tag(tool_rebuild_nodes_path) do -%>
+  <%= select_tag 'target_node_ids',
+                 options_for_select(target_nodes.map{|c| ["#{c.title}（#{c.name}）", c.id] }), multiple: true, size: 10 %>
+  <%= submit_tag '再構築', data: {disable_with: '再構築'}, onclick: "$('#message4').html('再構築を開始しました。そのままでお待ちください。');" %>
+  <span id="message4" style="margin-left: 10px; color: #b40;"></span>
+<%- end -%>

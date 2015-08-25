@@ -43,7 +43,7 @@ function ckeInsertContent(value) {
     </td>
     <td style="text-align: center;">
       <% if item.image_file? %>
-        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), file_content_path, class: 'thumbnail', title: item.title %>
+        <%= link_to image_tag(file_content_path, style: item.reduced_size(width: 80, height: 40, css: true)), view_gp_article_doc_file_path(@content, doc_id: @doc_id, id: item.id), class: 'thumbnail', title: item.title %>
       <% else %>
         <%= link_to 'File', file_content_path, class: item.css_class, onclick: "parent.document.location=$(this).attr('href'); return false;" %>
       <% end %>

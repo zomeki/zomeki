@@ -50,6 +50,8 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
   end
 
   def show
+    params[:filename_base], params[:format] = 'index', 'html' unless params[:filename_base]
+
     @item = public_or_preview_docs(id: params[:id], name: params[:name])
     return http_error(404) if @item.nil? || @item.filename_base != params[:filename_base]
     if @group
@@ -81,6 +83,27 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
     end
   end
 
+  def qrcode
+    @doc = public_or_preview_docs(id: params[:id], name: params[:name])
+    return http_error(404) unless @doc
+    return http_error(404) unless @doc.qrcode_visible?
+
+    if ::Storage.exists?(@doc.qrcode_path)
+      mt = Rack::Mime.mime_type(".png")
+      disposition = request.env['HTTP_USER_AGENT'] =~ /Android/ ? 'attachment' : 'inline'
+      send_file @doc.qrcode_path, :type => mt, :filename => 'qrcode.ping', :disposition => disposition
+    else
+      qrcode = Util::Qrcode.create_date(@doc.public_full_uri, @doc.qrcode_path)
+      if qrcode
+        mt = Rack::Mime.mime_type(".png")
+        disposition = request.env['HTTP_USER_AGENT'] =~ /Android/ ? 'attachment' : 'inline'
+        send_data qrcode, :type => mt, :filename => 'qrcode.ping', :disposition => disposition
+      else
+        http_error(404)
+      end
+    end
+  end
+
   private
 
   def public_or_preview_docs(id: nil, name: nil)
@@ -102,7 +125,7 @@ class GpArticle::Public::Node::DocsController < Cms::Controller::Public::Base
         when id
           @content.all_docs.find_by_id(id)
         when name
-          nil
+          @content.public_docs.find_by_name(name) || @content.preview_docs.find_by_name(name)
         else
           @content.public_docs
         end

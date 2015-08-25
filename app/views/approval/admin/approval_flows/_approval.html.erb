@@ -2,22 +2,31 @@
   common_attrs = {id: nil}
   if approval
     index = approval.index
-    approvers = approval.approvers.map{|u| [u.name, u.id] }
+    type = approval.approval_type
+    assignments_by_ogid = approval.assignments.group_by{|g| g.or_group_id }
+    approvers = assignments_by_ogid.map{|_,assignments| [assignments.map{|a| a.user_label}.join("or"), assignments.map{|a| a.user_id_label}.join(',')]}
   else
     index = nil
     approvers = []
+    type = Approval::Approval::TYPE_OPTIONS.first.last
     common_attrs.merge!(disabled: true)
   end
 -%>
 <div class="approval" style="<%= 'display: none;' if common_attrs[:disabled] %>">
   <%= hidden_field_tag nil, index || 'N', common_attrs.merge(class: 'index') %>
-  <div style="float: left;">
-    <span class="index"><%= index ? index + 1 : 'N' %></span>次<br />
+  <div>
+    <span class="index"><%= index ? index + 1 : 'N' %></span>次
+    <span class="approval_types"><% Approval::Approval::TYPE_OPTIONS.each do |t| %>
+      <%= radio_button "approval_types", "#{index || 'N'}", t[1], :id => "approval_types_#{index || 'N'}_#{t[1]}", :class => "approval_type_#{t[1]}", :checked => type == t[1] %>
+      <%= label "approval_types_#{index || 'N'}", "#{t[1]}", t[0], :class => "approval_type_#{t[1]}" %>
+    <% end %></span><br />
     <%= select_tag "approvals[#{index || 'N'}]", options_for_select(approvers),
-                   common_attrs.merge(multiple: true, style: 'height: 150px; width: 150px;', class: 'approvals', id: "approvals_#{index || 'N'}") %>
+                   common_attrs.merge(multiple: true, style: 'height: 150px; width: 600px;', class: 'approvals', id: "approvals_#{index || 'N'}") %>
+    <%= button_to_function 'ORにする', "make_or(parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %>
+    <%= button_to_function 'ORをはずす', "clear_or(parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %>
   </div>
-  <div style="float: left; margin: 35px 10px; height: 70px;">
-    <div><%= button_to_function '次へ ->', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()), parseInt($(this).closest('div.approval').find('input.index').val()) + 1)", common_attrs %></div>
-    <div style="margin-top: 20px;"><%= button_to_function '<- 前へ', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()) + 1, parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %></div>
+  <div style="margin: 10px;">
+    <span><%= button_to_function '▼次へ', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()), parseInt($(this).closest('div.approval').find('input.index').val()) + 1)", common_attrs %></span>
+    <span><%= button_to_function '▲前へ', "move_users(parseInt($(this).closest('div.approval').find('input.index').val()) + 1, parseInt($(this).closest('div.approval').find('input.index').val()))", common_attrs %></span>
   </div>
 </div>

@@ -7,6 +7,11 @@ class Survey::Content::Setting < Cms::ContentSetting
     :form_type => :radio_buttons
   set_config :captcha, :name => '画像認証',
     :options => Survey::Content::Form::CAPTCHA_OPTIONS
+  set_config :common_ssl, :name => '共有SSL',
+    :options => Survey::Content::Form::SSL_OPTIONS,
+    :form_type => :radio_buttons
+  set_config :auto_reply, :name => "自動返信メール",
+    :options => [['返信する','send'],['返信しない','none']]
 
   validate :validate_value
 

@@ -1,0 +1,24 @@
+<div class="contentMapNavigations">
+  <div id="canvas" style="height: 350px; width: 100%;"></div>
+
+  <%= javascript_include_tag 'http://maps.googleapis.com/maps/api/js?sensor=false&region=jp' %>
+  <%= javascript_include_tag '/_common/modules/map/js/navigations.js' %>
+  <%= javascript_tag do %>
+(function($) {
+  $(window).load(function(){
+    var marker_list = {};
+    <%-@markers.each_with_index do |marker, i|
+      marker_icon = @content.icon_image(marker.icon_category || (marker.categories.include?(@specified_category) ? @specified_category : marker.categories.first), true)
+    -%>
+      marker_list["marker<%=i%>"] = {title :'<%=marker.title%>', item_id:"marker<%=i%>",
+      lat: <%=marker.latitude%>, lng: <%=marker.longitude%>, icon_url: '<%= @content.icon_image(marker.icon_category || (marker.categories.include?(@specified_category) ? @specified_category
+                                                                                                                       : marker.categories.first), true) %>'};
+      <%if marker.doc%>marker_list["marker<%=i%>"]["url"] = "<%=marker.doc.public_uri%>";<%end-%>
+    <%end if @markers-%>
+
+    renderMap(<%= default_latitude %>, <%= default_longitude %>, marker_list);
+  });
+
+})(jQuery);
+<%end%>
+</div>

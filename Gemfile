@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.18'
+gem 'rails', '3.2.19'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -10,8 +10,8 @@ gem 'mysql2'
 gem 'delayed_job_active_record', '~> 4.0.0'
 gem 'dynamic_form', '~> 1.1.4'
 gem 'galetahub-simple_captcha', '~> 0.1.5', :require => 'simple_captcha'
-gem 'garb', '~> 0.9.1'
-gem 'httpclient', '~> 2.3.4.1'
+gem 'garb', '~> 0.9.8'
+gem 'google-oauth2-installed', '0.0.3'
 gem 'jpmobile', '~> 3.0.7'
 gem 'mail-iso-2022-jp', '~> 2.0.2'
 gem 'moji', '~> 1.6'
@@ -20,13 +20,17 @@ gem 'omniauth-facebook', '~> 1.5.1'
 gem 'omniauth-twitter', '~> 1.0.1'
 gem 'rails_autolink', '~> 1.1.0'
 gem 'render_component_vho', '~> 3.2.1'
-gem 'rest-more', '~> 2.0.4'
+gem 'rest-more', '~> 3.3.1'
 gem 'rmagick', '~> 2.13.2'
 gem 'will_paginate', '~> 3.0.4'
 gem 'whenever', :require => false
 
 gem 'hpricot', '0.8.6'
 gem 'tamtam', '0.0.3'
+
+gem 'rsync', '~> 1.0.8'
+
+gem 'rqrcode_png'
 
 # Gems used only for assets and not required
 # in production environments by default.

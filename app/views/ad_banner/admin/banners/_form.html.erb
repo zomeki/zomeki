@@ -45,7 +45,10 @@
   </tr>
   <tr>
     <th><%= f.label :url %> <span class="note">※</span></th>
-    <td><%= f.text_field :url, :style => 'width: 400px;' %></td>
+    <td>
+      <%= f.text_field :url, :style => 'width: 400px;' %>
+      <%= f.radio_buttons :target, AdBanner::Banner::TARGET_OPTIONS, :class => 'status' %>
+    </td>
   </tr>
   <tr>
     <th><%= f.label :sort_no %></th>

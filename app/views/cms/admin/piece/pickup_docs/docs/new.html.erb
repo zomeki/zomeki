@@ -1,0 +1,5 @@
+<%= form_for(:item, :url => cms_piece_pickup_doc_docs_path) do |f| %>
+  <%= error_messages_for :item %>
+  <%= render 'form', f: f %>
+  <%= submit :register %>
+<% end %>

@@ -1,0 +1,26 @@
+<%= render 'search' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;">詳細</th>
+    <th style="width: 200px; text-align: left;"><%= Tool::ConvertDoc.human_attribute_name :uri_path %></th>
+    <th style="width: 200px; text-align: left;"><%= Tool::ConvertDoc.human_attribute_name :doc_public_uri %></th>
+    <th style="width: 120px; text-align: left;"><%= Tool::ConvertDoc.human_attribute_name :doc_name %></th>
+    <th style="text-align: left;"><%= Tool::ConvertDoc.human_attribute_name :title %></th>
+    <th style="width: 100px; text-align: center;"><%= Tool::ConvertDoc.human_attribute_name :published_at %></th>
+    <th style="width: 100px; text-align: center;"><%= Tool::ConvertDoc.human_attribute_name :updated_at %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+    <tr class="<%= cycle('cycle', '')%>">
+      <td style="text-align: center;"><%= link_to :show, cms_tool_convert_doc_path(id: item.id) %> </td>
+      <td style="text-align: left;"><%= link_to item.source_uri, item.source_uri, target: 'blank' %></td>
+      <td style="text-align: left;"><%= link_to item.doc_public_uri, item.doc_public_uri, target: 'blank' %></td>
+      <td style="text-align: left;"><%= link_to item.doc_name, gp_article_doc_path(content: item.latest_doc.content, id: item.latest_doc.id) if item.latest_doc %></td>
+      <td style="text-align: left;"><%= item.title %></td>
+      <td style="text-align: center;"><%=l item.published_at if item.published_at %></td>
+      <td style="text-align: center;"><%=l item.updated_at if item.updated_at %></td>
+    </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items %>

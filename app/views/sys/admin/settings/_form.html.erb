@@ -1,0 +1,53 @@
+<%
+
+case @item.form_type
+when :select
+  opt = @item.config_options
+  value_form = f.select(:value, opt, :include_blank => "　")
+when :text
+  value_form = f.text_area(:value, :style => "width: 600px; height: 160px;")
+when :radio_buttons
+  value_form = f.radio_buttons(:value, @item.config_options)
+else
+  style = @item.style || "width: 400px;"
+  value_form = f.text_field(:value, :style => style)
+end
+
+upper_text = @item.upper_text ? %Q(<div style="margin: 5px; line-height: 1.2;">#{@item.upper_text}</div>).html_safe : ""
+lower_text = @item.lower_text ? %Q(<div style="margin: 5px; line-height: 1.2;">#{@item.lower_text}</div>).html_safe : ""
+
+%>
+
+<table class="show">
+  <tr>
+    <th>設定名</th>
+    <td><%= @item.config_name %></td>
+  </tr><tr>
+    <th>設定値</th>
+    <td><%=hbr upper_text %><%= value_form %> <%= @item.config[:comment] %><%=hbr lower_text %></td>
+  </tr>
+</table>
+
+<%- if @item.name == 'common_ssl'
+    -%>
+<table class="show">
+  <tr>
+    <th>SSL URL</th>
+    <td><%= text_field_tag 'common_ssl_uri', @item.extra_values[:common_ssl_uri], style: 'width: 400px;' %></td>
+  </tr>
+</table>
+<%- end -%>
+<%- if @item.name == 'file_upload_max_size' -%>
+<table class="show">
+  <tr>
+    <th>拡張子別アップロードサイズ</th>
+    <td><%= text_area_tag :extension_upload_max_size, @item.extra_values[:extension_upload_max_size], size: '100x10' %>
+      <div>
+        例：jpgファイルは1MB、gifファイルは5MBをアップロードサイズ上限として設定する。<br />
+        jpg, 1<br />
+        gif, 5
+      </div>
+    </td>
+  </tr>
+</table>
+<%- end -%>

@@ -8,10 +8,11 @@
           <%= label_tag "question_answer_#{question.id}", question.title %>
         </div>
 
+        <% if question.form_type != 'free' %>
         <div class="answer_content">
           <%= hidden_field_tag "question_answers[#{question.id}]", @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- case question.form_type -%>
-          <%- when 'text_field' -%>
+          <%- when 'text_field', 'text_field_email' -%>
             <%= @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- when 'text_area' -%>
             <%=simple_format @form_answer.detect_answer_by_question(question).try(:content) %>
@@ -23,6 +24,7 @@
             <%= @form_answer.detect_answer_by_question(question).try(:content) %>
           <%- end -%>
         </div>
+        <% end %>
 
         <%- if question.description.present? -%>
         <div class="body"><%=raw question.description %></div>
@@ -37,8 +39,7 @@
       <%= submit_tag '変更する', name: 'edit_answers' %>
     </div>
 
-    <%= hidden_field_tag :current_url, @form_answer.answered_url %>
-    <%= hidden_field_tag :current_url_title, @form_answer.answered_url_title %>
-    <%= hidden_field_tag :piece, true if params[:piece] -%>
+    <%= render 'from_piece', piece: @piece, form_answer: @form_answer,
+                             current_url: @current_url, current_url_title: @current_url_title %>
   <%- end -%>
 </div>

@@ -1,0 +1,64 @@
+<%= form_for :item, :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th><%= f.label :concept_id %></th>
+      <td>
+        <%- roots = Cms::Concept.where(site_id: Core.site.id, parent_id: 0, level_no: 1, state: 'public').order('sort_no') -%>
+        <%= f.select_with_tree :concept_id, roots, :include_blank => true %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :linkable_type %></th>
+      <td><%= f.select :linkable_type, @item.class::LINKABLE_TYPE_OPTIONS, include_blank: true %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :linkable_id %></th>
+      <td><%= f.select :linkable_id, options_for_select(@item.linkable_id_options), include_blank: true %></td>
+    </tr>
+  </table>
+  <div class="submitters">
+    <%= f.submit "実行" %>
+  </div>
+<%- end -%>
+
+<script type="text/javascript">
+$(function() {
+  $('#item_linkable_type').on('change', function(e) {
+    updateLinkableID();
+  });
+  function updateLinkableID() {
+    $('#item_linkable_id').html('<option>検索中...</option>');
+    var concept_id = $('#item_concept_id').val();
+    var linkable_type = $('#item_linkable_type').val();
+    $.get('<%= cms_tool_convert_links_path %>', {linkable_type: linkable_type, concept_id: concept_id}, function(data) {
+      $('#item_linkable_id').html(data);
+    });
+  }
+})
+</script>
+
+<%- if @items.size > 0 -%>
+<p class="form">リンク変換一覧</p>
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: left; width: 180px;"><%= Tool::ConvertLink.human_attribute_name :concept_id %></th>
+    <th style="text-align: left; width: 180px;"><%= Tool::ConvertLink.human_attribute_name :linkable_type %></th>
+    <th style="text-align: left;"><%= Tool::ConvertLink.human_attribute_name :linkable_id %></th>
+    <th style="text-align: right; width: 100px;"><%= Tool::ConvertLink.human_attribute_name :urls_size %></th>
+    <th style="text-align: center; width: 140px;"><%= Tool::ConvertLink.human_attribute_name :created_at %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle('cycle', '') %>">
+    <td style="text-align: center;"><%= link_to :show, cms_tool_convert_link_path(item.id) %></td>
+    <td style="text-align: left;"><%= item.concept.try(:name) %></td>
+    <td style="text-align: left;"><%= item.linkable_type %></td>
+    <td style="text-align: left;"><%= item.linkable.title if item.linkable && item.linkable.has_attribute?(:title) %></td>
+    <td style="text-align: right;"><%= item.urls.size %></td>
+    <td style="text-align: center;"><%=l item.created_at if item.created_at %></td>
+  </tr>
+  <%- end -%>
+</table>
+<%= paginate @items %>
+<%- end -%>

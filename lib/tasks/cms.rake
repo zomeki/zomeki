@@ -3,9 +3,12 @@ namespace :zomeki do
   namespace :cms do
     desc 'Clean static files'
     task(:clean_statics => :environment) do
-      clean_feeds
-      clean_statics('r')
-      clean_statics('mp3')
+      Cms::Lib::FileCleaner.clean_files
+    end
+
+    desc 'Clean empty directories'
+    task(:clean_directories => :environment) do
+      Cms::Lib::FileCleaner.clean_directories
     end
 
     namespace :feeds do
@@ -39,23 +42,12 @@ namespace :zomeki do
       task(:exec => :environment) do
         Script.run('cms/script/talk_tasks/exec')
       end
-    end
-  end
-end
 
-def clean_feeds
-  Dir["#{Rails.root.join('sites')}/**/{feed,index}.{atom,rss}"].each do |file|
-    info_log "DELETED: #{file}"
-    File.delete(file)
-  end
-end
-
-def clean_statics(base_ext)
-  Dir["#{Rails.root.join('sites')}/**/*.html.#{base_ext}"].each do |base_file|
-    ['', '.r', '.mp3'].each do |ext|
-      next unless File.exist?(file = base_file.sub(Regexp.new("\.#{base_ext}$"), ext))
-      info_log "DELETED: #{file}"
-      File.delete(file)
+      desc 'Clean excluded talk tasks'
+      task(:clean_excluded_tasks => :environment) do
+        ids = Zomeki.config.application['cms.use_kana_exclude_site_ids'] || []
+        Cms::TalkTask.find_each{|t| t.destroy if ids.include?(t.site_id) }
+      end
     end
   end
 end

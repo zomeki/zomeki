@@ -1,0 +1,16 @@
+<%- if @piece.upper_text.present? -%>
+<div class="upper_text"><%=raw @piece.upper_text %></div>
+<%- end -%>
+
+<%- unless @banners.empty? -%>
+<ul class="ad_banner">
+  <%- @banners.each do |banner| -%>
+  <li class="banner"><%= link_to image_tag(banner.image_uri, alt: banner.title),
+                                 banner.link_uri, target: banner.target %></li>
+  <%- end -%>
+</ul>
+<%- end -%>
+
+<%- if @piece.lower_text.present? -%>
+<div class="lower_text"><%=raw @piece.lower_text %></div>
+<%- end -%>

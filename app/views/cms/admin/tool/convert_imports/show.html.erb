@@ -1,0 +1,46 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :site_url %></th>
+    <td><%= @item.site_url %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :site_filename %></th>
+    <td><%= @item.site_filename %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :overwrite %></th>
+    <td><%= @item.overwrite_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :keep_filename %></th>
+    <td><%= @item.keep_filename_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.state_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :total_num %></th>
+    <td><%= @item.total_num %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_num %> / <%= @item.class.human_attribute_name :updated_num %> / <%= @item.class.human_attribute_name :nonupdated_num %> / <%= @item.class.human_attribute_name :skipped_num %></th>
+    <td><%= @item.created_num %> / <%= @item.updated_num %> / <%= @item.nonupdated_num %> / <%= @item.skipped_num %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :link_total_num %></th>
+    <td><%= @item.link_total_num %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :link_processed_num %></th>
+    <td><%= @item.link_processed_num %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_at %></th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at %></th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>

@@ -7,14 +7,22 @@ class Cms::Script::FeedsController < ApplicationController
     error   = 0
     feeds = Cms::Feed.find(:all, :conditions => { :state => 'public' })
     #feeds = Cms::Feed.find(:all)
+    Script.total feeds.size
+    
     feeds.each do |feed|
+      Script.current
+      
       begin
         if feed.update_feed
+          Script.success
           success += 1
         else
-          raise 'DestroyFailed'
+          raise "DestroyFailed : #{feed.uri}"
         end
+      rescue Script::InterruptException => e
+        raise e
       rescue => e
+        Script.error e
         error += 1
       end
     end

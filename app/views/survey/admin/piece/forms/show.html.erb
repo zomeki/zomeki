@@ -6,6 +6,10 @@
     <th><%= @item.locale :target_form_id %></th>
     <td><%= "#{@item.target_form.title}（#{@item.target_form.name}）" if @item.target_form %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :head_css %></th>
+    <td><%= @item.setting_value(:head_css) %></td>
+  </tr>
 </table>
 
 <p class="form">挿入テキスト</p>

@@ -4,7 +4,8 @@ class Survey::Question < ActiveRecord::Base
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
   FORM_TYPE_OPTIONS = [['入力/1行（テキストフィールド）', 'text_field'], ['入力/複数行（テキストエリア）', 'text_area'],
-                       ['選択/単数回答（プルダウン）', 'select'], ['選択/単数回答（ラジオボタン）', 'radio_button'], ['選択/複数回答（チェックボックス）', 'check_box']]
+                       ['選択/単数回答（プルダウン）', 'select'], ['選択/単数回答（ラジオボタン）', 'radio_button'],
+                       ['選択/複数回答（チェックボックス）', 'check_box'],['自由形式','free'],['入力/1行（メールアドレス）', 'text_field_email']]
   REQUIRED_OPTIONS = [['必須', true], ['任意', false]]
 
   default_scope order("#{self.table_name}.sort_no IS NULL, #{self.table_name}.sort_no")
@@ -28,6 +29,10 @@ class Survey::Question < ActiveRecord::Base
 
   def form_options_for_select
     form_options.gsub("\r\n", "\n").gsub("\r", "\n").split("\n")
+  end
+
+  def email_field?
+    form_type == 'text_field_email'
   end
 
   private

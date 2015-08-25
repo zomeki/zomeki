@@ -13,6 +13,9 @@ class Rank::Public::Node::ThisWeeksController < Cms::Controller::Public::Base
     @term   = 'this_weeks'
     @target = 'pageviews'
     @ranks  = rank_datas(@content, @term, @target, 20)
+
+    return http_error(404) if @ranks.blank?
+
     _index @ranks
   end
 end

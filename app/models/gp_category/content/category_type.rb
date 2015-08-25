@@ -7,16 +7,18 @@ class GpCategory::Content::CategoryType < Cms::Content
 
   default_scope { where(model: 'GpCategory::CategoryType') }
 
-  has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => :sort_no, :dependent => :destroy
+  has_many :category_types, :foreign_key => :content_id, :class_name => 'GpCategory::CategoryType', :order => "#{GpCategory::CategoryType.table_name}.sort_no", :dependent => :destroy
   has_many :templates, :foreign_key => :content_id, :class_name => 'GpCategory::Template', :dependent => :destroy
   has_many :template_modules, :foreign_key => :content_id, :class_name => 'GpCategory::TemplateModule', :dependent => :destroy
-  has_many :nodes, :foreign_key => :content_id, :class_name => 'Cms::Node',
-           :conditions => ["#{Cms::Node.table_name}.model = ?", 'GpCategory::CategoryType']
 
   before_create :set_default_settings
 
+  def public_nodes
+    nodes.public
+  end
+
   def public_node
-    nodes.public.order(:id).first
+    public_nodes.order(:id).first
   end
 
 #TODO: DEPRECATED
@@ -108,7 +110,7 @@ class GpCategory::Content::CategoryType < Cms::Content
   private
 
   def set_default_settings
-    in_settings[:list_style] = '@title(@date @group)' unless setting_value(:list_style)
+    in_settings[:list_style] = '@title_link@(@publish_date@ @group@)' unless setting_value(:list_style)
     in_settings[:date_style] = '%Y年%m月%d日 %H時%M分' unless setting_value(:date_style)
     in_settings[:time_style] = '%H時%M分' unless setting_value(:time_style)
     in_settings[:feed] = 'enabled' unless setting_value(:feed)

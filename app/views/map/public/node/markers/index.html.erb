@@ -6,11 +6,37 @@
   <%= javascript_tag do -%>
   var map;
   google.maps.event.addDomListener(window, 'load', function (event) {
-    map = new Map('map_canvas', <%= default_latitude %>, <%= default_longitude %>);
-    <%- @markers.each do |marker| -%>
+    <%- unless @all_markers.empty?
+          bounds = @all_markers.inject(min: {}, max: {}){|result, marker|
+                     min = result[:min]
+                     max = result[:max]
+                     m_lat = marker.latitude.to_f
+                     m_lon = marker.longitude.to_f
+
+                     min[:lat] ||= m_lat
+                     min[:lon] ||= m_lon
+                     max[:lat] ||= m_lat
+                     max[:lon] ||= m_lon
+
+                     min[:lat] = m_lat if min[:lat] > m_lat
+                     min[:lon] = m_lon if min[:lon] > m_lon
+                     max[:lat] = m_lat if max[:lat] < m_lat
+                     max[:lon] = m_lon if max[:lon] < m_lon
+
+                     result
+                   } -%>
+    map = new Map('map_canvas', <%= bounds[:min][:lat] %>, <%= bounds[:min][:lon] %>,
+                                <%= bounds[:max][:lat] %>, <%= bounds[:max][:lon] %>);
+    <%- else -%>
+    map = new Map('map_canvas', default_latitude, default_longitude);
+    <%- end -%>
+
+    <%- @all_markers.each do |marker| -%>
       map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
-                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '') %>',
-                     '<%= @content.icon_image(marker.categories.first, true) %>');
+                     '<%=raw simple_format(marker.window_text, {}, sanitize: false).gsub(/\r|\n/, '').gsub("'", '&#x27;') %>',
+                     '<%= @content.icon_image(marker.icon_category || (marker.categories.include?(@specified_category) ? @specified_category
+                                                                                                                       : marker.categories.first), true) %>');
+
     <%- end -%>
   });
   <%- end -%>
@@ -53,8 +79,8 @@
         <%- end -%>
       </td>
       <%- end -%>
-      <td class="markerTitle"><%= marker.doc ? link_to(marker.title, marker.doc.public_uri) : marker.title %></td>
-      <td class="marker"><%= link_to_function '表示', "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
+      <td class="markerTitle"><%= marker.doc ? title_replace(marker.doc, @content.title_style) : marker.title %></td>
+      <td class="marker"><%= link_to '表示', '#map_canvas', onclick: "map.move_to('#{marker.latitude}_#{marker.longitude}')" %></td>
     </tr>
     <%- end -%>
   </table>

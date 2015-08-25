@@ -1,0 +1,42 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :site_url %></th>
+    <td><%= @item.site_url %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title_tag %></th>
+    <td><%= @item.title_tag %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :body_tag %></th>
+    <td><%= @item.body_tag %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at_tag %></th>
+    <td><%= @item.updated_at_tag %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at_regexp %></th>
+    <td><%= @item.updated_at_regexp %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :creator_group_from_url_regexp %></th>
+    <td><%= @item.creator_group_from_url_regexp %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :category_tag %></th>
+    <td><%= @item.category_tag %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :category_regexp %></th>
+    <td><%= @item.category_regexp %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :created_at %></th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :updated_at %></th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>

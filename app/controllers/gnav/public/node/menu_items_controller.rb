@@ -12,6 +12,8 @@ class Gnav::Public::Node::MenuItemsController < Cms::Controller::Public::Base
   end
 
   def show
+    http_error(404) if params[:page]
+
     @menu_item = @content.menu_items.find_by_name(params[:name])
     return http_error(404) unless @menu_item
 

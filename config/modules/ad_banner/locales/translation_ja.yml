@@ -32,5 +32,6 @@ ja:
       ad_banner/piece/banner:
         group_id: グループ
         sort: 表示形式
+        impl: 実装
         upper_text: 上部テキスト
         lower_text: 下部テキスト

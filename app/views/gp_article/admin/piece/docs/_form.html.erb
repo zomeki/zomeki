@@ -13,7 +13,7 @@
   <tr>
     <th><%= @item.locale :doc_style %></th>
     <td>
-      <%=raw t('comments.doc_style') %>
+      <%= link_to_function '置き換えテキストを確認する', "$('#doc_style_tags').dialog({width: 400});" %>
       <%= f.array_text_area 'in_settings[doc_style]', size: '100x10' %>
     </td>
   </tr>
@@ -29,5 +29,11 @@
     <th><%= @item.locale :more_link_url %></th>
     <td><%= f.array_text_field 'in_settings[more_link_url]', :style => 'width: 500px;' %></td>
   </tr>
+  <tr>
+    <th><%= @item.locale :impl %></th>
+    <td><%= f.array_radio_buttons 'in_settings[impl]', @item.class::IMPL_OPTIONS %></td>
+  </tr>
 </table>
 <%- end -%>
+
+<%= render 'gp_article/admin/shared/doc_style_tags' %>

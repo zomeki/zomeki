@@ -1,5 +1,9 @@
 class Cms::Script::NodesController < Cms::Controller::Script::Publication
+  include Sys::Lib::File::Transfer
+
   def publish
+    @transfer_to_publish = Zomeki.config.application['sys.transfer_to_publish']
+
     @ids = {}
 
     content_id = params[:target_content_id]
@@ -25,6 +29,9 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
       end
     end
 
+    # file transfer
+    transfer_files(:logging => true) if @transfer_to_publish
+
     render text: 'OK'
   end
 
@@ -48,9 +55,12 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
     if node.model == 'Cms::Page'
       begin
         uri = "#{node.public_uri}?node_id=#{node.id}"
-        publish_page(node, :uri => uri, :site => node.site, :path => node.public_path)
+        publish_page(node, uri: uri, site: node.site, path: node.public_path,
+                                                      smart_phone_path: node.public_smart_phone_path)
+      rescue Script::InterruptException => e
+        raise e
       rescue => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
       end
       return
     end
@@ -61,13 +71,17 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
         model = node.model.underscore.pluralize.gsub(/^(.*?)\//, '\1/script/')
         return unless "#{model.camelize}Controller".constantize.publishable?
 
-        publish_page(node, :uri => node.public_uri, :site => node.site, :path => node.public_path)
+        publish_page(node, uri: node.public_uri, site: node.site, path: node.public_path,
+                                                      smart_phone_path: node.public_smart_phone_path)
         res = render_component_into_view :controller => model, :action => 'publish', :params => params.merge(node: node)
+
+      rescue Script::InterruptException => e
+        raise e
       rescue LoadError => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
         return
       rescue Exception => e
-        error_log e.message
+        Script.error "#{node.class}##{node.id} #{e}"
         return
       end
     end
@@ -87,6 +101,7 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
   def publish_by_task
     item = params[:item]
     if item.state == 'recognized' && item.model == 'Cms::Page'
+      Script.current
       info_log "-- Publish: #{item.class}##{item.id}"
       item = Cms::Node::Page.find(item.id)
       uri  = "#{item.public_uri}?node_id=#{item.id}"
@@ -94,6 +109,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
       unless item.publish(render_public_as_string(uri, site: item.site))
         raise item.errors.full_messages
+      else
+        Sys::OperationLog.script_log(:item => item, :site => item.site, :action => 'publish')
       end
 
       ruby_uri  = (uri =~ /\?/) ? uri.gsub(/(.*\.html)\?/, '\\1.r?') : "#{uri}.r"
@@ -105,6 +122,8 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
 
       info_log %Q!OK: Published to "#{path}"!
       params[:task].destroy
+
+      Script.success
     end
     render text: 'OK'
   rescue => e
@@ -115,13 +134,19 @@ class Cms::Script::NodesController < Cms::Controller::Script::Publication
   def close_by_task
     item = params[:item]
     if item.state == 'public' && item.model == 'Cms::Page'
+      Script.current
+
       info_log "-- Close: #{item.class}##{item.id}"
       item = Cms::Node::Page.find(item.id)
 
-      item.close
+      if item.close
+        Sys::OperationLog.script_log(:item => item, :site => item.site, :action => 'close')
+      end
 
       info_log 'OK: Closed'
       params[:task].destroy
+
+      Script.success
     end
     render text: 'OK'
   rescue => e

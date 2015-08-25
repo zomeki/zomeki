@@ -16,14 +16,14 @@ item.build_default_inquiry
     <p class="form">連絡先<%= i+1 if i != 0 %></p>
     <%= f2.hidden_field :state, :class => "inquiryState" -%>
     <%= f2.hidden_field :_destroy -%>
-    <span id="inquiryTableA<%= i %>" style="display: none;">
+    <span id="inquiryTableA<%= i %>" style="<%= (Core.user.root? || Core.user.has_auth?(:manager)) ? '' : 'display: none;' %>">
     <div>
       <div class="label1"><%= f2.label :group_id -%></div>
       <%- groups = Sys::Group.joins(:sites).where(level_no: 2).where("cms_sites.id=?", Page.site.id).order(:sort_no) -%>
       <%= f2.select_with_tree :group_id, groups, :include_blank => true %>
     </div>
     </span>
-    <span id="inquiryTableB<%= i %>">
+    <span id="inquiryTableB<%= i %>" style="<%= (Core.user.root? || Core.user.has_auth?(:manager)) ? 'display: none;' : '' %>">
     <div>
       <div class="label1"><%= f2.label :group_id -%></div>
       <%- group = Sys::Group.find_by_id(inquiry.group_id) || Core.user_group -%>

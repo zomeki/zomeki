@@ -43,7 +43,10 @@
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :url %></th>
-    <td><%= link_to @item.url, @item.url, target: '_blank' %></td>
+    <td>
+      <%= link_to @item.url, @item.url, target: '_blank' %>
+      <span style="margin-left: 10px;"><%= @item.target_text %></span>
+    </td>
   </tr>
   <tr>
     <th><%= @item.class.human_attribute_name :sort_no %></th>

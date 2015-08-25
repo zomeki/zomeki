@@ -1,12 +1,12 @@
 <div class="contentGpCategoryCategoryType">
   <%- unless @docs.empty? -%>
+  <%- if @content.feed_display? -%>
+  <ul class="feed">
+    <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
+    <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
+  </ul>
+  <%- end -%>
   <div class="docs">
-    <%- if @content.feed_display? -%>
-    <ul class="feed">
-      <li><%= link_to 'RSS' , "index.rss" , :class => 'feedRss', :title => 'RSSフィードを取得' %></li>
-      <li><%= link_to 'Atom', "index.atom", :class => 'feedAtom', :title => 'Atomフィードを取得' %></li>
-    </ul>
-    <%- end -%>
     <ul>
       <%- @docs.each do |doc| -%>
       <li><%= doc_replace(doc, @content.category_type_doc_style, @content.date_style, @content.time_style) %></li>

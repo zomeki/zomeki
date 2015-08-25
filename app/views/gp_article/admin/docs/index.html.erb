@@ -6,7 +6,7 @@
     <th><%= GpArticle::Doc.human_attribute_name :title %></th>
     <th style="text-align: center; width: 120px"><%= GpArticle::Doc.human_attribute_name :name %></th>
     <th style="text-align: center; width: 150px">所属</th>
-    <th style="text-align: center; width: 150px">作成者</th>
+    <th style="text-align: center; width: 150px">作成/更新者</th>
     <th style="text-align: center; width: 150px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
     <th style="text-align: center; width: 60px;"><%= GpArticle::Doc.human_attribute_name :state %></th>
     <th style="text-align: center; width: 65px;">プレビュー</th>
@@ -17,8 +17,13 @@
     <td style="text-align: center;"><%= link_to :show, gp_article_doc_path(content: @content, id: item.id) %></td>
     <td style="text-align: left;"><% if item.will_replace? %>【更新中】<% end %><%= item.title %></td>
     <td style="text-align: left;"><%= item.name %></td>
+    <%- if item.last_editor -%>
+    <td><%= item.last_editor.try(:group).try(:name) %></td>
+    <td><%= item.last_editor.try(:user).try(:name) %></td>
+    <%- else -%>
     <td><%= item.creator.group.try(:name) %></td>
     <td><%= item.creator.user.try(:name) %></td>
+    <%- end -%>
     <td style="text-align: center;"><%=i18n_l item.updated_at %></td>
     <td style="text-align: center;" class="<%= 'approvable' if item.state_approvable? && item.approvers.include?(Core.user) %>"><%= item.status.name %></td>
     <td style="text-align: center;">

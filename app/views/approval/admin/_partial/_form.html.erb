@@ -1,0 +1,27 @@
+<%- if content.approval_content_approval_flow -%>
+  <table class="show">
+    <tr>
+      <th><%= Approval::ApprovalFlow.model_name.human %></th>
+      <td><%- approval_flows = content.approval_content_approval_flow.approval_flows.where(group_id: [nil, Core.user.group.id]) %>
+        <%- unless approval_flows.empty? -%>
+        <table class="approval noDesign">
+          <%- approval_flows.each do |approval_flow| -%>
+          <tr>
+            <%= hidden_field_tag 'approval_flows[]', approval_flow.id, id: "approval_flows_#{approval_flow.id}" %>
+            <td><%= approval_flow.approvals.map{|approval|
+              if approval.select_approve?
+                render partial: 'approval/admin/_partial/select_assignments', locals: {item: item, approval: approval, approval_flow_id: approval_flow.id}
+              else
+                content_tag(:span, approval.approvers_label, style: 'padding: 4px;')
+              end
+              }.join(" ＞ ").html_safe %></td>
+          </tr>
+          <%- end -%>
+        </table>
+        <%- end -%>
+      </td>
+    </tr>
+  </table>
+<%- else -%>
+  <span class="note">承認フローが未設定です。使用する承認フローを設定してください。</span>
+<%- end -%>
