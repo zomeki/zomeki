@@ -409,7 +409,7 @@ class Article::Doc < ActiveRecord::Base
     
     files.each do |f|
       file = Sys::File.new(f.attributes)
-      file.file        = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+      file.file        = Sys::Lib::File::NoUploadedFile.new(f.upload_path, :mime_type => file.mime_type)
       file.unid        = nil
       file.parent_unid = item.unid
       file.save
