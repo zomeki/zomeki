@@ -136,6 +136,8 @@ class GpArticle::Doc < ActiveRecord::Base
             self.joins(:creator => inners)
           end
 
+    # TODO
+    if criteria[:join_editor].present?
     if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
        criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
       editors = Sys::Editor.arel_table
@@ -163,6 +165,7 @@ class GpArticle::Doc < ActiveRecord::Base
           "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1.presence || sql2}"
         end
       rel = rel.joins(sql).group(docs[:id])
+    end
     end
 
     rel = rel.where(docs[:content_id].eq(content.id)) if content.kind_of?(GpArticle::Content::Doc)

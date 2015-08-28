@@ -93,6 +93,7 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     else
       criteria[:editable] = true
     end
+    criteria[:join_editor] = true
 
     docs = GpArticle::Doc.arel_table
     @items = GpArticle::Doc.all_with_content_and_criteria(@content, criteria).order(docs[:updated_at].desc).paginate(page: params[:page], per_page: 30)
