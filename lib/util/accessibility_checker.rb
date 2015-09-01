@@ -46,6 +46,16 @@ end
     doc = Nokogiri::HTML.fragment(text)
     nodes = doc.xpath((1..6).map{|i| "h#{i} | .//h#{i}"}.join(' | ')).to_a
 
+    if first_node = nodes[0]
+      if first_node.name.in?(%w(h1 h2))
+        first_node['acc-state'] = 'OK'
+      else
+        first_node['acc-state'] = 'NG'
+        first_node['acc-error-h'] = '1'
+        first_node['acc-modify-name'] = 'h2'
+      end
+    end
+
     (1..6).each do |no|
       (0..nodes.size-1).each do |i|
         node1 = nodes[i]
