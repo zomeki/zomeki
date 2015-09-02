@@ -117,55 +117,32 @@ class GpArticle::Doc < ActiveRecord::Base
 
     creators = Sys::Creator.arel_table
 
-    rel = if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
-               criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
-            self.joins(:creator)
-          else
-            inners = []
-
-            if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
-              groups = Sys::Group.arel_table
-              inners << :group
-            end
-
-            if criteria[:user].present? || criteria[:editor_user].present?
-              users = Sys::User.arel_table
-              inners << :user
-            end
-
-            self.joins(:creator => inners)
-          end
-
-    # TODO
-    if criteria[:join_editor].present?
-      if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
+    if criteria[:group].blank? && criteria[:group_id].blank? && criteria[:user].blank? &&
          criteria[:editor_group].blank? && criteria[:editor_group_id].blank? && criteria[:editor_user].blank?
-        editors = Sys::Editor.arel_table
-        rel = rel.joins("LEFT OUTER JOIN #{Sys::Editor.table_name} ON #{Sys::Editor.table_name}.parent_unid = #{self.table_name}.unid").group(docs[:id])
-      else
-        sql = ''
-        editors = Sys::Editor.arel_table
-        ids = Sys::Editor.select(editors[:id].maximum).group(:parent_unid)
-  
-        if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
-          edit_groups = Sys::Group.arel_table.alias("edit_group")
-          sql1 = "LEFT OUTER JOIN #{Sys::Group.table_name} as edit_group ON edit_group.id = editor.group_id"
-        end
-        if criteria[:user].present? || criteria[:editor_user].present?
-          edit_users = Sys::User.arel_table.alias("edit_user")
-          sql2 = "LEFT OUTER JOIN #{Sys::User.table_name} as edit_user ON edit_user.id = editor.user_id"
-        end
-        
-        sql  = "select * "
-        sql += " from #{Sys::Editor.table_name} where id in (#{ids.map{|i| i.max_id }.join(",")})"
-        
-        sql = if sql1.present? && sql2.present?
-            "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1}  #{sql2}"
-          else
-            "LEFT OUTER JOIN (#{sql}) as editor ON editor.parent_unid = #{self.table_name}.unid #{sql1.presence || sql2}"
-          end
-        rel = rel.joins(sql).group(docs[:id])
+      rel = self.joins(:creator)
+      rel = rel.joins(:last_editor)
+    else
+      inners   = []
+      e_inners = []
+
+      if criteria[:group].present? || criteria[:group_id].present? || criteria[:editor_group].present? || criteria[:editor_group_id].present?
+        groups = Sys::Group.arel_table
+        inners << :group
+
+        edit_groups = Sys::Group.arel_table.alias("groups_sys_editors")
+        e_inners << :group
       end
+
+      if criteria[:user].present? || criteria[:editor_user].present?
+        users = Sys::User.arel_table
+        inners << :user
+        
+        edit_users = Sys::User.arel_table.alias("users_sys_editors")
+        e_inners << :user
+      end
+
+      rel = self.joins(:creator => inners)
+      rel = rel.joins(:last_editor => e_inners)
     end
 
     rel = rel.where(docs[:content_id].eq(content.id)) if content.kind_of?(GpArticle::Content::Doc)
@@ -193,9 +170,9 @@ class GpArticle::Doc < ActiveRecord::Base
     end
     if criteria[:editor_group_id].present?
       rel = rel.where(if criteria[:editor_group_id].kind_of?(Array)
-                        groups[:id].in(criteria[:group_id]).or(edit_groups[:id].in(criteria[:editor_group_id]))
+                        groups[:id].in(criteria[:editor_group_id]).or(edit_groups[:id].in(criteria[:editor_group_id]))
                       else
-                        groups[:id].eq(criteria[:group_id]).or(edit_groups[:id].eq(criteria[:editor_group_id]))
+                        groups[:id].eq(criteria[:editor_group_id]).or(edit_groups[:id].eq(criteria[:editor_group_id]))
                       end)
     end
 
