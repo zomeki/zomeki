@@ -7,6 +7,8 @@ class Cms::Public::TalkController < ApplicationController
   end
   
   def down_mp3
+    return render :text => '1' if params[:file_check] == '1'
+
     uri = Core.request_uri.gsub(/\.mp3$/, '').gsub(/\.r$/, '')
     return http_error(404) if ::File.extname(uri) != '.html'
     
