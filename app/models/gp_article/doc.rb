@@ -445,8 +445,12 @@ class GpArticle::Doc < ActiveRecord::Base
       new_doc.in_tasks = nil
     end
 
-    new_doc.in_editable_groups = editable_group.group_ids.split if editable_group
-
+    if editable_group
+      groups = editable_group.group_ids.split
+      groups << 'ALL' unless editable_group.all.blank?
+      new_doc.in_editable_groups = groups
+    end
+    
     inquiries.each_with_index do |inquiry, i|
       if i == 0
         attrs = inquiry.attributes
