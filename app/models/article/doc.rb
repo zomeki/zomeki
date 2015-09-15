@@ -386,7 +386,11 @@ class Article::Doc < ActiveRecord::Base
     end
     
     item.in_recognizer_ids  = recognition.recognizer_ids if recognition
-    item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
+    if editable_group
+      groups = editable_group.group_ids.split
+      groups << 'ALL' unless editable_group.all.blank?
+      item.in_editable_groups = groups
+    end
     item.in_tags            = tags.collect{|c| c.word} if tags.size > 0
     
     if inquiry != nil && inquiry.group_id == Core.user.group_id
