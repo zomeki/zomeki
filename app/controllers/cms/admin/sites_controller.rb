@@ -71,7 +71,9 @@ class Cms::Admin::SitesController < Cms::Controller::Admin::Base
       make_files(@item)
       update_config
       save_sns_apps
-      FileUtils.rm_rf Pathname.new(@item.public_smart_phone_path).children unless @item.publish_for_smart_phone?
+      if ::File.exist?(@item.public_smart_phone_path) && !@item.publish_for_smart_phone?
+        FileUtils.rm_rf Pathname.new(@item.public_smart_phone_path).children
+      end
     end
   end
 
