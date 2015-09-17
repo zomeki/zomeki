@@ -29,7 +29,7 @@ concepts = Cms::Concept.new.readable_children
 <%- end -%>
 
 <p class="form">ページ</p>
-<%- target_nodes = Cms::Node.public.where(site_id: Core.site.id, model: 'Cms::Page') -%>
+<%- target_nodes = Cms::Node.public.where(site_id: Core.site.id, model: ['Cms::Page', 'Cms::Sitemap']) -%>
 <%= form_tag(tool_rebuild_nodes_path) do -%>
   <%= select_tag 'target_node_ids',
                  options_for_select(target_nodes.map{|c| ["#{c.title}（#{c.name}）", c.id] }), multiple: true, size: 10 %>
