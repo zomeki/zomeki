@@ -64,7 +64,7 @@ class BizCalendar::Place < ActiveRecord::Base
 
     self.holidays.public.each do |h|
       if h.repeat_type.blank?
-        next if h.holiday_end_date < sdate
+        next if h.holiday_end_date <= sdate
       elsif !h.repeat_type.blank? && h.end_type == 2
         next if !h.end_date.blank? && h.end_date < sdate
       end
@@ -84,7 +84,7 @@ class BizCalendar::Place < ActiveRecord::Base
       end
 
       h.get_repeat_dates(sdate).each do |d|
-        next if d < sdate
+        next if d <= sdate
         next_holiday = d if next_holiday.blank? || next_holiday > d
       end
     end
