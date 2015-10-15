@@ -9,6 +9,7 @@
       <li><%= result %></li>
       <%- end -%>
     </ul>
-    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_accessibility_check' %> <%= label_tag 'ignore_accessibility_check', '無視' %>　<%= check_box_tag 'accessibility_check_modify' %> <%= label_tag 'accessibility_check_modify', '自動修正' %></div>
+    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_accessibility_check', '1', params[:ignore_accessibility_check].present? %> <%= label_tag 'ignore_accessibility_check', '無視' %>　<%= check_box_tag 'accessibility_check_modify' %> <%= label_tag 'accessibility_check_modify', '自動修正' %></div>
+    <%= hidden_field_tag 'accessibility_check_error', 1 %>
   <%- end -%>
 </div>

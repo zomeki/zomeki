@@ -10,7 +10,8 @@
       <%- end -%>
     </ul>
     <%- unless results.all? {|r| r[:result] } -%>
-    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_link_check' %> <%= label_tag 'ignore_link_check', 'エラーを無視する' %></div>
+    <div style="margin: 5px; text-align: right;"><%= check_box_tag 'ignore_link_check', '1', params[:ignore_link_check].present? %> <%= label_tag 'ignore_link_check', 'エラーを無視する' %></div>
+    <%= hidden_field_tag 'link_check_error', 1 %>
     <%- end -%>
   <%- end -%>
 </div>
