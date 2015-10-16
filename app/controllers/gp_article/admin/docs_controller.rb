@@ -127,7 +127,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
 
-    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?) ||
+      (params[:ignore_link_check] && params[:ignore_accessibility_check].nil? && params[:accessibility_check_error])
       check_results = @item.check_links_in_body
       self.class.helpers.large_flash(flash, :key => :link_check_result,
                                      :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
@@ -135,7 +136,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     if Zomeki.config.application['cms.enable_accessibility_check']
-      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?) ||
+        (params[:ignore_accessibility_check] && params[:ignore_link_check].nil? && params[:link_check_error])
         check_results = Util::AccessibilityChecker.check @item.body
         self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
                                        :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
@@ -191,7 +193,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
       end
     end
 
-    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?)
+    if params[:link_check_in_body] || (new_state == 'public' && params[:ignore_link_check].nil?) ||
+      (params[:ignore_link_check] && params[:ignore_accessibility_check].nil? && params[:accessibility_check_error])
       check_results = @item.check_links_in_body
       self.class.helpers.large_flash(flash, :key => :link_check_result,
                                      :value => render_to_string(partial: 'link_check_result', locals: {results: check_results}))
@@ -199,7 +202,8 @@ class GpArticle::Admin::DocsController < Cms::Controller::Admin::Base
     end
 
     if Zomeki.config.application['cms.enable_accessibility_check']
-      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?)
+      if params[:accessibility_check] || ((new_state == 'public' || new_state == 'approvable') && params[:ignore_accessibility_check].nil?) ||
+        (params[:ignore_accessibility_check] && params[:ignore_link_check].nil? && params[:link_check_error])
         check_results = Util::AccessibilityChecker.check @item.body
         self.class.helpers.large_flash(flash, :key => :accessibility_check_result,
                                        :value => render_to_string(partial: 'accessibility_check_result', locals: {results: check_results}))
