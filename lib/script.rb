@@ -97,6 +97,7 @@ class Script
   end
 
   def self.success(num = 1)
+    return if num.class != Fixnum
     return unless defined? @@proc
     @@proc.success += num
     if num > 0 && (@@proc.success % @@reflesh) == 0
