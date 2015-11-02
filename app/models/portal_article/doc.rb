@@ -378,7 +378,11 @@ class PortalArticle::Doc < ActiveRecord::Base
     end
     
     item.in_recognizer_ids  = recognition.recognizer_ids if recognition
-    item.in_editable_groups = editable_group.group_ids.split(' ') if editable_group
+    if editable_group
+      groups = editable_group.group_ids.split
+      groups << 'ALL' unless editable_group.all.blank?
+      item.in_editable_groups = groups
+    end
     item.in_tags            = tags.collect{|c| c.word} if tags.size > 0
     
     if maps.size > 0
@@ -395,7 +399,7 @@ class PortalArticle::Doc < ActiveRecord::Base
     
     files.each do |f|
       file = Sys::File.new(f.attributes)
-      file.file        = Sys::Lib::File::NoUploadedFile.new(f.upload_path)
+      file.file        = Sys::Lib::File::NoUploadedFile.new(f.upload_path, :mime_type => file.mime_type)
       file.unid        = nil
       file.parent_unid = item.unid
       file.save

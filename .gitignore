@@ -6,8 +6,11 @@
 /sites/
 /tmp/
 /upload/
+/wget_sites/
 
 /config/core.yml
+/config/sns_apps.yml
+/config/mecab/sites/
 /config/mecab/zomeki.dic
 /config/virtual-hosts/sites.conf
 /config/virtual-hosts/zomeki.conf

@@ -4,6 +4,7 @@ class AdBanner::Banner < ActiveRecord::Base
   include Sys::Model::Base::File
   include Sys::Model::Rel::Unid
   include Sys::Model::Rel::Creator
+  include Sys::Model::Rel::Task
   include Cms::Model::Auth::Content
 
   STATE_OPTIONS = [['公開', 'public'], ['非公開', 'closed']]
@@ -42,6 +43,8 @@ class AdBanner::Banner < ActiveRecord::Base
 
   after_initialize :set_defaults
   before_create :set_token
+  before_save :set_tasks
+  after_save :publish_or_close_image
 
   def image_uri
     return '' unless content.public_node
@@ -74,15 +77,22 @@ class AdBanner::Banner < ActiveRecord::Base
 
   def publish_or_close_image
     if published?
-      [image_path, image_mobile_path, image_smart_phone_path].each do |path|
-        FileUtils.mkdir_p ::File.dirname(path)
-        FileUtils.cp upload_path, path
-      end
+      publish_image
     else
-      [image_path, image_mobile_path, image_smart_phone_path].each do |path|
-        FileUtils.rm image_path if ::File.exist?(path)
-        FileUtils.rmdir ::File.dirname(path)
-      end
+      close_image
+    end
+  end
+  
+  def publish_image
+    [image_path, image_mobile_path, image_smart_phone_path].each do |path|
+      FileUtils.mkdir_p ::File.dirname(path)
+      FileUtils.cp upload_path, path
+    end
+  end
+  
+  def close_image
+    [image_path, image_mobile_path, image_smart_phone_path].each do |path|
+      FileUtils.rm path if ::File.exist?(path)
     end
   end
 
@@ -95,6 +105,13 @@ class AdBanner::Banner < ActiveRecord::Base
     !published?
   end
 
+  def set_tasks
+    tasks = {}
+    tasks[:publish] = self.published_at ? self.published_at : ''
+    tasks[:close]   = self.closed_at ? self.closed_at : ''
+    self.in_tasks = tasks
+  end
+  
   private
 
   def set_defaults
@@ -106,7 +123,7 @@ class AdBanner::Banner < ActiveRecord::Base
   def set_token
     self.token = Util::String::Token.generate_unique_token(self.class, :token)
   end
-
+  
   # Override Sys::Model::Base::File#duplicated?
   def duplicated?
     banners = self.class.arel_table

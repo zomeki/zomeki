@@ -42,21 +42,46 @@ def self.check_p(text)
     text.scan(/<p[^>]*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/p\s*>/) == []
 end
 
-def self.check_h(text)
-    h_num = 1
-    check = true
-    text.scan(/<h(\d).*?>/){ |h|
-    num = $1.to_i
+  def self.parse_h(text)
+    doc = Nokogiri::HTML.fragment(text)
+    nodes = doc.xpath((1..6).map{|i| "h#{i} | .//h#{i}"}.join(' | ')).to_a
 
-    if num == 1 || num == 2 || h_num == num || (h_num + 1) == num
-      h_num = num
-    else
-      check = false
-      break
+    if first_node = nodes[0]
+      if first_node.name.in?(%w(h1 h2))
+        first_node['acc-state'] = 'OK'
+      else
+        first_node['acc-state'] = 'NG'
+        first_node['acc-error-h'] = '1'
+        first_node['acc-modify-name'] = 'h2'
+      end
     end
-    }
-  return check
-end
+
+    (1..6).each do |no|
+      (0..nodes.size-1).each do |i|
+        node1 = nodes[i]
+        node2 = nodes[i+1]
+        if node1.name == "h#{no}" || node1['acc-modify-name'] == "h#{no}"
+          node1['acc-state'] ||= 'OK'
+          if node2 && !node2['acc-state'] && !node2.name.in?(%W(h#{no} h#{no+1}))
+            node2['acc-state'] = 'NG'
+            node2['acc-error-h'] = '1'
+            node2['acc-modify-name'] = "h#{no+1}"
+          end
+        end
+      end
+    end
+
+    nodes.each do |node|
+      node.remove_attribute('acc-state')
+    end
+
+    doc
+  end
+
+  def self.check_h(text)
+    doc = parse_h(text)
+    doc.css('[@acc-error-h]').blank?
+  end
 
 def self.check_table_sc(text)
   check = true
@@ -202,19 +227,17 @@ def self.modify_p(text)
     text.gsub(/<p[^>]*?>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*<\/p\s*>(?:\s|　|&nbsp;|&ensp;|&emsp;|&thinsp;)*/, "")
 end
 
-def self.modify_h(text)
-    h_num = 1
-    return text.gsub(/<h(\d)(.*?)>(.*?)<\/h(\d)\s*?>/m){ |h|
-    num = $1.to_i
-    if num == 1 || num == 2 || h_num == num || (h_num + 1) == num
-      h_num = num
-      h
-    else
-      h_num += 1
-      "<h#{h_num}#{$2}>#{$3}</h#{h_num}>"
+  def self.modify_h(text)
+    doc = parse_h(text)
+    doc.css("[@acc-error-h]").each do |node|
+      node.remove_attribute('acc-error-h')
+      if node['acc-modify-name']
+        node.name = node['acc-modify-name']
+        node.remove_attribute('acc-modify-name')
+      end
     end
-    }
-end
+    doc.to_s
+  end
 
 def self.modify_table_sc(text)
   return text.gsub(/<table(.*?)>(.*?)<\/table\s*>/m){

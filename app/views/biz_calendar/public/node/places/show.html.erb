@@ -20,9 +20,12 @@
     <h3><%= @place.business_holiday_title %></h3>
 
     <ul>
-      <% @place.holidays.public.each do |holiday| %>
-      <li><span class="date"><%= safe{holiday.target_date_label(@content.date_style)} %></span></li>
-      <% end %>
+      <%- @repeat_holidays[@place.id].each do |h| -%>
+      <li><span class="date"><%= safe{h.target_date_label(@content.date_style)} %></span></li>
+      <%- end -%>
+      <%- @holidays[@place.id].each do |h| -%>
+      <li><span class="date"><%= safe{h.target_date_label(@content.date_style)} %></span></li>
+      <%- end -%>
     </ul>
   </div>
   <% end %>
