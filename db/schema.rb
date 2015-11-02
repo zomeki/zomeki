@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150703080759) do
+ActiveRecord::Schema.define(:version => 20150902013003) do
 
   create_table "ad_banner_banners", :force => true do |t|
     t.string   "name"
@@ -1578,7 +1578,10 @@ ActiveRecord::Schema.define(:version => 20150703080759) do
     t.datetime "updated_at",  :null => false
     t.integer  "user_id"
     t.integer  "group_id"
+    t.integer  "last_is"
   end
+
+  add_index "sys_editors", ["parent_unid", "last_is"], :name => "index_sys_editors_on_last_is"
 
   create_table "sys_files", :force => true do |t|
     t.integer  "unid"
